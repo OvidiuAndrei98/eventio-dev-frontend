@@ -1,9 +1,10 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+:root {
+  --primary-color: #f3e438;
+
+  --padding-small: 4px;
+  --padding-medium: 8px;
+  --padding-large: 16px;
+  --padding-xl: 32px;
 }
 
 a {
@@ -13,4 +14,6 @@ a {
 
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
