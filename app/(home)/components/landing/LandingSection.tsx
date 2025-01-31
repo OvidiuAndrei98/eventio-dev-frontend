@@ -27,8 +27,6 @@ const LandingSection = () => {
           <GradientText
             colors={['#f3e438', '#e1c700', '#F8FF1F', '#F4E4AE']}
             animationSpeed={4}
-            showBorder={false}
-            className="text-key-word"
           >
             EVENTIO!
           </GradientText>
