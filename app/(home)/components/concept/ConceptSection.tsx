@@ -1,5 +1,7 @@
 import GridMotion from '../../../../components/animatedWall/GridMotion'
+import BlobV2 from '../../../../public/blobv2.svg'
 import './ConceptSection.css'
+import Image from 'next/image'
 
 const ConceptSection = () => {
   const items = [
@@ -58,6 +60,7 @@ const ConceptSection = () => {
             evenimentului să fie fără stres.
           </span>
         </div>
+        <Image className="concept-blob" src={BlobV2} alt={'concept-blob'} />
       </div>
       <div className="showcase-section">
         <GridMotion items={items} gradientColor={'white'} />
