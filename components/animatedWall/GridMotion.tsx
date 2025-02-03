@@ -1,6 +1,6 @@
 'use client'
 
-import { MutableRefObject, useEffect, useRef } from 'react'
+import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import './GridMotion.css'
 
@@ -11,12 +11,13 @@ const GridMotion = ({
   items: any[] // eslint-disable-line
   gradientColor: string
 }) => {
+  const [innderWidth, setInnerwidth] = useState<number>(0)
   const gridRef = useRef(null)
   const rowRefs = useRef<HTMLDivElement[]>([]) as MutableRefObject<
     HTMLDivElement[]
   > // Array of refs for each row
 
-  const mouseXRef = useRef(window?.innerWidth / 2 ?? 0)
+  const mouseXRef = useRef(innderWidth / 2 ?? 0)
 
   // Ensure the grid has 28 items (4 rows x 7 columns) by default
   const totalItems = 12
@@ -43,7 +44,7 @@ const GridMotion = ({
         if (row) {
           const direction = index % 2 === 0 ? 1 : -1
           const moveAmount =
-            ((mouseXRef.current / window?.innerWidth ?? 0) * maxMoveAmount -
+            ((mouseXRef.current / innderWidth) * maxMoveAmount -
               maxMoveAmount / 2) *
             direction
 
@@ -62,6 +63,9 @@ const GridMotion = ({
     const removeAnimationLoop = gsap.ticker.add(updateMotion)
 
     if (typeof window != 'undefined') {
+      window.addEventListener('resize', () => {
+        setInnerwidth(window.innerWidth)
+      })
       window.addEventListener('mousemove', handleMouseMove)
     }
 
