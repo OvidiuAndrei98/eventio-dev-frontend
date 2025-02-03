@@ -18,7 +18,6 @@ const LandingSection = () => {
           className="landing-image"
           src={LandingImage}
           alt={'landing-image'}
-          style={{ width: '100%', height: '100%' }}
         />
       </div>
       <div className="landing-text-container">
