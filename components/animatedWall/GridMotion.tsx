@@ -11,7 +11,6 @@ const GridMotion = ({
   items: any[] // eslint-disable-line
   gradientColor: string
 }) => {
-  const [innderWidth, setInnerwidth] = useState<number>(0)
   const gridRef = useRef(null)
   const rowRefs = useRef<HTMLDivElement[]>([]) as MutableRefObject<
     HTMLDivElement[]
@@ -32,10 +31,12 @@ const GridMotion = ({
     if (typeof window == 'undefined') {
       return
     }
+
     gsap.ticker.lagSmoothing(0)
 
+    mouseXRef.current = window.innerWidth
+
     const handleMouseMove = (e: MouseEvent) => {
-      setInnerwidth(window.innerWidth)
       mouseXRef.current = e.clientX
     }
 
@@ -48,7 +49,7 @@ const GridMotion = ({
         if (row) {
           const direction = index % 2 === 0 ? 1 : -1
           const moveAmount =
-            ((mouseXRef.current / innderWidth) * maxMoveAmount -
+            ((mouseXRef.current / window.innerWidth) * maxMoveAmount -
               maxMoveAmount / 2) *
             direction
 
@@ -67,6 +68,7 @@ const GridMotion = ({
     const removeAnimationLoop = gsap.ticker.add(updateMotion)
 
     window.addEventListener('mousemove', handleMouseMove)
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       removeAnimationLoop() // Properly remove the ticker listener
