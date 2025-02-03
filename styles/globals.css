@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
 :root {
-  --primary-color: #f3e438;
+  --primary-color: #b46acb;
+  --secondary-color: #1a133b;
 
   --padding-small: 4px;
   --padding-medium: 8px;
   --padding-large: 16px;
   --padding-xl: 32px;
+
+  --spacing-medium: 8px;
+  --spacing-xl: 32px;
 }
 
 a {
@@ -13,7 +19,22 @@ a {
 }
 
 * {
+  font-family: 'Comic Neue', serif;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+.small-header {
+  color: var(--primary-color);
+  font-size: 16px;
+  letter-spacing: 4px;
+  font-weight: 500;
+  margin-bottom: 13px;
+}
+
+.primary-title {
+  font-size: 40px;
+  color: var(--secondary-color);
+  font-weight: 600;
 }
