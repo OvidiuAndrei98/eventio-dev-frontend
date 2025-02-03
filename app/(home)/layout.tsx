@@ -1,8 +1,20 @@
+'use client'
+
 import { ConfigProvider } from 'antd'
 import HomeNavBar from './components/navigation/HomeNavBar'
+import MobileNav from './components/navigation/MobileNav'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { useEffect, useState } from 'react'
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
+  const [windowSize, setWindowSize] = useState<number>(0)
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setWindowSize(window.innerHeight)
+    })
+  }, [])
+
   return (
     <html lang="en">
       <body>
@@ -19,7 +31,8 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            <HomeNavBar />
+            {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
+
             {children}
           </ConfigProvider>
         </AntdRegistry>
