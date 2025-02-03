@@ -43,7 +43,7 @@ const GridMotion = ({
         if (row) {
           const direction = index % 2 === 0 ? 1 : -1
           const moveAmount =
-            ((mouseXRef.current / window.innerWidth) * maxMoveAmount -
+            ((mouseXRef.current / window?.innerWidth ?? 0) * maxMoveAmount -
               maxMoveAmount / 2) *
             direction
 
