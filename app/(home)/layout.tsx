@@ -9,11 +9,11 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
         <AntdRegistry>
           <ConfigProvider
             theme={{
-              token: { colorPrimary: '#F3E438' },
+              token: { colorPrimary: '#b46acb' },
               components: {
                 Button: {
-                  colorPrimary: '#F3E438',
-                  colorPrimaryBorderHover: '#F3E438',
+                  colorPrimary: '#b46acb',
+                  colorPrimaryBorderHover: '#b46acb',
                   colorTextLightSolid: 'black',
                 },
               },

@@ -1,3 +1,7 @@
+.landing-section {
+  height: 100vh;
+}
+
 .landing-section .landing-image-container {
   position: absolute;
 }
@@ -104,6 +108,15 @@
   .landing-image-container {
     width: 100vw;
   }
+
+  .landing-section .header-text {
+    text-align: center;
+  }
+
+  .landing-section .info-text {
+    text-align: center;
+  }
+
   .landing-section .landing-blob {
     position: absolute;
     top: -300px;

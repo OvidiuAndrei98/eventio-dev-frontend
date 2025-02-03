@@ -1,0 +1,83 @@
+.how-it-works-section {
+  max-width: 1200px;
+  position: relative;
+  padding: var(--padding-xl) 0;
+  margin: 0 auto;
+}
+
+.how-it-works-section .title-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.how-it-works-section .cards-section {
+  display: flex;
+  gap: var(--spacing-medium);
+  margin-top: var(--spacing-xl);
+}
+
+.how-it-works-section .cards-section .custom-card {
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #ece4e4;
+  flex: 0 0 33.333333%;
+}
+
+.how-it-works-section .cards-section .custom-card:hover {
+  box-shadow: rgba(180, 106, 203, 0.1) 0px 8px 24px;
+}
+
+.how-it-works-section .cards-section .custom-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-large);
+}
+
+.how-it-works-section .cards-section .custom-card .card-content .step-number {
+  font-size: 60px;
+  color: #797687;
+}
+
+.how-it-works-section
+  .cards-section
+  .custom-card
+  .card-content
+  .step-number
+  span {
+  color: var(--primary-color);
+}
+
+.how-it-works-section .cards-section .custom-card .card-content .card-title {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 25px;
+  color: var(--secondary-color);
+}
+
+.how-it-works-section
+  .cards-section
+  .custom-card
+  .card-content
+  .card-description {
+  font-size: 16px;
+  line-height: 28px;
+  color: #797687;
+}
+
+@media screen and (max-width: 450px) {
+  .how-it-works-section {
+    max-width: 340px;
+  }
+  .how-it-works-section .cards-section {
+    flex-direction: column;
+    margin: 0 auto;
+    margin-top: var(--spacing-medium);
+  }
+
+  .how-it-works-section .primary-title {
+    font-size: 30px;
+    text-align: center;
+  }
+}
