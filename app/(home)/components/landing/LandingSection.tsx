@@ -25,10 +25,8 @@ const LandingSection = () => {
         <h1 className="header-text">
           Evenimentul tau incepe cu
           <GradientText
-            colors={['#f3e438', '#e1c700', '#F8FF1F', '#F4E4AE']}
-            animationSpeed={4}
-            showBorder={false}
-            className="text-key-word"
+            colors={['#b46acb', '#c283d4', '#cf9cdd', '#e8cdee', '#c283d4']}
+            animationSpeed={5}
           >
             EVENTIO!
           </GradientText>
