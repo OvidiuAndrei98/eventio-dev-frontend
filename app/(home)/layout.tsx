@@ -10,9 +10,11 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const [windowSize, setWindowSize] = useState<number>(0)
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
-      setWindowSize(window.innerHeight)
-    })
+    if (typeof window != 'undefined') {
+      window.addEventListener('resize', () => {
+        setWindowSize(window.innerHeight)
+      })
+    }
   }, [])
 
   return (
