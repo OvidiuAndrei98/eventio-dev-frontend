@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--padding-large) var(--padding-xl);
-  z-index: 2;
+  z-index: 998;
 }
 
 .home-page-navigation.fixed {
@@ -64,8 +64,26 @@
   background-color: var(--primary-color);
 }
 
-@media screen and (max-width: 1070px) {
-  .home-page-navigation .homepage-nav-menu {
-    display: none;
+@-webkit-keyframes stickySlideDown {
+  from {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes stickySlideDown {
+  from {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
   }
 }

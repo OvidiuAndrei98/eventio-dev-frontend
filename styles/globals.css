@@ -11,6 +11,7 @@
 
   --spacing-medium: 8px;
   --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 }
 
 a {
@@ -37,4 +38,12 @@ a {
   font-size: 40px;
   color: var(--secondary-color);
   font-weight: 600;
+}
+
+.primary-color-text {
+  color: var(--primary-color);
+}
+
+.secondary-text-color-light {
+  color: rgb(121, 118, 135);
 }
