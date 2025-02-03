@@ -12,7 +12,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (typeof window != 'undefined') {
       window.addEventListener('resize', () => {
-        setWindowSize(window.innerHeight)
+        setWindowSize(window.innerWidth)
       })
     }
   }, [])
