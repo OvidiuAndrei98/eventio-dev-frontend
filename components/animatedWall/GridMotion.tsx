@@ -17,7 +17,7 @@ const GridMotion = ({
     HTMLDivElement[]
   > // Array of refs for each row
 
-  const mouseXRef = useRef(innderWidth / 2 ?? 0)
+  const mouseXRef = useRef(1200)
 
   // Ensure the grid has 28 items (4 rows x 7 columns) by default
   const totalItems = 12
@@ -29,9 +29,13 @@ const GridMotion = ({
     items.length > 0 ? items.slice(0, totalItems) : defaultItems
 
   useEffect(() => {
+    if (typeof window == 'undefined') {
+      return
+    }
     gsap.ticker.lagSmoothing(0)
 
     const handleMouseMove = (e: MouseEvent) => {
+      setInnerwidth(window.innerWidth)
       mouseXRef.current = e.clientX
     }
 
@@ -62,17 +66,9 @@ const GridMotion = ({
 
     const removeAnimationLoop = gsap.ticker.add(updateMotion)
 
-    if (typeof window != 'undefined') {
-      window.addEventListener('resize', () => {
-        setInnerwidth(window.innerWidth)
-      })
-      window.addEventListener('mousemove', handleMouseMove)
-    }
-
+    window.addEventListener('mousemove', handleMouseMove)
     return () => {
-      if (typeof window != 'undefined') {
-        window.removeEventListener('mousemove', handleMouseMove)
-      }
+      window.removeEventListener('mousemove', handleMouseMove)
       removeAnimationLoop() // Properly remove the ticker listener
     }
   }, [])
