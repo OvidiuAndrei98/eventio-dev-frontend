@@ -16,7 +16,7 @@ const GridMotion = ({
     HTMLDivElement[]
   > // Array of refs for each row
 
-  const mouseXRef = useRef(window.innerWidth / 2)
+  const mouseXRef = useRef(window?.innerWidth / 2 ?? 0)
 
   // Ensure the grid has 28 items (4 rows x 7 columns) by default
   const totalItems = 12
