@@ -35,6 +35,16 @@
   margin-bottom: var(--spacing-medium);
 }
 
+.concept-section .description-section .concept-blob {
+  position: absolute;
+  color: transparent;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 20px;
+  transform: scale(1.5);
+}
+
 .concept-section .showcase-section {
   width: 100%;
   max-height: 780px;
@@ -47,6 +57,17 @@
     padding: 0 45px;
     gap: 40px;
   }
+
+  .concept-section .description-section .concept-blob {
+    position: absolute;
+    color: transparent;
+    height: 100%;
+    width: 100%;
+    top: -210px;
+    left: 20px;
+    transform: scale(1.5);
+  }
+
   .concept-section .description-section .section-title {
     text-align: center;
   }

@@ -138,6 +138,12 @@
     left: unset;
     right: unset;
   }
+
+  .landing-section .landing-text-container .header-text,
+  .landing-section .landing-text-container .info-text {
+    text-align: center;
+  }
+
   .landing-section .landing-text-container .try-button {
     align-self: center;
   }
