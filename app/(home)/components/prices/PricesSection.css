@@ -16,6 +16,10 @@
   align-items: center;
 }
 
+.prices-section .cars-container-animated-container {
+  width: 100%;
+}
+
 .prices-section .cards-container {
   margin-top: var(--spacing-xxl);
   width: 100%;
@@ -55,8 +59,15 @@
 }
 
 @media screen and (max-width: 450px) {
+  .prices-section {
+    max-width: 340px;
+  }
+
+  .prices-section .prices-section-description {
+    text-align: center !important;
+  }
   .prices-section .price-card .primary-title {
-    text-align: center;
+    text-align: center !important;
   }
   .prices-section .cards-container {
     margin-top: var(--spacing-xxl);

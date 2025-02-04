@@ -56,6 +56,10 @@ a {
   color: rgb(121, 118, 135);
 }
 
+.center-text {
+  text-align: center;
+}
+
 .indicator {
   position: relative;
   background-color: rgb(255, 255, 255);

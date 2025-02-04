@@ -2,8 +2,7 @@
 
 import { ConfigProvider } from 'antd'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { Suspense, useEffect, useState } from 'react'
-import Loading from './loading'
+import { useEffect, useState } from 'react'
 import HomeNavBar from './components/navigation/HomeNavBar'
 import MobileNav from './components/navigation/MobileNav'
 
@@ -39,17 +38,13 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
                 Button: {
                   colorPrimary: '#b46acb',
                   colorPrimaryBorderHover: '#b46acb',
-                  colorTextLightSolid: 'black',
+                  colorTextLightSolid: 'white',
                 },
               },
             }}
           >
-            <Suspense fallback={<Loading />}>
-              <>
-                {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
-                {children}
-              </>
-            </Suspense>
+            {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
+            {children}
           </ConfigProvider>
         </AntdRegistry>
       </body>

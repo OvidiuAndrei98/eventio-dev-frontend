@@ -29,6 +29,7 @@ const PricesSection = () => {
         animateOpacity
         scale={1.1}
         threshold={0.2}
+        classNamme="cars-container-animated-container"
       >
         <div className="cards-container">
           <div className="price-card">

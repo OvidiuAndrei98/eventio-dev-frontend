@@ -36,6 +36,7 @@ const ConceptSection = () => {
           animateOpacity
           scale={1.1}
           threshold={0.2}
+          classNamme="center-text"
         >
           <span className="section-title">
             Conceptul <span className="primary-color-text">Eventio</span> despre
