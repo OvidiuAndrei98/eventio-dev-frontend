@@ -24,9 +24,9 @@ function Masonry({
 
     const updateColumns = () => {
       if (window.matchMedia('(min-width: 1500px)').matches) {
-        setColumns(4)
+        setColumns(2)
       } else if (window.matchMedia('(min-width: 1000px)').matches) {
-        setColumns(3)
+        setColumns(2)
       } else if (window.matchMedia('(min-width: 600px)').matches) {
         setColumns(2)
       } else {

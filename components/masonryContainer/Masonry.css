@@ -39,3 +39,15 @@
   font-size: 84px;
   font-weight: 800;
 }
+
+@media screen and (max-width: 1000px) {
+  .masonry .custom-masonry {
+    font-size: 64px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .masonry .custom-masonry {
+    font-size: 44px;
+  }
+}
