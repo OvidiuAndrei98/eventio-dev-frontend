@@ -5,6 +5,13 @@
   margin: 0 auto;
 }
 
+.how-it-works-section:before {
+  background: rgb(255, 255, 255);
+  height: 70px;
+  display: block;
+  content: '';
+}
+
 .how-it-works-section .title-section {
   display: flex;
   flex-direction: column;
@@ -68,7 +75,7 @@
 
 @media screen and (max-width: 450px) {
   .how-it-works-section {
-    max-width: 340px;
+    max-width: 400px;
   }
   .how-it-works-section .cards-section {
     flex-direction: column;
@@ -79,5 +86,11 @@
   .how-it-works-section .primary-title {
     font-size: 30px;
     text-align: center;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .how-it-works-section {
+    max-width: 370px;
   }
 }

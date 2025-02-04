@@ -67,7 +67,7 @@
 
 @media screen and (max-width: 450px) {
   .prices-section-container {
-    max-width: 340px;
+    max-width: 400px;
   }
 
   .prices-section .prices-section-description {
@@ -90,4 +90,10 @@
 
 .prices-section-container .ant-table-thead .ant-table-cell:first-child {
   width: 60%;
+}
+
+@media screen and (max-width: 400px) {
+  .prices-section-container {
+    max-width: 370px;
+  }
 }

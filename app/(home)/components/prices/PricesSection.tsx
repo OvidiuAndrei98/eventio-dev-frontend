@@ -115,7 +115,7 @@ const PricesSection = () => {
   ]
 
   return (
-    <div className="prices-section-container">
+    <div className="prices-section-container" id="prices-section">
       <div className="prices-section">
         <AnimatedContent
           distance={150}
@@ -189,13 +189,24 @@ const PricesSection = () => {
           </div>
         </AnimatedContent>
       </div>
-      <Table
-        size="middle"
-        dataSource={dataSource}
-        columns={columns}
-        pagination={false}
-        bordered={false}
-      />
+      <AnimatedContent
+        distance={150}
+        direction="horizontal"
+        reverse={false}
+        config={{ tension: 80, friction: 20 }}
+        initialOpacity={0.2}
+        animateOpacity
+        scale={1.1}
+        threshold={0.2}
+      >
+        <Table
+          size="middle"
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          bordered={false}
+        />
+      </AnimatedContent>
     </div>
   )
 }
