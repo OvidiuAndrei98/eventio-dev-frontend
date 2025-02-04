@@ -6,6 +6,13 @@
   align-items: center;
 }
 
+.models-section:before {
+  background: rgb(255, 255, 255);
+  height: 100px;
+  display: block;
+  content: '';
+}
+
 .models-section .models-section-description {
   display: flex;
   flex-direction: column;

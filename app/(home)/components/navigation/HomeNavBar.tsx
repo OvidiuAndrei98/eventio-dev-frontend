@@ -3,6 +3,7 @@
 import { Button } from 'antd'
 import './HomeNavBar.css'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 const HomeNavBar = () => {
   const [scroll, setScroll] = useState(false)
@@ -16,11 +17,30 @@ const HomeNavBar = () => {
     <div className={`home-page-navigation ${scroll ? 'fixed' : ''}`}>
       <div className="logo">EVENTIO</div>
       <ul className="homepage-nav-menu">
-        <li className="nav-item">Acasa</li>
-        <li className="nav-item">Concept</li>
-        <li className="nav-item">Cum functioneaza</li>
-        <li className="nav-item">Preturi</li>
-        <li className="nav-item">Modele</li>
+        <li className="nav-item">
+          <Link href="#first-section">Acasa</Link>
+        </li>
+        <li className="nav-item">
+          <Link scroll={false} href="#concept-section">
+            Concept
+          </Link>
+        </li>
+        <li className="nav-item">
+          {' '}
+          <Link scroll={false} href="#how-it-works-section">
+            Cum functioneaza
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link scroll={false} href="#prices-section">
+            Preturi
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link scroll={false} href="#models-section">
+            Modele
+          </Link>
+        </li>
       </ul>
       <Button className="login-button" size="large" type="primary">
         Intra in cont

@@ -25,7 +25,7 @@ const ConceptSection = () => {
   ]
 
   return (
-    <div className="concept-section">
+    <div className="concept-section" id="concept-section">
       <div className="description-section">
         <AnimatedContent
           distance={150}

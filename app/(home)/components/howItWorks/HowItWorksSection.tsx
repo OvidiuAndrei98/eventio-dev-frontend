@@ -4,7 +4,7 @@ import './HowItWorksSection.css'
 
 const HowItWorksSection = () => {
   return (
-    <div className="how-it-works-section">
+    <div className="how-it-works-section" id="how-it-works-section">
       <AnimatedContent
         distance={150}
         direction="vertical"

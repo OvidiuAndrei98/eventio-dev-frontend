@@ -18,7 +18,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   return (
-    <html lang="en">
+    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
       <body>
         <AntdRegistry>
           <ConfigProvider

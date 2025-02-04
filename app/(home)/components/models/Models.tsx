@@ -1,3 +1,4 @@
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
 import Masonry from '../../../../components/masonryContainer/Masonry'
 import './Models.css'
 
@@ -31,11 +32,22 @@ const Models = () => {
   ]
 
   return (
-    <div className="models-section">
-      <div className="models-section-description">
-        <span className="small-header">MODELE DE INVITATII DIGITALE</span>
-        <span className="primary-title">Modelele noastre</span>
-      </div>
+    <div className="models-section" id="models-section">
+      <AnimatedContent
+        distance={150}
+        direction="horizontal"
+        reverse={false}
+        config={{ tension: 80, friction: 20 }}
+        initialOpacity={0.2}
+        animateOpacity
+        scale={1.1}
+        threshold={0.2}
+      >
+        <div className="models-section-description">
+          <span className="small-header">MODELE DE INVITATII DIGITALE</span>
+          <span className="primary-title">Modelele noastre</span>
+        </div>
+      </AnimatedContent>
       <Masonry data={data} />
     </div>
   )
