@@ -19,7 +19,7 @@ const HomeNavBar = () => {
         <li className="nav-item">Acasa</li>
         <li className="nav-item">Concept</li>
         <li className="nav-item">Cum functioneaza</li>
-        <li className="nav-item">Preutri</li>
+        <li className="nav-item">Preturi</li>
         <li className="nav-item">Modele</li>
       </ul>
       <Button className="login-button" size="large" type="primary">

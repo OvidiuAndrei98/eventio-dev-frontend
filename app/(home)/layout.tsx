@@ -1,10 +1,11 @@
 'use client'
 
 import { ConfigProvider } from 'antd'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { Suspense, useEffect, useState } from 'react'
+import Loading from './loading'
 import HomeNavBar from './components/navigation/HomeNavBar'
 import MobileNav from './components/navigation/MobileNav'
-import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { useEffect, useState } from 'react'
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   const [windowSize, setWindowSize] = useState<number>(0)
@@ -16,6 +17,16 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
       })
     }
   }, [])
+
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <html lang="en">
@@ -33,9 +44,12 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
-
-            {children}
+            <Suspense fallback={<Loading />}>
+              <>
+                {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
+                {children}
+              </>
+            </Suspense>
           </ConfigProvider>
         </AntdRegistry>
       </body>

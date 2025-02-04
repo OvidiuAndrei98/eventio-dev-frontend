@@ -157,7 +157,8 @@
 
   .landing-section .landing-image-container {
     width: 100%;
-    position: absolute;
+    position: relative;
+    height: 40%;
   }
 
   .landing-image-container {
@@ -165,7 +166,7 @@
   }
   .landing-section .landing-blob {
     position: absolute;
-    top: -300px;
+    top: -150px;
     left: 0;
     width: 100%;
     height: 100%;
