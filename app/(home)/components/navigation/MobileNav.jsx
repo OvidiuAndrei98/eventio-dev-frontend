@@ -6,9 +6,20 @@ import Link from 'next/link'
 
 const MobileNav = () => {
   const [scroll, setScroll] = useState(false)
-  useEffect(() => {
+    useEffect(() => {
+    if (typeof window == 'undefined') {
+      return
+    }
+
     window.addEventListener('scroll', () => {
       setScroll(window.scrollY > 50)
+    })
+
+    document.body.addEventListener('click', (event) => {
+      if (!event.target.closest('.nav-item')) {
+        document.querySelector('.bar').classList.remove('animate')
+        document.querySelector('.mobile-menu').classList.remove('active')
+      }
     })
   }, [])
 
