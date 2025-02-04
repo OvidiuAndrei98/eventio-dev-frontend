@@ -13,6 +13,7 @@ const AnimatedContent = ({
   animateOpacity = true,
   scale = 1,
   threshold = 0.1,
+  classNamme,
 }: {
   children: JSX.Element
   distance: number
@@ -23,6 +24,7 @@ const AnimatedContent = ({
   animateOpacity: boolean
   scale: number
   threshold: number
+  classNamme?: string
 }) => {
   const [inView, setInView] = useState(false)
   const ref = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>
@@ -64,7 +66,7 @@ const AnimatedContent = ({
   })
 
   return (
-    <animated.div ref={ref} style={springProps}>
+    <animated.div className={classNamme ?? ''} ref={ref} style={springProps}>
       {children}
     </animated.div>
   )
