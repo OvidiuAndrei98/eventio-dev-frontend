@@ -1,0 +1,72 @@
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  max-width: 95%;
+  background: rgba(128, 0, 128, 0.2);
+  margin: 86px auto 32px auto;
+  padding: 32px;
+  border-radius: 8px;
+}
+
+.footer-section .footer-title {
+  text-align: center;
+  color: white;
+  font-size: 42px;
+}
+
+.footer-section .items-container {
+  width: 1200px;
+  margin: var(--spacing-xl) auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-section .items-container ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.footer-section .items-container ul li {
+  font-size: 16px;
+  color: rgb(121, 118, 135);
+}
+
+.footer-section .items-container ul li:not(.sectio-title):hover {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.footer-section .items-container ul .sectio-title {
+  font-weight: 600;
+  font-size: 24px;
+  color: white;
+}
+
+.footer-section .socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+  font-size: 32px;
+}
+
+.footer-section .socials .anticon:hover {
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.footer-section .credits {
+  color: rgb(121, 118, 135);
+  text-align: center;
+}
+
+@media screen and (max-width: 450px) {
+  .footer-section .items-container {
+    max-width: 450px;
+    width: auto;
+    flex-direction: column;
+  }
+}

@@ -1,3 +1,4 @@
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
 import GridMotion from '../../../../components/animatedWall/GridMotion'
 import BlobV2 from '../../../../public/blobv2.svg'
 import './ConceptSection.css'
@@ -26,40 +27,87 @@ const ConceptSection = () => {
   return (
     <div className="concept-section">
       <div className="description-section">
-        <span className="section-title">
-          Conceptul <span className="primary-color-text">Eventio</span> despre
-          invitațiile digitale
-        </span>
-        <div className="your-experience section">
-          <span className="title">Creează și gestionează cu ușurință</span>
-          <span>
-            Eventio îți oferă toate instrumentele necesare pentru a crea o
-            invitație digitală unică, potrivită evenimentului tău. De la
-            personalizare la distribuire, platforma noastră face întregul proces
-            simplu, rapid și elegant.
+        <AnimatedContent
+          distance={150}
+          direction="horizontal"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+        >
+          <span className="section-title">
+            Conceptul <span className="primary-color-text">Eventio</span> despre
+            invitațiile digitale
           </span>
-        </div>
-        <div className="your-experience section">
-          <span className="title">Distribuire rapidă și interactivitate</span>
-          <span>
-            Odată creată, invitația poate fi distribuită instantaneu prin
-            WhatsApp, e-mail sau rețele sociale. Nu mai este nevoie de tipărire
-            sau livrare manuală! În plus, poți adăuga elemente interactive,
-            precum locația evenimentului pe hartă, mesaje personalizate și chiar
-            un playlist pentru atmosferă.
-          </span>
-        </div>
-        <div className="guest-experience section">
-          <span className="title">
-            O experiență modernă pentru invitații tăi
-          </span>
-          <span>
-            Invitațiile tale vor fi mereu la îndemâna celor dragi, accesibile de
-            pe orice dispozitiv. Cu funcția RSVP integrată, vei primi
-            răspunsurile invitaților în timp real, astfel încât organizarea
-            evenimentului să fie fără stres.
-          </span>
-        </div>
+        </AnimatedContent>
+
+        <AnimatedContent
+          distance={150}
+          direction="horizontal"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+        >
+          <div className="your-experience section">
+            <span className="title">Creează și gestionează cu ușurință</span>
+            <span>
+              Eventio îți oferă toate instrumentele necesare pentru a crea o
+              invitație digitală unică, potrivită evenimentului tău. De la
+              personalizare la distribuire, platforma noastră face întregul
+              proces simplu, rapid și elegant.
+            </span>
+          </div>
+        </AnimatedContent>
+
+        <AnimatedContent
+          distance={150}
+          direction="horizontal"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+        >
+          <div className="your-experience section">
+            <span className="title">Distribuire rapidă și interactivitate</span>
+            <span>
+              Odată creată, invitația poate fi distribuită instantaneu prin
+              WhatsApp, e-mail sau rețele sociale. Nu mai este nevoie de
+              tipărire sau livrare manuală! În plus, poți adăuga elemente
+              interactive, precum locația evenimentului pe hartă, mesaje
+              personalizate și chiar un playlist pentru atmosferă.
+            </span>
+          </div>
+        </AnimatedContent>
+        <AnimatedContent
+          distance={150}
+          direction="horizontal"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+        >
+          <div className="guest-experience section">
+            <span className="title">
+              O experiență modernă pentru invitații tăi
+            </span>
+            <span>
+              Invitațiile tale vor fi mereu la îndemâna celor dragi, accesibile
+              de pe orice dispozitiv. Cu funcția RSVP integrată, vei primi
+              răspunsurile invitaților în timp real, astfel încât organizarea
+              evenimentului să fie fără stres.
+            </span>
+          </div>
+        </AnimatedContent>
+
         <Image className="concept-blob" src={BlobV2} alt={'concept-blob'} />
       </div>
       <div className="showcase-section">
