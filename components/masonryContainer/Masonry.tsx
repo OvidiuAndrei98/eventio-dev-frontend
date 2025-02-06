@@ -7,6 +7,7 @@ import './Masonry.css'
 
 function Masonry({
   data,
+  onClick,
 }: {
   data: {
     id: number
@@ -14,6 +15,7 @@ function Masonry({
     height: number
     text?: string
   }[]
+  onClick: () => void
 }) {
   const [columns, setColumns] = useState(2)
 
@@ -96,6 +98,7 @@ function Masonry({
               backgroundPosition: 'center',
               objectFit: 'cover',
             }}
+            onClick={onClick}
           >
             {item.text}
           </div>

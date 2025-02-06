@@ -1,8 +1,22 @@
+'use client'
+
+import { useState } from 'react'
 import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
+import InvitationModal from '../../../../components/invitationsModal/InvitationsModal'
 import Masonry from '../../../../components/masonryContainer/Masonry'
 import './Models.css'
 
 const Models = () => {
+  const [open, setOpen] = useState(false)
+
+  const onModalOk = () => {
+    setOpen(false)
+  }
+
+  const onModalClose = () => {
+    setOpen(false)
+  }
+
   const data = [
     {
       id: 1,
@@ -48,7 +62,12 @@ const Models = () => {
           <span className="primary-title">Modelele noastre</span>
         </div>
       </AnimatedContent>
-      <Masonry data={data} />
+      <Masonry data={data} onClick={() => setOpen(true)} />
+      <InvitationModal
+        open={open}
+        onOk={() => onModalOk()}
+        onClose={onModalClose}
+      />
     </div>
   )
 }
