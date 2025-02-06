@@ -1,6 +1,6 @@
 'use client'
 
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, FloatButton } from 'antd'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { useEffect, useState } from 'react'
 import HomeNavBar from './components/navigation/HomeNavBar'
@@ -35,6 +35,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
           >
             {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
             {children}
+            <FloatButton.BackTop />
           </ConfigProvider>
         </AntdRegistry>
       </body>

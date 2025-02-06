@@ -1,0 +1,44 @@
+.invitations-modal-content {
+  height: 65vh !important;
+}
+
+.invitations-container {
+  padding: var(--padding-xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-rows: minmax(300px, auto);
+  overflow-y: auto;
+  gap: var(--spacing-xl);
+  height: 100%;
+  width: 100%;
+}
+
+.invitations-modal .invitations-container .invitation-card {
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  min-height: 300px;
+}
+
+@media screen and (max-width: 1406px) {
+  .invitations-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-rows: minmax(300px, auto);
+  }
+}
+
+@media screen and (max-width: 1156px) {
+  .invitations-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: minmax(300px, auto);
+  }
+}
+
+/* @media screen and (max-width: 940px) {
+  .invitations-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: minmax(300px, auto);
+  }
+} */
