@@ -4,9 +4,12 @@ import { Button } from 'antd'
 import './HomeNavBar.css'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const HomeNavBar = () => {
   const [scroll, setScroll] = useState(false)
+  const router = useRouter()
+
   useEffect(() => {
     window.addEventListener('scroll', () => {
       setScroll(window.scrollY > 50)
@@ -42,7 +45,12 @@ const HomeNavBar = () => {
           </Link>
         </li>
       </ul>
-      <Button className="login-button" size="large" type="primary">
+      <Button
+        className="login-button"
+        size="large"
+        type="primary"
+        onClick={() => router.push('/login')}
+      >
         Intra in cont
       </Button>
     </div>

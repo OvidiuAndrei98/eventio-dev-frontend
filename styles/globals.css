@@ -3,11 +3,13 @@
 :root {
   --primary-color: #b46acb;
   --secondary-color: #1a133b;
+  --secondary-text-color-light: rgb(121, 118, 135);
 
   --padding-small: 4px;
   --padding-medium: 8px;
   --padding-large: 16px;
   --padding-xl: 32px;
+  --padding-xxl: 48px;
 
   --spacing-medium: 8px;
   --spacing-xl: 32px;
@@ -30,7 +32,7 @@ a {
 }
 
 * {
-  font-family: 'Comic Neue', serif;
+  font-family: 'Comic Neue', serif !important;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
@@ -46,6 +48,12 @@ a {
 
 .primary-title {
   font-size: 40px;
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.secondary-title {
+  font-size: 24px;
   color: var(--secondary-color);
   font-weight: 600;
 }
