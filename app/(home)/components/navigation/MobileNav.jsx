@@ -3,12 +3,29 @@ import { Button } from 'antd'
 import './MobileNav.css'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const MobileNav = () => {
   const [scroll, setScroll] = useState(false)
+  const router = useRouter()
+
   useEffect(() => {
+    if (typeof window == 'undefined') {
+      return
+    }
+
     window.addEventListener('scroll', () => {
       setScroll(window.scrollY > 50)
+    })
+
+    document.body.addEventListener('click', (event) => {
+      if (
+        !['hamburger-menu ', 'bar', 'logo'].includes(event.target.className) &&
+        !event.target.closest('.nav-item')
+      ) {
+        document.querySelector('.bar').classList.remove('animate')
+        document.querySelector('.mobile-menu').classList.remove('active')
+      }
     })
   }, [])
 
@@ -21,6 +38,7 @@ const MobileNav = () => {
     <>
       <div
         className={`hamburger-menu ${scroll ? 'fixed' : ''}`}
+        id="hamburger-menu-container"
         onClick={toggleMenu}
       >
         <div className="bar"></div>
@@ -53,7 +71,12 @@ const MobileNav = () => {
             </Link>
           </li>
         </ul>
-        <Button className="login-button" size="large" type="primary">
+        <Button
+          className="login-button"
+          size="large"
+          type="primary"
+          onClick={() => router.push('/login')}
+        >
           Intra in cont
         </Button>
       </nav>

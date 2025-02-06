@@ -1,0 +1,194 @@
+.login-page-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffffe0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+.login-page-container .background {
+  color: transparent;
+  position: absolute;
+  max-width: 65%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+.login-page-container h1 {
+  color: var(--primary-color);
+  font-size: 42px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.login-page-container span {
+  text-align: center;
+}
+
+.login-page-container .login-wrapper {
+  background-color: rgb(180 106 203 / 9%); /* 15% old*/
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: var(--padding-xxl);
+  width: 100%;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  gap: var(--spacing-medium);
+}
+
+.login-page-container .register {
+  cursor: pointer;
+}
+
+.login-page-container .login-wrapper .ant-form {
+  width: 100%;
+}
+
+.login-page-container .login-wrapper .ant-form .ant-form-item-label {
+  padding: 0;
+  left: -10px;
+}
+
+.login-page-container .login-wrapper .ant-form .ant-form-item-label label {
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 5px;
+  color: var(--secondary-color);
+}
+
+.login-page-container .login-wrapper .ant-form .ant-input {
+  height: 50px;
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.568);
+}
+
+.login-page-container .login-wrapper .ant-form .ant-input-password {
+  padding: 0px 11px;
+}
+
+.login-page-container .login-wrapper .ant-form .ant-btn {
+  display: flex;
+  margin: var(--spacing-medium) auto;
+  padding: 25px 80px;
+  font-size: 24px;
+}
+
+.login-page-container .login-wrapper .ant-form .ant-form-item-explain-error {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.login-page-container .login-wrapper .google-login {
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  font-size: 24px;
+  color: var(--secondary-text-color-light);
+  max-height: 70px;
+}
+
+.login-page-container .login-wrapper .google-login:hover {
+  background-color: rgba(228, 228, 228, 0.356);
+}
+
+@media screen and (max-width: 650px) {
+  /* .login-page-container .background {
+    max-width: 750px;
+  } */
+
+  .login-page-container .login-wrapper {
+    max-width: 450px;
+    backdrop-filter: blur(1px);
+  }
+  .login-page-container .primary-title {
+    font-size: 30px;
+  }
+
+  .login-page-container .secondary-title {
+    font-size: 20px;
+  }
+
+  .login-page-container .login-wrapper .google-login {
+    font-size: 18px;
+  }
+
+  .login-page-container .login-wrapper .ant-form .ant-form-item-label label {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .login-page-container .login-wrapper {
+    max-width: 400px;
+  }
+
+  .login-page-container .primary-title {
+    font-size: 32px;
+  }
+
+  .login-page-container .secondary-title {
+    font-size: 22px;
+  }
+
+  .login-page-container .login-wrapper .google-login {
+    font-size: 20px;
+  }
+
+  .login-page-container .login-wrapper .ant-form .ant-form-item-label label {
+    font-size: 22px;
+  }
+
+  .login-page-container .login-wrapper .ant-form .ant-btn {
+    padding: 20px 30px;
+    font-size: 20px;
+  }
+
+  .login-page-container .login-wrapper .google-login {
+    font-size: 18px;
+    max-height: 60px;
+    padding: 0 10px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .login-page-container {
+    gap: 0;
+  }
+
+  .login-page-container .login-wrapper {
+    max-width: 360px;
+  }
+
+  .login-page-container .primary-title {
+    font-size: 28px;
+  }
+
+  .login-page-container .secondary-title {
+    font-size: 18px;
+  }
+
+  .login-page-container .login-wrapper .google-login {
+    font-size: 18px;
+  }
+
+  .login-page-container .login-wrapper .ant-form .ant-form-item-label label {
+    font-size: 18px;
+  }
+}
