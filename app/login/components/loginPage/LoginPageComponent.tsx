@@ -78,6 +78,14 @@ const LoginPageComponent = () => {
           Autentificare cu Google
         </div>
       </div>
+      <div className="login-footer">
+        <div className="secondary-text-color-light">Copyright © Eventio.ro</div>
+        <div>
+          <span>acasa</span>
+          <span>0741444444</span>
+          <span>contact@eventio.ro</span>
+        </div>
+      </div>
     </div>
   )
 }
