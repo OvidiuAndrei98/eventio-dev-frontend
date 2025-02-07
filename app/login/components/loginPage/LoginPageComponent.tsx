@@ -17,6 +17,7 @@ const LoginPageComponent = () => {
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log('Success:', values)
+    router.push('/dashboard')
   }
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
