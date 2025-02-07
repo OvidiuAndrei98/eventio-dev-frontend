@@ -108,11 +108,21 @@
   background-color: rgba(228, 228, 228, 0.356);
 }
 
-@media screen and (max-width: 650px) {
-  /* .login-page-container .background {
-    max-width: 750px;
-  } */
+.login-page-container .login-footer {
+  padding: var(--padding-xl);
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
 
+.login-page-container .login-footer div {
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+@media screen and (max-width: 650px) {
   .login-page-container .login-wrapper {
     max-width: 450px;
     backdrop-filter: blur(1px);
@@ -131,6 +141,16 @@
 
   .login-page-container .login-wrapper .ant-form .ant-form-item-label label {
     font-size: 20px;
+  }
+
+  .login-page-container .login-footer {
+    align-items: center;
+    gap: var(--spacing-medium);
+    flex-direction: column-reverse;
+  }
+
+  .login-page-container .login-footer div {
+    gap: var(--spacing-medium);
   }
 }
 

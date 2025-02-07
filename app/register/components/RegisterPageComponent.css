@@ -127,6 +127,16 @@
 
 .register-page-container .register-footer {
   padding: var(--padding-xl);
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.register-page-container .register-footer div {
+  display: flex;
+  gap: var(--spacing-xl);
 }
 
 @media screen and (max-width: 650px) {
@@ -154,6 +164,16 @@
 
   .register-page-container .login-wrapper .ant-form .ant-form-item-label label {
     font-size: 20px;
+  }
+
+  .register-page-container .register-footer {
+    align-items: center;
+    gap: var(--spacing-medium);
+    flex-direction: column-reverse;
+  }
+
+  .register-page-container .register-footer div {
+    gap: var(--spacing-medium);
   }
 }
 

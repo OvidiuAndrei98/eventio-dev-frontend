@@ -1,0 +1,46 @@
+.invitations-modal .invitations-container .invitation-card {
+  position: relative;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  transition: all 0.3s linear;
+  background-size: cover;
+  border-radius: var(--border-radius-m);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url('https://img.freepik.com/free-vector/save-date-invitation-with-elegant-leaves_1082-189.jpg?t=st=1738888164~exp=1738891764~hmac=c17845da600df59384c6026df137cd7a7be2326e3edd0b85f1051beb18d504ba&w=1380');
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+
+.invitations-modal .invitations-container .invitation-card .controls {
+  position: absolute;
+  top: 0;
+  gap: var(--spacing-xxl);
+  display: flex;
+  opacity: 0;
+  transition: all 0.3s linear;
+}
+
+.invitations-modal .invitations-container .invitation-card:hover {
+  scale: 1.02;
+}
+
+.invitations-modal .invitations-container .invitation-card .title {
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.808);
+}
+
+.invitations-modal .invitations-container .invitation-card:hover .title {
+  opacity: 0;
+}
+
+.invitations-modal .invitations-container .invitation-card:hover .controls {
+  top: 45%;
+  opacity: 1;
+}

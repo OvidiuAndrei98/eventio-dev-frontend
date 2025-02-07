@@ -4,6 +4,7 @@ import './InvitationsModal.css'
 import { RedEnvelopeOutlined } from '@ant-design/icons'
 import { Menu, MenuProps, Modal } from 'antd'
 import { useEffect, useState } from 'react'
+import InvitationCard from './components/invitationCard/InvitationCard'
 
 type MenuItem = Required<MenuProps>['items'][number]
 
@@ -22,6 +23,9 @@ const InvitationModal = ({
     if (typeof window == 'undefined') {
       return
     }
+
+    // Set initial value of window witth
+    setInnerWidth(window.innerWidth)
 
     const updateWindowWidth = () => {
       setInnerWidth(window.innerWidth)
@@ -71,18 +75,19 @@ const InvitationModal = ({
           }}
         />
         <div className="invitations-container">
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
-          <div className="invitation-card">invitation</div>
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
+          <InvitationCard />
         </div>
       </div>
     </Modal>
