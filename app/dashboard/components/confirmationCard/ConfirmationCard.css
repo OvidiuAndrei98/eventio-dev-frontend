@@ -1,0 +1,16 @@
+.preview-confirmation-card {
+  display: flex;
+  padding: var(--padding-medium);
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.preview-confirmation-card .confirmation-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--padding-medium);
+}
