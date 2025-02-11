@@ -94,6 +94,62 @@ const SummaryTable = () => {
       seen: false,
       confirmed: false,
     },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
+    {
+      key: '3',
+      guest: 'Joe Black',
+      sent: true,
+      seen: false,
+      confirmed: false,
+    },
   ]
 
   return (
@@ -125,8 +181,6 @@ const SummaryTable = () => {
               Invitatii si statusul lor
             </span>
           </div>
-
-          <div></div>
         </div>
         <Table<DataType> columns={columns} dataSource={data} />
       </div>

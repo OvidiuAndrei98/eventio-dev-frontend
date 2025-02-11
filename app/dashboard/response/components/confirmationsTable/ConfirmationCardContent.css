@@ -1,0 +1,52 @@
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container {
+  border: 2px dotted rgb(224, 224, 224);
+  padding: var(--padding-medium);
+  display: flex;
+  flex-direction: column;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container
+  .card-row {
+  display: flex;
+  border-bottom: 1.5px dotted rgb(207, 207, 207);
+  padding: var(--padding-medium);
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container
+  .card-row
+  span:first-child {
+  width: 15%;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container
+  .card-row
+  span:nth-child(2) {
+  flex: 4;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container
+  .card-row
+  .title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .card-content-container
+  .card-row
+  .value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--secondary-color);
+}

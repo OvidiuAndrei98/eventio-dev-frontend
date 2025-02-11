@@ -53,6 +53,7 @@
 .response-container .table-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .response-container .table-header .info-container {

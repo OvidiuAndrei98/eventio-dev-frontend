@@ -3,6 +3,7 @@
 import { Tabs, TabsProps } from 'antd'
 import './page.css'
 import SummaryTable from './components/SummaryTable'
+import ConfirmationsTable from './components/confirmationsTable/ConfirmationsTable'
 
 const ResponsePage = () => {
   const onChange = (key: string) => {
@@ -17,12 +18,12 @@ const ResponsePage = () => {
     },
     {
       key: '2',
-      label: 'Tab 2',
-      children: 'Content of Tab Pane 2',
+      label: 'Confirmari',
+      children: <ConfirmationsTable />,
     },
     {
       key: '3',
-      label: 'Tab 3',
+      label: 'Refuzuri',
       children: 'Content of Tab Pane 3',
     },
   ]

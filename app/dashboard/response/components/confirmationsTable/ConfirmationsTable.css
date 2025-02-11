@@ -1,0 +1,44 @@
+.confirmations-container .confirmations-table-container {
+  background-color: white;
+  /* padding: var(--padding-large); */
+  border-radius: 8px;
+}
+
+.confirmations-container .statistics-container {
+  padding: var(--spacing-medium);
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxl);
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.confirmations-container .statistics-container .statistic-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px dotted;
+  max-width: 200px;
+  width: 150px;
+  padding: var(--padding-large) 0;
+  border-radius: var(--border-radius-m);
+}
+
+.confirmations-container .statistics-container .statistic-card span {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .confirmations-table-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  padding: var(--padding-large);
+  z-index: 1;
+}
+
+.confirmations-container .confirmations-table-container .collapsible-table {
+  overflow-y: auto;
+  padding: var(--padding-large);
+}
