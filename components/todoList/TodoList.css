@@ -1,13 +1,11 @@
-/* App container */
 .todos-container {
   width: 100%;
 }
 
 .todos-container .add-task-container {
   background-color: #ffffff;
-  padding: 30px;
+  padding: var(--padding-medium);
   border-radius: 12px;
-  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.1);
   width: 100%;
   text-align: center;
   transition: all 0.3s ease;
@@ -30,7 +28,6 @@ input[type='text'] {
 
 input[type='text']:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 /* List */
@@ -38,56 +35,46 @@ ul {
   position: relative;
   list-style: none;
   padding: 0;
-  margin-top: 20px;
 }
 
-li {
+.todo {
   position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 12px;
   border-radius: 8px;
-  background-color: #f7f1f8;
+  background-color: white;
   margin-bottom: 12px;
   font-size: 18px;
   transition: all 0.3s ease;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
-li::before {
-  content: attr(data-position);
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  top: -2px;
-  left: -10px;
-  z-index: 1;
-  color: red;
+.todo .checkbox-container {
+  flex: 0 0 10%;
 }
 
-li::after {
-  content: '';
-  position: absolute;
-  top: 0px;
-  left: -13px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50px 0 0 50px;
-  background-color: #f7f1f8;
+.todo .text-container {
+  flex: 0 0 80%;
+  line-height: 20px;
 }
 
-li:hover {
-  background-color: #f1f1f1;
+.todo .remove-container {
+  display: flex;
+  align-items: center;
+  flex: 0 0 10%;
+  justify-content: flex-end;
+}
+
+.todo:hover {
+  background-color: #fcf0ff !important;
 }
 
 /* Remove button styling */
-li button {
-  background-color: #ff4136;
+.todo button {
   padding: 6px 12px;
   border: none;
-  color: #ffffff;
-  border-radius: 6px;
-  font-size: 12px;
+  color: var(--primary-color);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease-in-out;
   opacity: 0;
@@ -95,17 +82,16 @@ li button {
   transition: opacity 0.3s, visibility 0.3s;
 }
 
-li:hover button {
+.todo:hover button {
   opacity: 1;
   visibility: visible;
   transform: scale(1.1);
 }
 
-li button:hover {
-  background-color: #d02e2e;
+.todo button:hover {
   transform: scale(1.1);
 }
 
-li button:active {
+.todo button:active {
   transform: scale(0.95);
 }

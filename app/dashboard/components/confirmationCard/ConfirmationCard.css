@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+.preview-confirmation-card:hover {
+  background-color: #f1f1f1;
+}
+
 .preview-confirmation-card .confirmation-field {
   display: flex;
   flex-direction: column;

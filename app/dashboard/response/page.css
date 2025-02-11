@@ -1,0 +1,16 @@
+.response-container {
+  width: 100%;
+}
+
+.response-container .ant-tabs-nav-wrap {
+  background: white;
+  border-radius: 8px;
+  padding: var(--padding-medium) var(--padding-xl) 0 var(--padding-xl);
+  margin-bottom: 20px;
+  box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.03);
+}
+
+.response-container .ant-tabs-nav-wrap .ant-tabs-tab-btn {
+  font-size: 18px;
+  font-weight: 600;
+}

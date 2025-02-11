@@ -1,20 +1,31 @@
 import React, { useState } from 'react'
 import './TodoList.css'
-import { Button } from 'antd'
+import { Button, Checkbox } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
+
+interface Todo {
+  id: number
+  completed: boolean
+  text: string
+}
 
 function TodoList() {
   const [task, setTask] = useState('')
-  const [todos, setTodos] = useState<any>([])
+  const [todos, setTodos] = useState<Todo[]>([])
 
-  const handleChange = (event: any) => {
-    setTask(event.target.value)
+  const handleChange = (event: Event) => {
+    setTask((event.target as any).value) // eslint-disable-line
   }
 
-  const handleAddTask = () => {
-    if (task.trim()) {
-      setTodos([...todos, task])
-      setTask('')
+  const handleAddTask = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      if (task.trim()) {
+        setTodos([
+          ...todos,
+          { completed: false, text: task, id: todos.length + 1 },
+        ])
+        setTask('')
+      }
     }
   }
 
@@ -23,29 +34,59 @@ function TodoList() {
     setTodos(newTodos)
   }
 
+  const updateTodoState = (todo: Todo, index: number) => {
+    const todosCopy = [...todos]
+    const targetedTodo = todo
+    targetedTodo.completed = !todo.completed
+    setTodos([
+      ...todosCopy.slice(0, index),
+      targetedTodo,
+      ...todosCopy.slice(index + 1),
+    ])
+  }
+
   return (
     <div className="todos-container">
       <div className="add-task-container">
         <input
           type="text"
           value={task}
-          onChange={handleChange}
+          onKeyDown={(e) => handleAddTask(e.nativeEvent)}
+          onChange={(e) => handleChange(e.nativeEvent)}
           placeholder="Adauga un task nou"
         />
-        <Button onClick={handleAddTask} type="primary">
-          Adauga
-        </Button>
       </div>
 
       <ul className="todos">
-        {todos.map((todo: any, index: number) => (
-          <li className="todo" key={index} data-position={'○'}>
-            {todo}
-            <Button
-              type="text"
-              onClick={() => handleRemoveTask(index)}
-              icon={<CloseOutlined />}
-            />
+        {todos.map((todo: Todo, index: number) => (
+          <li
+            className="todo"
+            style={{
+              backgroundColor: todo.completed ? 'rgb(239 239 239)' : 'inherit',
+            }}
+            key={index}
+          >
+            <div className="checkbox-container">
+              <Checkbox
+                onClick={() => updateTodoState(todo, index)}
+                checked={todo.completed}
+              />
+            </div>
+            <div
+              className="text-container"
+              style={{
+                textDecoration: todo.completed ? 'line-through' : 'none',
+              }}
+            >
+              {todo.text}
+            </div>
+            <div className="remove-container">
+              <Button
+                type="text"
+                onClick={() => handleRemoveTask(index)}
+                icon={<CloseOutlined />}
+              />
+            </div>
           </li>
         ))}
       </ul>
