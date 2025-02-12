@@ -4,6 +4,7 @@ import { Tabs, TabsProps } from 'antd'
 import './page.css'
 import SummaryTable from './components/SummaryTable'
 import ConfirmationsTable from './components/confirmationsTable/ConfirmationsTable'
+import RefusalsTable from './components/refusalsTable/RefusalsTable'
 
 const ResponsePage = () => {
   const onChange = (key: string) => {
@@ -24,15 +25,13 @@ const ResponsePage = () => {
     {
       key: '3',
       label: 'Refuzuri',
-      children: 'Content of Tab Pane 3',
+      children: <RefusalsTable />,
     },
   ]
 
   return (
     <div className="response-container">
-      <div>
-        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-      </div>
+      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
     </div>
   )
 }

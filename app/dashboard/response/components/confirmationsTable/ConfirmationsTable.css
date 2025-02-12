@@ -1,7 +1,12 @@
+.confirmations-container {
+  height: 100%;
+}
+
 .confirmations-container .confirmations-table-container {
   background-color: white;
   /* padding: var(--padding-large); */
   border-radius: 8px;
+  height: 100%;
 }
 
 .confirmations-container .statistics-container {
@@ -34,11 +39,20 @@
   .confirmations-table-header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
-  padding: var(--padding-large);
+  padding: var(--padding-large) var(--padding-xxl);
   z-index: 1;
 }
 
 .confirmations-container .confirmations-table-container .collapsible-table {
   overflow-y: auto;
   padding: var(--padding-large);
+  height: 100%;
+  overflow: auto;
+}
+
+.confirmations-container
+  .confirmations-table-container
+  .collapsible-table
+  .ant-collapse-item:hover {
+  background: #f2f2f2;
 }

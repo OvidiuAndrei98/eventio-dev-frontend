@@ -1,13 +1,27 @@
+'use client'
+
 import {
   CheckOutlined,
   CloseOutlined,
+  SearchOutlined,
   SendOutlined,
   SmileOutlined,
 } from '@ant-design/icons'
-import { Button, Table, TableProps } from 'antd'
+import {
+  Button,
+  Input,
+  InputRef,
+  Space,
+  Table,
+  TableColumnType,
+  TableProps,
+} from 'antd'
 import './SummaryTable.css'
 import SadFaceIcon from '../../../../public/sad-face.svg'
 import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import { FilterDropdownProps } from 'antd/es/table/interface'
+import Highlighter from 'react-highlight-words'
 
 interface DataType {
   key: string
@@ -17,12 +31,150 @@ interface DataType {
   confirmed: boolean
 }
 
+type DataIndex = keyof DataType
+
 const SummaryTable = () => {
+  const [windowHeight, setWindowHeight] = useState(0)
+  const [searchText, setSearchText] = useState('')
+  const [searchedColumn, setSearchedColumn] = useState('')
+  const searchInput = useRef<InputRef>(null)
+
+  // Update window height on resize
+  useEffect(() => {
+    if (typeof window == 'undefined') {
+      return
+    }
+
+    setWindowHeight(window.innerHeight)
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight)
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps['confirm'],
+    dataIndex: DataIndex
+  ) => {
+    confirm()
+    setSearchText(selectedKeys[0])
+    setSearchedColumn(dataIndex)
+  }
+
+  const handleReset = (
+    clearFilters: () => void,
+    confirm: ({ closeDropdown }: { closeDropdown: boolean }) => void
+  ) => {
+    clearFilters()
+    setSearchText('')
+    confirm({ closeDropdown: false })
+  }
+
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Cauta invitat`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters, confirm)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false })
+              setSearchText((selectedKeys as string[])[0])
+              setSearchedColumn(dataIndex)
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close()
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    filterDropdownProps: {
+      onOpenChange(open) {
+        if (open) {
+          setTimeout(() => searchInput.current?.select(), 100)
+        }
+      },
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  })
+
   const columns: TableProps<DataType>['columns'] = [
     {
       title: 'Invitat',
       dataIndex: 'guest',
       key: 'guest',
+      ...getColumnSearchProps('guest'),
     },
     {
       title: 'Trimisa',
@@ -95,56 +247,56 @@ const SummaryTable = () => {
       confirmed: false,
     },
     {
-      key: '3',
+      key: '4',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '5',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '6',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '7',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '8',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '9',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '10',
       guest: 'Joe Black',
       sent: true,
       seen: false,
       confirmed: false,
     },
     {
-      key: '3',
+      key: '11',
       guest: 'Joe Black',
       sent: true,
       seen: false,
@@ -182,7 +334,12 @@ const SummaryTable = () => {
             </span>
           </div>
         </div>
-        <Table<DataType> columns={columns} dataSource={data} />
+        <Table<DataType>
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize: 20 }}
+          scroll={{ y: windowHeight / 3 }}
+        />
       </div>
     </div>
   )

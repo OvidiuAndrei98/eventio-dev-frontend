@@ -26,7 +26,7 @@
 
 .dashboard-content {
   background: #ffffff73;
-  width: 100%;
+  width: calc(100% - 200px);
   padding: 12px 32px 12px 32px;
 }
 
