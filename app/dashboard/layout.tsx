@@ -2,70 +2,32 @@
 import '../../styles/globals.css'
 import './mock.css'
 
-import {
-  ContainerOutlined,
-  DesktopOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  PieChartOutlined,
-} from '@ant-design/icons'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { Button, ConfigProvider, Menu, MenuProps } from 'antd'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { ConfigProvider } from 'antd'
+import { useRouter } from 'next/navigation'
 
-type MenuItem = Required<MenuProps>['items'][number]
+import { AppSidebar } from '@/components/app-sidebar'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [collapsed, setCollapsed] = useState(false)
-  const [activePath, setActivePath] = useState('dashboard')
   const router = useRouter()
-  const pathname = usePathname()
-  const BASEPATH = '/dashboard'
 
-  useEffect(() => {
-    const pathList = pathname.split('/')
-    // Get the last path element
-    setActivePath(pathList.pop() ?? 'dashboard')
-  }, [pathname])
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed)
+  const handleSideMenuNavigation = (info: { title: string; url: string }) => {
+    router.push(info.url)
   }
-
-  const handleSideMenuNavigation = (info: any) => {
-    // eslint-disable-line
-    if (info.key === 'dashboard') {
-      router.push(BASEPATH)
-    } else {
-      router.push(BASEPATH + `/${info.key}`)
-    }
-  }
-
-  const items: MenuItem[] = [
-    {
-      key: 'dashboard',
-      icon: <PieChartOutlined />,
-      label: 'Panou de control',
-      onClick: handleSideMenuNavigation,
-    },
-    {
-      key: 'response',
-      icon: <DesktopOutlined />,
-      label: 'Raspunsuri',
-      onClick: handleSideMenuNavigation,
-    },
-    { key: '3', icon: <ContainerOutlined />, label: 'Statistici' },
-    { key: '4', icon: <ContainerOutlined />, label: 'Organizare' },
-    {
-      key: '5',
-      icon: <ContainerOutlined />,
-      label: 'Iesi din cont',
-      onClick: () => {
-        router.push('/')
-      },
-    },
-  ]
 
   return (
     <html lang="en" style={{ scrollBehavior: 'smooth' }}>
@@ -83,31 +45,34 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            <div className="dashboard-container">
-              <div className="dashboard-header">Dashboard &gt; menu</div>
-              <div className="dashboard-inner-container">
-                <div className="nav-container">
-                  <Button
-                    type="primary"
-                    onClick={toggleCollapsed}
-                    style={{ marginBottom: 16 }}
-                  >
-                    {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                  </Button>
-                  <Menu
-                    selectedKeys={[activePath]}
-                    defaultSelectedKeys={[activePath]}
-                    mode="inline"
-                    inlineCollapsed={collapsed}
-                    items={items}
-                  />
-                </div>
-                <div className="dashboard-content">
-                  <h1>Bine ai venit</h1>
-                  <div className="dashboard-content-container">{children}</div>
-                </div>
-              </div>
-            </div>
+            <SidebarProvider>
+              <AppSidebar onClickNav={handleSideMenuNavigation} />
+              <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                  <div className="flex items-center gap-2 px-4">
+                    <SidebarTrigger className="-ml-1" />
+                    <Separator
+                      orientation="vertical"
+                      className="mr-2 data-[orientation=vertical]:h-4"
+                    />
+                    <Breadcrumb>
+                      <BreadcrumbList>
+                        <BreadcrumbItem className="hidden md:block">
+                          <BreadcrumbLink href="#">
+                            Building Your Application
+                          </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </BreadcrumbList>
+                    </Breadcrumb>
+                  </div>
+                </header>
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
           </ConfigProvider>
         </AntdRegistry>
       </body>

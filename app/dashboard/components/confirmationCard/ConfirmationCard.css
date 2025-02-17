@@ -18,3 +18,20 @@
   align-items: center;
   gap: var(--padding-medium);
 }
+
+@media screen and (max-width: 1066px) {
+  .field-content {
+    max-width: 142px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .field-content {
+    max-width: 66px;
+    font-size: 12px;
+  }
+}

@@ -1,111 +1,39 @@
 'use client'
 
-// import { Area } from '@ant-design/plots'
+import './Statistics.css'
 import ActivityChart from '../components/activityChart/ActivityChart'
+import AreaCustomChart from './components/AreaCustomChart'
+import { PieCustomChart } from './components/PieCustomChart'
 
 const StatisticsPage = () => {
-  const mockData = [
-    {
-      date: new Date(2025, 0, 1),
-      value: Number((Math.random() * 10).toFixed()),
-    },
-    {
-      date: new Date(2025, 0, 1),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 2),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 2),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 3),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 3),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 4),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 4),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 5),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 5),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 6),
-      value: Math.random() * 10,
-    },
-    {
-      date: new Date(2025, 0, 6),
-      value: Math.random() * 10,
-    },
-  ]
-
-  //   const config = {
-  //     data: mockData,
-  //     // xAxis field name
-  //     xField: 'date',
-  //     // yAxis field name
-  //     yField: 'value',
-  //     autoFit: true,
-  //     smooth: true,
-  //     scale: {
-  //       color: 'red',
-  //     },
-  //     meta: {
-  //       date: {
-  //         range: [0, 1],
-  //       },
-  //       value: {
-  //         min: 0,
-  //       },
-  //     },
-  //     xAxis: {
-  //       // Boolean type missing and it don't work with provided options
-  //       label: false as any, // eslint-disable-line
-  //       line: { style: { lineWidth: 0 } },
-  //       grid: {
-  //         line: { style: { lineWidth: 0 } },
-  //       },
-  //     },
-  //     yAxis: {
-  //       // Boolean type missing and it don't work with provided options
-  //       label: false as any, // eslint-disable-line
-  //       line: { style: { lineWidth: 0 } },
-  //       grid: {
-  //         line: { style: { lineWidth: 0 } },
-  //       },
-  //     },
-  //     padding: 2,
-  //   }
-
   return (
-    <div>
-      <div>
-        <div>{/* <Area {...config} /> */}</div>
-        <div></div>
-        <div></div>
-        <div></div>
+    <div className="dashboard-statistics-container">
+      <div className="rscc flex w-full gap-4">
+        <div className="w-full">
+          <AreaCustomChart />
+        </div>
+        <div className="w-full">
+          <AreaCustomChart />
+        </div>
+        <div className="w-full">
+          <AreaCustomChart />
+        </div>
+        <div className="w-full">
+          <AreaCustomChart />
+        </div>
       </div>
-      <div>
+      <div className="dashboard-card  max-h-100">
+        <div className="card-header mb-4">
+          <div>
+            <h3>Activitate</h3>
+          </div>
+        </div>
         <ActivityChart />
       </div>
       <div>
-        <div></div>
+        <div>
+          <PieCustomChart />
+        </div>
       </div>
     </div>
   )

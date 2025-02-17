@@ -1,0 +1,100 @@
+import * as React from 'react'
+import {
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from 'lucide-react'
+
+import { NavMain } from '@/components/nav-main'
+import { NavProjects } from '@/components/nav-projects'
+import { NavUser } from '@/components/nav-user'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenuButton,
+  SidebarRail,
+} from '@/components/ui/sidebar'
+
+export function AppSidebar({
+  onClickNav,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  onClickNav: (info: { title: string; url: string }) => void
+}) {
+  const data = {
+    user: {
+      name: 'Andu Pruteanu',
+      email: 'andupruteanu@gmail.com',
+      avatar: '/avatars/shadcn.jpg',
+    },
+    navMain: [
+      {
+        title: 'Panou de control',
+        url: '/dashboard',
+        icon: SquareTerminal,
+        onClick: onClickNav,
+      },
+      {
+        title: 'Raspunsuri',
+        url: '/dashboard/response',
+        icon: Bot,
+        onClick: onClickNav,
+      },
+      {
+        title: 'Statistici',
+        url: '/dashboard/statistics',
+        icon: BookOpen,
+        onClick: onClickNav,
+      },
+      {
+        title: 'Organizare',
+        url: '#',
+        icon: Settings2,
+        onClick: onClickNav,
+      },
+    ],
+    projects: [
+      {
+        title: 'Invitatii',
+        url: '#',
+        icon: Frame,
+      },
+      {
+        title: 'Plati si facturi',
+        url: '#',
+        icon: PieChart,
+      },
+    ],
+  }
+  return (
+    <Sidebar variant="inset" collapsible="icon" {...props}>
+      <SidebarHeader>
+        <SidebarMenuButton size="lg" asChild>
+          <a href="#">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Command className="size-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Acme Inc</span>
+              <span className="truncate text-xs">Enterprise</span>
+            </div>
+          </a>
+        </SidebarMenuButton>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  )
+}

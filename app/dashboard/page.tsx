@@ -1,14 +1,13 @@
 'use client'
 
 import '../../styles/globals.css'
-import './mock.css'
 import {
   FileExcelFilled,
   SendOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons'
 import { Button } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import ConfirmationCard from './components/confirmationCard/ConfirmationCard'
 import ActivityChart from './components/activityChart/ActivityChart'
@@ -21,6 +20,24 @@ import TodoModal from '../../components/todoList/TodoModal'
 const DashboardPage = () => {
   const router = useRouter()
   const [todoOpen, setTodoOpen] = useState(false)
+  const [shrinkElement, setShrinkElement] = useState(false)
+
+  useEffect(() => {
+    const element = document.querySelector('.dashboard-content-container')
+    if (element) {
+      const observer = new ResizeObserver((entries) => {
+        const e = entries[0] // should be only one
+        if (e.contentRect.width < 710) {
+          setShrinkElement(true)
+        } else {
+          setShrinkElement(false)
+        }
+      })
+
+      // start listening for size changes
+      observer.observe(element)
+    }
+  }, [])
 
   const onModalOk = () => {
     setTodoOpen(false)
@@ -31,7 +48,9 @@ const DashboardPage = () => {
   }
 
   return (
-    <>
+    <div
+      className={`dashboard-content-container ${shrinkElement ? 'shrink' : ''}`}
+    >
       <div className="content-left">
         <div className="left-card">
           <div
@@ -66,7 +85,7 @@ const DashboardPage = () => {
         <div className="dashboard-card confirmations">
           <div className="card-header">
             <div>
-              <h3>Raspunsuri</h3>
+              <h3 className="font-semibold">Raspunsuri</h3>
               <span>Ultimele 5 rezultate</span>
             </div>
             <Button
@@ -82,17 +101,17 @@ const DashboardPage = () => {
           <ConfirmationCard />
           <ConfirmationCard />
         </div>
-        <div className="dashboard-card">
-          <div className="card-header">
+        <div className="dashboard-card activity-chart">
+          <div className="card-header mb-4">
             <div>
-              <h3>Activitate</h3>
+              <h3 className="font-semibold">Activitate</h3>
             </div>
             <Button type="default">Vezi tot</Button>
           </div>
           <ActivityChart />
         </div>
         <div className="dashboard-card quick-actions">
-          <h3>Actiuni rapide</h3>
+          <h3 className="font-semibold">Actiuni rapide</h3>
           <div className="quick-actions-container">
             <div className="dotted-card quick-card">
               <span>Planificator Excel</span>
@@ -109,7 +128,7 @@ const DashboardPage = () => {
         </div>
       </div>
       <TodoModal onClose={onModalClose} onOk={onModalOk} open={todoOpen} />
-    </>
+    </div>
   )
 }
 

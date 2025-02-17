@@ -35,7 +35,6 @@
 }
 
 .dashboard-content-container {
-  border: 1px solid #00000012;
   overflow: auto;
   height: calc(100% - 48px);
   padding: 12px;
@@ -43,6 +42,10 @@
   width: 100%;
   gap: 24px;
   background: #ececec73;
+}
+
+.dashboard-content-container.shrink {
+  flex-direction: column;
 }
 
 .content-left {
@@ -59,6 +62,8 @@
   flex-direction: column;
   padding: var(--padding-xxl);
   gap: var(--spacing-xl);
+  box-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)),
+    0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
 }
 
 .confirmations-left {
@@ -86,7 +91,7 @@
   display: flex;
   flex: 2.5;
   gap: 18px;
-  width: 550px;
+  width: auto;
   flex-direction: column;
 }
 
@@ -97,6 +102,8 @@
   display: flex;
   flex-direction: column;
   padding: var(--padding-large);
+  box-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)),
+    0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
 }
 
 .dashboard-card .card-header {
@@ -126,4 +133,13 @@
 
 .dashboard-card .quick-actions-container .quick-card button {
   width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-content-container {
+    flex-direction: column;
+  }
+  .content-right {
+    width: auto;
+  }
 }

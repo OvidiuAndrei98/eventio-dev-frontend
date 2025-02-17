@@ -12,7 +12,9 @@ const RefusalsTable = () => {
         height: '100%',
       }}
     >
-      <h1 className="primary-title">Din fericire, nu exista niciun refuz</h1>
+      <h1 className="primary-title text-center">
+        Din fericire, nu exista niciun refuz
+      </h1>
       <Image src={NoDataIllustration} alt="No-data" />
     </div>
   )

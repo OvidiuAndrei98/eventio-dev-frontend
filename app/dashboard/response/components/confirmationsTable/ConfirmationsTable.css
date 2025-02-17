@@ -1,5 +1,6 @@
 .confirmations-container {
   height: 100%;
+  padding: var(--padding-large);
 }
 
 .confirmations-container .confirmations-table-container {
@@ -55,4 +56,24 @@
   .collapsible-table
   .ant-collapse-item:hover {
   background: #f2f2f2;
+}
+
+@media screen and (max-width: 450px) {
+  .confirmations-container .statistics-container {
+    gap: var(--spacing-medium);
+  }
+  .confirmations-container .statistics-container .statistic-card {
+    padding: var(--spacing-medium) 2px;
+  }
+  .confirmations-container .statistics-container .statistic-card span {
+    font-size: 14px;
+  }
+
+  .confirmations-container {
+    padding: 0 8px;
+  }
+
+  .confirmations-container .table-container {
+    padding: var(--padding-large) var(--padding-medium);
+  }
 }

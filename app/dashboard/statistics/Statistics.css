@@ -1,0 +1,16 @@
+.dashboard-statistics-container {
+  overflow: auto;
+  height: calc(100% - 48px);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px;
+  background: #ececec73;
+}
+
+@media screen and (max-width: 450px) {
+  .rscc {
+    flex-direction: column;
+  }
+}

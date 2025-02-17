@@ -1,3 +1,7 @@
+.response-container .summary-container {
+  padding: 0 var(--padding-large);
+}
+
 .response-container .summary-container .table-container {
   background-color: white;
   padding: var(--padding-xl);
@@ -102,5 +106,37 @@
         flex: none;
       }
     }
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .response-container .summary-container .statistics-container {
+    gap: var(--spacing-medium);
+  }
+  .response-container .summary-container .statistics-container .statistic-card {
+    padding: var(--spacing-medium) 2px;
+  }
+  .response-container
+    .summary-container
+    .statistics-container
+    .statistic-card
+    span {
+    font-size: 14px;
+  }
+
+  .response-container .summary-container {
+    padding: 0 8px;
+  }
+
+  .response-container .summary-container .table-container {
+    padding: var(--padding-large) var(--padding-medium);
+  }
+
+  .response-container
+    .summary-container
+    .table-container
+    .ant-table-wrapper
+    .ant-table-pagination.ant-pagination {
+    margin: 8px 0;
   }
 }

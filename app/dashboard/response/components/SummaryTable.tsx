@@ -1,8 +1,10 @@
 'use client'
 
 import {
+  CheckCircleOutlined,
   CheckOutlined,
   CloseOutlined,
+  EyeOutlined,
   SearchOutlined,
   SendOutlined,
   SmileOutlined,
@@ -22,6 +24,7 @@ import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { FilterDropdownProps } from 'antd/es/table/interface'
 import Highlighter from 'react-highlight-words'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface DataType {
   key: string
@@ -177,7 +180,9 @@ const SummaryTable = () => {
       ...getColumnSearchProps('guest'),
     },
     {
-      title: 'Trimisa',
+      title: useIsMobile() ? <SendOutlined /> : 'Trimisa',
+      width: useIsMobile() ? '50px' : 'auto',
+      align: 'center',
       dataIndex: 'sent',
       key: 'sent',
       render: (
@@ -191,7 +196,9 @@ const SummaryTable = () => {
         ),
     },
     {
-      title: 'Vizualizata',
+      title: useIsMobile() ? <EyeOutlined /> : 'Vizualizata',
+      width: useIsMobile() ? '50px' : 'auto',
+      align: 'center',
       dataIndex: 'seen',
       key: 'seen',
       render: (
@@ -205,7 +212,9 @@ const SummaryTable = () => {
         ),
     },
     {
-      title: 'Confirmata',
+      title: useIsMobile() ? <CheckCircleOutlined /> : 'Confirmata',
+      width: useIsMobile() ? '50px' : 'auto',
+      align: 'center',
       dataIndex: 'confirmed',
       key: 'condfirmed',
       render: (
@@ -219,7 +228,9 @@ const SummaryTable = () => {
         ),
     },
     {
+      width: useIsMobile() ? 100 : 'auto',
       key: 'action',
+      align: 'center',
       render: (_: any, record: DataType) => <Button>Sterge</Button>, // eslint-disable-line
     },
   ]
@@ -308,18 +319,21 @@ const SummaryTable = () => {
     <div className="summary-container">
       <div className="statistics-container">
         <div className="statistic-card">
-          <SendOutlined style={{ fontSize: '20px' }} /> Trimise <span>180</span>
+          <SendOutlined style={{ fontSize: useIsMobile() ? 12 : 20 }} /> Trimise{' '}
+          <span>180</span>
         </div>
         <div className="statistic-card">
-          <SmileOutlined style={{ color: 'green', fontSize: '20px' }} />
+          <SmileOutlined
+            style={{ color: 'green', fontSize: useIsMobile() ? 12 : 20 }}
+          />
           Confirmate <span>120</span>
         </div>
         <div className="statistic-card">
           <Image
             src={SadFaceIcon}
             alt="sad-face"
-            width={20}
-            height={20}
+            width={useIsMobile() ? 12 : 20}
+            height={useIsMobile() ? 12 : 20}
             style={{ color: 'rebeccapurple' }}
           />
           Refuzate <span>31</span>

@@ -1,95 +1,73 @@
 'use client'
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
 
-import { Area, AreaConfig } from '@ant-design/charts'
+const chartData = [
+  { month: 'January', desktop: 186, mobile: 80 },
+  { month: 'February', desktop: 305, mobile: 200 },
+  { month: 'March', desktop: 237, mobile: 120 },
+  { month: 'April', desktop: 73, mobile: 190 },
+  { month: 'May', desktop: 209, mobile: 130 },
+  { month: 'June', desktop: 214, mobile: 140 },
+]
+const chartConfig = {
+  desktop: {
+    label: 'Desktop',
+    color: 'red',
+  },
+  mobile: {
+    label: 'Mobile',
+    color: 'purple',
+  },
+} satisfies ChartConfig
 
 const ActivityChart = () => {
-  const mockData = [
-    {
-      date: new Date(2025, 0, 1),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 1),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-    {
-      date: new Date(2025, 0, 2),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 2),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-    {
-      date: new Date(2025, 0, 3),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 3),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-    {
-      date: new Date(2025, 0, 4),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 4),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-    {
-      date: new Date(2025, 0, 5),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 5),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-    {
-      date: new Date(2025, 0, 6),
-      value: Math.random() * 10,
-      valueType: 'raspunsuri',
-    },
-    {
-      date: new Date(2025, 0, 6),
-      value: Math.random() * 10,
-      valueType: 'vizualizari',
-    },
-  ]
-
-  const config: AreaConfig = {
-    data: mockData,
-    height: 300,
-    xField: 'date',
-    yField: 'value',
-    seriesField: 'valueType',
-    colorField: 'valueType',
-    scale: {
-      color: {
-        range: ['#2f97b7', '#ff87cd'],
-      },
-    },
-    autoFit: true,
-    legend: {
-      position: 'top',
-    },
-    shapeField: 'smooth',
-    style: {
-      opacity: 0.5,
-    },
-    stack: true,
-  }
-
-  return <Area {...config} />
+  return (
+    <ChartContainer config={chartConfig} className="min-h-[100px]">
+      <AreaChart
+        accessibilityLayer
+        data={chartData}
+        margin={{
+          left: 12,
+          right: 12,
+        }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent indicator="dot" />}
+        />
+        <Area
+          dataKey="mobile"
+          type="natural"
+          fill="var(--color-mobile)"
+          fillOpacity={0.4}
+          stroke="var(--color-mobile)"
+          stackId="a"
+        />
+        <Area
+          dataKey="desktop"
+          type="natural"
+          fill="var(--color-desktop)"
+          fillOpacity={0.4}
+          stroke="var(--color-desktop)"
+          stackId="a"
+        />
+      </AreaChart>
+    </ChartContainer>
+  )
 }
 
 export default ActivityChart
