@@ -26,7 +26,7 @@
 
 .dashboard-content {
   background: #ffffff73;
-  width: 100%;
+  width: calc(100% - 200px);
   padding: 12px 32px 12px 32px;
 }
 
@@ -35,13 +35,17 @@
 }
 
 .dashboard-content-container {
-  border: 1px solid #00000012;
-  min-height: calc(100% - 48px);
+  overflow: auto;
+  height: calc(100% - 48px);
   padding: 12px;
   display: flex;
   width: 100%;
   gap: 24px;
   background: #ececec73;
+}
+
+.dashboard-content-container.shrink {
+  flex-direction: column;
 }
 
 .content-left {
@@ -52,13 +56,42 @@
   width: 100%;
   background: white;
   border-radius: 8px;
-  height: 70%;
+  /* height: 70%; */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: var(--padding-xxl);
+  gap: var(--spacing-xl);
+  box-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)),
+    0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+}
+
+.confirmations-left {
+  display: flex;
+  gap: var(--padding-xl);
+}
+
+.accepted {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  border-color: green;
+}
+
+.declined {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  border-color: red;
 }
 
 .content-right {
   display: flex;
   flex: 2.5;
   gap: 18px;
+  width: auto;
   flex-direction: column;
 }
 
@@ -66,5 +99,47 @@
   background: white;
   width: 100%;
   border-radius: 8px;
-  height: 200px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--padding-large);
+  box-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)),
+    0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+}
+
+.dashboard-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-card.confirmations {
+  gap: var(--spacing-medium);
+}
+
+.dashboard-card .quick-actions-container {
+  margin-top: var(--spacing-medium);
+  gap: var(--spacing-xl);
+  display: flex;
+}
+
+.dashboard-card .quick-actions-container .quick-card {
+  border-color: var(--primary-color);
+  padding: var(--padding-large);
+  gap: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard-card .quick-actions-container .quick-card button {
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-content-container {
+    flex-direction: column;
+  }
+  .content-right {
+    width: auto;
+  }
 }
