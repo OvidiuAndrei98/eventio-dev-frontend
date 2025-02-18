@@ -3,7 +3,6 @@
 import { MenuProps, Modal } from 'antd'
 import TodoList from './TodoList'
 
-type MenuItem = Required<MenuProps>['items'][number]
 
 const TodoModal = ({
   open,
