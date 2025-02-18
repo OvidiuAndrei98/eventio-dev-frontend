@@ -21,7 +21,7 @@ import {
 import './SummaryTable.css'
 import SadFaceIcon from '../../../../public/sad-face.svg'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { FilterDropdownProps } from 'antd/es/table/interface'
 import { useIsMobile } from '@/hooks/use-mobile'
 
@@ -36,26 +36,7 @@ interface DataType {
 type DataIndex = keyof DataType
 
 const SummaryTable = () => {
-  const [windowHeight, setWindowHeight] = useState(0)
   const searchInput = useRef<InputRef>(null)
-
-  // Update window height on resize
-  useEffect(() => {
-    if (typeof window == 'undefined') {
-      return
-    }
-
-    setWindowHeight(window.innerHeight)
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight)
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   const handleSearch = (confirm: FilterDropdownProps['confirm']) => {
     confirm()
@@ -322,12 +303,7 @@ const SummaryTable = () => {
             </span>
           </div>
         </div>
-        <Table<DataType>
-          columns={columns}
-          dataSource={data}
-          pagination={{ pageSize: 20 }}
-          scroll={{ y: windowHeight / 3 }}
-        />
+        <Table<DataType> columns={columns} dataSource={data} />
       </div>
     </div>
   )

@@ -1,5 +1,7 @@
 .response-container .summary-container {
   padding: 0 var(--padding-large);
+  overflow: auto;
+  height: 98%;
 }
 
 .response-container .summary-container .table-container {
