@@ -77,7 +77,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                         {routeElements.map((route, index) => {
                           if (index == routeElements.length - 1) {
                             return (
-                              <BreadcrumbItem>
+                              <BreadcrumbItem key={index}>
                                 <BreadcrumbPage>
                                   {routeTitleMapper[route]}
                                 </BreadcrumbPage>
@@ -86,7 +86,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                           } else {
                             return (
                               <>
-                                <BreadcrumbItem className="hidden md:block">
+                                <BreadcrumbItem
+                                  className="hidden md:block"
+                                  key={index}
+                                >
                                   <BreadcrumbLink href="/dashboard">
                                     {routeTitleMapper[route]}
                                   </BreadcrumbLink>
