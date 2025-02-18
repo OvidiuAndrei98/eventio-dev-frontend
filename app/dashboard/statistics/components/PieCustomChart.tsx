@@ -16,26 +16,27 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 const chartData = [
-  { browser: 'chrome', visitors: 275, fill: 'red' },
-  { browser: 'safari', visitors: 200, fill: 'green' },
+  { browser: 'chrome', visitors: 175, fill: '#ff0000' },
+  { browser: 'safari', visitors: 270, fill: '#67ff676b' },
 ]
 
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  chrome: {
-    label: 'Chrome',
-    color: 'hsl(var(--chart-1))',
-  },
-} satisfies ChartConfig
-
 export function PieCustomChart() {
+  const chartConfig = {
+    chrome: {
+      label: 'Refuzuri',
+      color: 'hsl(0 100% 50% 31%',
+    },
+    safari: {
+      label: 'Confirmari',
+      color: 'hsl(0 100% 50% 31%',
+    },
+  } satisfies ChartConfig
+
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      <CardHeader className=" pb-0">
+        <CardTitle>Confirmari vs Refuzuri</CardTitle>
+        <CardDescription>Numar total raspunsuri</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

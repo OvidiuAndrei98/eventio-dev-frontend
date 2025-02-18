@@ -6,6 +6,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from 'antd'
 
 const chartData = [
   { month: 'January', desktop: 186, mobile: 80 },
@@ -17,56 +25,70 @@ const chartData = [
 ]
 const chartConfig = {
   desktop: {
-    label: 'Desktop',
-    color: 'red',
+    label: 'Vizualizari',
+    color: 'yellow',
   },
   mobile: {
-    label: 'Mobile',
-    color: 'purple',
+    label: 'Raspunsuri',
+    color: 'blue',
   },
 } satisfies ChartConfig
 
-const ActivityChart = () => {
+const ActivityChart = ({
+  showActionButton,
+}: {
+  showActionButton?: boolean
+}) => {
   return (
-    <ChartContainer config={chartConfig} className="min-h-[100px]">
-      <AreaChart
-        accessibilityLayer
-        data={chartData}
-        margin={{
-          left: 12,
-          right: 12,
-        }}
-      >
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="month"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickFormatter={(value) => value.slice(0, 3)}
-        />
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent indicator="dot" />}
-        />
-        <Area
-          dataKey="mobile"
-          type="natural"
-          fill="var(--color-mobile)"
-          fillOpacity={0.4}
-          stroke="var(--color-mobile)"
-          stackId="a"
-        />
-        <Area
-          dataKey="desktop"
-          type="natural"
-          fill="var(--color-desktop)"
-          fillOpacity={0.4}
-          stroke="var(--color-desktop)"
-          stackId="a"
-        />
-      </AreaChart>
-    </ChartContainer>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex justify-between">
+          Activitate {showActionButton && <Button>Activitate</Button>}
+        </CardTitle>
+        <CardDescription>Activitatea din ultima saptamana</CardDescription>
+      </CardHeader>
+      <CardContent className="max-h-100">
+        <ChartContainer config={chartConfig} className="max-h-100 w-full">
+          <AreaChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dot" />}
+            />
+            <Area
+              dataKey="mobile"
+              type="natural"
+              fill="var(--color-mobile)"
+              fillOpacity={0.4}
+              stroke="var(--color-mobile)"
+              stackId="a"
+            />
+            <Area
+              dataKey="desktop"
+              type="natural"
+              fill="var(--color-desktop)"
+              fillOpacity={0.4}
+              stroke="var(--color-desktop)"
+              stackId="a"
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }
 

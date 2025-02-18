@@ -14,31 +14,44 @@ import {
 } from '@/components/ui/chart'
 
 const chartData = [
-  { month: 'January', desktop: 186 },
-  { month: 'February', desktop: 305 },
-  { month: 'March', desktop: 237 },
-  { month: 'April', desktop: 73 },
-  { month: 'May', desktop: 209 },
-  { month: 'June', desktop: 214 },
+  { month: 'January', value: 186 },
+  { month: 'February', value: 305 },
+  { month: 'March', value: 237 },
+  { month: 'April', value: 73 },
+  { month: 'May', value: 209 },
+  { month: 'June', value: 214 },
 ]
-const chartConfig = {
-  desktop: {
-    label: 'Desktop',
-    color: 'hsl(var(--chart-1))',
-  },
-} satisfies ChartConfig
 
-const AreaCustomChart = () => {
+const AreaCustomChart = ({
+  xAxisKey,
+  yAxisKey,
+  color,
+  title,
+  label,
+  description,
+}: {
+  xAxisKey: string
+  yAxisKey: string
+  color: string
+  title: string
+  label: string
+  description: string
+}) => {
+  const chartConfig = {
+    value: {
+      label: label,
+      color: color,
+    },
+  } satisfies ChartConfig
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Area Chart</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="max-h-45 w-full">
           <AreaChart
             accessibilityLayer
             data={chartData}
@@ -49,7 +62,7 @@ const AreaCustomChart = () => {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey={xAxisKey}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -60,11 +73,11 @@ const AreaCustomChart = () => {
               content={<ChartTooltipContent indicator="line" />}
             />
             <Area
-              dataKey="desktop"
+              dataKey={yAxisKey}
               type="natural"
-              fill="var(--color-desktop)"
+              fill={`var(--color-${Object.keys(chartConfig)[0]})`}
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke={`var(--color-${Object.keys(chartConfig)[0]})`}
             />
           </AreaChart>
         </ChartContainer>

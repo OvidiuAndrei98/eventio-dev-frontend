@@ -101,15 +101,7 @@ const DashboardPage = () => {
           <ConfirmationCard />
           <ConfirmationCard />
         </div>
-        <div className="dashboard-card activity-chart">
-          <div className="card-header mb-4">
-            <div>
-              <h3 className="font-semibold">Activitate</h3>
-            </div>
-            <Button type="default">Vezi tot</Button>
-          </div>
-          <ActivityChart />
-        </div>
+        <ActivityChart showActionButton />
         <div className="dashboard-card quick-actions">
           <h3 className="font-semibold">Actiuni rapide</h3>
           <div className="quick-actions-container">

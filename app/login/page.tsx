@@ -1,12 +1,13 @@
-import '../../styles/globals.css'
-import LoginPageComponent from './components/loginPage/LoginPageComponent'
+'use client'
 
-const LoginPage = () => {
+import { LoginForm } from '@/app/login/components/login-form'
+
+export default function LoginPage() {
   return (
-    <>
-      <LoginPageComponent />
-    </>
+    <div className="bg-slate-100 flex min-h-svh flex-col items-center justify-center p-6 md:p-10 dark:bg-slate-800">
+      <div className="w-full max-w-sm md:max-w-3xl">
+        <LoginForm />
+      </div>
+    </div>
   )
 }
-
-export default LoginPage

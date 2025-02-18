@@ -4,9 +4,9 @@ import './mock.css'
 
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider } from 'antd'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
-import { AppSidebar } from '@/components/app-sidebar'
+import { AppSidebar } from '@/app/dashboard/components/nav/app-sidebar'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,9 +21,26 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { useEffect, useState } from 'react'
+
+const routeTitleMapper = {
+  dashboard: 'Panou de control',
+  response: 'Raspunsuri',
+  statistics: 'Statistici',
+}
+
+type routeType = 'dashboard' | 'response' | 'statistics'
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const [routeElements, setRouteElements] = useState<routeType[]>([])
+  const pathName = usePathname()
+
   const router = useRouter()
+
+  useEffect(() => {
+    const pathsList = pathName.substring(1).split('/')
+    setRouteElements(pathsList as routeType[])
+  }, [pathName])
 
   const handleSideMenuNavigation = (info: { title: string; url: string }) => {
     router.push(info.url)
@@ -57,15 +74,28 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     />
                     <Breadcrumb>
                       <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
-                          <BreadcrumbLink href="#">
-                            Building Your Application
-                          </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                          <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                        </BreadcrumbItem>
+                        {routeElements.map((route, index) => {
+                          if (index == routeElements.length - 1) {
+                            return (
+                              <BreadcrumbItem>
+                                <BreadcrumbPage>
+                                  {routeTitleMapper[route]}
+                                </BreadcrumbPage>
+                              </BreadcrumbItem>
+                            )
+                          } else {
+                            return (
+                              <>
+                                <BreadcrumbItem className="hidden md:block">
+                                  <BreadcrumbLink href="/dashboard">
+                                    {routeTitleMapper[route]}
+                                  </BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator className="hidden md:block" />
+                              </>
+                            )
+                          }
+                        })}
                       </BreadcrumbList>
                     </Breadcrumb>
                   </div>

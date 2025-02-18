@@ -9,9 +9,9 @@ import {
   SquareTerminal,
 } from 'lucide-react'
 
-import { NavMain } from '@/components/nav-main'
-import { NavProjects } from '@/components/nav-projects'
-import { NavUser } from '@/components/nav-user'
+import { NavMain } from '@/app/dashboard/components/nav/nav-main'
+import { NavProjects } from '@/app/dashboard/components/nav/nav-projects'
+import { NavUser } from '@/app/dashboard/components/nav/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -81,8 +81,8 @@ export function AppSidebar({
               <Command className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Acme Inc</span>
-              <span className="truncate text-xs">Enterprise</span>
+              <span className="truncate font-semibold">Eventio</span>
+              <span className="truncate text-xs">dashboard</span>
             </div>
           </a>
         </SidebarMenuButton>
