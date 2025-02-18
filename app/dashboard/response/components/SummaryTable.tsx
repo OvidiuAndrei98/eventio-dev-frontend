@@ -23,7 +23,6 @@ import SadFaceIcon from '../../../../public/sad-face.svg'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { FilterDropdownProps } from 'antd/es/table/interface'
-import Highlighter from 'react-highlight-words'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 interface DataType {
@@ -38,8 +37,6 @@ type DataIndex = keyof DataType
 
 const SummaryTable = () => {
   const [windowHeight, setWindowHeight] = useState(0)
-  const [searchText, setSearchText] = useState('')
-  const [searchedColumn, setSearchedColumn] = useState('')
   const searchInput = useRef<InputRef>(null)
 
   // Update window height on resize
@@ -66,8 +63,6 @@ const SummaryTable = () => {
     dataIndex: DataIndex
   ) => {
     confirm()
-    setSearchText(selectedKeys[0])
-    setSearchedColumn(dataIndex)
   }
 
   const handleReset = (
@@ -75,7 +70,6 @@ const SummaryTable = () => {
     confirm: ({ closeDropdown }: { closeDropdown: boolean }) => void
   ) => {
     clearFilters()
-    setSearchText('')
     confirm({ closeDropdown: false })
   }
 
@@ -126,8 +120,6 @@ const SummaryTable = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false })
-              setSearchText((selectedKeys as string[])[0])
-              setSearchedColumn(dataIndex)
             }}
           >
             Filter
@@ -159,17 +151,7 @@ const SummaryTable = () => {
         }
       },
     },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
+    render: (text) => text,
   })
 
   const columns: TableProps<DataType>['columns'] = [
