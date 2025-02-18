@@ -11,9 +11,9 @@
   .confirmations-table-container
   .card-content-container
   .card-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 130px 1fr;
   border-bottom: 1.5px dotted rgb(207, 207, 207);
-  padding: var(--padding-medium);
 }
 
 .confirmations-container

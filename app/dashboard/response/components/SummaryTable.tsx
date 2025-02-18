@@ -21,9 +21,8 @@ import {
 import './SummaryTable.css'
 import SadFaceIcon from '../../../../public/sad-face.svg'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { FilterDropdownProps } from 'antd/es/table/interface'
-import Highlighter from 'react-highlight-words'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 interface DataType {
@@ -37,37 +36,10 @@ interface DataType {
 type DataIndex = keyof DataType
 
 const SummaryTable = () => {
-  const [windowHeight, setWindowHeight] = useState(0)
-  const [searchText, setSearchText] = useState('')
-  const [searchedColumn, setSearchedColumn] = useState('')
   const searchInput = useRef<InputRef>(null)
 
-  // Update window height on resize
-  useEffect(() => {
-    if (typeof window == 'undefined') {
-      return
-    }
-
-    setWindowHeight(window.innerHeight)
-    const handleResize = () => {
-      setWindowHeight(window.innerHeight)
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps['confirm'],
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (confirm: FilterDropdownProps['confirm']) => {
     confirm()
-    setSearchText(selectedKeys[0])
-    setSearchedColumn(dataIndex)
   }
 
   const handleReset = (
@@ -75,7 +47,6 @@ const SummaryTable = () => {
     confirm: ({ closeDropdown }: { closeDropdown: boolean }) => void
   ) => {
     clearFilters()
-    setSearchText('')
     confirm({ closeDropdown: false })
   }
 
@@ -97,17 +68,13 @@ const SummaryTable = () => {
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onPressEnter={() => handleSearch(confirm)}
           style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -126,8 +93,6 @@ const SummaryTable = () => {
             size="small"
             onClick={() => {
               confirm({ closeDropdown: false })
-              setSearchText((selectedKeys as string[])[0])
-              setSearchedColumn(dataIndex)
             }}
           >
             Filter
@@ -159,17 +124,7 @@ const SummaryTable = () => {
         }
       },
     },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
+    render: (text) => text,
   })
 
   const columns: TableProps<DataType>['columns'] = [
@@ -348,12 +303,7 @@ const SummaryTable = () => {
             </span>
           </div>
         </div>
-        <Table<DataType>
-          columns={columns}
-          dataSource={data}
-          pagination={{ pageSize: 20 }}
-          scroll={{ y: windowHeight / 3 }}
-        />
+        <Table<DataType> columns={columns} dataSource={data} />
       </div>
     </div>
   )
