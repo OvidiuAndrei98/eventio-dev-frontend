@@ -102,9 +102,6 @@ export function LoginForm({
             </div>
           </div>
           <div className="bg-[#f8e0ff] relative hidden md:block dark:bg-slate-800 p-5">
-            {/* <span className="text-center text-2xl m-[auto]">
-              The simplest way to manage your event
-            </span> */}
             <Image
               src={LoginImage}
               alt="login-image"
