@@ -21,41 +21,52 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 
+export interface MenuItem {
+  title: string
+  url: string
+  icon?: JSX.Element
+  onClick?: (info: { title: string; url: string }) => void
+  subMenu?: MenuItem[]
+}
+
+export type MenuData = Record<string, MenuItem[]>
+
 export function AppSidebar({
   onClickNav,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const data = {
-    user: {
-      name: 'Andu Pruteanu',
-      email: 'andupruteanu@gmail.com',
-      avatar: '/avatars/shadcn.jpg',
-    },
+  const user = {
+    name: 'Andu Pruteanu',
+    email: 'andupruteanu@gmail.com',
+    avatar: '/avatars/shadcn.jpg',
+  }
+
+  const data: MenuData = {
     navMain: [
       {
         title: 'Panou de control',
         url: '/dashboard',
-        icon: SquareTerminal,
+        icon: <SquareTerminal />,
         onClick: onClickNav,
       },
       {
         title: 'Raspunsuri',
         url: '/dashboard/response',
-        icon: Bot,
+        icon: <Bot />,
         onClick: onClickNav,
       },
       {
         title: 'Statistici',
         url: '/dashboard/statistics',
-        icon: BookOpen,
+        icon: <BookOpen />,
         onClick: onClickNav,
       },
       {
         title: 'Organizare',
         url: '#',
-        icon: Settings2,
+        icon: <Settings2 />,
         onClick: onClickNav,
       },
     ],
@@ -63,12 +74,29 @@ export function AppSidebar({
       {
         title: 'Invitatii',
         url: '#',
-        icon: Frame,
+        icon: <Frame />,
       },
       {
         title: 'Plati si facturi',
         url: '#',
-        icon: PieChart,
+        icon: <PieChart />,
+      },
+      {
+        title: 'Actiuni rapide',
+        url: '#',
+        icon: <PieChart />,
+        subMenu: [
+          {
+            title: 'Planificator excel',
+            url: '#',
+            icon: <PieChart />,
+          },
+          {
+            title: 'Todo list',
+            url: '#',
+            icon: <PieChart />,
+          },
+        ],
       },
     ],
   }
@@ -92,7 +120,7 @@ export function AppSidebar({
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

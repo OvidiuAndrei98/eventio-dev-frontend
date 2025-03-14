@@ -1,12 +1,12 @@
 'use client'
 
-import { LoginForm } from '@/app/login/components/login-form'
+import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
 
 export default function LoginPage() {
   return (
     <div className="bg-slate-100 flex min-h-svh flex-col items-center justify-center p-6 md:p-10 dark:bg-slate-800">
       <div className="w-full max-w-sm md:max-w-3xl">
-        <LoginForm />
+        <AuthenticationBoundary></AuthenticationBoundary>
       </div>
     </div>
   )
