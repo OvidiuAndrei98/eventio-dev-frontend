@@ -59,8 +59,14 @@
 }
 
 .footer-section .credits {
+  display: flex;
+  flex-direction: column;
   color: rgb(121, 118, 135);
   text-align: center;
+  .author {
+    color: #7231ec;
+    font-weight: 800;
+  }
 }
 
 @media screen and (max-width: 450px) {

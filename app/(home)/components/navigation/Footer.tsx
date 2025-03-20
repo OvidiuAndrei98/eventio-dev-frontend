@@ -38,9 +38,15 @@ const Footer = () => {
         <WhatsAppOutlined />
       </div>
       <Divider />
-      <span className="credits">
-        Copyrights © 2025. Toate drepturile rezervate
-      </span>
+      <div className="credits">
+        <span>Copyrights © 2025. Toate drepturile rezervate.</span>
+        <span>
+          Made by{' '}
+          <a href="https://www.code-lab.ro/" className="author" target="_blank">
+            CodeLab
+          </a>
+        </span>
+      </div>
     </div>
   )
 }
