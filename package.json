@@ -28,6 +28,7 @@
     "antd": "^5.23.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase": "^11.4.0",
     "gsap": "^3.12.7",
     "lucide-react": "^0.475.0",
     "next": "^15.1.7",
