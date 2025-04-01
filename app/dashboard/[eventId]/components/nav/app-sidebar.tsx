@@ -1,6 +1,17 @@
 import * as React from 'react'
-import { Bot, Command, SquareTerminal } from 'lucide-react'
+import {
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from 'lucide-react'
 
+import { NavMain } from '@/app/dashboard/[eventId]/components/nav/nav-main'
+import { NavProjects } from '@/app/dashboard/[eventId]/components/nav/nav-projects'
+import { NavUser } from '@/app/dashboard/[eventId]/components/nav/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -10,8 +21,6 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
-import { NavMain } from './nav-main'
-import { NavUser } from './nav-user'
 
 export interface MenuItem {
   title: string
@@ -34,16 +43,57 @@ export function AppSidebar({
   const data: MenuData = {
     navMain: [
       {
-        title: 'Invitațiile mele',
+        title: 'Panou de control',
         url: '/dashboard',
         icon: <SquareTerminal />,
         onClick: onClickNav,
       },
       {
-        title: 'Plăți și facturi',
-        url: '/dashboard/billing',
+        title: 'Raspunsuri',
+        url: '/dashboard/response',
         icon: <Bot />,
         onClick: onClickNav,
+      },
+      {
+        title: 'Statistici',
+        url: '/dashboard/statistics',
+        icon: <BookOpen />,
+        onClick: onClickNav,
+      },
+      {
+        title: 'Organizare',
+        url: '#',
+        icon: <Settings2 />,
+        onClick: onClickNav,
+      },
+    ],
+    projects: [
+      {
+        title: 'Invitatii',
+        url: '#',
+        icon: <Frame />,
+      },
+      {
+        title: 'Plati si facturi',
+        url: '#',
+        icon: <PieChart />,
+      },
+      {
+        title: 'Actiuni rapide',
+        url: '#',
+        icon: <PieChart />,
+        subMenu: [
+          {
+            title: 'Planificator excel',
+            url: '#',
+            icon: <PieChart />,
+          },
+          {
+            title: 'Todo list',
+            url: '#',
+            icon: <PieChart />,
+          },
+        ],
       },
     ],
   }
@@ -52,8 +102,8 @@ export function AppSidebar({
       variant="inset"
       collapsible="icon"
       {...props}
-      className="account-sidebar"
-      id="account-sidebar"
+      className="event-sidebar"
+      id="event-sidebar"
     >
       <SidebarHeader>
         <SidebarMenuButton size="lg" asChild>
@@ -63,13 +113,14 @@ export function AppSidebar({
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">Eventio</span>
-              <span className="truncate text-xs">Contul meu</span>
+              <span className="truncate text-xs">dashboard</span>
             </div>
           </a>
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

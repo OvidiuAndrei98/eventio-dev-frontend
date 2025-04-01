@@ -241,11 +241,15 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       )
     case AuthenticationState.Unauthenticated:
       return (
-        <LoginForm
-          onLogin={login}
-          loggingIn={isLoggingIn}
-          onLoginWithGoogle={loginWithGoogle}
-        />
+        <div className="bg-slate-100 flex min-h-svh flex-col items-center justify-center p-6 md:p-10 dark:bg-slate-800">
+          <div className="w-full max-w-sm md:max-w-3xl">
+            <LoginForm
+              onLogin={login}
+              loggingIn={isLoggingIn}
+              onLoginWithGoogle={loginWithGoogle}
+            />
+          </div>
+        </div>
       )
     case AuthenticationState.Authenticated:
       // For authenticated contexts, just render the children normally

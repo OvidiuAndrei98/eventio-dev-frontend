@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import NoDataIllustration from '../../../../../public/no-data-illustration.svg'
+import NoDataIllustration from '@/public/no-data-illustration.svg'
 
 const RefusalsTable = () => {
   return (

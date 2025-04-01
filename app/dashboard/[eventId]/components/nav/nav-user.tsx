@@ -66,6 +66,7 @@ export function NavUser({ user }: { user: User | null }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            onCloseAutoFocus={(e) => e.preventDefault()}
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? 'bottom' : 'right'}
             align="end"
@@ -99,24 +100,24 @@ export function NavUser({ user }: { user: User | null }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:!bg-sidebar-accent">
+              <DropdownMenuItem>
                 <Sparkles />
                 Upgradeaza la premium
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="hover:!bg-sidebar-accent">
+              <DropdownMenuItem>
                 <BadgeCheck />
                 Cont
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:!bg-sidebar-accent">
+              <DropdownMenuItem>
                 <CreditCard />
                 Facturare
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:!bg-sidebar-accent">
+            <DropdownMenuItem>
               <LogOut />
               Iesi din cont
             </DropdownMenuItem>

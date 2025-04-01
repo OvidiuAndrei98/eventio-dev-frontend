@@ -1,0 +1,101 @@
+import React from 'react'
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  SortingState,
+  getSortedRowModel,
+} from '@tanstack/react-table'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { DataTablePagination } from './TablePagination'
+import { useRouter } from 'next/navigation'
+import { EventInstance } from '@/core/types'
+
+interface DataTableProps<TValue> {
+  columns: ColumnDef<EventInstance, TValue>[]
+  data: EventInstance[]
+}
+
+const EventsTable = <EventInstance, TValue>({
+  columns,
+  data,
+}: DataTableProps<TValue>) => {
+  const router = useRouter()
+
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
+  })
+
+  return (
+    <div>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              key={headerGroup.id}
+              className="hover:bg-transparent border-slate-200 border-dashed"
+            >
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                )
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                className="hover:bg-purple-50 border-slate-200 border-dashed"
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <DataTablePagination table={table} />
+    </div>
+  )
+}
+
+export default EventsTable

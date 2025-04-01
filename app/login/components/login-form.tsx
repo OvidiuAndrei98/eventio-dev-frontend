@@ -45,9 +45,9 @@ export function LoginForm({
           <div className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Bine ai venit</h1>
                 <p className="text-slate-500 text-balance dark:text-slate-400">
-                  Login to your Acme Inc account
+                  Conectează-te pentru a continua
                 </p>
               </div>
               <div className="grid gap-3">
@@ -89,7 +89,7 @@ export function LoginForm({
                 </Form>
                 <div className="after:border-slate-200 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t dark:after:border-slate-800">
                   <span className="bg-white text-slate-500 relative z-10 px-2 dark:bg-slate-950 dark:text-slate-400">
-                    Or continue with
+                    Sau conectează-te cu
                   </span>
                 </div>
                 <div className="w-full">
@@ -105,14 +105,14 @@ export function LoginForm({
                         fill="currentColor"
                       />
                     </svg>
-                    <span>Login with Google</span>
+                    <span>Conecteză-te cu Google</span>
                   </Button>
                 </div>
               </div>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{''}
-                <a href="#" className="underline underline-offset-4">
-                  Sign up
+                Nu ai cont?{' '}
+                <a href="/register" className="underline underline-offset-4">
+                  Inregistrează-te
                 </a>
               </div>
             </div>

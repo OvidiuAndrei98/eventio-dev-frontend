@@ -9,13 +9,15 @@ import {
 } from '@/components/ui/sidebar'
 import { MenuItem } from './app-sidebar'
 import { useContext } from 'react'
-import { UserContext } from '../../layout'
+import { EventContext } from '../../layout'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
-  const userContext = useContext(UserContext)
+  const eventContext = useContext(EventContext)
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{userContext?.displayName}</SidebarGroupLabel>
+      <SidebarGroupLabel>
+        Invitatie - {eventContext?.eventName}
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem

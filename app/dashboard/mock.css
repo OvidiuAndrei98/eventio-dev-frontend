@@ -135,6 +135,10 @@
   width: 100%;
 }
 
+.events-container .event-card {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
 @media screen and (max-width: 768px) {
   .dashboard-content-container {
     flex-direction: column;

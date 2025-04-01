@@ -1,126 +1,90 @@
 'use client'
 
+import { useContext, useEffect, useState } from 'react'
 import '../../styles/globals.css'
-import {
-  FileExcelFilled,
-  SendOutlined,
-  UnorderedListOutlined,
-} from '@ant-design/icons'
+import { EventInstance } from '@/core/types'
+import { UserContext } from './layout'
+import { queryEventsByUser } from '@/service/event/queryEventsByUser'
+import { AppSidebar } from './components/nav/app-sidebar'
+import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
+import { Separator } from '@/components/ui/separator'
+import EventsTable from './components/eventsTable/EventsTable'
+import { columns } from './components/eventsTable/columns'
 import { Button } from 'antd'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import ConfirmationCard from './components/confirmationCard/ConfirmationCard'
-import ActivityChart from './components/activityChart/ActivityChart'
-import Image from 'next/image'
-import DemoImage from '../../public/landing-image.svg'
-import TodoModal from '../../components/todoList/TodoModal'
-
-// Varianta abonomant
+import { PlusIcon } from 'lucide-react'
 
 const DashboardPage = () => {
-  const router = useRouter()
-  const [todoOpen, setTodoOpen] = useState(false)
-  const [shrinkElement, setShrinkElement] = useState(false)
+  const [queryEventLoading, setQueryEventLoading] = useState(true)
+  const [events, setEvents] = useState<EventInstance[]>([])
+  const user = useContext(UserContext)
 
   useEffect(() => {
-    const element = document.querySelector('.dashboard-content-container')
-    if (element) {
-      const observer = new ResizeObserver((entries) => {
-        const e = entries[0] // should be only one
-        if (e.contentRect.width < 710) {
-          setShrinkElement(true)
-        } else {
-          setShrinkElement(false)
-        }
-      })
-
-      // start listening for size changes
-      observer.observe(element)
+    if (!user) {
+      return
     }
-  }, [])
-
-  const onModalOk = () => {
-    setTodoOpen(false)
-  }
-
-  const onModalClose = () => {
-    setTodoOpen(false)
-  }
+    queryEventsByUser(user.uid).then((events) => {
+      setEvents(events)
+      setQueryEventLoading(false)
+    })
+  }, [user])
 
   return (
-    <div
-      className={`dashboard-content-container ${shrinkElement ? 'shrink' : ''}`}
-    >
-      <div className="content-left">
-        <div className="left-card">
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <h2>Andu si Narci</h2>
-            <span className="primary-color-text">Premium</span>
+    <>
+      <AppSidebar onClickNav={() => {}} />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
           </div>
-          <Image alt="" src={DemoImage} width={150} />
-          <Button icon={<SendOutlined />} type="primary">
-            Trimite Invitatia
-          </Button>
-          <div className="confirmations-left">
-            <div className="accepted dotted-card">
-              <span className="number">3</span>
-              <span className="text secondary-text-color-light">
-                Confirmari
-              </span>
-            </div>
-            <div className="declined dotted-card">
-              <span className="number">1</span>
-              <span className="text secondary-text-color-light">Refuzuri</span>
-            </div>
+        </header>
+        <div className="events-container h-full p-4 bg-[#F6F6F6]">
+          <h1 className="text-2xl font-bold">
+            Bine ai venit, {user?.displayName}
+          </h1>
+          <div className="container min-h-[300px] my-4 mx-auto p-4 bg-white rounded-md shadow-sm relative">
+            {queryEventLoading ? (
+              <span className="loader"></span>
+            ) : (
+              <>
+                <div className="flex flex-row items-start justify-between">
+                  <div>
+                    <h1 className="font-semibold">Invitatiile mele</h1>
+                    <span className="text-sm text-slate-500">
+                      {events.length} invitatii
+                    </span>
+                  </div>
+                  <Button className="p-4" type="default">
+                    <PlusIcon size={16} /> Invitatie noua
+                  </Button>
+                </div>
+                <EventsTable columns={columns} data={events} />
+              </>
+            )}
           </div>
-        </div>
-      </div>
-      <div className="content-right">
-        <div className="dashboard-card confirmations">
-          <div className="card-header">
-            <div>
-              <h3 className="font-semibold">Raspunsuri</h3>
-              <span>Ultimele 5 rezultate</span>
-            </div>
-            <Button
-              type="default"
-              onClick={() => router.push('/dashboard/response')}
-            >
-              Vezi tot
+          <div className="container mx-auto py-10 bg-white rounded-md shadow-sm p-4 flex flex-col items-center justify-center">
+            {events.length === 0 ? (
+              <h1 className="text-center text-black text-2xl font-bold">
+                Nu ai evenimente adaugate
+              </h1>
+            ) : (
+              <h1 className="text-center text-black text-2xl font-bold">
+                Vrei sa incerci si alt model?
+              </h1>
+            )}
+            <span className="text-center text-slate-500">
+              Ai la dispozitie un numar nelimitat de invitatii.
+            </span>
+            <Button className="mt-4 p-4" type="primary">
+              Creaza invitatie
             </Button>
           </div>
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
         </div>
-        <ActivityChart showActionButton />
-        <div className="dashboard-card quick-actions">
-          <h3 className="font-semibold">Actiuni rapide</h3>
-          <div className="quick-actions-container">
-            <div className="dotted-card quick-card">
-              <span>Planificator Excel</span>
-              <Button icon={<FileExcelFilled />} />
-            </div>
-            <div className="dotted-card quick-card">
-              <span>Todo list</span>
-              <Button
-                icon={<UnorderedListOutlined />}
-                onClick={() => setTodoOpen(true)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <TodoModal onClose={onModalClose} onOk={onModalOk} open={todoOpen} />
-    </div>
+      </SidebarInset>
+    </>
   )
 }
 

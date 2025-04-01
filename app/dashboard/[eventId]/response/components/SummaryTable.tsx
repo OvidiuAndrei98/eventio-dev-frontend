@@ -19,7 +19,7 @@ import {
   TableProps,
 } from 'antd'
 import './SummaryTable.css'
-import SadFaceIcon from '../../../../public/sad-face.svg'
+import SadFaceIcon from '@/public/sad-face.svg'
 import Image from 'next/image'
 import { useRef } from 'react'
 import { FilterDropdownProps } from 'antd/es/table/interface'

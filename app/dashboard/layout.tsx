@@ -1,47 +1,32 @@
 'use client'
+
 import '../../styles/globals.css'
 import './mock.css'
-
-import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider } from 'antd'
-import { usePathname, useRouter } from 'next/navigation'
-
-import { AppSidebar } from '@/app/dashboard/components/nav/app-sidebar'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
-import { useEffect, useState } from 'react'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { createContext, useEffect, useState } from 'react'
+import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
-const routeTitleMapper = {
-  dashboard: 'Panou de control',
-  response: 'Raspunsuri',
-  statistics: 'Statistici',
-}
+import router from 'next/router'
 
-type routeType = 'dashboard' | 'response' | 'statistics'
+export const UserContext = createContext(firebaseAuth.currentUser)
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [routeElements, setRouteElements] = useState<routeType[]>([])
-  const pathName = usePathname()
-
-  const router = useRouter()
+  const authedUser = firebaseAuth.currentUser
+  const [loggedInUser, setLoggedInUser] = useState(authedUser)
 
   useEffect(() => {
-    const pathsList = pathName.substring(1).split('/')
-    setRouteElements(pathsList as routeType[])
-  }, [pathName])
+    firebaseAuth.onAuthStateChanged(function (user) {
+      if (user) {
+        setLoggedInUser(user)
+      } else {
+        // No user is signed in.
+        // This always redirects back to the login screen.
+      }
+    })
+  }, [])
 
   const handleSideMenuNavigation = (info: { title: string; url: string }) => {
     router.push(info.url)
@@ -64,50 +49,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             }}
           >
             <AuthenticationBoundary>
-              <SidebarProvider>
-                <AppSidebar onClickNav={handleSideMenuNavigation} />
-                <SidebarInset>
-                  <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-                    <div className="flex items-center gap-2 px-4">
-                      <SidebarTrigger className="-ml-1" />
-                      <Separator
-                        orientation="vertical"
-                        className="mr-2 data-[orientation=vertical]:h-4"
-                      />
-                      <Breadcrumb>
-                        <BreadcrumbList>
-                          {routeElements.map((route, index) => {
-                            if (index == routeElements.length - 1) {
-                              return (
-                                <BreadcrumbItem key={index}>
-                                  <BreadcrumbPage>
-                                    {routeTitleMapper[route]}
-                                  </BreadcrumbPage>
-                                </BreadcrumbItem>
-                              )
-                            } else {
-                              return (
-                                <>
-                                  <BreadcrumbItem
-                                    className="hidden md:block"
-                                    key={index}
-                                  >
-                                    <BreadcrumbLink href="/dashboard">
-                                      {routeTitleMapper[route]}
-                                    </BreadcrumbLink>
-                                  </BreadcrumbItem>
-                                  <BreadcrumbSeparator className="hidden md:block" />
-                                </>
-                              )
-                            }
-                          })}
-                        </BreadcrumbList>
-                      </Breadcrumb>
-                    </div>
-                  </header>
-                  {children}
-                </SidebarInset>
-              </SidebarProvider>
+              <UserContext.Provider value={loggedInUser}>
+                <SidebarProvider>{children}</SidebarProvider>
+              </UserContext.Provider>
             </AuthenticationBoundary>
           </ConfigProvider>
         </AntdRegistry>
