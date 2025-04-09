@@ -37,8 +37,9 @@ const RegisterPageComponent = ({
         const userDoc: User = {
           userId: user.uid,
           email: user.email as string,
-          name: values.name,
-          surname: values.surname,
+          accountStatus: 'basic',
+          displayName: userCredential.user.displayName,
+          photoURL: userCredential.user.photoURL,
         }
         await setDoc(doc(db, 'users/' + user.uid), userDoc)
         localStorage.setItem(
