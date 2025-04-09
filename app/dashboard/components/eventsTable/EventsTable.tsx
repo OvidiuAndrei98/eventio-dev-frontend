@@ -25,6 +25,7 @@ interface DataTableProps<TValue> {
   data: EventInstance[]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventsTable = <_EventInstance, TValue>({
   columns,
   data,

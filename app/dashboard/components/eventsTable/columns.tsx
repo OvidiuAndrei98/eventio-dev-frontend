@@ -12,7 +12,6 @@ import {
 import { EventInstance } from '@/core/types'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, IceCream2, MoreHorizontal } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 
 export const columns: ColumnDef<EventInstance>[] = [
   {
@@ -81,7 +80,7 @@ export const columns: ColumnDef<EventInstance>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      // const event = row.original
+      const event = row.original
 
       return (
         <DropdownMenu>
@@ -97,7 +96,8 @@ export const columns: ColumnDef<EventInstance>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actiuni</DropdownMenuLabel>
             <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-              Administreaza invitatia
+              Administreaza invitatia{' '}
+              <span className="hidden">{event.eventName}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
               Previzualizeaza invitatia
