@@ -96,11 +96,11 @@ export const columns: ColumnDef<EventInstance>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actiuni</DropdownMenuLabel>
             <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-              Administreaza invitatia{' '}
+              Administreaza invitatia
               <span className="hidden">{event.eventName}</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-              Previzualizeaza invitatia
+              Previzualizeaza invitația
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
