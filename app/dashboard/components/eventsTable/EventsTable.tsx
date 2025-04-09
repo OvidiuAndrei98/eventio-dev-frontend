@@ -18,7 +18,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination } from './TablePagination'
-import { useRouter } from 'next/navigation'
 import { EventInstance } from '@/core/types'
 
 interface DataTableProps<TValue> {
@@ -26,12 +25,10 @@ interface DataTableProps<TValue> {
   data: EventInstance[]
 }
 
-const EventsTable = <EventInstance, TValue>({
+const EventsTable = <_EventInstance, TValue>({
   columns,
   data,
 }: DataTableProps<TValue>) => {
-  const router = useRouter()
-
   const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     data,
@@ -87,7 +84,7 @@ const EventsTable = <EventInstance, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Niciun rezultat.
               </TableCell>
             </TableRow>
           )}

@@ -8,19 +8,19 @@ import { createContext, useEffect, useState } from 'react'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { queryUserById } from '@/service/user/queryUserById'
+import { User } from '@/core/types'
+import { UserInfo } from 'firebase/auth'
 
-import router from 'next/router'
-
-export const UserContext = createContext(firebaseAuth.currentUser)
+export const UserContext = createContext<User>({} as User)
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const authedUser = firebaseAuth.currentUser
-  const [loggedInUser, setLoggedInUser] = useState(authedUser)
+  const [loggedInUser, setLoggedInUser] = useState<User>({} as User)
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(function (user) {
       if (user) {
-        setLoggedInUser(user)
+        getLoggedInUserData(user.uid, user)
       } else {
         // No user is signed in.
         // This always redirects back to the login screen.
@@ -28,8 +28,18 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     })
   }, [])
 
-  const handleSideMenuNavigation = (info: { title: string; url: string }) => {
-    router.push(info.url)
+  const getLoggedInUserData = async (
+    userId: string,
+    authedUserInfo: UserInfo
+  ) => {
+    try {
+      const user = await queryUserById(userId)
+      user.photoURL = authedUserInfo?.photoURL
+      user.displayName = authedUserInfo?.displayName
+      setLoggedInUser(user)
+    } catch (error) {
+      console.error('Error fetching user by ID:', error)
+    }
   }
 
   return (

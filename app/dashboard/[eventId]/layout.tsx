@@ -17,10 +17,12 @@ import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { createContext, use, useEffect, useState } from 'react'
 import { UserContext } from '../layout'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
-import { EventInstance } from '@/core/types'
+import { EventInstance, User } from '@/core/types'
 import { queryEventById } from '@/service/event/queryEventById'
 import { LoadingIndicator } from '@/lib/icons'
 import { AppSidebar } from './components/nav/app-sidebar'
+import { queryUserById } from '@/service/user/queryUserById'
+import { UserInfo } from 'firebase/auth'
 
 export const EventContext = createContext<EventInstance | null>(null)
 
@@ -42,8 +44,7 @@ const DashboardEventLayout = ({
   const [routeElements, setRouteElements] = useState<routeType[]>([])
   const pathName = usePathname()
   const router = useRouter()
-  const authedUser = firebaseAuth.currentUser
-  const [loggedInUser, setLoggedInUser] = useState(authedUser)
+  const [loggedInUser, setLoggedInUser] = useState<User>({} as User)
   const { eventId } = use(params)
   const [queryEventLoading, setQueryEventLoading] = useState(true)
   const [eventInstance, setEventInstance] = useState<EventInstance | null>(null)
@@ -61,7 +62,7 @@ const DashboardEventLayout = ({
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(function (user) {
       if (user) {
-        setLoggedInUser(user)
+        getLoggedInUserData(user.uid, user)
       } else {
         // No user is signed in.
         // This always redirects back to the login screen.
@@ -70,10 +71,10 @@ const DashboardEventLayout = ({
   }, [])
 
   useEffect(() => {
-    if (!loggedInUser) {
+    if (!loggedInUser.userId) {
       return
     }
-    queryEventById(eventId, loggedInUser.uid)
+    queryEventById(eventId, loggedInUser.userId)
       .then((event) => {
         setEventInstance(event)
         setQueryEventLoading(false)
@@ -82,6 +83,20 @@ const DashboardEventLayout = ({
         notFound()
       })
   }, [loggedInUser, eventId])
+
+  const getLoggedInUserData = async (
+    userId: string,
+    authedUserInfo: UserInfo
+  ) => {
+    try {
+      const user = await queryUserById(userId)
+      user.photoURL = authedUserInfo?.photoURL
+      user.displayName = authedUserInfo?.displayName
+      setLoggedInUser(user)
+    } catch (error) {
+      console.error('Error fetching user by ID:', error)
+    }
+  }
 
   const handleSideMenuNavigation = (info: { title: string; url: string }) => {
     router.push(info.url)

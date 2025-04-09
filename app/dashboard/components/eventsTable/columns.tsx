@@ -30,13 +30,12 @@ export const columns: ColumnDef<EventInstance>[] = [
       )
     },
     cell: ({ row }) => {
-      const router = useRouter()
       const event = row.original
       return (
         <div
           className="flex items-center gap-2 hover:text-[#B46ACB] cursor-pointer"
           onClick={() => {
-            router.push(`/dashboard/${row.original.eventId}`)
+            window.location.href = `/dashboard/${row.original.eventId}`
           }}
         >
           <IceCream2 />
@@ -82,7 +81,7 @@ export const columns: ColumnDef<EventInstance>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const event = row.original
+      // const event = row.original
 
       return (
         <DropdownMenu>

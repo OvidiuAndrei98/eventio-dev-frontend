@@ -9,9 +9,10 @@ import {
   SidebarMenuButton,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { NavMain } from './nav-main'
 import { NavUser } from './nav-user'
+import { UserContext } from '../../layout'
+import { Badge } from '@/components/ui/badge'
 
 export interface MenuItem {
   title: string
@@ -29,7 +30,7 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const user = firebaseAuth.currentUser
+  const user = React.useContext(UserContext)
 
   const data: MenuData = {
     navMain: [
@@ -62,7 +63,15 @@ export function AppSidebar({
               <Command className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">Eventio</span>
+              <div className="flex flex-row items-center gap-2">
+                <span className="truncate font-semibold">Eventio</span>
+                <Badge
+                  variant="default"
+                  className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+                >
+                  {user.accountStatus}
+                </Badge>
+              </div>
               <span className="truncate text-xs">Contul meu</span>
             </div>
           </a>

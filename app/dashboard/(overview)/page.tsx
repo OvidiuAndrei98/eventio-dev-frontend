@@ -1,28 +1,31 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
-import '../../styles/globals.css'
+import '../../../styles/globals.css'
 import { EventInstance } from '@/core/types'
-import { UserContext } from './layout'
+import { UserContext } from '../layout'
 import { queryEventsByUser } from '@/service/event/queryEventsByUser'
-import { AppSidebar } from './components/nav/app-sidebar'
+import { AppSidebar } from '../components/nav/app-sidebar'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
-import EventsTable from './components/eventsTable/EventsTable'
-import { columns } from './components/eventsTable/columns'
+import EventsTable from '../components/eventsTable/EventsTable'
+import { columns } from '../components/eventsTable/columns'
 import { Button } from 'antd'
 import { PlusIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { handleSideMenuNavigation } from '@/lib/utils'
 
 const DashboardPage = () => {
   const [queryEventLoading, setQueryEventLoading] = useState(true)
   const [events, setEvents] = useState<EventInstance[]>([])
   const user = useContext(UserContext)
+  const router = useRouter()
 
   useEffect(() => {
-    if (!user) {
+    if (!user.userId) {
       return
     }
-    queryEventsByUser(user.uid).then((events) => {
+    queryEventsByUser(user.userId).then((events) => {
       setEvents(events)
       setQueryEventLoading(false)
     })
@@ -30,7 +33,9 @@ const DashboardPage = () => {
 
   return (
     <>
-      <AppSidebar onClickNav={() => {}} />
+      <AppSidebar
+        onClickNav={(info) => handleSideMenuNavigation(info, router)}
+      />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">

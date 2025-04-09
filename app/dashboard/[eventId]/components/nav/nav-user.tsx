@@ -24,12 +24,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { User } from 'firebase/auth'
 import NoProfile from '@/public/no-photo.svg'
 import Image from 'next/image'
+import { useContext } from 'react'
+import { AuthenticationContext } from '@/core/AuthenticationBoundary'
+import { useRouter } from 'next/navigation'
+import { User } from '@/core/types'
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar()
+  const authContext = useContext(AuthenticationContext)
+  const router = useRouter()
 
   return (
     <SidebarMenu>
@@ -98,26 +103,42 @@ export function NavUser({ user }: { user: User | null }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {user?.accountStatus !== 'ultra' && <DropdownMenuSeparator />}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgradeaza la premium
-              </DropdownMenuItem>
+              {user?.accountStatus === 'basic' && (
+                <DropdownMenuItem className="hover:!bg-sidebar-accent">
+                  <Sparkles />
+                  Upgradeaza la Premium
+                </DropdownMenuItem>
+              )}
+              {user?.accountStatus === 'premium' && (
+                <DropdownMenuItem className="hover:!bg-sidebar-accent">
+                  <Sparkles />
+                  Upgradeaza la Ultra
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                className="hover:!bg-sidebar-accent"
+                onClick={() => {
+                  router.push('/dashboard/account')
+                }}
+              >
                 <BadgeCheck />
                 Cont
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="hover:!bg-sidebar-accent">
                 <CreditCard />
                 Facturare
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              className="hover:!bg-sidebar-accent"
+              onClick={() => authContext.logout()}
+            >
               <LogOut />
               Iesi din cont
             </DropdownMenuItem>

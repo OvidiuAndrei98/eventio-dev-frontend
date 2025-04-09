@@ -182,6 +182,7 @@ a {
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
   --sidebar-foxus-ring: transparent;
+  --primary-color: var(--primary-color);
 }
 
 .dark {

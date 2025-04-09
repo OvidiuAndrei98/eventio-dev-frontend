@@ -38,6 +38,7 @@ enum AuthenticationState {
 export const AuthenticationContext = React.createContext({
   authenticationState: AuthenticationState.Unknown,
   userDetails: {} as TokenValues,
+  logout: () => {},
 })
 
 /**
@@ -153,7 +154,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           setAuthenticationState(AuthenticationState.Authenticated)
 
           try {
-            localStorage.setItem('auth_token', token)
+            localStorage.setItem(AuthenticationTokenKey, token)
             if (pathname === '/login') {
               router.push('/dashboard')
             }
@@ -165,6 +166,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
         } else {
           // Otherwise require users to log in again
           setAuthenticationState(AuthenticationState.Unauthenticated)
+          localStorage.removeItem(AuthenticationTokenKey)
           firebaseAuth.signOut()
         }
       }
@@ -196,6 +198,16 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
         })
     } catch {
       setLoggingIn(false)
+    }
+  }
+
+  const logout = () => {
+    try {
+      localStorage.removeItem(AuthenticationTokenKey)
+      firebaseAuth.signOut()
+      window.location.reload()
+    } catch (error) {
+      console.log('error signing out')
     }
   }
 
@@ -259,6 +271,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
             authenticationState,
             // NOTE: When state is authenticated, tokenValues is non-null
             userDetails: tokenValues!,
+            logout: logout,
           }}
         >
           {props.children ?? null}
