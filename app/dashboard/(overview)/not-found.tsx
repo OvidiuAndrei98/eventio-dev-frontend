@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-export default () => (
+export const NotFound = () => (
   <html lang="en">
     <body>
       <div style={styles.container}>
