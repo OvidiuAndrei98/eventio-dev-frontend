@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,

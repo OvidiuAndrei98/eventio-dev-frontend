@@ -3,7 +3,6 @@
 import React, { useContext } from 'react'
 import UploadAvatar from '../components/avatarUploader/UploadAvatar'
 import { UserContext } from '../components/layoutWithSuspense/LayoutWithSuspense'
-import { LoadingIndicator } from '@/lib/icons'
 
 const AccountPage: React.FC = () => {
   const user = useContext(UserContext).user
