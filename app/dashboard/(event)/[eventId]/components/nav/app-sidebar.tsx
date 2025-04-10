@@ -40,7 +40,7 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const user = useContext(UserContext)
+  const user = useContext(UserContext).user
 
   const data: MenuData = {
     navMain: [

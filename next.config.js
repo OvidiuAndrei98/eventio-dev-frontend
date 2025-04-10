@@ -5,4 +5,7 @@ module.exports = {
     appDir: true,
     esmExternals: 'loose',
   },
+  images: {
+    domains: ['lh3.googleusercontent.com'],
+  },
 }

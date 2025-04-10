@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-export const NotFound = () => (
+const NotFound = () => (
   <div style={styles.container}>
     <h1 style={styles.title}>404 - Page Not Found</h1>
     <p style={styles.message}>
@@ -41,3 +41,5 @@ const styles = {
     textDecoration: 'none',
   },
 }
+
+export default NotFound

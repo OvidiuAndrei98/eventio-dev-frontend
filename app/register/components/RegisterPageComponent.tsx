@@ -5,14 +5,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth'
-import db from '../../../lib/firebase/fireStore'
-import { setDoc, doc } from 'firebase/firestore'
 import { User } from '@/core/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import LoginImage from '../../../public/LoginImage.svg'
 import { toast } from 'sonner'
+import { addUser } from '@/service/user/addUser'
 
 const RegisterPageComponent = ({
   className,
@@ -41,7 +40,7 @@ const RegisterPageComponent = ({
           displayName: userCredential.user.displayName,
           photoURL: userCredential.user.photoURL,
         }
-        await setDoc(doc(db, 'users/' + user.uid), userDoc)
+        await addUser(userDoc)
         localStorage.setItem(
           'auth_token',
           JSON.stringify(await user.getIdToken())

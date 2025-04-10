@@ -11,6 +11,8 @@ import { LoginForm } from '@/app/login/components/login-form'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
+import { addUser } from '@/service/user/addUser'
+import { User } from './types'
 
 /**
  * Contains constants which describe the authentication state of the current session.
@@ -215,7 +217,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
     setLoggingIn(true)
     const auth = firebaseAuth
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result)
         if (credential) {
@@ -223,6 +225,15 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           if (token) {
             setToken(token)
             setLoggingIn(false)
+            //TODO De adaugat name si surrname in db in user
+            const user: User = {
+              accountStatus: 'basic',
+              userId: result.user.uid,
+              email: result.user.email as string,
+              displayName: result.user.displayName,
+              photoURL: result.user.photoURL,
+            }
+            await addUser(user)
           }
         }
       })

@@ -30,7 +30,7 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const user = React.useContext(UserContext)
+  const user = React.useContext(UserContext).user
 
   const data: MenuData = {
     navMain: [
@@ -65,12 +65,14 @@ export function AppSidebar({
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
                 <span className="truncate font-semibold">Eventio</span>
-                <Badge
-                  variant="default"
-                  className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
-                >
-                  {user.accountStatus}
-                </Badge>
+                {user.accountStatus && user.accountStatus !== 'basic' && (
+                  <Badge
+                    variant="default"
+                    className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+                  >
+                    {user.accountStatus}
+                  </Badge>
+                )}
               </div>
               <span className="truncate text-xs">Contul meu</span>
             </div>

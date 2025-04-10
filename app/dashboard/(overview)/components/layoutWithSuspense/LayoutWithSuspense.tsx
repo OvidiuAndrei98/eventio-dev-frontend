@@ -13,22 +13,27 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { queryUserById } from '@/service/user/queryUserById'
-import { User } from '@/core/types'
+import { User, UserAuthContext } from '@/core/types'
 import { UserInfo } from 'firebase/auth'
 import { Separator } from '@/components/ui/separator'
 import { AppSidebar } from '../../components/nav/app-sidebar'
 import { handleSideMenuNavigation } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
-export const UserContext = createContext<User>({} as User)
+// De mutat in authentication boundary
+export const UserContext = createContext<UserAuthContext>({
+  userLoading: true,
+} as UserAuthContext)
 
 const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
   const [loggedInUser, setLoggedInUser] = useState<User>({} as User)
+  const [userLoading, setUserLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(function (user) {
       if (user) {
+        setUserLoading(true)
         getLoggedInUserData(user.uid, user)
       } else {
         // No user is signed in.
@@ -46,7 +51,9 @@ const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
       user.photoURL = authedUserInfo?.photoURL
       user.displayName = authedUserInfo?.displayName
       setLoggedInUser(user)
+      setUserLoading(false)
     } catch (error) {
+      setUserLoading(false)
       console.error('Error fetching user by ID:', error)
     }
   }
@@ -66,7 +73,9 @@ const LayoutWithSuspense = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <AuthenticationBoundary>
-          <UserContext.Provider value={loggedInUser}>
+          <UserContext.Provider
+            value={{ user: loggedInUser, userLoading: userLoading }}
+          >
             <SidebarProvider>
               <AppSidebar
                 onClickNav={(info) => handleSideMenuNavigation(info, router)}

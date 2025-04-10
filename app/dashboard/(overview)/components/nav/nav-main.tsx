@@ -12,10 +12,10 @@ import { useContext } from 'react'
 import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
-  const userContext = useContext(UserContext)
+  const user = useContext(UserContext).user
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{userContext?.displayName}</SidebarGroupLabel>
+      <SidebarGroupLabel>{user?.displayName}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem

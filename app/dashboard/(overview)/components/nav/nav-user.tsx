@@ -47,16 +47,12 @@ export function NavUser({ user }: { user: User | null }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 {user ? (
-                  user?.photoURL ? (
-                    <AvatarImage src={user?.photoURL} />
-                  ) : (
-                    <Image
-                      alt="profile-image"
-                      src={user?.photoURL ?? NoProfile}
-                      width={32}
-                      height={32}
-                    />
-                  )
+                  <Image
+                    alt="profile-image"
+                    src={user?.photoURL ?? NoProfile}
+                    width={32}
+                    height={32}
+                  />
                 ) : (
                   <Image alt="profile-image" src={NoProfile} />
                 )}
@@ -80,16 +76,12 @@ export function NavUser({ user }: { user: User | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   {user ? (
-                    user?.photoURL ? (
-                      <AvatarImage src={user?.photoURL} />
-                    ) : (
-                      <Image
-                        alt="profile-image"
-                        src={user?.photoURL ?? NoProfile}
-                        width={32}
-                        height={32}
-                      />
-                    )
+                    <Image
+                      alt="profile-image"
+                      src={user?.photoURL ?? NoProfile}
+                      width={32}
+                      height={32}
+                    />
                   ) : (
                     <Image alt="profile-image" src={NoProfile} />
                   )}

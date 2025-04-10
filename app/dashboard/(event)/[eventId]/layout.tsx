@@ -52,6 +52,7 @@ const DashboardEventLayout = ({
   const { eventId } = use(params)
   const [queryEventLoading, setQueryEventLoading] = useState(true)
   const [eventInstance, setEventInstance] = useState<EventInstance | null>(null)
+  const [userLoading, setUserLoading] = useState(true)
 
   useEffect(() => {
     const pathsList = pathName
@@ -63,9 +64,11 @@ const DashboardEventLayout = ({
     setRouteElements(pathsList as routeType[])
   }, [pathName, eventId])
 
+  // Needs to be moved in one place in auth boundary
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(function (user) {
       if (user) {
+        setUserLoading(true)
         getLoggedInUserData(user.uid, user)
       } else {
         // No user is signed in.
@@ -97,8 +100,10 @@ const DashboardEventLayout = ({
       user.photoURL = authedUserInfo?.photoURL
       user.displayName = authedUserInfo?.displayName
       setLoggedInUser(user)
+      setUserLoading(false)
     } catch (error) {
       console.error('Error fetching user by ID:', error)
+      setUserLoading(false)
     }
   }
 
@@ -129,7 +134,9 @@ const DashboardEventLayout = ({
             {queryEventLoading ? (
               <LoadingIndicator />
             ) : (
-              <UserContext.Provider value={loggedInUser}>
+              <UserContext.Provider
+                value={{ user: loggedInUser, userLoading: userLoading }}
+              >
                 <EventContext.Provider value={eventInstance}>
                   <SidebarProvider>
                     <AppSidebar

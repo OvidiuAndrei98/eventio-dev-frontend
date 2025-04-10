@@ -13,10 +13,10 @@ import { UserContext } from './components/layoutWithSuspense/LayoutWithSuspense'
 const DashboardPage = () => {
   const [queryEventLoading, setQueryEventLoading] = useState(true)
   const [events, setEvents] = useState<EventInstance[]>([])
-  const user = useContext(UserContext)
+  const user = useContext(UserContext).user
 
   useEffect(() => {
-    if (!user.userId) {
+    if (!user?.userId) {
       return
     }
     queryEventsByUser(user.userId).then((events) => {

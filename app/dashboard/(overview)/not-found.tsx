@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React from 'react'
 
-export const NotFound = () => (
+const NotFound = () => (
   <html lang="en">
     <body>
       <div style={styles.container}>
@@ -45,3 +45,5 @@ const styles = {
     textDecoration: 'none',
   },
 }
+
+export default NotFound
