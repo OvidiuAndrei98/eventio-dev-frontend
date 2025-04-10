@@ -1,19 +1,24 @@
-'use client' // Error boundaries must be Client Components
+'use client'
 
+import Error from 'next/error'
 import Link from 'next/link'
-export default function NotFound() {
-  return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>404 - Page Not Found</h1>
-      <p style={styles.message}>
-        Sorry, the page you are looking for does not exist.
-      </p>
-      <Link href="/dashboard" style={styles.link}>
-        Go back to Home
-      </Link>
-    </div>
-  )
-}
+import React from 'react'
+
+export default () => (
+  <html lang="en">
+    <body>
+      <div style={styles.container}>
+        <h1 style={styles.title}>404 - Page Not Found</h1>
+        <p style={styles.message}>
+          Sorry, the page you are looking for does not exist.
+        </p>
+        <Link href="/dashboard" style={styles.link}>
+          Go back to Home
+        </Link>
+      </div>
+    </body>
+  </html>
+)
 
 const styles = {
   container: {

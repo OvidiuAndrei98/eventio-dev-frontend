@@ -2,9 +2,9 @@ import { GetProp, Upload, UploadProps } from 'antd'
 import Image from 'next/image'
 import React, { useContext, useState } from 'react'
 import NoProfile from '@/public/no-photo.svg'
-import { UserContext } from '../../layout'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { uploadProfilePicture } from '@/service/user/uploadProfilePicture'
+import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
