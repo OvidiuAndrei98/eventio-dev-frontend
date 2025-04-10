@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sidebar'
 import { MenuItem } from './app-sidebar'
 import { useContext } from 'react'
-import { UserContext } from '../../layout'
+import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
   const userContext = useContext(UserContext)

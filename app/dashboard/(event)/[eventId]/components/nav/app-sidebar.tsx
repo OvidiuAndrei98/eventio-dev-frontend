@@ -9,9 +9,9 @@ import {
   SquareTerminal,
 } from 'lucide-react'
 
-import { NavMain } from '@/app/dashboard/[eventId]/components/nav/nav-main'
-import { NavProjects } from '@/app/dashboard/[eventId]/components/nav/nav-projects'
-import { NavUser } from '@/app/dashboard/[eventId]/components/nav/nav-user'
+import { NavMain } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-main'
+import { NavProjects } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-projects'
+import { NavUser } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-user'
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +21,8 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { Badge } from '@/components/ui/badge'
-import { UserContext } from '@/app/dashboard/layout'
 import { useContext } from 'react'
+import { UserContext } from '@/app/dashboard/(overview)/components/layoutWithSuspense/LayoutWithSuspense'
 
 export interface MenuItem {
   title: string
