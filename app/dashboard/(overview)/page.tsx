@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import '@/styles/globals.css'
 import { EventInstance } from '@/core/types'
 import { queryEventsByUser } from '@/service/event/queryEventsByUser'
@@ -8,12 +8,12 @@ import EventsTable from './components/eventsTable/EventsTable'
 import { columns } from './components/eventsTable/columns'
 import { Button } from 'antd'
 import { PlusIcon } from 'lucide-react'
-import { UserContext } from './components/layoutWithSuspense/LayoutWithSuspense'
+import { useAuth } from '@/core/AuthenticationBoundary'
 
 const DashboardPage = () => {
   const [queryEventLoading, setQueryEventLoading] = useState(true)
   const [events, setEvents] = useState<EventInstance[]>([])
-  const user = useContext(UserContext).user
+  const user = useAuth().userDetails
 
   useEffect(() => {
     if (!user?.userId) {

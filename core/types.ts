@@ -4,6 +4,8 @@ export interface User {
   accountStatus: 'basic' | 'premium' | 'ultra'
   photoURL: string | null | undefined
   displayName: string | null | undefined
+  name?: string
+  surname?: string
 }
 
 export interface UserDTO {
@@ -21,17 +23,4 @@ export interface EventInstance {
   eventType: string
   eventPlan: string
   eventActive: boolean
-}
-
-export interface UserAuthContext {
-  user: User
-  userLoading: boolean
-  // loginWithGoogle: () => void
-  // loginWithEmailAndPassword: (email: string, password: string) => void
-  // logout: () => void
-  // registerUser: (userData: UserDTO) => void
-  // loggingIn: boolean
-  // token: string | null
-  // setToken: (token: string | null) => void
-  // setLoggingIn: (loggingIn: boolean) => void
 }

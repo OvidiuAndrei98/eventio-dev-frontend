@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { addUser } from '@/service/user/addUser'
 import { User } from './types'
+import { queryUserById } from '@/service/user/queryUserById'
+import * as jose from 'jose'
 
 /**
  * Contains constants which describe the authentication state of the current session.
@@ -39,7 +41,8 @@ enum AuthenticationState {
  */
 export const AuthenticationContext = React.createContext({
   authenticationState: AuthenticationState.Unknown,
-  userDetails: {} as TokenValues,
+  userDetails: {} as User,
+  isLoggingIn: true,
   logout: () => {},
 })
 
@@ -69,9 +72,9 @@ interface TokenValues {
   email: string
 
   /**
-   * The ID of the system for which the token was issued.
+   * The ID of the logged in user.
    */
-  client_id: string
+  user_id: string
 
   /**
    * The ID of the tenant to which the user belongs.
@@ -121,11 +124,10 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
   )
   const [token, setToken] = useState<string>()
   const [tokenValues, setTokenValues] = useState<TokenValues>()
+  const [loggedInUser, setLoggedInUser] = useState<User>({} as User)
+  const [userLoading, setUserLoading] = useState(true)
   const router = useRouter()
   const pathname = usePathname()
-
-  // Displays a loading indicator while a login request is in progress
-  const [isLoggingIn, setLoggingIn] = useState(false)
 
   useEffect(() => {
     try {
@@ -153,8 +155,8 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
         setTokenValues(tokenValues)
         if (tokenValues.exp * 1000 > Date.now()) {
           // If the token is valid, set the authentication state as authenticated
-          setAuthenticationState(AuthenticationState.Authenticated)
-
+          getLoggedInUserData(tokenValues.user_id ?? tokenValues.email)
+          setUserLoading(false)
           try {
             localStorage.setItem(AuthenticationTokenKey, token)
             if (pathname === '/login') {
@@ -175,11 +177,23 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
     }
   }, [token])
 
+  const getLoggedInUserData = async (userId: string) => {
+    try {
+      const user = await queryUserById(userId)
+      setLoggedInUser(user)
+      setUserLoading(false)
+      setAuthenticationState(AuthenticationState.Authenticated)
+    } catch (error) {
+      console.error('Error fetching user by ID:', error)
+      setUserLoading(false)
+    }
+  }
+
   /**
    * Redirects to the SSO login page to obtain the authorization token.
    */
   async function login(email: string, password: string) {
-    setLoggingIn(true)
+    setUserLoading(true)
     // Obtain the URL to the SSO authentication page and redirect to it
     try {
       const auth = firebaseAuth
@@ -189,17 +203,15 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           const user = userCredential.user
           user.getIdToken().then((r) => {
             setToken(r)
-            setLoggingIn(false)
           })
         })
         .catch((error) => {
           // const errorCode = error.code;
           // const errorMessage = error.message;
           console.log(error)
-          setLoggingIn(false)
         })
     } catch {
-      setLoggingIn(false)
+      setUserLoading(false)
     }
   }
 
@@ -214,7 +226,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
   }
 
   const loginWithGoogle = () => {
-    setLoggingIn(true)
+    setUserLoading(true)
     const auth = firebaseAuth
     signInWithPopup(auth, provider)
       .then(async (result) => {
@@ -223,8 +235,18 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
         if (credential) {
           const token = credential.idToken
           if (token) {
-            setToken(token)
-            setLoggingIn(false)
+            const decodedToken = DecodeJWT(token)!
+            decodedToken['user_id'] = result.user.uid
+            const mySecret = new TextEncoder().encode(
+              'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2'
+            )
+            const newToken = await new jose.SignJWT(
+              decodedToken as unknown as jose.JWTPayload
+            )
+              .setProtectedHeader({ alg: 'HS256' })
+              .sign(mySecret)
+
+            setToken(newToken)
             //TODO De adaugat name si surrname in db in user
             const user: User = {
               accountStatus: 'basic',
@@ -239,7 +261,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       })
       .catch((error) => {
         console.log(error)
-        setLoggingIn(false)
+        setUserLoading(false)
       })
   }
 
@@ -268,7 +290,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           <div className="w-full max-w-sm md:max-w-3xl">
             <LoginForm
               onLogin={login}
-              loggingIn={isLoggingIn}
+              loggingIn={userLoading}
               onLoginWithGoogle={loginWithGoogle}
             />
           </div>
@@ -280,8 +302,9 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
         <AuthenticationContext.Provider
           value={{
             authenticationState,
-            // NOTE: When state is authenticated, tokenValues is non-null
-            userDetails: tokenValues!,
+            // NOTE: When state is authenticated, loggedInUser is non-null
+            userDetails: loggedInUser,
+            isLoggingIn: userLoading,
             logout: logout,
           }}
         >

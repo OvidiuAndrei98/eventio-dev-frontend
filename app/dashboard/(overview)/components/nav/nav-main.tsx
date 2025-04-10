@@ -8,11 +8,10 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { MenuItem } from './app-sidebar'
-import { useContext } from 'react'
-import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
+import { useAuth } from '@/core/AuthenticationBoundary'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
-  const user = useContext(UserContext).user
+  const user = useAuth().userDetails
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{user?.displayName}</SidebarGroupLabel>

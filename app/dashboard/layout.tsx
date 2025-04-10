@@ -1,8 +1,11 @@
-import { ConfigProvider } from 'antd'
-import { AntdRegistry } from '@ant-design/nextjs-registry'
-import '../../styles/globals.css'
+'use client'
+import '@/styles/globals.css'
 
-const LoginLayout = ({ children }: { children: React.ReactNode }) => {
+import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { ConfigProvider } from 'antd'
+
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" style={{ scrollBehavior: 'smooth' }}>
       <body>
@@ -19,7 +22,7 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            {children}
+            <AuthenticationBoundary>{children}</AuthenticationBoundary>
           </ConfigProvider>
         </AntdRegistry>
       </body>
@@ -27,4 +30,4 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export default LoginLayout
+export default AppLayout

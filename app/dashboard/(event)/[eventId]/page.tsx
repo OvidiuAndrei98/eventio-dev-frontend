@@ -92,7 +92,9 @@ const DashboardEventPage = () => {
             </div>
             <Button
               type="default"
-              onClick={() => router.push('/dashboard/response')}
+              onClick={() =>
+                router.push(`/dashboard/${eventContext?.eventId}/response`)
+              }
             >
               Vezi tot
             </Button>

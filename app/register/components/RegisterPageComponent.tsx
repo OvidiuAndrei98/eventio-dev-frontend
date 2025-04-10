@@ -36,8 +36,10 @@ const RegisterPageComponent = ({
         const userDoc: User = {
           userId: user.uid,
           email: user.email as string,
+          name: values.name,
+          surname: values.surname,
           accountStatus: 'basic',
-          displayName: userCredential.user.displayName,
+          displayName: values.surname + ' ' + values.name,
           photoURL: userCredential.user.photoURL,
         }
         await addUser(userDoc)

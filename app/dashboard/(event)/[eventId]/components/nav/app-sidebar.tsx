@@ -21,8 +21,9 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/core/AuthenticationBoundary'
 import { useContext } from 'react'
-import { UserContext } from '@/app/dashboard/(overview)/components/layoutWithSuspense/LayoutWithSuspense'
+import { EventContext } from '../../layout'
 
 export interface MenuItem {
   title: string
@@ -40,25 +41,26 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const user = useContext(UserContext).user
+  const user = useAuth().userDetails
+  const eventInstance = useContext(EventContext)
 
   const data: MenuData = {
     navMain: [
       {
         title: 'Panou de control',
-        url: '/dashboard',
+        url: `/dashboard/${eventInstance?.eventId}`,
         icon: <SquareTerminal />,
         onClick: onClickNav,
       },
       {
         title: 'Raspunsuri',
-        url: '/dashboard/response',
+        url: `/dashboard/${eventInstance?.eventId}/response`,
         icon: <Bot />,
         onClick: onClickNav,
       },
       {
         title: 'Statistici',
-        url: '/dashboard/statistics',
+        url: `/dashboard/${eventInstance?.eventId}/statistics`,
         icon: <BookOpen />,
         onClick: onClickNav,
       },
@@ -116,12 +118,14 @@ export function AppSidebar({
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
                 <span className="truncate font-semibold">Eventio</span>
-                <Badge
-                  variant="default"
-                  className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
-                >
-                  {user.accountStatus}
-                </Badge>
+                {user.accountStatus && user.accountStatus !== 'basic' && (
+                  <Badge
+                    variant="default"
+                    className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+                  >
+                    {user.accountStatus}
+                  </Badge>
+                )}
               </div>
               <span className="truncate text-xs">dashboard</span>
             </div>

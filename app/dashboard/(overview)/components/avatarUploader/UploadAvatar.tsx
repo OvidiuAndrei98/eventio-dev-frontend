@@ -1,10 +1,10 @@
 import { GetProp, Upload, UploadProps } from 'antd'
 import Image from 'next/image'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NoProfile from '@/public/no-photo.svg'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { uploadProfilePicture } from '@/service/user/uploadProfilePicture'
-import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
+import { useAuth } from '@/core/AuthenticationBoundary'
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0]
 
@@ -27,7 +27,7 @@ const beforeUpload = (file: FileType) => {
 }
 
 const UploadAvatar: React.FC = () => {
-  const user = useContext(UserContext).user
+  const user = useAuth().userDetails
   // const [form] = Form.useForm()
   // const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(

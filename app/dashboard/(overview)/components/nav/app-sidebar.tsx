@@ -12,7 +12,7 @@ import {
 import { NavMain } from './nav-main'
 import { NavUser } from './nav-user'
 import { Badge } from '@/components/ui/badge'
-import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
+import { useAuth } from '@/core/AuthenticationBoundary'
 
 export interface MenuItem {
   title: string
@@ -30,7 +30,7 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   onClickNav: (info: { title: string; url: string }) => void
 }) {
-  const user = React.useContext(UserContext).user
+  const user = useAuth().userDetails
 
   const data: MenuData = {
     navMain: [

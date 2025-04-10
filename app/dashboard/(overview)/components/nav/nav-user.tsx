@@ -27,14 +27,13 @@ import {
 import NoProfile from '@/public/no-photo.svg'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { AuthenticationContext } from '@/core/AuthenticationBoundary'
-import { useContext } from 'react'
+import { useAuth } from '@/core/AuthenticationBoundary'
 import { User } from '@/core/types'
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar()
   const router = useRouter()
-  const authContext = useContext(AuthenticationContext)
+  const logout = useAuth().logout
 
   return (
     <SidebarMenu>
@@ -128,7 +127,7 @@ export function NavUser({ user }: { user: User | null }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="hover:!bg-sidebar-accent"
-              onClick={() => authContext.logout()}
+              onClick={() => logout()}
             >
               <LogOut />
               Iesi din cont
