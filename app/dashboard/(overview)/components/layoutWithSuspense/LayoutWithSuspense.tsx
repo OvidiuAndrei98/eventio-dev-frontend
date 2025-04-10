@@ -4,7 +4,7 @@ import '@/styles/globals.css'
 import '../../mock.css'
 import { ConfigProvider } from 'antd'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { createContext, Suspense, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
 import {

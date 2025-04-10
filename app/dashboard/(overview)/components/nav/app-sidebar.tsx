@@ -12,8 +12,6 @@ import {
 import { NavMain } from './nav-main'
 import { NavUser } from './nav-user'
 import { Badge } from '@/components/ui/badge'
-import { Suspense } from 'react'
-import { LoadingIndicator } from '@/lib/icons'
 import { UserContext } from '../layoutWithSuspense/LayoutWithSuspense'
 
 export interface MenuItem {

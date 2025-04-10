@@ -61,7 +61,7 @@ const DashboardEventLayout = ({
         return path !== '' && path !== eventId
       })
     setRouteElements(pathsList as routeType[])
-  }, [pathName])
+  }, [pathName, eventId])
 
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(function (user) {
