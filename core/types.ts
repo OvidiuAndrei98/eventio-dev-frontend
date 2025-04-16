@@ -23,4 +23,41 @@ export interface EventInstance {
   eventType: string
   eventPlan: string
   eventActive: boolean
+  eventTableOrganization: eventTableOrganization
+}
+
+export interface Guest {
+  id: string
+  guestInfo: {
+    email: string
+    name: string
+  }
+  eventId: string
+  tableId: string
+}
+
+export interface TableElement {
+  elementId: string
+  name: string
+  positions: { x: number; y: number }
+}
+
+export interface eventTableOrganization {
+  elements: TableElement[]
+}
+
+export interface UseDraggableArguments {
+  id: string | number
+  attributes?: {
+    role?: string
+    roleDescription?: string
+    tabIndex?: number
+  }
+  data?: Record<string, any>
+  disabled?: boolean
+}
+
+export interface UseDroppableArguments {
+  id: string | number
+  data?: Record<string, unknown>
 }

@@ -66,7 +66,7 @@ export function AppSidebar({
       },
       {
         title: 'Organizare',
-        url: '#',
+        url: `/dashboard/${eventInstance?.eventId}/tables`,
         icon: <Settings2 />,
         onClick: onClickNav,
       },
