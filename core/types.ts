@@ -27,7 +27,7 @@ export interface EventInstance {
 }
 
 export interface Guest {
-  id: string
+  guestId: string
   guestInfo: {
     email: string
     name: string
@@ -36,14 +36,16 @@ export interface Guest {
   tableId: string
 }
 
-export interface TableElement {
+export interface CanvasElement {
   elementId: string
   name: string
   positions: { x: number; y: number }
+  type: string
+  typeId: string
 }
 
 export interface eventTableOrganization {
-  elements: TableElement[]
+  elements: CanvasElement[]
 }
 
 export interface UseDraggableArguments {
@@ -60,4 +62,9 @@ export interface UseDraggableArguments {
 export interface UseDroppableArguments {
   id: string | number
   data?: Record<string, unknown>
+}
+
+export interface DropdownOption {
+  label: string
+  value: string
 }

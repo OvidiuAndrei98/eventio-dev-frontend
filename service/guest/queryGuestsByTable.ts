@@ -8,8 +8,9 @@ import {
 import db from '../../lib/firebase/fireStore'
 import { Guest } from '@/core/types'
 
-export const queryConfirmedGuestsByEventId = async (
-  eventId: string
+export const queryGuestsByTable = async (
+  eventId: string,
+  tableId: string
 ): Promise<Guest[]> => {
   try {
     const guests: DocumentData[] = []
@@ -17,7 +18,7 @@ export const queryConfirmedGuestsByEventId = async (
       collection(db, 'guest_registry'),
       where('eventId', '==', eventId),
       where('confirmation', '==', 'confirmed'),
-      where('tableId', '==', null)
+      where('tableId', '==', tableId)
     )
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
@@ -27,7 +28,7 @@ export const queryConfirmedGuestsByEventId = async (
 
     return guests as Guest[]
   } catch (error) {
-    console.error('Error fetching guests for event:', error)
+    console.error('Error fetching guests for table:', error)
     throw error
   }
 }

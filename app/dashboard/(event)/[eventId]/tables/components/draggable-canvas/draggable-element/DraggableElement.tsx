@@ -7,9 +7,13 @@ import { on } from 'events'
 const DraggableElement = ({
   name,
   icon,
+  type,
+  typeId,
 }: {
   name: string
   icon: StaticImageData
+  type: string
+  typeId: string
 }) => {
   const id = useRef(nanoid())
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -19,7 +23,13 @@ const DraggableElement = ({
       tabIndex: 0,
     },
     id: id.current,
-    data: { name: name, id: id, fromSideBar: true, icon: icon },
+    data: {
+      name: name,
+      typeId: typeId,
+      fromSideBar: true,
+      icon: icon,
+      type: type,
+    },
   })
 
   const style = {
