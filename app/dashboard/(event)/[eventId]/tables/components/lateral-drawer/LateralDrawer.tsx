@@ -8,24 +8,33 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { CanvasElement, DropdownOption, Guest } from '@/core/types'
+import { CanvasElement, DropdownOption, EventInstance } from '@/core/types'
+import { updateTableNameById } from '@/service/event/updateTableNameById'
 import { assignTableToGuests } from '@/service/guest/assignTableToGuest'
 import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
 import { DeleteOutlined } from '@ant-design/icons'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, FormProps, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+
+type FieldType = {
+  name: string
+}
 
 const LateralDrawer = ({
   tableElement,
   eventId,
   tableEditActive,
   setTableEditActive,
+  setEventInstance,
 }: {
-  tableElement: CanvasElement | null
+  tableElement: CanvasElement
   eventId: string
   tableEditActive: boolean
   setTableEditActive: (state: boolean) => void
+  setEventInstance: (event: EventInstance) => void
 }) => {
+  const [form] = Form.useForm()
   const [addGuestsOpen, setAddGuestsOpen] = useState(false)
   const [tableGuests, setTableGuests] = useState<DropdownOption[]>([])
   const [removedGuestsList, setRemovedGuestsList] = useState<DropdownOption[]>(
@@ -50,6 +59,7 @@ const LateralDrawer = ({
 
   useEffect(() => {
     queryTableQuests()
+    form.setFieldValue('name', tableElement.name)
   }, [tableElement?.elementId, tableEditActive])
 
   const handleGuestsDelete = (guest: DropdownOption) => {
@@ -70,10 +80,27 @@ const LateralDrawer = ({
     }
   }
 
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    const { name } = values
+    const updatedEvent = await updateTableNameById(
+      name,
+      tableElement?.elementId,
+      eventId
+    )
+    updateGuestsTableRef()
+    setEventInstance(updatedEvent)
+    toast.success('Masa actualizata cu succes')
+    setTableEditActive(false)
+  }
+
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
+    toast.error('Masa nu a putut fii actualizata')
+  }
+
   return (
     <>
       <Sheet open={tableEditActive} onOpenChange={setTableEditActive}>
-        <SheetContent>
+        <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetHeader>
             <SheetTitle className="text-xl">Editeaza masa</SheetTitle>
             <SheetDescription>
@@ -83,14 +110,15 @@ const LateralDrawer = ({
           <div className="p-4">
             <h1 className="text-md font-nomral mb-2">Detalii masa</h1>
             <Form
+              form={form}
+              autoFocus={false}
               name="table-edit"
-              // onFinish={onFinish}
-              // onFinishFailed={onFinishFailed}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
               autoComplete="off"
               layout="vertical"
             >
               <Form.Item
-                initialValue={tableElement?.name}
                 label="Nume"
                 name="name"
                 rules={[
@@ -119,7 +147,7 @@ const LateralDrawer = ({
                 ))
               ) : (
                 <span className="text-sm self-center text-slate-600">
-                  Inca nu ai adaugat nici un invitat
+                  Inca nu ai adaugat niciun invitat
                 </span>
               )}
             </div>
@@ -134,7 +162,7 @@ const LateralDrawer = ({
           <SheetFooter>
             <SheetClose className="self-end flex gap-2">
               <Button type="default">Sterge masa</Button>
-              <Button type="primary" onClick={updateGuestsTableRef}>
+              <Button type="primary" onClick={() => form.submit()}>
                 Salveaza
               </Button>
             </SheetClose>

@@ -42,7 +42,7 @@ export function AppSidebar({
   onClickNav: (info: { title: string; url: string }) => void
 }) {
   const user = useAuth().userDetails
-  const eventInstance = useContext(EventContext)
+  const { eventInstance } = useContext(EventContext)
 
   const data: MenuData = {
     navMain: [

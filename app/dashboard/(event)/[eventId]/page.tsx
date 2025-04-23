@@ -22,7 +22,7 @@ const DashboardEventPage = () => {
   const router = useRouter()
   const [todoOpen, setTodoOpen] = useState(false)
   const [shrinkElement, setShrinkElement] = useState(false)
-  const eventContext = useContext(EventContext)
+  const { eventInstance } = useContext(EventContext)
 
   useEffect(() => {
     const element = document.querySelector('.dashboard-content-container')
@@ -62,7 +62,7 @@ const DashboardEventPage = () => {
               alignItems: 'center',
             }}
           >
-            <h2>{eventContext?.eventName}</h2>
+            <h2>{eventInstance?.eventName}</h2>
             <span className="primary-color-text">Premium</span>
           </div>
           <Image alt="" src={DemoImage} width={150} />
@@ -93,7 +93,7 @@ const DashboardEventPage = () => {
             <Button
               type="default"
               onClick={() =>
-                router.push(`/dashboard/${eventContext?.eventId}/response`)
+                router.push(`/dashboard/${eventInstance?.eventId}/response`)
               }
             >
               Vezi tot

@@ -12,11 +12,11 @@ import { useContext } from 'react'
 import { EventContext } from '../../layout'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
-  const eventContext = useContext(EventContext)
+  const { eventInstance } = useContext(EventContext)
   return (
     <SidebarGroup>
       <SidebarGroupLabel>
-        Invitatie - {eventContext?.eventName}
+        Invitatie - {eventInstance?.eventName}
       </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (

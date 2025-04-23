@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from 'antd'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import RoundTableIcon from '@/public/round-table.png'
 import RoundTableV2Icon from '@/public/round-table-v2.png'
 import VerticalTable from '@/public/vertical-table.png'
@@ -19,7 +19,7 @@ import {
 import DraggableElement from './components/draggable-canvas/draggable-element/DraggableElement'
 import DraggableCanvas from './components/draggable-canvas/DraggableCanvas'
 import { restrictToWindowEdges } from '@dnd-kit/modifiers'
-import { CanvasElement } from '@/core/types'
+import { CanvasElement, Guest } from '@/core/types'
 import { EventContext } from '../layout'
 import { updateEventTableOrganization } from '@/service/event/updateEventTableOrganization'
 import LateralDrawer from './components/lateral-drawer/LateralDrawer'
@@ -29,6 +29,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { toast } from 'sonner'
+import html2canvas from 'html2canvas-pro'
+import jsPDF from 'jspdf'
+import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
+import { createXlsxWorkbook } from '@/lib/utils'
 
 export interface CanvasListElementDefinition {
   type: string
@@ -125,6 +130,44 @@ const ELEMENTS: CanvasListElementDefinition[] = [
       },
     ],
   },
+  {
+    typeId: 'others',
+    name: 'Diverse',
+    icon: BarIcon,
+    type: 'others',
+    subTypes: [
+      {
+        typeId: 'candy-bar',
+        name: 'Candy bar',
+        icon: BarIcon,
+        type: 'others',
+      },
+      {
+        typeId: 'photo-booth',
+        name: 'Photo booth',
+        icon: BarIcon,
+        type: 'others',
+      },
+      {
+        typeId: 'cheese-bar',
+        name: 'Cheese bar',
+        icon: BarIcon,
+        type: 'others',
+      },
+      {
+        typeId: 'entrance',
+        name: 'Intrare',
+        icon: BarIcon,
+        type: 'others',
+      },
+      {
+        typeId: 'dance-floor',
+        name: 'Ring dans',
+        icon: BarIcon,
+        type: 'others',
+      },
+    ],
+  },
 ]
 
 /**
@@ -134,7 +177,7 @@ const ELEMENTS: CanvasListElementDefinition[] = [
  */
 const TablesPage = () => {
   // Event instance data
-  const eventInstance = useContext(EventContext)
+  const { eventInstance, setEventInstance } = useContext(EventContext)
 
   const [tableEditActive, setTableEditActive] = useState(false)
   const [activeEditTable, setActiveEditTable] = useState<CanvasElement | null>(
@@ -148,12 +191,21 @@ const TablesPage = () => {
     icon: StaticImageData
     type: string
     typeId: string
+    isEditing: boolean
   } | null>()
   const [sidebarFieldsRegenKey, setSidebarFieldsRegenKey] = useState(Date.now())
   const [activeFieldData, setActiveFieldData] = useState<{
     modifiers: []
   } | null>(null)
+  const [editModeOn, setEditModeOn] = useState(false)
+
   const currentDragFieldRef: any = useRef()
+
+  useEffect(() => {
+    if (eventInstance) {
+      setCanvasElements(eventInstance?.eventTableOrganization.elements)
+    }
+  }, [eventInstance?.eventTableOrganization])
 
   // Used to prevent drag event to fire on a normal click
   const sensors = useSensors(
@@ -174,13 +226,14 @@ const TablesPage = () => {
     // from the sidebar so that we can finish the clone
     // in the onDragEnd handler.
     if (activeData.fromSideBar) {
-      const { name, type, typeId } = activeData
+      const { name, type, typeId, isEditing } = activeData
       const id = active.id
       setActiveSidebarField({
         name: name,
         icon: activeData.icon,
         type: type,
         typeId: typeId,
+        isEditing: isEditing,
       })
       // Create a new field that'll be added to the fields array
       // if we drag it over the canvas.
@@ -234,26 +287,130 @@ const TablesPage = () => {
     }
   }
 
+  const handlCanvasElementDelete = (id: string) => {
+    const canvasElementsCopy = [...canvasElements]
+    const removedElementList = canvasElementsCopy.filter(
+      (el) => el.elementId !== id
+    )
+    setCanvasElements(removedElementList)
+  }
+
+  const exportToPDF = () => {
+    const canvasElement = document.querySelector(
+      '.tables-canvas-section'
+    ) as HTMLElement
+    if (canvasElement) {
+      var HTML_Width = canvasElement.offsetWidth
+      var HTML_Height = canvasElement.offsetHeight
+      var top_left_margin = 15
+      var PDF_Width = HTML_Width + top_left_margin * 2
+      var PDF_Height = PDF_Width * 1.5 + top_left_margin * 2
+      var canvas_image_width = HTML_Width
+      var canvas_image_height = HTML_Height
+
+      html2canvas(canvasElement, { allowTaint: true }).then(function (canvas) {
+        canvas.getContext('2d')
+
+        console.log(canvas.height + '  ' + canvas.width)
+
+        var imgData = canvas.toDataURL('image/jpeg', 1.0)
+        var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height])
+        pdf.addImage(
+          imgData,
+          'PNG',
+          0,
+          0,
+          canvas_image_width,
+          canvas_image_height
+        )
+
+        pdf.save('HTML-Document.pdf')
+      })
+    }
+  }
+
+  const exportGuestsToExcel = async () => {
+    const guestsTableOrganization: {
+      tableName: string
+      guests: Guest['guestInfo'][]
+    }[] = []
+
+    if (eventInstance?.eventTableOrganization.elements) {
+      await Promise.all(
+        eventInstance.eventTableOrganization.elements.map(async (el) => {
+          if (el.type === 'table') {
+            const tableGuests: Guest[] = await queryGuestsByTable(
+              eventInstance.eventId,
+              el.elementId
+            )
+            if (tableGuests.length) {
+              guestsTableOrganization.push({
+                tableName: el.name,
+                guests: tableGuests.map((guest) => guest.guestInfo),
+              })
+            }
+          }
+        })
+      )
+      createXlsxWorkbook(guestsTableOrganization)
+    } else {
+      toast.error('Adauga un element pentru a putea fi exportat')
+    }
+  }
+
   return (
     <div className="bg-[#F6F6F6] h-screen w-full">
       <div className="tables-controls-section p-4 flex gap-4 items-center justify-between">
         <div className="flex gap-2">
-          <Button type="default">Export salon</Button>
-          <Button type="default">Export invitati</Button>
+          <Button type="default" onClick={exportToPDF}>
+            Export salon
+          </Button>
+          <Button type="default" onClick={exportGuestsToExcel}>
+            Export invitati
+          </Button>
         </div>
-        <Button
-          onClick={() =>
-            updateEventTableOrganization(
-              {
-                elements: canvasElements,
-              },
-              eventInstance?.eventId
-            )
-          }
-          type="primary"
-        >
-          Editeaza
-        </Button>
+        {editModeOn ? (
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                setEditModeOn(false)
+                setCanvasElements(
+                  eventInstance?.eventTableOrganization.elements ?? []
+                )
+              }}
+              type="default"
+            >
+              Anuleaza
+            </Button>
+            <Button
+              onClick={() => {
+                try {
+                  updateEventTableOrganization(
+                    {
+                      elements: canvasElements,
+                    },
+                    eventInstance?.eventId
+                  )
+                  setEditModeOn(false)
+                  if (eventInstance) {
+                    const eventCopy = eventInstance
+                    eventCopy.eventTableOrganization.elements = canvasElements
+                    setEventInstance(eventCopy)
+                  }
+                } catch (error) {
+                  toast.error('A aparut o eroare la salvare')
+                }
+              }}
+              type="primary"
+            >
+              Salveaza
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={() => setEditModeOn(true)} type="primary">
+            Editeaza
+          </Button>
+        )}
       </div>
       <DndContext
         modifiers={
@@ -274,12 +431,13 @@ const TablesPage = () => {
               element.subTypes ? (
                 <TooltipProvider delayDuration={2}>
                   <Tooltip delayDuration={300}>
-                    <TooltipTrigger className="flex gap-2 items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                    <TooltipTrigger className="flex gap-2 items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white shadow-xs">
                       {element.name}
                     </TooltipTrigger>
                     <TooltipContent className="p-4 shadow-md bg-[white] min-w-[200px] flex flex-col gap-2">
                       {element.subTypes?.map((sbt, index) => (
                         <DraggableElement
+                          isEditing={editModeOn}
                           key={index}
                           name={sbt.name}
                           icon={sbt.icon}
@@ -292,6 +450,7 @@ const TablesPage = () => {
                 </TooltipProvider>
               ) : (
                 <DraggableElement
+                  isEditing={editModeOn}
                   name={element.name}
                   icon={element.icon}
                   type={element.type}
@@ -306,25 +465,31 @@ const TablesPage = () => {
             ) : null}
           </DragOverlay>
           <DraggableCanvas
+            isEditing={editModeOn}
             tableEditActive={(tableEditActive: boolean) =>
               setTableEditActive(tableEditActive)
             }
             setActiveEditTableId={(activeEditTable: CanvasElement) =>
               setActiveEditTable(activeEditTable)
             }
+            onDelete={(id: string) => handlCanvasElementDelete(id)}
             id="canvas"
             canvasElements={canvasElements}
+            eventId={eventInstance?.eventId}
           />
         </div>
       </DndContext>
-      <LateralDrawer
-        tableElement={activeEditTable}
-        eventId={eventInstance?.eventId!}
-        tableEditActive={tableEditActive}
-        setTableEditActive={(tableEditActive) =>
-          setTableEditActive(tableEditActive)
-        }
-      />
+      {activeEditTable && (
+        <LateralDrawer
+          tableElement={activeEditTable}
+          eventId={eventInstance?.eventId!}
+          tableEditActive={tableEditActive}
+          setEventInstance={setEventInstance}
+          setTableEditActive={(tableEditActive) =>
+            setTableEditActive(tableEditActive)
+          }
+        />
+      )}
     </div>
   )
 }

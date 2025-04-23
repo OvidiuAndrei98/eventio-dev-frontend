@@ -25,8 +25,12 @@ import { LoadingIndicator } from '@/lib/icons'
 import { AppSidebar } from './components/nav/app-sidebar'
 
 import { useAuth } from '@/core/AuthenticationBoundary'
+import { Toaster } from 'sonner'
 
-export const EventContext = createContext<EventInstance | null>(null)
+export const EventContext = createContext<{
+  eventInstance: EventInstance | null
+  setEventInstance: (event: EventInstance) => void
+}>({ eventInstance: null, setEventInstance: () => {} })
 
 const routeTitleMapper = {
   dashboard: 'Panou de control',
@@ -102,7 +106,9 @@ const DashboardEventLayout = ({
             {queryEventLoading ? (
               <LoadingIndicator />
             ) : (
-              <EventContext.Provider value={eventInstance}>
+              <EventContext.Provider
+                value={{ eventInstance, setEventInstance }}
+              >
                 <SidebarProvider>
                   <AppSidebar
                     onClickNav={handleSideMenuNavigation}
@@ -156,6 +162,7 @@ const DashboardEventLayout = ({
             )}
           </ConfigProvider>
         </AntdRegistry>
+        <Toaster />
       </body>
     </html>
   )

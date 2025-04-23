@@ -9,11 +9,13 @@ const DraggableElement = ({
   icon,
   type,
   typeId,
+  isEditing,
 }: {
   name: string
   icon: StaticImageData
   type: string
   typeId: string
+  isEditing: boolean
 }) => {
   const id = useRef(nanoid())
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -22,6 +24,7 @@ const DraggableElement = ({
       roleDescription: 'draggable element',
       tabIndex: 0,
     },
+    disabled: !isEditing,
     id: id.current,
     data: {
       name: name,
@@ -29,6 +32,7 @@ const DraggableElement = ({
       fromSideBar: true,
       icon: icon,
       type: type,
+      isEditing: isEditing,
     },
   })
 

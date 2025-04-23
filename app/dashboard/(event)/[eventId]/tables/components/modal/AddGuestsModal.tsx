@@ -45,7 +45,10 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} modal={true} onOpenChange={onOpenChange}>
-      <DialogContent className="xs:max-w-[425px] bg-white  md:min-h-[300px]">
+      <DialogContent
+        className="xs:max-w-[425px] bg-white  md:min-h-[300px]"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Adauga invitati</DialogTitle>
           <DialogDescription>
