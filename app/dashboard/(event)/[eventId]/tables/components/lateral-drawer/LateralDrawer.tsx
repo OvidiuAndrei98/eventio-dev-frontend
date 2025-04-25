@@ -14,7 +14,7 @@ import { assignTableToGuests } from '@/service/guest/assignTableToGuest'
 import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
 import { DeleteOutlined } from '@ant-design/icons'
 import { Button, Form, FormProps, Input } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 type FieldType = {
@@ -59,11 +59,15 @@ const LateralDrawer = ({
   }, [])
 
   useEffect(() => {
+    setInputValue(tableElement.name)
+  }, [tableElement.name])
+
+  useEffect(() => {
     queryTableGuests()
     form.setFieldsValue({
       name: tableElement?.name,
     })
-  }, [tableElement?.elementId, tableEditActive])
+  }, [tableElement?.elementId, tableEditActive, tableElement.name])
 
   const handleGuestsDelete = (guest: DropdownOption) => {
     setRemovedGuestsList((oldValues) => {
