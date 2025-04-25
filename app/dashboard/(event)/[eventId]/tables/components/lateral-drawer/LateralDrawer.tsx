@@ -40,8 +40,9 @@ const LateralDrawer = ({
   const [removedGuestsList, setRemovedGuestsList] = useState<DropdownOption[]>(
     []
   )
+  const [inputValue, setInputValue] = useState<string>(tableElement.name)
 
-  const queryTableQuests = async () => {
+  const queryTableGuests = async () => {
     if (tableElement?.elementId) {
       const guests = await queryGuestsByTable(eventId, tableElement?.elementId)
       setTableGuests(
@@ -54,12 +55,14 @@ const LateralDrawer = ({
 
   // Initial query
   useEffect(() => {
-    queryTableQuests()
+    queryTableGuests()
   }, [])
 
   useEffect(() => {
-    queryTableQuests()
-    form.setFieldValue('name', tableElement.name)
+    queryTableGuests()
+    form.setFieldsValue({
+      name: tableElement?.name,
+    })
   }, [tableElement?.elementId, tableEditActive])
 
   const handleGuestsDelete = (guest: DropdownOption) => {
@@ -80,10 +83,9 @@ const LateralDrawer = ({
     }
   }
 
-  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-    const { name } = values
+  const onFinish: FormProps<FieldType>['onFinish'] = async () => {
     const updatedEvent = await updateTableNameById(
-      name,
+      inputValue,
       tableElement?.elementId,
       eventId
     )
@@ -128,7 +130,7 @@ const LateralDrawer = ({
                   },
                 ]}
               >
-                <Input />
+                <Input onChange={(e) => setInputValue(e.target.value)} />
               </Form.Item>
             </Form>
           </div>
@@ -137,7 +139,10 @@ const LateralDrawer = ({
             <div className="flex flex-col gap-4 w-full overflow-y-auto py-2 px-4">
               {tableGuests.length ? (
                 tableGuests.map((guest) => (
-                  <div className="flex items-center justify-between p-2 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-200">
+                  <div
+                    className="flex items-center justify-between p-2 bg-gray-100 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-200"
+                    key={guest.value}
+                  >
                     <span className="text-sm font-medium">{guest.label}</span>
                     <DeleteOutlined
                       className="hover:!text-red-500 cursor-pointer"

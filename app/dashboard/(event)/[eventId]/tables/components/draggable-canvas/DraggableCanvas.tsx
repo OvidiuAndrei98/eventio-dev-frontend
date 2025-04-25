@@ -22,7 +22,7 @@ const DraggableCanvas = ({
   eventId?: string
 }) => {
   const { setNodeRef } = useDroppable({
-    id: 'unique-id',
+    id: id,
     data: {
       parent: null,
       isContainer: true,

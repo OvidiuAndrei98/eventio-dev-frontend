@@ -21,7 +21,9 @@ export const createXlsxWorkbook = (
     guests: Guest['guestInfo'][]
   }[]
 ) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sheetData: any[][] = []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const styles: Record<string, any> = {}
   let currentRow = 0
   let tableStartRow = 0

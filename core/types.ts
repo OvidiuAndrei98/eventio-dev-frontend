@@ -55,7 +55,7 @@ export interface UseDraggableArguments {
     roleDescription?: string
     tabIndex?: number
   }
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   disabled?: boolean
 }
 

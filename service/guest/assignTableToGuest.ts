@@ -1,6 +1,5 @@
-import { updateDoc, doc, writeBatch } from 'firebase/firestore'
+import { doc, writeBatch } from 'firebase/firestore'
 import db from '../../lib/firebase/fireStore'
-import { Guest } from '@/core/types'
 
 export const assignTableToGuests = async (
   tableId: string | null | undefined,

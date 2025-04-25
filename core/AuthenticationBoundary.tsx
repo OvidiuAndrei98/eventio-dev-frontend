@@ -43,7 +43,9 @@ export const AuthenticationContext = React.createContext({
   authenticationState: AuthenticationState.Unknown,
   userDetails: {} as User,
   isLoggingIn: true,
-  logout: () => {},
+  logout: () => {
+    /* not impl*/
+  },
 })
 
 /**
@@ -123,6 +125,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
     AuthenticationState.Unknown
   )
   const [token, setToken] = useState<string>()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tokenValues, setTokenValues] = useState<TokenValues>()
   const [loggedInUser, setLoggedInUser] = useState<User>({} as User)
   const [userLoading, setUserLoading] = useState(true)
