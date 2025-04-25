@@ -1,5 +1,5 @@
 import { useDraggable } from '@dnd-kit/core'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { restrictToParentElement } from '@dnd-kit/modifiers'
 import { DeleteOutlined } from '@ant-design/icons'
 import {
@@ -78,7 +78,7 @@ const CanvaDraggableElement = ({
                 </TooltipTrigger>
                 <TooltipContent className="p-4 shadow-md bg-[white] min-w-[250px] flex flex-col gap-2 pointer-events-auto">
                   <TooltipContentComponent
-                    eventId={eventId!}
+                    eventId={eventId ?? ''}
                     name={name}
                     type={type}
                     id={elementId}
@@ -207,11 +207,7 @@ const TooltipContentComponent = ({
   const [tableGuests, setTableGuests] = useState<DropdownOption[]>([])
   const [loadingGuests, setLoadingGuests] = useState(false)
 
-  useEffect(() => {
-    queryTableGuests()
-  }, [])
-
-  const queryTableGuests = async () => {
+  const queryTableGuests = useCallback(async () => {
     if (id && type === 'table' && eventId) {
       try {
         setLoadingGuests(true)
@@ -228,7 +224,12 @@ const TooltipContentComponent = ({
         toast.error('A aparut o eroare, te rugam sa reincarci pagina')
       }
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    queryTableGuests()
+  }, [queryTableGuests])
+
   return loadingGuests ? (
     <div className="flex items-center justify-center w-full h-full min-w-[220px] min-h-[60px]">
       <span className="loader"></span>

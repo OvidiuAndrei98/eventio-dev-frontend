@@ -4,6 +4,10 @@ import type { SelectProps } from 'antd'
 import debounce from 'lodash/debounce'
 import './MultiselectDropdown.css'
 
+/// This component is a custom multi-select dropdown that fetches options from an API
+/// based on user input. It uses the Ant Design Select component and adds a debounce
+/// functionality to limit the number of API calls made while the user types in the search box.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface DebounceSelectProps<ValueType = any>
   extends Omit<SelectProps<ValueType>, 'options' | 'children'> {
   fetchOptions: (search: string) => Promise<{ label: string; value: string }[]>
