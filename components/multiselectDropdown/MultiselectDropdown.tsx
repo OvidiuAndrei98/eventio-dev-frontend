@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Select, Spin } from 'antd'
 import type { SelectProps } from 'antd'
-import debounce from 'lodash/debounce'
+import { debounce } from 'ts-debounce'
 import './MultiselectDropdown.css'
 
 /// This component is a custom multi-select dropdown that fetches options from an API
