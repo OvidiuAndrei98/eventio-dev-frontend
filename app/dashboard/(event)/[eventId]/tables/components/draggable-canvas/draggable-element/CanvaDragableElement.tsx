@@ -99,13 +99,13 @@ const CanvaDraggableElement = ({
       case 'presidium':
         if (id === 'vertical-presidium') {
           return (
-            <div className="text-center rounded-sm h-[60px] w-[160px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="text-center rounded-sm h-[160px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           )
         } else {
           return (
-            <div className="text-center rounded-sm h-[160px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="text-center rounded-sm h-[60px] w-[160px]  flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           )
