@@ -1,33 +1,22 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
-import InvitationModal from '../../../../components/invitationsModal/InvitationsModal'
-import Masonry from '../../../../components/masonryContainer/Masonry'
-import './Models.css'
-import { defaultTemplates } from '@/lib/templates/templates'
+import { useState } from 'react';
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';
+import InvitationModal from '../../../../components/invitationsModal/InvitationsModal';
+import Masonry from '../../../../components/masonryContainer/Masonry';
+import './Models.css';
 
 const Models = () => {
-  const [open, setOpen] = useState(false)
-  const [selectedType, setSelectedType] = useState('')
+  const [open, setOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
 
   const onModalOk = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const onModalClose = () => {
-    setOpen(false)
-  }
-
-  const mapDefaultTemplatesToData = () => {
-    const templates = defaultTemplates
-    return templates.map((template) => ({
-      id: template.id,
-      image: template.thumbnailUrl,
-      height: 800,
-      text: template.name,
-    }))
-  }
+    setOpen(false);
+  };
 
   const data = [
     {
@@ -59,7 +48,7 @@ const Models = () => {
       text: 'CORPORATE',
       type: 'corporate',
     },
-  ]
+  ];
 
   return (
     <div className="models-section" id="models-section">
@@ -81,8 +70,8 @@ const Models = () => {
       <Masonry
         data={data}
         onClick={(type) => {
-          setSelectedType(type)
-          setOpen(true)
+          setSelectedType(type);
+          setOpen(true);
         }}
       />
       <InvitationModal
@@ -92,7 +81,7 @@ const Models = () => {
         onClose={onModalClose}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Models
+export default Models;

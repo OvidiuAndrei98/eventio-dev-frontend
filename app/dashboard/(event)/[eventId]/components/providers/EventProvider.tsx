@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import React, { useState, ReactNode, useEffect } from 'react'
-import { EventContext } from '@/core/context/EventContext'
-import { EventInstance } from '@/core/types'
+import React, { useState, ReactNode, useEffect } from 'react';
+import { EventContext } from '@/core/context/EventContext';
+import { EventInstance } from '@/core/types';
 
 interface EventProviderProps {
-  children: ReactNode
-  initialEvent?: EventInstance | null
-  initialLoading?: boolean
+  children: ReactNode;
+  initialEvent?: EventInstance | null;
+  initialLoading?: boolean;
 }
 
 export function EventProvider({
@@ -17,15 +17,15 @@ export function EventProvider({
 }: EventProviderProps) {
   const [eventInstance, setEventInstance] = useState<EventInstance | null>(
     initialEvent
-  )
-  const [queryEventLoading, setQueryEventLoading] = useState(initialLoading)
-  const [queryEventError, setQueryEventError] = useState<any>(null)
+  );
+  const [queryEventLoading, setQueryEventLoading] = useState(initialLoading);
+  const [queryEventError, setQueryEventError] = useState(null);
 
   useEffect(() => {
-    setEventInstance(initialEvent)
-    setQueryEventLoading(initialLoading)
-    setQueryEventError(null)
-  }, [initialEvent])
+    setEventInstance(initialEvent);
+    setQueryEventLoading(initialLoading);
+    setQueryEventError(null);
+  }, [initialEvent]);
 
   return (
     <EventContext.Provider
@@ -39,5 +39,5 @@ export function EventProvider({
     >
       {children}
     </EventContext.Provider>
-  )
+  );
 }
