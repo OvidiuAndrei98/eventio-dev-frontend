@@ -14,9 +14,10 @@
   width: 100%;
 }
 
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 400px) {
   .invitations-container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+    padding: 24px 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-template-rows: minmax(300px, auto);
   }
 }
