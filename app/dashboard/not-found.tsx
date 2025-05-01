@@ -1,19 +1,23 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import React from 'react'
+import Link from 'next/link';
+import React from 'react';
 
 const NotFound = () => (
-  <div style={styles.container}>
-    <h1 style={styles.title}>404 - Page Not Found</h1>
-    <p style={styles.message}>
-      Sorry, the page you are looking for does not exist.
-    </p>
-    <Link href="/dashboard" style={styles.link}>
-      Go back to Home
-    </Link>
-  </div>
-)
+  <html lang="en">
+    <body>
+      <div style={styles.container}>
+        <h1 style={styles.title}>404 - Page Not Found</h1>
+        <p style={styles.message}>
+          Sorry, the page you are looking for does not exist.
+        </p>
+        <Link href="/dashboard" style={styles.link}>
+          Go back to Home
+        </Link>
+      </div>
+    </body>
+  </html>
+);
 
 const styles = {
   container: {
@@ -40,6 +44,6 @@ const styles = {
     color: '#007bff',
     textDecoration: 'none',
   },
-}
+};
 
-export default NotFound
+export default NotFound;

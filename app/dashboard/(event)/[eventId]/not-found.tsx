@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import React from 'react'
+import Link from 'next/link';
+import React from 'react';
 
 const NotFound = () => (
   <html lang="en">
@@ -17,7 +17,7 @@ const NotFound = () => (
       </div>
     </body>
   </html>
-)
+);
 
 const styles = {
   container: {
@@ -44,6 +44,6 @@ const styles = {
     color: '#007bff',
     textDecoration: 'none',
   },
-}
+};
 
-export default NotFound
+export default NotFound;

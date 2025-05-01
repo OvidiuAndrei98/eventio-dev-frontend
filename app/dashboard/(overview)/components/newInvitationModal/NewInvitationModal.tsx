@@ -1,27 +1,28 @@
 'use client';
 
-import './InvitationsModal.css';
-import { Modal } from 'antd';
+import './NewInvitationModal.css';
+import { Menu, MenuProps, Modal } from 'antd';
 import { useEffect, useState } from 'react';
-import InvitationCard from './components/invitationCard/InvitationCard';
+import InvitationCard from '@/components/invitationsModal/components/invitationCard/InvitationCard';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Template } from '@/core/types';
 import { useRouter } from 'next/navigation';
 
-const InvitationModal = ({
+type MenuItem = Required<MenuProps>['items'][number];
+
+const NewInvitationModal = ({
   open,
-  templateType,
   onOk,
   onClose,
 }: {
   open: boolean;
-  templateType: string;
   onOk: () => void;
   onClose: () => void;
 }) => {
   const router = useRouter();
   const [innerWidth, setInnerWidth] = useState(0);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [templateType, setTemplateType] = useState('wedding');
 
   useEffect(() => {
     if (typeof window == 'undefined') {
@@ -44,6 +45,13 @@ const InvitationModal = ({
     );
     setTemplates(templates);
   }, [templateType]);
+
+  const items: MenuItem[] = [
+    { key: 'wedding', label: 'Nunta' },
+    { key: 'bapthism', label: 'Botez' },
+    { key: 'anniversary', label: 'Aniversare' },
+    { key: 'corporate', label: 'Corporate' },
+  ];
 
   const handleTemplateSelect = (templateId: string, type: string) => {
     const selectedTemplate = templates.find(
@@ -80,9 +88,20 @@ const InvitationModal = ({
         className="invitations-modal-content"
         style={{
           display: 'flex',
-          flexDirection: innerWidth < 600 ? 'column' : 'row',
+          flexDirection: innerWidth < 765 ? 'column' : 'row',
         }}
       >
+        <Menu
+          defaultSelectedKeys={[templateType]}
+          mode={innerWidth < 765 ? 'horizontal' : 'inline'}
+          items={items}
+          style={{
+            maxWidth: innerWidth < 765 ? 'auto' : '200px',
+          }}
+          onSelect={(e) => {
+            setTemplateType(e.key);
+          }}
+        />
         {templates.length === 0 ? (
           <div className="no-template-message text-xl text-gray-500 w-full h-full flex items-center justify-center">
             Nu sunt disponibile invitatii pentru acest tip de eveniment.
@@ -106,4 +125,4 @@ const InvitationModal = ({
   );
 };
 
-export default InvitationModal;
+export default NewInvitationModal;

@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { Button } from 'antd'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import RoundTableIcon from '@/public/round-table.png'
-import RoundTableV2Icon from '@/public/round-table-v2.png'
-import VerticalTable from '@/public/vertical-table.png'
-import HorizontalTable from '@/public/horizontal-table.png'
-import StageIcon from '@/public/stage-icon.png'
-import BarIcon from '@/public/bar-icon.png'
-import { StaticImageData } from 'next/image'
+import { Button } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import RoundTableIcon from '@/public/round-table.png';
+import RoundTableV2Icon from '@/public/round-table-v2.png';
+import VerticalTable from '@/public/vertical-table.png';
+import HorizontalTable from '@/public/horizontal-table.png';
+import StageIcon from '@/public/stage-icon.png';
+import BarIcon from '@/public/bar-icon.png';
+import { StaticImageData } from 'next/image';
 import {
   DndContext,
   DragEndEvent,
@@ -17,46 +17,46 @@ import {
   MouseSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core'
-import DraggableElement from './components/draggable-canvas/draggable-element/DraggableElement'
-import DraggableCanvas from './components/draggable-canvas/DraggableCanvas'
-import { restrictToWindowEdges } from '@dnd-kit/modifiers'
-import { CanvasElement, Guest } from '@/core/types'
-import { EventContext } from '../layout'
-import { updateEventTableOrganization } from '@/service/event/updateEventTableOrganization'
-import LateralDrawer from './components/lateral-drawer/LateralDrawer'
+} from '@dnd-kit/core';
+import DraggableElement from './components/draggable-canvas/draggable-element/DraggableElement';
+import DraggableCanvas from './components/draggable-canvas/DraggableCanvas';
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
+import { CanvasElement, Guest } from '@/core/types';
+import { updateEventTableOrganization } from '@/service/event/updateEventTableOrganization';
+import LateralDrawer from './components/lateral-drawer/LateralDrawer';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { toast } from 'sonner'
-import html2canvas from 'html2canvas-pro'
-import jsPDF from 'jspdf'
-import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
-import { createXlsxWorkbook } from '@/lib/utils'
-import { assignTableToGuests } from '@/service/guest/assignTableToGuest'
-import { isMobile } from 'react-device-detect'
-import LaptopIllustration from '@/public/use-laptop-illustration.svg'
-import Image from 'next/image'
+} from '@/components/ui/tooltip';
+import { toast } from 'sonner';
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
+import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
+import { createXlsxWorkbook } from '@/lib/utils';
+import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
+import { isMobile } from 'react-device-detect';
+import LaptopIllustration from '@/public/use-laptop-illustration.svg';
+import Image from 'next/image';
+import { useEventContext } from '@/core/context/EventContext';
 
 export interface CanvasListElementDefinition {
-  type: string
-  typeId: string
-  name: string
-  icon: StaticImageData
-  subTypes?: CanvasListElementDefinition[]
+  type: string;
+  typeId: string;
+  name: string;
+  icon: StaticImageData;
+  subTypes?: CanvasListElementDefinition[];
 }
 
 export interface DragEventData {
-  name: string
-  icon: StaticImageData
-  type: string
-  typeId: string
-  isEditing: boolean
-  modifiers: []
-  fromSideBar: boolean
+  name: string;
+  icon: StaticImageData;
+  type: string;
+  typeId: string;
+  isEditing: boolean;
+  modifiers: [];
+  fromSideBar: boolean;
 }
 
 const ELEMENTS: CanvasListElementDefinition[] = [
@@ -184,7 +184,7 @@ const ELEMENTS: CanvasListElementDefinition[] = [
       },
     ],
   },
-]
+];
 
 /**
  * Component that renders the tables page.
@@ -193,43 +193,45 @@ const ELEMENTS: CanvasListElementDefinition[] = [
  */
 const TablesPage = () => {
   // Event instance data
-  const { eventInstance, setEventInstance } = useContext(EventContext)
+  const { eventInstance, setEventInstance } = useEventContext();
 
-  const [tableEditActive, setTableEditActive] = useState(false)
+  const [tableEditActive, setTableEditActive] = useState(false);
   const [activeEditTable, setActiveEditTable] = useState<CanvasElement | null>(
     null
-  )
+  );
   const [canvasElements, setCanvasElements] = useState<CanvasElement[]>(
     eventInstance?.eventTableOrganization.elements ?? []
-  )
+  );
   const [activeSidebarField, setActiveSidebarField] = useState<{
-    name: string
-    icon: StaticImageData
-    type: string
-    typeId: string
-    isEditing: boolean
-  } | null>()
-  const [sidebarFieldsRegenKey, setSidebarFieldsRegenKey] = useState(Date.now())
+    name: string;
+    icon: StaticImageData;
+    type: string;
+    typeId: string;
+    isEditing: boolean;
+  } | null>();
+  const [sidebarFieldsRegenKey, setSidebarFieldsRegenKey] = useState(
+    Date.now()
+  );
   const [activeFieldData, setActiveFieldData] = useState<{
-    modifiers: []
-  } | null>(null)
+    modifiers: [];
+  } | null>(null);
 
-  const [editModeOn, setEditModeOn] = useState(false)
-  const [deleteTablesLoading, setDeleteTablesLoading] = useState(false)
+  const [editModeOn, setEditModeOn] = useState(false);
+  const [deleteTablesLoading, setDeleteTablesLoading] = useState(false);
 
   const currentDragFieldRef = useRef<{
-    elementId: string
-    name: string
-    positions: { x: number; y: number }
-    type: string
-    typeId: string
-  } | null>(null)
+    elementId: string;
+    name: string;
+    positions: { x: number; y: number };
+    type: string;
+    typeId: string;
+  } | null>(null);
 
   useEffect(() => {
     if (eventInstance) {
-      setCanvasElements(eventInstance?.eventTableOrganization.elements)
+      setCanvasElements(eventInstance?.eventTableOrganization.elements);
     }
-  }, [eventInstance])
+  }, [eventInstance]);
 
   // Used to prevent drag event to fire on a normal click
   const sensors = useSensors(
@@ -238,30 +240,30 @@ const TablesPage = () => {
         distance: 5,
       },
     })
-  )
+  );
 
   const handleDragStart = (e: DragStartEvent) => {
-    const { active } = e
-    const activeData = active.data.current as DragEventData
+    const { active } = e;
+    const activeData = active.data.current as DragEventData;
     if (!activeData) {
-      return
+      return;
     }
-    setActiveFieldData(activeData)
+    setActiveFieldData(activeData);
 
     // This is where the cloning starts.
     // We set up a ref to the field we're dragging
     // from the sidebar so that we can finish the clone
     // in the onDragEnd handler.
     if (activeData.fromSideBar) {
-      const { name, type, typeId, isEditing } = activeData
-      const id = active.id
+      const { name, type, typeId, isEditing } = activeData;
+      const id = active.id;
       setActiveSidebarField({
         name: name,
         icon: activeData.icon,
         type: type,
         typeId: typeId,
         isEditing: isEditing,
-      })
+      });
       // Create a new field that'll be added to the fields array
       // if we drag it over the canvas.
       currentDragFieldRef.current = {
@@ -270,55 +272,55 @@ const TablesPage = () => {
         positions: { x: 0, y: 0 },
         type: type,
         typeId: typeId,
-      }
-      return
+      };
+      return;
     }
-  }
+  };
 
   const cleanUp = () => {
-    setActiveSidebarField(null)
-    setActiveFieldData(null)
-    currentDragFieldRef.current = null
-    setSidebarFieldsRegenKey(Date.now())
-  }
+    setActiveSidebarField(null);
+    setActiveFieldData(null);
+    currentDragFieldRef.current = null;
+    setSidebarFieldsRegenKey(Date.now());
+  };
 
   const handleDragEnd = (e: DragEndEvent) => {
     // Find the canvas container element
     const canvasElement: HTMLElement | null = document.querySelector(
       '.tables-canvas-section'
-    )
-    const { over } = e
+    );
+    const { over } = e;
 
     // If the drag ended outside of any droppable area, clean up and exit.
     if (!over) {
-      cleanUp()
-      return
+      cleanUp();
+      return;
     }
 
-    const nextField = currentDragFieldRef.current
+    const nextField = currentDragFieldRef.current;
 
     if (nextField && canvasElement) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dropClientX = (e.activatorEvent as any).clientX + e.delta.x
+      const dropClientX = (e.activatorEvent as any).clientX + e.delta.x;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dropClientY = (e.activatorEvent as any).clientY + e.delta.y
+      const dropClientY = (e.activatorEvent as any).clientY + e.delta.y;
 
       // Get the bounding rectangle of the canvas element to find its position and dimensions.
-      const canvasRect = canvasElement.getBoundingClientRect()
+      const canvasRect = canvasElement.getBoundingClientRect();
 
       // Calculate the position of the drop point relative to the canvas's top-left corner in pixels.
-      const relativeXInPixels = dropClientX - canvasRect.left
-      const relativeYInPixels = dropClientY - canvasRect.top
+      const relativeXInPixels = dropClientX - canvasRect.left;
+      const relativeYInPixels = dropClientY - canvasRect.top;
 
       // Convert the pixel position to a percentage relative to the canvas dimensions.
       // This makes the position responsive if the canvas resizes.
       // Add checks to prevent division by zero, although canvasRect.width/height should be > 0 if the element exists.
       const relativeXPercent =
-        canvasRect.width > 0 ? (relativeXInPixels / canvasRect.width) * 100 : 0
+        canvasRect.width > 0 ? (relativeXInPixels / canvasRect.width) * 100 : 0;
       const relativeYPercent =
         canvasRect.height > 0
           ? (relativeYInPixels / canvasRect.height) * 100
-          : 0
+          : 0;
 
       // Assign the calculated relative percentage positions to the new field object.
       // Ensure the positions object exists on your CanvasElement type.
@@ -326,81 +328,117 @@ const TablesPage = () => {
         // Assuming positions is an object { x: number, y: number }
         x: relativeXPercent,
         y: relativeYPercent,
-      }
+      };
 
       // Add the new field object (now with its calculated relative position) to the canvas elements state.
       // Use a functional update for setCanvasElements to ensure you're working with the latest state.
       setCanvasElements((prevElements) => {
         // Return a new array with the existing elements plus the new one.
-        return [...prevElements, nextField]
-      })
+        return [...prevElements, nextField];
+      });
 
       // Clean up the sidebar drag state after successfully dropping the new element.
-      cleanUp()
+      cleanUp();
     } else if (!e.active.data.current?.fromSideBar && canvasElement) {
       const movedElementIndex = canvasElements.findIndex(
         (x) => x.elementId === e.active.id
-      )
+      );
 
       if (movedElementIndex !== -1) {
-        const currentElement = canvasElements[movedElementIndex]
+        const currentElement = canvasElements[movedElementIndex];
         let newX =
           currentElement.positions.x +
-          (e.delta.x / canvasElement.offsetWidth) * 100
+          (e.delta.x / canvasElement.offsetWidth) * 100;
         let newY =
           currentElement.positions.y +
-          (e.delta.y / canvasElement.offsetHeight) * 100
+          (e.delta.y / canvasElement.offsetHeight) * 100;
 
         // Dacă da, elimină și aici clamparea. Dacă nu, păstreaz-o.
         // Păstrăm clamparea la mutare pentru a preveni pierderea elementelor:
-        newX = Math.max(0, Math.min(100, newX))
-        newY = Math.max(0, Math.min(100, newY))
+        newX = Math.max(0, Math.min(100, newX));
+        newY = Math.max(0, Math.min(100, newY));
 
         // Actualizare imutabilă
         setCanvasElements((currentElements) =>
           currentElements.map((el, index) => {
             if (index === movedElementIndex) {
-              return { ...el, positions: { x: newX, y: newY } }
+              return { ...el, positions: { x: newX, y: newY } };
             }
-            return el
+            return el;
           })
-        )
+        );
       } else {
         console.warn(
           `Elementul cu ID ${e.active?.id} nu a fost găsit pentru mutare.`
-        )
+        );
       }
     }
-  }
+  };
 
   const handlCanvasElementDelete = (id: string) => {
-    const canvasElementsCopy = [...canvasElements]
+    const canvasElementsCopy = [...canvasElements];
     const removedElementList = canvasElementsCopy.filter(
       (el) => el.elementId !== id
-    )
-    setCanvasElements(removedElementList)
-  }
+    );
+    setCanvasElements(removedElementList);
+  };
 
+  /**
+   * Used to delete tables from the canvas.
+   * @param id - The ID of the table to be deleted. If not provided, it means that the user is deleting a table from the canvas.
+   * @returns {Promise<void>} - A promise that resolves when the deletion is complete.
+   */
+  const deleteTable = async (id?: string) => {
+    let removedElementList: CanvasElement[] = canvasElements;
+    if (id) {
+      const canvasElementsCopy = [...canvasElements];
+      removedElementList = canvasElementsCopy.filter(
+        (el) => el.elementId !== id
+      );
+      setCanvasElements(removedElementList);
+    }
+    setDeleteTablesLoading(true);
+    updateEventTableOrganization(
+      {
+        elements: removedElementList,
+      },
+      eventInstance?.eventId
+    );
+    if (eventInstance) {
+      await handleDeleteGuestsFromDeletedTables(
+        eventInstance?.eventTableOrganization.elements ?? []
+      );
+
+      const eventCopy = eventInstance;
+      eventCopy.eventTableOrganization.elements = removedElementList;
+      setEventInstance(eventCopy);
+    }
+
+    setDeleteTablesLoading(false);
+  };
+
+  // Function to export the canvas content to a PDF file
+  // It uses html2canvas to capture the canvas content and jsPDF to generate the PDF
   const exportToPDF = () => {
     const canvasElement = document.querySelector(
       '.tables-canvas-section'
-    ) as HTMLElement
+    ) as HTMLElement;
     if (canvasElement) {
-      const HTML_Width = canvasElement.offsetWidth
-      const HTML_Height = canvasElement.offsetHeight
-      const top_left_margin = 15
-      const PDF_Width = HTML_Width + top_left_margin * 2
-      const PDF_Height = PDF_Width * 1.5 + top_left_margin * 2
-      const canvas_image_width = HTML_Width
-      const canvas_image_height = HTML_Height
+      const HTML_Width = canvasElement.offsetWidth;
+      const HTML_Height = canvasElement.offsetHeight;
+      const top_left_margin = 15;
+      const PDF_Width = HTML_Width + top_left_margin * 2;
+      const PDF_Height = PDF_Width * 1.5 + top_left_margin * 2;
+      const canvas_image_width = HTML_Width;
+      const canvas_image_height = HTML_Height;
 
       html2canvas(canvasElement, { allowTaint: true }).then(function (canvas) {
-        canvas.getContext('2d')
+        canvas.getContext('2d');
 
-        console.log(canvas.height + '  ' + canvas.width)
+        console.log(canvas.height + '  ' + canvas.width);
 
-        const imgData = canvas.toDataURL('image/jpeg', 1.0)
-        const pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height])
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
         pdf.addImage(
           imgData,
           'PNG',
@@ -408,18 +446,18 @@ const TablesPage = () => {
           0,
           canvas_image_width,
           canvas_image_height
-        )
+        );
 
-        pdf.save('HTML-Document.pdf')
-      })
+        pdf.save('HTML-Document.pdf');
+      });
     }
-  }
+  };
 
   const exportGuestsToExcel = async () => {
     const guestsTableOrganization: {
-      tableName: string
-      guests: Guest['guestInfo'][]
-    }[] = []
+      tableName: string;
+      guests: Guest['guestInfo'][];
+    }[] = [];
 
     if (eventInstance?.eventTableOrganization.elements) {
       await Promise.all(
@@ -428,56 +466,56 @@ const TablesPage = () => {
             const tableGuests: Guest[] = await queryGuestsByTable(
               eventInstance.eventId,
               el.elementId
-            )
+            );
             if (tableGuests.length) {
               guestsTableOrganization.push({
                 tableName: el.name,
                 guests: tableGuests.map((guest) => guest.guestInfo),
-              })
+              });
             }
           }
         })
-      )
-      createXlsxWorkbook(guestsTableOrganization)
+      );
+      createXlsxWorkbook(guestsTableOrganization);
     } else {
-      toast.error('Adauga un element pentru a putea fi exportat')
+      toast.error('Adauga un element pentru a putea fi exportat');
     }
-  }
+  };
 
   const handleDeleteGuestsFromDeletedTables = async (
     oldTablesArray: CanvasElement[]
   ) => {
-    if (!eventInstance) return
+    if (!eventInstance) return;
 
-    const removedTablesIds: string[] = []
+    const removedTablesIds: string[] = [];
     oldTablesArray.forEach((oldTable) => {
       const tableGuests = canvasElements.filter(
         (x) => x.elementId === oldTable.elementId
-      )
+      );
       if (!tableGuests.length) {
-        removedTablesIds.push(oldTable.elementId)
+        removedTablesIds.push(oldTable.elementId);
       }
-    })
+    });
     try {
       removedTablesIds.forEach(async (id) => {
         const guestsToBeRemoved = await queryGuestsByTable(
           eventInstance?.eventId,
           id
-        )
+        );
         if (guestsToBeRemoved.length) {
           await assignTableToGuests(
             null,
             guestsToBeRemoved.map((guest) => {
-              return { value: guest.guestId, label: guest.guestInfo.name }
+              return { value: guest.guestId, label: guest.guestInfo.name };
             })
-          )
+          );
         }
-      })
+      });
     } catch (error) {
-      console.error('Error deleting guests from deleted tables', error)
-      toast.error('A aparut o eroare la stergerea meselor')
+      console.error('Error deleting guests from deleted tables', error);
+      toast.error('A aparut o eroare la stergerea meselor');
     }
-  }
+  };
 
   return isMobile ? (
     <div>
@@ -509,10 +547,10 @@ const TablesPage = () => {
           <div className="flex gap-2">
             <Button
               onClick={() => {
-                setEditModeOn(false)
+                setEditModeOn(false);
                 setCanvasElements(
                   eventInstance?.eventTableOrganization.elements ?? []
-                )
+                );
               }}
               type="default"
             >
@@ -522,27 +560,10 @@ const TablesPage = () => {
               loading={deleteTablesLoading}
               onClick={async () => {
                 try {
-                  setDeleteTablesLoading(true)
-                  updateEventTableOrganization(
-                    {
-                      elements: canvasElements,
-                    },
-                    eventInstance?.eventId
-                  )
-                  if (eventInstance) {
-                    await handleDeleteGuestsFromDeletedTables(
-                      eventInstance?.eventTableOrganization.elements ?? []
-                    )
-
-                    const eventCopy = eventInstance
-                    eventCopy.eventTableOrganization.elements = canvasElements
-                    setEventInstance(eventCopy)
-                  }
-
-                  setDeleteTablesLoading(false)
-                  setEditModeOn(false)
+                  await deleteTable();
+                  setEditModeOn(false);
                 } catch (error) {
-                  toast.error('A aparut o eroare la salvare')
+                  toast.error('A aparut o eroare la salvare');
                 }
               }}
               type="primary"
@@ -626,6 +647,7 @@ const TablesPage = () => {
       </DndContext>
       {activeEditTable && eventInstance && (
         <LateralDrawer
+          deleteTable={deleteTable}
           tableElement={activeEditTable}
           eventId={eventInstance?.eventId}
           tableEditActive={tableEditActive}
@@ -636,7 +658,7 @@ const TablesPage = () => {
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TablesPage
+export default TablesPage;

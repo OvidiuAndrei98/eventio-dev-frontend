@@ -8,11 +8,10 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { MenuItem } from './app-sidebar'
-import { useContext } from 'react'
-import { EventContext } from '../../layout'
+import { useEventContext } from '@/core/context/EventContext'
 
 export function NavMain({ items }: { items: MenuItem[] }) {
-  const { eventInstance } = useContext(EventContext)
+  const { eventInstance } = useEventContext()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>

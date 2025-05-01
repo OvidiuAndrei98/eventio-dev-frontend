@@ -27,12 +27,14 @@ const LateralDrawer = ({
   tableEditActive,
   setTableEditActive,
   setEventInstance,
+  deleteTable,
 }: {
   tableElement: CanvasElement
   eventId: string
   tableEditActive: boolean
   setTableEditActive: (state: boolean) => void
   setEventInstance: (event: EventInstance) => void
+  deleteTable: (tableId: string) => void
 }) => {
   const [form] = Form.useForm()
   const [addGuestsOpen, setAddGuestsOpen] = useState(false)
@@ -170,7 +172,12 @@ const LateralDrawer = ({
           </div>
           <SheetFooter>
             <SheetClose className="self-end flex gap-2">
-              <Button type="default">Sterge masa</Button>
+              <Button
+                type="default"
+                onClick={() => deleteTable(tableElement.elementId)}
+              >
+                Sterge masa
+              </Button>
               <Button type="primary" onClick={() => form.submit()}>
                 Salveaza
               </Button>

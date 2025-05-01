@@ -1,29 +1,50 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import '@/styles/globals.css'
-import { EventInstance } from '@/core/types'
-import { queryEventsByUser } from '@/service/event/queryEventsByUser'
-import EventsTable from './components/eventsTable/EventsTable'
-import { columns } from './components/eventsTable/columns'
-import { Button } from 'antd'
-import { PlusIcon } from 'lucide-react'
-import { useAuth } from '@/core/AuthenticationBoundary'
+import { useEffect, useMemo, useState } from 'react';
+import '@/styles/globals.css';
+import { EventInstance } from '@/core/types';
+import { queryEventsByUser } from '@/service/event/queryEventsByUser';
+import EventsTable from './components/eventsTable/EventsTable';
+import { getColumns } from './components/eventsTable/columns';
+import { Button } from 'antd';
+import { PlusIcon } from 'lucide-react';
+import { useAuth } from '@/core/AuthenticationBoundary';
+import NewInvitationModal from './components/newInvitationModal/NewInvitationModal';
 
 const DashboardPage = () => {
-  const [queryEventLoading, setQueryEventLoading] = useState(true)
-  const [events, setEvents] = useState<EventInstance[]>([])
-  const user = useAuth().userDetails
+  const [queryEventLoading, setQueryEventLoading] = useState(true);
+  const [events, setEvents] = useState<EventInstance[]>([]);
+  const user = useAuth().userDetails;
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!user?.userId) {
-      return
+      return;
     }
     queryEventsByUser(user.userId).then((events) => {
-      setEvents(events)
-      setQueryEventLoading(false)
-    })
-  }, [user])
+      setEvents(events);
+      setQueryEventLoading(false);
+    });
+  }, [user]);
+
+  const handleEventDelete = (eventId: string) => {
+    setEvents((prevEvents) =>
+      prevEvents.filter((event) => event.eventId !== eventId)
+    );
+  };
+
+  const onModalOk = () => {
+    setOpen(false);
+  };
+
+  const onModalClose = () => {
+    setOpen(false);
+  };
+
+  const columns = useMemo(
+    () => getColumns({ handleEventDelete: handleEventDelete }),
+    [handleEventDelete]
+  );
 
   return (
     <div className="events-container h-full p-4 bg-[#F6F6F6]">
@@ -40,7 +61,11 @@ const DashboardPage = () => {
                   {events.length} invitatii
                 </span>
               </div>
-              <Button className="p-4" type="default">
+              <Button
+                className="p-4"
+                type="default"
+                onClick={() => setOpen(true)}
+              >
                 <PlusIcon size={16} /> Invitatie noua
               </Button>
             </div>
@@ -61,12 +86,17 @@ const DashboardPage = () => {
         <span className="text-center text-slate-500">
           Ai la dispozitie un numar nelimitat de invitatii.
         </span>
-        <Button className="mt-4 p-4" type="primary">
+        <Button
+          className="mt-4 p-4"
+          type="primary"
+          onClick={() => setOpen(true)}
+        >
           Creaza invitatie
         </Button>
       </div>
+      <NewInvitationModal open={open} onOk={onModalOk} onClose={onModalClose} />
     </div>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;

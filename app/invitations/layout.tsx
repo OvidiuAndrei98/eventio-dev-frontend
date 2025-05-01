@@ -1,14 +1,13 @@
-'use client';
-import '@/styles/globals.css';
+import { AuthenticationBoundary } from '@/core/AuthenticationBoundary'
+import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { ConfigProvider } from 'antd'
+import React from 'react'
+import '@/styles/globals.css'
+import { Toaster } from 'sonner'
 
-import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
-import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { ConfigProvider } from 'antd';
-import { Toaster } from 'sonner';
-
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
+    <html lang="en">
       <body>
         <AntdRegistry>
           <ConfigProvider
@@ -29,7 +28,5 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <Toaster />
       </body>
     </html>
-  );
-};
-
-export default AppLayout;
+  )
+}

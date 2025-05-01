@@ -22,8 +22,7 @@ import {
 } from '@/components/ui/sidebar'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/core/AuthenticationBoundary'
-import { useContext } from 'react'
-import { EventContext } from '../../layout'
+import { useEventContext } from '@/core/context/EventContext'
 
 export interface MenuItem {
   title: string
@@ -42,7 +41,7 @@ export function AppSidebar({
   onClickNav: (info: { title: string; url: string }) => void
 }) {
   const user = useAuth().userDetails
-  const { eventInstance } = useContext(EventContext)
+  const { eventInstance } = useEventContext()
 
   const data: MenuData = {
     navMain: [

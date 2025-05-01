@@ -14,8 +14,9 @@ function Masonry({
     image: string
     height: number
     text?: string
+    type: string
   }[]
-  onClick: () => void
+  onClick: (type: string) => void
 }) {
   const [columns, setColumns] = useState(2)
 
@@ -98,7 +99,7 @@ function Masonry({
               backgroundPosition: 'center',
               objectFit: 'cover',
             }}
-            onClick={onClick}
+            onClick={() => onClick(item.type)}
           >
             {item.text}
           </div>

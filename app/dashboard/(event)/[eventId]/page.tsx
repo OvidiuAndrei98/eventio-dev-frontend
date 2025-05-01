@@ -1,53 +1,52 @@
-'use client'
+'use client';
 
-import '@/styles/globals.css'
+import '@/styles/globals.css';
 import {
   FileExcelFilled,
   SendOutlined,
   UnorderedListOutlined,
-} from '@ant-design/icons'
-import { Button } from 'antd'
-import { useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import ConfirmationCard from './components/confirmationCard/ConfirmationCard'
-import ActivityChart from './components/activityChart/ActivityChart'
-import Image from 'next/image'
-import DemoImage from '@/public/landing-image.svg'
-import TodoModal from '@/components/todoList/TodoModal'
-import { EventContext } from './layout'
+} from '@ant-design/icons';
+import { Button } from 'antd';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import ConfirmationCard from './components/confirmationCard/ConfirmationCard';
+import ActivityChart from './components/activityChart/ActivityChart';
+import Image from 'next/image';
+import TodoModal from '@/components/todoList/TodoModal';
+import { useEventContext } from '@/core/context/EventContext';
 
 // Varianta abonomant
 
 const DashboardEventPage = () => {
-  const router = useRouter()
-  const [todoOpen, setTodoOpen] = useState(false)
-  const [shrinkElement, setShrinkElement] = useState(false)
-  const { eventInstance } = useContext(EventContext)
+  const router = useRouter();
+  const [todoOpen, setTodoOpen] = useState(false);
+  const [shrinkElement, setShrinkElement] = useState(false);
+  const { eventInstance } = useEventContext();
 
   useEffect(() => {
-    const element = document.querySelector('.dashboard-content-container')
+    const element = document.querySelector('.dashboard-content-container');
     if (element) {
       const observer = new ResizeObserver((entries) => {
-        const e = entries[0] // should be only one
+        const e = entries[0]; // should be only one
         if (e.contentRect.width < 710) {
-          setShrinkElement(true)
+          setShrinkElement(true);
         } else {
-          setShrinkElement(false)
+          setShrinkElement(false);
         }
-      })
+      });
 
       // start listening for size changes
-      observer.observe(element)
+      observer.observe(element);
     }
-  }, [])
+  }, []);
 
   const onModalOk = () => {
-    setTodoOpen(false)
-  }
+    setTodoOpen(false);
+  };
 
   const onModalClose = () => {
-    setTodoOpen(false)
-  }
+    setTodoOpen(false);
+  };
 
   return (
     <div
@@ -63,9 +62,13 @@ const DashboardEventPage = () => {
             }}
           >
             <h2>{eventInstance?.eventName}</h2>
-            <span className="primary-color-text">Premium</span>
           </div>
-          <Image alt="" src={DemoImage} width={150} />
+          <Image
+            alt="Event Thumbnail"
+            src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
+            width={150}
+            height={150}
+          />
           <Button icon={<SendOutlined />} type="primary">
             Trimite Invitatia
           </Button>
@@ -125,7 +128,7 @@ const DashboardEventPage = () => {
       </div>
       <TodoModal onClose={onModalClose} onOk={onModalOk} open={todoOpen} />
     </div>
-  )
-}
+  );
+};
 
-export default DashboardEventPage
+export default DashboardEventPage;
