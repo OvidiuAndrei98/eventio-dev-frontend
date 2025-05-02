@@ -1,17 +1,16 @@
-import * as React from 'react'
+import * as React from 'react';
 import {
   BookOpen,
   Bot,
   Command,
-  Frame,
   PieChart,
   Settings2,
   SquareTerminal,
-} from 'lucide-react'
+} from 'lucide-react';
 
-import { NavMain } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-main'
-import { NavProjects } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-projects'
-import { NavUser } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-user'
+import { NavMain } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-main';
+import { NavProjects } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-projects';
+import { NavUser } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -19,29 +18,29 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarRail,
-} from '@/components/ui/sidebar'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/core/AuthenticationBoundary'
-import { useEventContext } from '@/core/context/EventContext'
+} from '@/components/ui/sidebar';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/core/AuthenticationBoundary';
+import { useEventContext } from '@/core/context/EventContext';
 
 export interface MenuItem {
-  title: string
-  url: string
-  icon?: JSX.Element
-  onClick?: (info: { title: string; url: string }) => void
-  subMenu?: MenuItem[]
+  title: string;
+  url: string;
+  icon?: JSX.Element;
+  onClick?: (info: { title: string; url: string }) => void;
+  subMenu?: MenuItem[];
 }
 
-export type MenuData = Record<string, MenuItem[]>
+export type MenuData = Record<string, MenuItem[]>;
 
 export function AppSidebar({
   onClickNav,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  onClickNav: (info: { title: string; url: string }) => void
+  onClickNav: (info: { title: string; url: string }) => void;
 }) {
-  const user = useAuth().userDetails
-  const { eventInstance } = useEventContext()
+  const user = useAuth().userDetails;
+  const { eventInstance } = useEventContext();
 
   const data: MenuData = {
     navMain: [
@@ -69,13 +68,20 @@ export function AppSidebar({
         icon: <Settings2 />,
         onClick: onClickNav,
       },
+      {
+        title: 'Editare template',
+        url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/edit`,
+        icon: <Settings2 />,
+        onClick: onClickNav,
+      },
+      {
+        title: 'Editare invitatie',
+        url: `/dashboard/${eventInstance?.eventId}/tables`,
+        icon: <Settings2 />,
+        onClick: onClickNav,
+      },
     ],
     projects: [
-      {
-        title: 'Invitatii',
-        url: '#',
-        icon: <Frame />,
-      },
       {
         title: 'Plati si facturi',
         url: '#',
@@ -99,7 +105,7 @@ export function AppSidebar({
         ],
       },
     ],
-  }
+  };
   return (
     <Sidebar
       variant="inset"
@@ -140,5 +146,5 @@ export function AppSidebar({
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

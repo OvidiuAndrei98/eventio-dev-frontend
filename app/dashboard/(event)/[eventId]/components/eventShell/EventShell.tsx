@@ -30,6 +30,7 @@ const routeTitleMapper: { [key: string]: string } = {
   response: 'Raspunsuri',
   statistics: 'Statistici',
   tables: 'Organizare',
+  edit: 'Editare template',
 };
 
 interface EventShellProps {

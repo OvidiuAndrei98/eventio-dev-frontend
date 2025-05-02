@@ -103,7 +103,7 @@ const NewInvitationModal = ({
           }}
         />
         {templates.length === 0 ? (
-          <div className="no-template-message text-xl text-gray-500 w-full h-full flex items-center justify-center">
+          <div className="no-template-message text-center text-xl text-gray-500 w-full h-full flex items-center justify-center">
             Nu sunt disponibile invitatii pentru acest tip de eveniment.
           </div>
         ) : (

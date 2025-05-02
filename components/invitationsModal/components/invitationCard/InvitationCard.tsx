@@ -1,5 +1,6 @@
 import { Button } from 'antd';
 import './InvitationCard.css';
+import Link from 'next/link';
 
 interface InvitationCardProps {
   image: string;
@@ -30,7 +31,14 @@ const InvitationCard = ({
         >
           Alege
         </Button>
-        <Button size="middle">Demo</Button>
+        <Button size="middle">
+          <Link
+            href={`/invitation/${type}/preview/${templateId}`}
+            target="_blank"
+          >
+            Demo
+          </Link>
+        </Button>
       </div>
     </div>
   );
