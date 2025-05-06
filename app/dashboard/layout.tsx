@@ -8,7 +8,7 @@ import { Toaster } from 'sonner';
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
+    <html lang="en" style={{ scrollBehavior: 'smooth', overflow: 'hidden' }}>
       <body>
         <AntdRegistry>
           <ConfigProvider

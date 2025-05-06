@@ -109,7 +109,7 @@ const DashboardEventPage = () => {
           <ConfirmationCard />
         </div>
         <ActivityChart showActionButton />
-        <div className="dashboard-card quick-actions">
+        <div className="dashboard-card quick-actions pb-[6px]">
           <h3 className="font-semibold">Actiuni rapide</h3>
           <div className="quick-actions-container">
             <div className="dotted-card quick-card">
@@ -125,6 +125,7 @@ const DashboardEventPage = () => {
             </div>
           </div>
         </div>
+        <div className="pb-[1px]"></div>
       </div>
       <TodoModal onClose={onModalClose} onOk={onModalOk} open={todoOpen} />
     </div>

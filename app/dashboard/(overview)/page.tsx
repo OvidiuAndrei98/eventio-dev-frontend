@@ -47,7 +47,7 @@ const DashboardPage = () => {
   );
 
   return (
-    <div className="events-container h-full p-4 bg-[#F6F6F6]">
+    <div className="events-container h-full p-4 bg-[#F6F6F6] h-calc(100% - 48px) overflow-y-auto">
       <h1 className="text-2xl font-bold">Bine ai venit, {user?.displayName}</h1>
       <div className="container min-h-[300px] my-4 mx-auto p-4 bg-white rounded-md shadow-sm relative">
         {queryEventLoading ? (

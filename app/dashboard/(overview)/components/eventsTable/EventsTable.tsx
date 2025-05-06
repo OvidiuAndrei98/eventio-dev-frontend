@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -7,7 +7,8 @@ import {
   useReactTable,
   SortingState,
   getSortedRowModel,
-} from '@tanstack/react-table'
+  PaginationState,
+} from '@tanstack/react-table';
 
 import {
   Table,
@@ -16,13 +17,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { DataTablePagination } from './TablePagination'
-import { EventInstance } from '@/core/types'
+} from '@/components/ui/table';
+import { DataTablePagination } from './TablePagination';
+import { EventInstance } from '@/core/types';
 
 interface DataTableProps<TValue> {
-  columns: ColumnDef<EventInstance, TValue>[]
-  data: EventInstance[]
+  columns: ColumnDef<EventInstance, TValue>[];
+  data: EventInstance[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,7 +31,11 @@ const EventsTable = <_EventInstance, TValue>({
   columns,
   data,
 }: DataTableProps<TValue>) => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
   const table = useReactTable({
     data,
     columns,
@@ -40,12 +45,13 @@ const EventsTable = <_EventInstance, TValue>({
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
+      pagination,
     },
-  })
+  });
 
   return (
-    <div>
-      <Table>
+    <div className="events-table-container">
+      <Table className="test-table">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -62,7 +68,7 @@ const EventsTable = <_EventInstance, TValue>({
                           header.getContext()
                         )}
                   </TableHead>
-                )
+                );
               })}
             </TableRow>
           ))}
@@ -93,7 +99,7 @@ const EventsTable = <_EventInstance, TValue>({
       </Table>
       <DataTablePagination table={table} />
     </div>
-  )
-}
+  );
+};
 
-export default EventsTable
+export default EventsTable;

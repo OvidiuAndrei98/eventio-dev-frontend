@@ -1,5 +1,3 @@
-'use client';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +7,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { EventInstance } from '@/core/types';
 import { deleteEventById } from '@/service/event/deleteEventById';
 import { ColumnDef } from '@tanstack/react-table';
@@ -21,7 +25,7 @@ export const getColumns = ({
 }: {
   handleEventDelete: (eventId: string) => void;
 }): ColumnDef<EventInstance>[] => {
-  return [
+  const columns: ColumnDef<EventInstance>[] = [
     {
       accessorKey: 'eventName',
       header: ({ column }) => {
@@ -52,7 +56,18 @@ export const getColumns = ({
               height={40}
               className="rounded-md"
             />
-            <span>{event.eventName}</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-block  whitespace-nowrap overflow-hidden text-ellipsis">
+                    {event.eventName}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <span>{event.eventName}</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         );
       },
@@ -62,8 +77,20 @@ export const getColumns = ({
       header: 'Eveniment',
     },
     {
-      accessorKey: 'eventPlan',
-      header: 'Plan',
+      accessorKey: 'eventDate',
+      header: 'Data',
+      cell: ({ row }) => {
+        const event = row.original;
+        return (
+          <span>
+            {new Date(event.eventDate).toLocaleDateString('ro-RO', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+            })}
+          </span>
+        );
+      },
     },
     {
       accessorKey: 'eventActive',
@@ -140,4 +167,16 @@ export const getColumns = ({
       },
     },
   ];
+
+  if (window.innerWidth < 767) {
+    // Remove the 'eventType' column for mobile view
+    return columns.filter((column) => {
+      return (
+        (column as ColumnDef<EventInstance> & { accesorKey: string })
+          .accesorKey !== 'eventType'
+      );
+    });
+  }
+
+  return columns;
 };
