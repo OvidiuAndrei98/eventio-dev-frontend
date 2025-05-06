@@ -3,8 +3,8 @@
 import { defaultTemplates } from '@/lib/templates/templates';
 import { notFound, useRouter } from 'next/navigation';
 import React, { use, useEffect, useMemo, useState } from 'react';
-import DOMPurify from 'dompurify';
 import { Button } from 'antd';
+import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 
 const InvitationPreviewPage = ({
   params,
@@ -42,12 +42,7 @@ const InvitationPreviewPage = ({
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#F1F5F9]">
-      <div
-        className="overflow-y-auto h-full w-full"
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(selectedTemplate.htmlContent),
-        }}
-      ></div>
+      <TemplateRenderer invitationData={selectedTemplate} />
       <div className="bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
         {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
         <div className="flex justify-between w-full items-center md:items-end md:w-auto md:gap-4">

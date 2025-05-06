@@ -72,11 +72,51 @@ export interface DropdownOption {
   value: string;
 }
 
+export enum ElementType {
+  Text = 'text',
+  Image = 'image',
+  Container = 'container',
+}
+
 export interface Template {
   id: string;
   name: string;
   type: string;
   description: string;
   thumbnailUrl: string;
-  htmlContent: string;
+  settings: {
+    backgroundColor: string;
+  };
+  elements: TemplateSection[];
 }
+
+export interface TemplateSection {
+  id: string;
+  elements: TemplateElement[];
+  style: Record<string, unknown>;
+  position: 'relative';
+}
+
+export interface BaseTemplateElement {
+  id: string;
+  type: ElementType;
+  style: Record<string, unknown>;
+  position: { x: number; y: number };
+  size?: { width: number; height: number };
+}
+
+export interface TextTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.Text;
+  content: string;
+}
+export interface ImageTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.Image;
+  url: string;
+}
+
+export type TemplateElement =
+  | BaseTemplateElement
+  | TextTemplateElement
+  | ImageTemplateElement;
