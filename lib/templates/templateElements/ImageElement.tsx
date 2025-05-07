@@ -2,19 +2,13 @@ import { ImageTemplateElement } from '@/core/types';
 // import Image from 'next/image';
 import React from 'react';
 
-const ImageElement = ({
-  id,
-  url,
-  position,
-  size,
-  style,
-}: ImageTemplateElement) => {
+const ImageElement = ({ id, url, position, style }: ImageTemplateElement) => {
   const elementStyle = {
-    position: 'absolute' as const,
+    position: 'relative' as const,
     top: `${position.y}%`,
     left: `${position.x}%`,
-    width: `${size?.width ?? 100}px`,
-    height: `${size?.height ?? 100}px`,
+    width: `${style?.width ?? 100}px`,
+    height: `${style?.height ?? 100}px`,
     ...style,
   };
 
@@ -24,8 +18,8 @@ const ImageElement = ({
       src={url} // url
       alt={`Element ${id}`}
       style={elementStyle}
-      width={size?.width ?? 100}
-      height={size?.height ?? 100}
+      width={(style?.width as number) ?? 100}
+      height={(style?.height as number) ?? 100}
     />
   );
 };

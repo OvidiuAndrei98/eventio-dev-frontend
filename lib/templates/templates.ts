@@ -3,200 +3,283 @@ import { ElementType, Template } from '@/core/types'; // Asigură-te că tipuril
 // lib/defaultTemplates.js
 export const defaultTemplates: Template[] = [
   {
-    id: 'wedding-classic-floral-responsive-number',
-    name: 'Invitație Nuntă Responsivă (Numere Procente)',
+    id: 'wedding-responsive-demo',
+    name: 'Demo Invitație Nuntă Responsivă',
     type: 'wedding',
     description:
-      'Un template clasic de nuntă cu poziționare în procente (numere) pentru responsivitate.',
-    thumbnailUrl: '/thumbnails/classic-floral-responsive.jpg', // Placeholder
+      'Un template demonstrativ care utilizează poziționare și stiluri specifice pe breakpoint-uri.',
+    thumbnailUrl: '/thumbnails/responsive-demo.jpg', // Placeholder
     settings: {
-      backgroundColor: '#f9f5f0',
-      // pageSize este eliminat
+      backgroundColor: '#f8f0e8', // Un crem delicat
     },
     elements: [
-      // Secțiunea de fundal (convertită la numere procente)
       {
-        id: 'section-background',
-        position: 'relative',
+        id: 'section-header',
+        name: 'Header',
         style: {
-          zIndex: 0,
+          zIndex: 2, // Deasupra fundalului, sub secțiunile principale
+          backgroundColor: 'rgba(255, 255, 255, 0.5)', // Fundal semi-transparent
+          height: 300,
         },
+        position: { x: 0, y: 0 },
+        type: ElementType.Section,
+        responsive: {},
         elements: [
           {
-            id: 'background-image',
-            type: ElementType.Image,
-            url: '/templates/classic-floral/background.jpg',
-            position: { x: 0, y: 0 }, // Numere procente
-            size: { width: 100, height: 100 }, // Numere procente
+            id: 'header-title',
+            name: 'Text',
+            type: ElementType.Text,
+            content: 'Invitație la Căsătorie',
+            position: { x: 50, y: 30 }, // Desktop: Centrat
             style: {
-              opacity: 0.7,
+              fontFamily: 'Playfair Display',
+              fontSize: 36, // Număr (px intenție la 600px)
+              color: '#4b3732', // Maro închis
+              textAlign: 'center',
+              width: 80, // Lățime 80% din secțiunea părinte
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: aliniat stânga, font mai mic, lățime mai mare, poziție diferită
+                position: { x: 5, y: 35 },
+                style: {
+                  fontSize: 24, // Font mai mic pe mobil
+                  textAlign: 'left',
+                  width: 90,
+                },
+              },
+              tablet: {
+                // Pe tabletă: font intermediar, poziție similară desktop
+                position: { x: 50, y: 30 },
+                style: { fontSize: 30, textAlign: 'center' },
+              },
+            },
+          },
+          {
+            id: 'header-slogan',
+            name: 'Text',
+            type: ElementType.Text,
+            content: '"O nouă poveste începe..."',
+            position: { x: 50, y: 60 }, // Desktop: sub titlu, centrat
+            style: {
+              fontFamily: 'Great Vibes', // Font caligrafic
+              fontSize: 24, // Număr
+              color: '#7d665d', // Maro mediu
+              textAlign: 'center',
+              width: 70,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
+                position: { x: 5, y: 65 },
+                style: { fontSize: 18, textAlign: 'left' },
+              },
+              tablet: {
+                // Pe tabletă: font intermediar, poziție similară desktop
+                position: { x: 50, y: 60 },
+                style: { fontSize: 20, textAlign: 'center' },
+              },
             },
           },
         ],
       },
-      // Secțiunea principală de conținut (convertită la numere procente)
+
+      // --- Secțiunea Detalii Principale (Nume, Data, Locația) ---
       {
-        id: 'section-main-content',
-        position: 'relative',
-        style: {
-          zIndex: 1,
-        },
+        id: 'section-main-details',
+        style: { zIndex: 1, height: 300 }, // Sub antet, peste fundal
+        name: 'Detalii eveniment',
+        position: { x: 0, y: 0 },
+        type: ElementType.Section,
+        responsive: {},
         elements: [
-          // Elementele din secțiunea de conținut principal (convertite la numere procente)
           {
-            id: 'header-text',
+            id: 'main-names',
+            name: 'Text',
             type: ElementType.Text,
-            content: 'Suntem încântați să vă invităm la',
-            position: { x: 20, y: 3.64 }, // Numere procente
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: '20px', // Rămâne PX
-              color: '#5a2d2d',
-              textAlign: 'center',
-            },
-          },
-          {
-            id: 'main-title',
-            type: ElementType.Text,
-            content: 'Căsătoria',
-            position: { x: 10, y: 10.91 }, // Numere procente
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: '48px', // Rămâne PX
-              color: '#8b4513',
-              textAlign: 'center',
-              lineHeight: '1.4',
-            },
-          },
-          {
-            id: 'names-text',
-            type: ElementType.Text,
-            content: 'Maria Popescu\n& \nAndrei Ionescu',
-            position: { x: 10, y: 23.64 }, // Numere procente
+            content: 'Andreea Popescu\nși\nIon Ionescu',
+            position: { x: 50, y: 15 }, // Desktop: centrat
             style: {
               fontFamily: 'Great Vibes',
-              fontSize: '40px', // Rămâne PX
-              color: '#8b4513',
+              fontSize: 40, // Număr
+              color: '#4b3732',
               textAlign: 'center',
-              lineHeight: '1.4',
+              lineHeight: '1.3',
+              width: 70,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
+                position: { x: 5, y: 5 }, // Poziție la începutul secțiunii pe mobil
+                style: { fontSize: 30, textAlign: 'left', width: 90 },
+              },
+              tablet: {
+                // Pe tabletă: font intermediar
+                style: { fontSize: 35 },
+              },
             },
           },
           {
-            id: 'separator-line',
+            id: 'main-separator',
             type: ElementType.Text,
-            content: '— ♦ —',
-            position: { x: 40, y: 49.09 }, // Numere procente
+            name: 'Text',
+            content: '***',
+            position: { x: 50, y: 35 }, // Desktop: sub nume, centrat
             style: {
               fontFamily: 'Arial',
-              fontSize: '18px', // Rămâne PX
-              color: '#8b4513',
+              fontSize: 18,
+              color: '#7d665d',
               textAlign: 'center',
+              width: 20,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: sub nume, aliniat stânga, poziție diferită
+                position: { x: 5, y: 25 }, // Poziție sub nume pe mobil
+                style: { textAlign: 'left' },
+              },
+              tablet: {
+                // Pe tabletă: similar desktop
+                position: { x: 50, y: 35 },
+                style: { textAlign: 'center' },
+              },
             },
           },
           {
-            id: 'event-date-time',
+            id: 'main-date-location',
             type: ElementType.Text,
-            content: 'Sâmbătă, 14 Septembrie 2024\nOra 16:00',
-            position: { x: 20, y: 58.18 }, // Numere procente
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: '22px', // Rămâne PX
-              color: '#5a2d2d',
-              textAlign: 'center',
-              lineHeight: '1.5',
-            },
-          },
-          {
-            id: 'event-location-heading',
-            type: ElementType.Text,
-            content: 'Locația:',
-            position: { x: 20, y: 72.73 }, // Numere procente
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: '20px', // Rămâne PX
-              color: '#5a2d2d',
-              textAlign: 'center',
-            },
-          },
-          {
-            id: 'event-location-details',
-            type: ElementType.Text,
+            name: 'Text',
             content:
-              'Restaurant "La Castel"\nStr. Florilor, Nr. 10,\nOraș, Județ',
-            position: { x: 20, y: 78.18 }, // Numere procente
+              'Sâmbătă, 21 Septembrie 2024\nOra 17:00\n\nRestaurant Panoramic\nStr. Speranței, Nr. 12\nOrașul Nostru',
+            position: { x: 50, y: 45 }, // Desktop: sub separator, centrat
             style: {
               fontFamily: 'Playfair Display',
-              fontSize: '18px', // Rămâne PX
-              color: '#5a2d2d',
+              fontSize: 20,
+              color: '#4b3732',
               textAlign: 'center',
-              lineHeight: '1.4',
+              lineHeight: '1.6',
+              width: 80,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită (sub separator), aliniat stânga
+                position: { x: 5, y: 35 }, // Poziție sub separator pe mobil
+                style: { fontSize: 16, textAlign: 'left', width: 90 },
+              },
+              tablet: {
+                // Pe tabletă: font intermediar
+                style: { fontSize: 18 },
+              },
             },
           },
         ],
       },
-      // Secțiunea RSVP (convertită la numere procente)
+
+      // --- Secțiunea RSVP ---
       {
         id: 'section-rsvp',
-        position: 'relative',
+        name: 'RSVP Section',
+        position: { x: 0, y: 0 },
+        type: ElementType.Section,
+        responsive: {},
         style: {
-          backgroundColor: '#f0e0d6',
-          border: '1px solid #d3b8a8', // Rămâne PX
-          borderRadius: '10px', // Rămâne PX
-          zIndex: 2,
+          zIndex: 1,
+          backgroundColor: 'rgba(240, 230, 224, 0.7)', // Fundal semi-transparent crem
+          height: 300,
         },
         elements: [
-          // Elementele din secțiunea RSVP (convertite la numere procente)
           {
             id: 'rsvp-heading',
             type: ElementType.Text,
+            name: 'Text',
             content: 'Vă rugăm să confirmați prezența',
-            position: { x: 10, y: 11.76 }, // Numere procente
+            position: { x: 50, y: 15 }, // Desktop: centrat
             style: {
               fontFamily: 'Playfair Display',
-              fontSize: '20px', // Rămâne PX
-              color: '#5a2d2d',
+              fontSize: 20, // Număr
+              color: '#4b3732',
               textAlign: 'center',
+              width: 80,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
+                position: { x: 5, y: 10 },
+                style: { fontSize: 16, textAlign: 'left', width: 90 },
+              },
             },
           },
           {
             id: 'rsvp-deadline',
             type: ElementType.Text,
+            name: 'Text',
             content: 'Termen limită: 1 August 2024',
-            position: { x: 20, y: 32.35 }, // Numere procente
+            position: { x: 50, y: 40 }, // Desktop: sub antet, centrat
             style: {
               fontFamily: 'Playfair Display',
-              fontSize: '18px', // Rămâne PX
-              color: '#5a2d2d',
+              fontSize: 18, // Număr
+              color: '#7d665d',
               textAlign: 'center',
+              width: 60,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
+                position: { x: 5, y: 30 },
+                style: { fontSize: 14, textAlign: 'left', width: 90 },
+              },
             },
           },
           {
-            id: 'rsvp-instructions',
+            id: 'rsvp-link-text',
             type: ElementType.Text,
-            content: 'Confirmați online accesând link-ul:',
-            position: { x: 20, y: 52.94 }, // Numere procente
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: '16px', // Rămâne PX
-              color: '#5a2d2d',
-              textAlign: 'center',
-            },
-          },
-          {
-            id: 'rsvp-link',
-            type: ElementType.Text,
-            content: '[Link către pagina de confirmare]',
-            position: { x: 20, y: 67.65 }, // Numere procente
+            name: 'Text',
+            content: 'Confirmați aici:',
+            position: { x: 50, y: 60 }, // Desktop: sub termen, centrat
             style: {
               fontFamily: 'Arial',
-              fontSize: '16px', // Rămâne PX
-              color: '#0000ff',
-              textDecoration: 'underline',
+              fontSize: 16, // Număr
+              color: '#4b3732',
               textAlign: 'center',
+              width: 50,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
+                position: { x: 5, y: 50 },
+                style: { fontSize: 12, textAlign: 'left', width: 90 },
+              },
+            },
+          },
+          {
+            id: 'rsvp-link-button',
+            name: 'Text',
+            type: ElementType.Text, // Folosim text ca și cum ar fi un buton
+            content: '[Pagina Confirmare]',
+            position: { x: 50, y: 75 }, // Desktop: sub text link, centrat
+            style: {
+              fontFamily: 'Arial',
+              fontSize: 16, // Număr
+              color: '#ffffff', // Text alb
+              backgroundColor: '#a0522d', // Fundal maro arămiu
+              padding: '8px 15px', // Padding în pixeli (va fi scalat)
+              borderRadius: '5px', // Border radius în pixeli (va fi scalat)
+              textAlign: 'center',
+              width: 40,
+            },
+            responsive: {
+              mobile: {
+                // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
+                position: { x: 5, y: 65 }, // Poziție sub text link pe mobil
+                style: { fontSize: 14, width: 90 }, // Lățime mai mare pe mobil
+              },
+              // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil
             },
           },
         ],
       },
+
+      // Poți adăuga alte secțiuni aici
     ],
   },
 ];

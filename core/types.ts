@@ -72,10 +72,47 @@ export interface DropdownOption {
   value: string;
 }
 
+// Define the types of UI widgets that the editor will use
+export enum EditorWidgetType {
+  TextInput = 'TextInput',
+  NumberInput = 'NumberInput',
+  UnitInput = 'UnitInput',
+  ColorPicker = 'ColorPicker',
+  Dropdown = 'Dropdown',
+  Checkbox = 'Checkbox',
+  Slider = 'Slider',
+  TextArea = 'TextArea',
+}
+
+export enum PropertyDataType {
+  String = 'string',
+  Number = 'number',
+  Color = 'color',
+  Unit = 'unit',
+  Enum = 'enum',
+  Boolean = 'boolean',
+  Object = 'object',
+}
+
+export interface PropertyEditorConfig {
+  label: string;
+  dataType: PropertyDataType;
+  widgetType: EditorWidgetType;
+  options?: { value: any; label: string }[];
+  unitOptions?: string[];
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+export interface EditorConfigSet {
+  [propertyKey: string]: PropertyEditorConfig;
+}
+
 export enum ElementType {
   Text = 'text',
   Image = 'image',
-  Container = 'container',
+  Section = 'section',
 }
 
 export interface Template {
@@ -90,19 +127,29 @@ export interface Template {
   elements: TemplateSection[];
 }
 
-export interface TemplateSection {
-  id: string;
-  elements: TemplateElement[];
-  style: Record<string, unknown>;
-  position: 'relative';
-}
-
 export interface BaseTemplateElement {
   id: string;
   type: ElementType;
   style: Record<string, unknown>;
-  position: { x: number; y: number };
-  size?: { width: number; height: number };
+  name: string;
+  position: { x: number | 'auto'; y: number | 'auto' };
+  responsive: ResponsiveOverrides;
+}
+
+export interface TemplateSection extends BaseTemplateElement {
+  elements: TemplateElement[];
+  id: string;
+  type: ElementType.Section;
+}
+
+export interface ResponsiveProperties {
+  position?: { x: number; y: number };
+  style?: Record<string, unknown>;
+  display?: string;
+}
+
+export interface ResponsiveOverrides {
+  [mediaQuery: string]: ResponsiveProperties;
 }
 
 export interface TextTemplateElement extends BaseTemplateElement {
@@ -119,4 +166,5 @@ export interface ImageTemplateElement extends BaseTemplateElement {
 export type TemplateElement =
   | BaseTemplateElement
   | TextTemplateElement
-  | ImageTemplateElement;
+  | ImageTemplateElement
+  | TemplateSection;

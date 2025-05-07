@@ -1,63 +1,79 @@
-// components/InvitationRenderer.tsx
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SectionRenderer from './SectionRenderer';
-import { Template, TemplateSection } from '@/core/types';
+import { Template } from '@/core/types';
+import { BREAKPOINTS, getBreakpointName } from '../constants';
+import EditSectionRenderer from './EditSectionRenderer';
 
-interface InvitationRendererProps {
-  invitationData: Template; // Primește întregul obiect template
+interface TemplateRendererProps {
+  invitationData: Template;
+  selectedSectionId?: string;
+  editMode?: boolean;
+  onSelect?: (sectionId: string) => void;
 }
 
-const InvitationRenderer: React.FC<InvitationRendererProps> = ({
+const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   invitationData,
+  selectedSectionId,
+  editMode = false,
+  onSelect,
 }) => {
-  if (!invitationData || !invitationData.elements) {
-    return <div>Nu s-au găsit date pentru invitație.</div>;
-  }
+  // if (!invitationData || !invitationData.elements) {
+  //   return <div>Nu s-au găsit date pentru invitație.</div>;
+  // }
 
-  const { settings, elements: sections } = invitationData; // Redenumim 'elements' în 'sections' pentru claritate
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeBreakpoint, setActiveBreakpoint] = useState<
+    keyof typeof BREAKPOINTS | 'desktop'
+  >('desktop');
+  const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
 
+  useEffect(() => {
+    const updateContainerWidth = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        setActiveBreakpoint(getBreakpointName(width));
+      }
+    };
+
+    updateContainerWidth();
+    window.addEventListener('resize', updateContainerWidth);
+
+    return () => {
+      window.removeEventListener('resize', updateContainerWidth);
+    };
+  }, []);
+
   const invitationAreaStyle: React.CSSProperties = {
-    width: `100%`,
-    height: `100%`,
+    maxWidth: `100%`,
+    height: `calc(100% - 72px);%`,
     backgroundColor: backgroundColor,
-    position: 'relative', // Containerul principal este relative
-    overflow: 'hidden', // Ascunde conținutul care depășește marginile paginii
-    // Adaugă alte stiluri pentru invitație (margine, umbră etc.)
+    margin: '0 auto',
+    position: 'relative',
+    overflowY: 'auto',
   };
 
   return (
-    <div style={invitationAreaStyle}>
-      {sections
-        // Sortarea secțiunilor după z-index (presupunând că stilul secțiunii include zIndex)
-        .sort(
-          (a, b) =>
-            ((a.style?.zIndex as number) || 0) -
-            ((b.style?.zIndex as number) || 0)
-        )
-        // Randăm fiecare secțiune
-        .map((section) => {
-          // Verificăm dacă secțiunea are proprietățile de poziționare necesare (presupunerea noastră)
-          // În aplicația reală, asigură-te că datele din Firebase le au
-          const sectionWithPosition = section as TemplateSection & {
-            position: { x: number; y: number };
-            size?: { width: number; height: number };
-          };
-
-          if (!sectionWithPosition.position) {
-            console.warn(`Section ${section.id} is missing position property.`);
-            return null; // Nu randa secțiunea dacă nu are poziție
-          }
-
-          return (
-            <SectionRenderer
-              key={section.id} // Cheia este crucială pentru listele React
-              sectionData={sectionWithPosition} // Transmite datele secțiunii către SectionRenderer
-            />
-          );
-        })}
+    <div ref={containerRef} style={invitationAreaStyle}>
+      {sections.map((section) => {
+        return editMode && onSelect ? (
+          <EditSectionRenderer
+            key={section.id}
+            sectionData={section}
+            activeBreakpoint={activeBreakpoint}
+            isSelected={selectedSectionId === section.name}
+            onSelect={onSelect}
+          />
+        ) : (
+          <SectionRenderer
+            key={section.id}
+            sectionData={section}
+            activeBreakpoint={activeBreakpoint}
+          />
+        );
+      })}
     </div>
   );
 };
 
-export default InvitationRenderer;
+export default TemplateRenderer;
