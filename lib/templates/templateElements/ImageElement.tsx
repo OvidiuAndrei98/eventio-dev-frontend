@@ -5,8 +5,8 @@ import React from 'react';
 const ImageElement = ({ id, url, position, style }: ImageTemplateElement) => {
   const elementStyle = {
     position: 'relative' as const,
-    top: `${position.y}%`,
-    left: `${position.x}%`,
+    top: `${position.top}%`,
+    left: `${position.left}%`,
     width: `${style?.width ?? 100}px`,
     height: `${style?.height ?? 100}px`,
     ...style,

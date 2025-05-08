@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SectionRenderer from './SectionRenderer';
-import { Template } from '@/core/types';
+import { Template, TemplateElement } from '@/core/types';
 import { BREAKPOINTS, getBreakpointName } from '../constants';
 import EditSectionRenderer from './EditSectionRenderer';
 
 interface TemplateRendererProps {
   invitationData: Template;
-  selectedSectionId?: string;
+  slectedElementId?: string;
   editMode?: boolean;
-  onSelect?: (sectionId: string) => void;
+  onSelect?: (section: TemplateElement) => void;
 }
 
 const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   invitationData,
-  selectedSectionId,
+  slectedElementId,
   editMode = false,
   onSelect,
 }) => {
@@ -56,12 +56,13 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   return (
     <div ref={containerRef} style={invitationAreaStyle}>
       {sections.map((section) => {
-        return editMode && onSelect ? (
+        return editMode && onSelect && slectedElementId ? (
           <EditSectionRenderer
             key={section.id}
             sectionData={section}
             activeBreakpoint={activeBreakpoint}
-            isSelected={selectedSectionId === section.name}
+            selectedElementId={slectedElementId}
+            isSelected={slectedElementId === section.id}
             onSelect={onSelect}
           />
         ) : (

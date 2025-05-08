@@ -82,6 +82,7 @@ export enum EditorWidgetType {
   Checkbox = 'Checkbox',
   Slider = 'Slider',
   TextArea = 'TextArea',
+  PositionInput = 'PositionInput',
 }
 
 export enum PropertyDataType {
@@ -132,7 +133,12 @@ export interface BaseTemplateElement {
   type: ElementType;
   style: Record<string, unknown>;
   name: string;
-  position: { x: number | 'auto'; y: number | 'auto' };
+  position: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
   responsive: ResponsiveOverrides;
 }
 
@@ -143,7 +149,12 @@ export interface TemplateSection extends BaseTemplateElement {
 }
 
 export interface ResponsiveProperties {
-  position?: { x: number; y: number };
+  position?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
   style?: Record<string, unknown>;
   display?: string;
 }

@@ -1,18 +1,18 @@
 'use client';
 
-import {
-  ElementType,
-  Template,
-  TemplateElement,
-  TemplateSection,
-} from '@/core/types';
+import { Template, TemplateElement } from '@/core/types';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
 import { Button, Radio } from 'antd';
-import React, { use, useEffect, useState } from 'react';
+import React, { use, useEffect, useMemo, useState } from 'react';
 import '../styles.css';
-import EditorSectionCard from '../../components/editorSectionCard/EditorSectionCard';
+import EditorSectionCard from './components/editorSectionCard/EditorSectionCard';
 import PropertyPanel from './components/propertyPanel/PropertyPanel';
+import {
+  updateElementPropertyInTemplate,
+  updateSectionPropertyInTemplate,
+} from './utils/templateUpdates';
+import { findItemInTemplateById } from './utils/templateHandler';
 
 const EditPage = ({
   params,
@@ -22,12 +22,15 @@ const EditPage = ({
   const { eventId, templateId } = use(params);
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
-  const [selectedSectionId, setSelectedSectionId] = useState<
-    string | undefined
-  >(undefined);
-  const [selectedElement, setSelectedElement] = useState<TemplateElement>(
-    {} as TemplateElement
-  );
+  const [selectedItemId, setSelectedItemId] = useState<string>('');
+
+  const selectedItemData: TemplateElement = useMemo(() => {
+    if (!template || !selectedItemId) return {} as TemplateElement;
+    // Foloseste o functie helper eficienta pentru a gasi item-ul (element sau sectiune)
+    return (
+      findItemInTemplateById(template, selectedItemId) ?? template.elements[0]
+    );
+  }, [template, selectedItemId]); // Recalculează când invitationTemplate sau selectedItemId se schimbă
 
   const fetchTemplate = async () => {
     console.log(eventId);
@@ -35,8 +38,8 @@ const EditPage = ({
       const response = await queryTemplateById(templateId);
       setTemplate(response);
       // de schimbat in id-ul section-ului
-      setSelectedSectionId(response.elements[0].name);
-      setSelectedElement(response.elements[0]);
+      setSelectedItemId(response.elements[0].id);
+      // setSelectedElement(response.elements[0]);
     } catch (error) {
       console.error('Error fetching template:', error);
     } finally {
@@ -48,36 +51,73 @@ const EditPage = ({
     fetchTemplate();
   }, [templateId]);
 
-  const updateSelectedElement = (element: TemplateElement) => {
-    // Update the selected element in the state
-    setSelectedElement(element);
-  };
+  // const updateSelectedElement = (element: TemplateElement) => {
+  //   // Update the selected element in the state
+  //   setSelectedElement(element);
+  // };
 
-  const updateTemplateSelectedElement = (element: TemplateElement) => {
-    updateSelectedElement(element);
-    // Update the selected element in the template
-    const updatedTemplate = { ...template };
-    const elementIndex = updatedTemplate.elements.findIndex(
-      (el) => el.name === element.name
-    );
-    if (elementIndex !== -1) {
-      if (element.type === ElementType.Section) {
-        updatedTemplate.elements[elementIndex] = element as TemplateSection;
-      } else {
-      }
+  // const updateTemplateSelectedElement = (element: TemplateElement) => {
+  //   updateSelectedElement(element);
+  //   // Update the selected element in the template
+  //   const updatedTemplate = { ...template };
+  //   const elementIndex = updatedTemplate.elements.findIndex(
+  //     (el) => el.name === element.name
+  //   );
+  //   if (elementIndex !== -1) {
+  //     if (element.type === ElementType.Section) {
+  //       updatedTemplate.elements[elementIndex] = element as TemplateSection;
+  //     } else {
+  //     }
 
-      setTemplate(updatedTemplate);
+  //     setTemplate(updatedTemplate);
+  //   }
+  // };
+
+  const handlePropertyChanged = (propertyPath: string, newValue: any) => {
+    // Identifică ID-ul elementului/secțiunii selectate.
+    // Aceasta logică depinde de cum gestionezi selecția în editor (element sau secțiune).
+    // Pentru simplitate, să presupunem că lucrezi cu un element selectat.
+    // Daca e selectata o sectiune, vei apela o functie similara updateSectionPropertyInTemplate.
+    const selectedElementOrSectionId = selectedItemData.id; // Ex: "header-title" sau "section-main-content"
+    const selectedElementType = selectedItemData.type;
+
+    // Decide daca actualizezi un element sau o sectiune
+    if (selectedElementType !== 'section') {
+      // Este un element (Text, Image etc.)
+      setTemplate((prevTemplate) => {
+        // Apelam helper-ul pentru actualizarea imutabila a elementului
+        // Trecem ID-ul elementului selectat, calea proprietatii, noua valoare
+        // si breakpoint-ul activ (daca nu e 'default')
+        return updateElementPropertyInTemplate(
+          prevTemplate,
+          selectedElementOrSectionId,
+          propertyPath,
+          newValue,
+          'desktop' // activeBreakpoint este starea care tine breakpoint-ul vizualizat in editor
+        );
+      });
+    } else {
+      setTemplate((prevTemplate) => {
+        const updatedTemplate = updateSectionPropertyInTemplate(
+          prevTemplate,
+          selectedElementOrSectionId,
+          propertyPath,
+          newValue,
+          'desktop'
+        );
+        return updatedTemplate;
+      });
     }
   };
 
-  const handleSectionSelect = (section: TemplateElement) => {
+  const handleSectionSelect = (element: TemplateElement) => {
     // When a card reports that it has been selected:
     // Set the selected section ID to the new ID.
     // React will re-render the components, updating the `isSelected` prop for all.
     // The card with ID `sectionId` will receive isSelected={true}.
     // All other cards will receive isSelected={false}.
     // de schimbat in id-ul section-ului
-    setSelectedSectionId(section.name);
+    setSelectedItemId(element.id);
 
     // Dacă vrei ca selectarea unui card să deschidă automat doar *acel* card,
     // în timp ce celelalte rămân cum erau sau se închid, logica `isOpen` ar trebui
@@ -118,25 +158,30 @@ const EditPage = ({
             <EditorSectionCard
               section={section}
               key={section.id + index}
+              selectedItemId={selectedItemId}
               onSelect={handleSectionSelect}
-              isSelected={section.name === selectedSectionId}
+              isSelected={selectedItemData.id === selectedItemId}
             />
           ))}
         </div>
         <div className="overflow-y-auto h-full w-full">
           <TemplateRenderer
             invitationData={template}
-            selectedSectionId={selectedSectionId}
+            slectedElementId={selectedItemId}
             editMode={true}
             onSelect={handleSectionSelect}
           />
         </div>
         <div>
           <div className="settings-panel p-4 bg-white rounded shadow">
-            <h2 className="text-lg font-semibold mb-4">{selectedSectionId}</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              {selectedItemData.name}
+            </h2>
             <PropertyPanel
               activeBreakpoint={'desktop'}
-              selectedElement={selectedElement}
+              selectedElement={selectedItemData}
+              handlePropertyChanged={handlePropertyChanged}
+              // updateSelectedElement={updateSelectedElement}
             />
           </div>
         </div>

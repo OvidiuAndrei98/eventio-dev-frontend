@@ -17,6 +17,7 @@ const elementComponentMap = {
 interface EditSectionRendererProps {
   sectionData: TemplateSection;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
+  selectedElementId: string;
   isSelected?: boolean;
   onSelect: (section: TemplateElement) => void;
 }
@@ -24,6 +25,7 @@ interface EditSectionRendererProps {
 const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   sectionData,
   activeBreakpoint,
+  selectedElementId,
   isSelected,
   onSelect,
 }) => {
@@ -57,19 +59,22 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     <div
       id={sectionData.id}
       style={sectionStyle}
-      className={`${isSelected ? '!border-2 !border-[#CB93D9]' : ''} 
+      className={`${
+        isSelected && selectedElementId === sectionData.id
+          ? '!border-2 !border-[#CB93D9]'
+          : ''
+      } 
       ${!isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''} border-1
       border-[transparent]`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => {
-        // De schimbat in id-ul sectiunii
-        if (sectionData.name) {
+        if (sectionData.id) {
           onSelect(sectionData);
         }
       }}
     >
-      {isSelected && (
+      {isSelected && selectedElementId === sectionData.id && (
         <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
           {sectionData.name}
         </div>
@@ -91,6 +96,9 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
           case ElementType.Text:
             return (
               <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
+                onSelect={onSelect}
                 key={element.id}
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}

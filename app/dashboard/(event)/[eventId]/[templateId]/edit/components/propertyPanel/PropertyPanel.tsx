@@ -3,33 +3,21 @@ import React from 'react';
 import { EditorWidgetType, TemplateElement } from '@/core/types'; // Importă configurația și tipurile de widget-uri
 import NumberEditorWidget from '../editorComponents/NumberEditorWidget';
 import { componentsConfig } from '../editComponentConfig';
-
-// // Presupunem că ai o funcție pentru a actualiza datele invitației în starea editorului
-// const updateInvitationData = (
-//   sectionId,
-//   propertyPath,
-//   newValue,
-//   breakpoint
-// ) => {
-//   console.log(
-//     `Updating section ${sectionId}, property ${propertyPath} for breakpoint ${breakpoint} to:`,
-//     newValue
-//   );
-//   // Logica reala ar modifica obiectul mare de date al invitatiei
-//   // Ex: daca breakpoint e 'desktop': invitation.elements.find(s => s.id === sectionId)[propertyPath] = newValue;
-//   // Ex: daca breakpoint e 'mobile': invitation.elements.find(s => s.id === sectionId).responsive['mobile'][propertyPath] = newValue;
-// };
+import InputEditorWidget from '../editorComponents/InputEditorWidget';
+import ColorEditorWidget from '../editorComponents/ColorEditorWidget';
+import PositionEditorWidget from '../editorComponents/PositionEditorWidget';
 
 export interface PropertyPanelProps {
-  selectedElement: TemplateElement; // Datele secțiunii selectate (ex: { id: 'section-header', name: 'header', ... })
-  activeBreakpoint: string; // Breakpoint-ul activ (ex: 'desktop', 'tablet', 'mobile')
+  selectedElement: TemplateElement;
+  activeBreakpoint: string;
+  handlePropertyChanged: (propertyPath: string, newValue: any) => void;
 }
 
 const PropertyPanel = ({
   selectedElement,
   activeBreakpoint,
+  handlePropertyChanged,
 }: PropertyPanelProps) => {
-  // Obține configurația editorului pentru tipul selectat ('section')
   const configSet = componentsConfig[selectedElement.type];
 
   if (!configSet) {
@@ -79,52 +67,6 @@ const PropertyPanel = ({
     }
   };
 
-  // Helper pentru a seta valoarea proprietății în datele elementului/secțiunii selectate
-  const setPropertyValue = (
-    data: any,
-    propertyPath: string,
-    newValue: any,
-    breakpoint: string
-  ) => {
-    // Aceasta este o implementare SIMPLIFICATA. Logică reală trebuie să modifice starea invitației IMMUTABIL.
-    // De asemenea, trebuie să gestioneze crearea obiectelor 'responsive' și 'responsive[breakpoint]' dacă nu există.
-
-    const keys = propertyPath.split('.');
-    let target = data;
-
-    // Navighează către obiectul unde trebuie făcută actualizarea (default sau responsive[breakpoint])
-    if (breakpoint !== 'desktop') {
-      if (!target.responsive) target.responsive = {};
-      if (!target.responsive[breakpoint]) target.responsive[breakpoint] = {};
-      target = target.responsive[breakpoint]; // Targetul este acum obiectul override-ului
-    }
-
-    // Navighează către proprietatea finală (ex: position.x sau style.backgroundColor)
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i];
-      // Sări peste 'responsive' dacă deja am navigat acolo
-      if (key === 'responsive' && breakpoint !== 'desktop') continue;
-      if (key === 'style' && !target.style) target.style = {}; // Creeaza obiectul style daca nu exista
-      // Creeaza obiectul intermediar daca nu exista
-      if (!target[key]) target[key] = {};
-      target = target[key];
-    }
-
-    // Setează valoarea finală
-    const finalKey = keys[keys.length - 1];
-    if (finalKey === 'responsive') {
-      console.error("Cannot set the 'responsive' object directly.");
-      return;
-    } // Previne setarea 'responsive' in sine
-    target[finalKey] = newValue;
-
-    console.log(
-      'Date simulate actualizate:',
-      JSON.parse(JSON.stringify(selectedElement))
-    ); // Log pentru verificare
-    // Aici ai apela functia reala de update a starii globale (ex: updateInvitationData)
-  };
-
   return (
     <div className="overflow-y-auto">
       {/* Randează widget-uri pentru fiecare proprietate din config */}
@@ -144,20 +86,54 @@ const PropertyPanel = ({
                 key={propertyPath} // Cheie unică
                 config={config}
                 value={currentValue as number | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
-                onChange={(newValue) =>
-                  setPropertyValue(
-                    selectedElement,
-                    propertyPath,
-                    newValue,
-                    activeBreakpoint
-                  )
-                } // Transmite handler-ul de schimbare
+                onChange={
+                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                }
               />
             );
-          // Adaugă aici cazuri pentru celelalte tipuri de widget-uri
-          // case EditorWidgetType.TextInput: return <TextInputWidget ... />
-          // case EditorWidgetType.ColorPicker: return <ColorPickerWidget ... />
-          // ... alte widget-uri ...
+          case EditorWidgetType.TextInput:
+            return (
+              <InputEditorWidget
+                key={propertyPath} // Cheie unică
+                config={config}
+                value={currentValue as string | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
+                onChange={
+                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                }
+              />
+            );
+          case EditorWidgetType.ColorPicker:
+            return (
+              <ColorEditorWidget
+                key={propertyPath} // Cheie unică
+                config={config}
+                value={currentValue as string | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
+                onChange={
+                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                }
+              />
+            );
+          case EditorWidgetType.PositionInput:
+            return (
+              <PositionEditorWidget
+                key={propertyPath} // Cheie unică
+                config={config}
+                value={
+                  currentValue as
+                    | {
+                        top?: number;
+                        right?: number;
+                        bottom?: number;
+                        left?: number;
+                      }
+                    | undefined
+                    | null
+                } // Transmite valoarea curenta (asumeaza tipul corect)
+                onChange={
+                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                }
+              />
+            );
           default:
             // Afișează un mesaj sau un widget fallback pentru tipurile neimplementate încă
             return (
