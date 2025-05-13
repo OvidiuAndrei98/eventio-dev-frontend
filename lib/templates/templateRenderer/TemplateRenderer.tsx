@@ -9,6 +9,7 @@ interface TemplateRendererProps {
   slectedElementId?: string;
   editMode?: boolean;
   onSelect?: (section: TemplateElement) => void;
+  activeBreakpointValue?: string;
 }
 
 const TemplateRenderer: React.FC<TemplateRendererProps> = ({
@@ -16,6 +17,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   slectedElementId,
   editMode = false,
   onSelect,
+  activeBreakpointValue,
 }) => {
   // if (!invitationData || !invitationData.elements) {
   //   return <div>Nu s-au găsit date pentru invitație.</div>;
@@ -24,7 +26,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeBreakpoint, setActiveBreakpoint] = useState<
     keyof typeof BREAKPOINTS | 'desktop'
-  >('desktop');
+  >((activeBreakpointValue as 'mobile' | 'tablet' | 'desktop') ?? 'desktop');
   const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
 
@@ -42,7 +44,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     return () => {
       window.removeEventListener('resize', updateContainerWidth);
     };
-  }, []);
+  }, [activeBreakpointValue]);
 
   const invitationAreaStyle: React.CSSProperties = {
     maxWidth: `100%`,
@@ -55,7 +57,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
   return (
     <div ref={containerRef} style={invitationAreaStyle}>
-      {sections.map((section) => {
+      {sections?.map((section) => {
         return editMode && onSelect && slectedElementId ? (
           <EditSectionRenderer
             key={section.id}

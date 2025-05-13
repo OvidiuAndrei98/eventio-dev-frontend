@@ -10,6 +10,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       label: 'Nume Secțiune',
       dataType: PropertyDataType.String,
       widgetType: EditorWidgetType.TextInput,
+      responsive: false,
     },
     'style.height': {
       label: 'Înălțime Secțiune (px)',
@@ -17,11 +18,13 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
       step: 1,
+      responsive: false,
     },
     'style.backgroundColor': {
       label: 'Culoare Fundal',
       dataType: PropertyDataType.Color,
       widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
     },
   },
   text: {
@@ -29,23 +32,29 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       label: 'Nume Element',
       dataType: PropertyDataType.String,
       widgetType: EditorWidgetType.TextInput,
+      responsive: false,
     },
     content: {
       label: 'Introdu textul',
       dataType: PropertyDataType.String,
       widgetType: EditorWidgetType.TextInput,
+      responsive: false,
     },
     'style.fontSize': {
       label: 'Dimensiune text',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
+      responsive: true,
+      min: 1,
     },
     'style.color': {
       label: 'Culoare text',
       dataType: PropertyDataType.Color,
       widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
     },
     position: {
+      responsive: true,
       label: 'Poziție Element (%)',
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.PositionInput,

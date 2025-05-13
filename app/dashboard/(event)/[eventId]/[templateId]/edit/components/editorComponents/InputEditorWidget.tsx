@@ -1,6 +1,4 @@
-// editor/widgets/TextInputEditorWidget.tsx
 import React from 'react';
-// Importă tipurile de configurare a editorului. Ajustează calea de import dacă este necesar.
 import {
   PropertyEditorConfig,
   EditorWidgetType,

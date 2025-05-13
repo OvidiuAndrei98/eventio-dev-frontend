@@ -6,11 +6,16 @@ import { componentsConfig } from '../editComponentConfig';
 import InputEditorWidget from '../editorComponents/InputEditorWidget';
 import ColorEditorWidget from '../editorComponents/ColorEditorWidget';
 import PositionEditorWidget from '../editorComponents/PositionEditorWidget';
+import { getNestedValue } from '../../utils/objectUtils';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
-  activeBreakpoint: string;
-  handlePropertyChanged: (propertyPath: string, newValue: any) => void;
+  activeBreakpoint: 'desktop' | 'tablet' | 'mobile';
+  handlePropertyChanged: (
+    propertyPath: string,
+    newValue: any,
+    propIsResponsive: boolean
+  ) => void;
 }
 
 const PropertyPanel = ({
@@ -18,105 +23,120 @@ const PropertyPanel = ({
   activeBreakpoint,
   handlePropertyChanged,
 }: PropertyPanelProps) => {
-  const configSet = componentsConfig[selectedElement.type];
+  console.log('>>> RENDERING PropertyPanel <<<');
+  console.log('PropertyPanel: Received selectedItemData:', selectedElement);
+  const configSet = componentsConfig[selectedElement?.type];
+
+  const getPropertyValue = (
+    data: TemplateElement,
+    defaultPropertyPath: string,
+    activeBreakpoint: 'desktop' | 'tablet' | 'mobile',
+    isPropertyResponsive: boolean
+  ): any => {
+    if (!data || !defaultPropertyPath) {
+      return undefined;
+    }
+
+    if (activeBreakpoint !== 'desktop' && isPropertyResponsive) {
+      const responsivePath = `responsive.${activeBreakpoint}.${defaultPropertyPath}`;
+
+      const responsiveValue = getNestedValue(data, responsivePath);
+
+      if (responsiveValue !== undefined) {
+        return responsiveValue;
+      }
+    }
+
+    const defaultValue = getNestedValue(data, defaultPropertyPath);
+
+    return defaultValue;
+  };
+
+  if (!selectedElement?.id) {
+    return <span>Niciun element selectat</span>;
+  }
 
   if (!configSet) {
     return (
       <div>
-        Nicio configurare editor găsită pentru tipul {selectedElement.type}.
+        Nicio configurare editor găsită pentru tipul {selectedElement?.type}.
       </div>
     );
   }
 
-  // Helper pentru a accesa valoarea proprietății din datele elementului/secțiunii selectate
-  const getPropertyValue = (data: any, propertyPath: string): any => {
-    const keys = propertyPath.split('.');
-    let value = data;
-    try {
-      keys.forEach((key) => {
-        // Verificăm dacă proprietatea este un override responsive
-        // Aceasta logică trebuie să fie mai sofisticată pentru a aplica cascade
-        // dar pentru simplitate, presupunem că editezi fie default, fie un breakpoint specific
-        if (
-          key === 'responsive' &&
-          data.responsive &&
-          activeBreakpoint !== 'default'
-        ) {
-          value = data.responsive[activeBreakpoint];
-          // Acum caută restul path-ului (ex: 'position.x') în obiectul override-ului
-          const remainingKeys = propertyPath.split('.').slice(1); // Ar trebui să reconstruiești path-ul corect aici
-          let overrideValue = data.responsive[activeBreakpoint];
-          let foundOverride = true;
-          remainingKeys.forEach((rk) => {
-            if (overrideValue && overrideValue[rk] !== undefined) {
-              overrideValue = overrideValue[rk];
-            } else {
-              foundOverride = false;
-            }
-          });
-          if (foundOverride) return overrideValue;
-          // Daca nu s-a gasit override, continua sa cauti in default (value ramane data originala)
-        } else {
-          value = value ? value[key] : undefined;
-        }
-      });
-      return value;
-    } catch (error) {
-      console.error(`Eroare la accesarea proprietatii ${propertyPath}`, error);
-      return undefined; // Returneaza undefined daca calea nu e valida
-    }
-  };
-
   return (
     <div className="overflow-y-auto">
-      {/* Randează widget-uri pentru fiecare proprietate din config */}
       {Object.entries(configSet).map(([propertyPath, config]) => {
-        // Omitem widget-urile pentru proprietati complexe de top level care nu sunt editabile direct asa (ex: 'elements')
         if (propertyPath === 'elements' || propertyPath === 'responsive')
           return null;
+        console.log(
+          `PropertyPanel: Mapping "${propertyPath}". Config ref:`,
+          config
+        ); // Log referinta config
 
-        // Obține valoarea curentă a proprietății
-        const currentValue = getPropertyValue(selectedElement, propertyPath); // ATENTIE: getPropertyValue trebuie sa stie sa ia valoarea corecta de la breakpoint-ul activ
+        const currentValue = getPropertyValue(
+          selectedElement,
+          propertyPath,
+          activeBreakpoint,
+          config.responsive
+        );
 
-        // Decide ce widget să randezi pe baza widgetType din config
+        console.log(
+          `PropertyPanel: Mapping property "${propertyPath}". Passing value:`,
+          currentValue
+        );
+
         switch (config.widgetType) {
           case EditorWidgetType.NumberInput:
             return (
               <NumberEditorWidget
-                key={propertyPath} // Cheie unică
+                version={Date.now()}
+                key={propertyPath}
                 config={config}
-                value={currentValue as number | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
-                onChange={
-                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                value={currentValue as number | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
                 }
               />
             );
           case EditorWidgetType.TextInput:
             return (
               <InputEditorWidget
-                key={propertyPath} // Cheie unică
+                key={propertyPath}
                 config={config}
-                value={currentValue as string | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
-                onChange={
-                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                value={currentValue as string | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
                 }
               />
             );
           case EditorWidgetType.ColorPicker:
             return (
               <ColorEditorWidget
-                key={propertyPath} // Cheie unică
+                key={propertyPath}
                 config={config}
-                value={currentValue as string | undefined | null} // Transmite valoarea curenta (asumeaza tipul corect)
-                onChange={
-                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                value={currentValue as string | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
                 }
               />
             );
           case EditorWidgetType.PositionInput:
             return (
               <PositionEditorWidget
-                key={propertyPath} // Cheie unică
+                key={propertyPath}
                 config={config}
                 value={
                   currentValue as
@@ -128,14 +148,17 @@ const PropertyPanel = ({
                       }
                     | undefined
                     | null
-                } // Transmite valoarea curenta (asumeaza tipul corect)
-                onChange={
-                  (newValue) => handlePropertyChanged(propertyPath, newValue) // Apelează funcția de schimbare a proprietății
+                }
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
                 }
               />
             );
           default:
-            // Afișează un mesaj sau un widget fallback pentru tipurile neimplementate încă
             return (
               <div key={propertyPath}>
                 Widget pentru "{config.label}" ({config.widgetType}) nu este
@@ -147,8 +170,5 @@ const PropertyPanel = ({
     </div>
   );
 };
-
-// Exemplu de utilizare (intr-o pagina sau componenta superioara)
-// <PropertyPanel />
 
 export default PropertyPanel;

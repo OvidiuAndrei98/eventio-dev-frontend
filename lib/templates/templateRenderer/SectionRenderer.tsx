@@ -3,23 +3,23 @@ import { TemplateSection, ElementType } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS } from '../constants';
+import RsvpElement from '../templateElements/RsvpElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
   [ElementType.Image]: ImageElement,
+  [ElementType.RSVP_ELEMENT]: RsvpElement,
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
 interface SectionRendererProps {
   sectionData: TemplateSection;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
-  isSelected?: boolean;
 }
 
 const SectionRenderer: React.FC<SectionRendererProps> = ({
   sectionData,
   activeBreakpoint,
-  isSelected,
 }) => {
   const sectionStyle: React.CSSProperties = {
     width: '100%',
@@ -29,7 +29,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '8px 0px 8px 8px;',
+    padding: '8px 8px 8px 8px',
     zIndex: 2,
   };
 
@@ -38,19 +38,10 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   );
 
   return (
-    <div
-      id={sectionData.id}
-      style={sectionStyle}
-      className={`${isSelected ? '!border-2 !border-[#CB93D9]' : ''}`}
-    >
-      {isSelected && (
-        <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
-          {sectionData.name}
-        </div>
-      )}
+    <div id={sectionData.id} style={sectionStyle}>
       {validElements.map((element) => {
         const ComponentToRender =
-          elementComponentMap[element.type as 'image' | 'text'];
+          elementComponentMap[element.type as keyof typeof elementComponentMap];
 
         switch (element.type) {
           case ElementType.Text:
@@ -67,6 +58,15 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 key={element.id}
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+              />
+            );
+          case ElementType.RSVP_ELEMENT:
+            return (
+              <ComponentToRender
+                key={element.id}
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
               />
             );
           default:

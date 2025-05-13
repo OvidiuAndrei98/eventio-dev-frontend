@@ -3,7 +3,7 @@ import { ElementType, Template } from '@/core/types'; // Asigură-te că tipuril
 // lib/defaultTemplates.js
 export const defaultTemplates: Template[] = [
   {
-    id: 'wedding-responsive-demo',
+    templateId: 'wedding-responsive-demo',
     name: 'Demo Invitație Nuntă Responsivă',
     type: 'wedding',
     description:
@@ -24,9 +24,11 @@ export const defaultTemplates: Template[] = [
         position: { top: 0, left: 0, right: 0, bottom: 0 },
         type: ElementType.Section,
         responsive: {},
+        disabled: false,
         elements: [
           {
             id: 'header-title',
+            disabled: false,
             name: 'Text',
             type: ElementType.Text,
             content: 'Invitație la Căsătorie',
@@ -55,6 +57,7 @@ export const defaultTemplates: Template[] = [
           },
           {
             id: 'header-slogan',
+            disabled: false,
             name: 'Text',
             type: ElementType.Text,
             content: '"O nouă poveste începe..."',
@@ -89,9 +92,11 @@ export const defaultTemplates: Template[] = [
         position: { top: 50, left: 30, right: 0, bottom: 0 },
         type: ElementType.Section,
         responsive: {},
+        disabled: false,
         elements: [
           {
             id: 'main-names',
+            disabled: false,
             name: 'Text',
             type: ElementType.Text,
             content: 'Andreea Popescu\nși\nIon Ionescu',
@@ -107,7 +112,7 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
                 position: { top: 5, left: 5, right: 0, bottom: 0 }, // Poziție la începutul secțiunii pe mobil
-                style: { fontSize: 30, textAlign: 'left', width: 90 },
+                style: { fontSize: 30 },
               },
               tablet: {
                 // Pe tabletă: font intermediar
@@ -118,6 +123,7 @@ export const defaultTemplates: Template[] = [
           {
             id: 'main-separator',
             type: ElementType.Text,
+            disabled: false,
             name: 'Text',
             content: '***',
             position: { top: 35, left: 50, right: 0, bottom: 0 }, // Desktop: sub nume, centrat
@@ -142,6 +148,7 @@ export const defaultTemplates: Template[] = [
           },
           {
             id: 'main-date-location',
+            disabled: false,
             type: ElementType.Text,
             name: 'Text',
             content:
@@ -158,7 +165,7 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită (sub separator), aliniat stânga
                 position: { top: 35, left: 5, right: 0, bottom: 0 }, // Poziție sub separator pe mobil
-                style: { fontSize: 16, textAlign: 'left', width: 90 },
+                style: { fontSize: 16 },
               },
               tablet: {
                 // Pe tabletă: font intermediar
@@ -176,6 +183,7 @@ export const defaultTemplates: Template[] = [
         position: { top: 50, left: 30, right: 0, bottom: 0 },
         type: ElementType.Section,
         responsive: {},
+        disabled: false,
         style: {
           zIndex: 1,
           backgroundColor: 'rgba(240, 230, 224, 0.7)', // Fundal semi-transparent crem
@@ -184,6 +192,7 @@ export const defaultTemplates: Template[] = [
         elements: [
           {
             id: 'rsvp-heading',
+            disabled: false,
             type: ElementType.Text,
             name: 'Text',
             content: 'Vă rugăm să confirmați prezența',
@@ -198,7 +207,7 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
                 position: { top: 10, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 16, textAlign: 'left', width: 90 },
+                style: { fontSize: 16 },
               },
             },
           },
@@ -206,6 +215,7 @@ export const defaultTemplates: Template[] = [
             id: 'rsvp-deadline',
             type: ElementType.Text,
             name: 'Text',
+            disabled: false,
             content: 'Termen limită: 1 August 2024',
             position: { top: 40, left: 50, right: 0, bottom: 0 }, // Desktop: sub antet, centrat
             style: {
@@ -218,7 +228,7 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
                 position: { top: 30, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 14, textAlign: 'left', width: 90 },
+                style: { fontSize: 14 },
               },
             },
           },
@@ -227,9 +237,11 @@ export const defaultTemplates: Template[] = [
             type: ElementType.Text,
             name: 'Text',
             content: 'Confirmați aici:',
+            disabled: false,
             position: { top: 60, left: 50, right: 0, bottom: 0 }, // Desktop: sub termen, centrat
             style: {
               fontFamily: 'Arial',
+
               fontSize: 16, // Număr
               color: '#4b3732',
               textAlign: 'center',
@@ -238,13 +250,14 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
                 position: { top: 50, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 12, textAlign: 'left', width: 90 },
+                style: { fontSize: 12 },
               },
             },
           },
           {
             id: 'rsvp-link-button',
             name: 'Text',
+            disabled: false,
             type: ElementType.Text, // Folosim text ca și cum ar fi un buton
             content: '[Pagina Confirmare]',
             position: { top: 75, left: 50, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
@@ -261,7 +274,7 @@ export const defaultTemplates: Template[] = [
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
                 position: { top: 65, left: 5, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
-                style: { fontSize: 14, width: 90 }, // Lățime mai mare pe mobil
+                style: { fontSize: 14 },
               },
               // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil
             },
@@ -275,5 +288,5 @@ export const defaultTemplates: Template[] = [
 ];
 
 export const getDefaultTemplateById = (id: string) => {
-  return defaultTemplates.find((template) => template.id === id);
+  return defaultTemplates.find((template) => template.templateId === id);
 };

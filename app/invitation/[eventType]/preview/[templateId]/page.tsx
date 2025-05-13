@@ -32,7 +32,8 @@ const InvitationPreviewPage = ({
 
   const selectedTemplate = useMemo(() => {
     return defaultTemplates.find(
-      (template) => template.id === templateId && template.type === eventType
+      (template) =>
+        template.templateId === templateId && template.type === eventType
     );
   }, [eventType, templateId]);
 

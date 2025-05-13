@@ -1,63 +1,115 @@
 // editor/widgets/NumberEditorWidget.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react'; // No need for useRef for the debounced function with useDebouncedCallback
+import { useDebouncedCallback } from 'use-debounce'; // <--- Import the hook
+
+// Import types
 import {
   PropertyEditorConfig,
   EditorWidgetType,
   PropertyDataType,
-} from '@/core/types'; // Ajustează calea de import
+} from '@/core/types';
 
 interface NumberEditorWidgetProps {
   /** Configurația specifică a proprietății pentru acest widget. */
   config: PropertyEditorConfig;
-  /** Valoarea curentă a proprietății din datele invitației. */
-  value: number | undefined | null; // Acceptă și undefined/null dacă proprietatea lipsește inițial
-  /** Callback apelat când valoarea se schimbă. */
-  onChange: (newValue: number | undefined | null) => void;
+  version: number;
+  value:
+    | number
+    | undefined
+    | null /** Callback apelat când valoarea se schimbă (după debounce). */; // Prop from parent (source of truth)
+  onChange: (
+    newValue: number | undefined | null
+  ) => void /** Optional: Delay-ul pentru debounce în milisecunde. */; // Parent's handler
+  debounceDelay?: number; // Prop optional for delay // Add activeBreakpoint as prop for logging
+  activeBreakpoint?: string;
 }
 
 /**
- * Widget editor pentru input numeric bazat pe PropertyEditorConfig.
- * Renderază o etichetă și un input de tip number.
+ * Widget editor for number input, using useDebouncedCallback for debounce.
  */
 const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
   config,
-  value,
-  onChange,
+  version,
+  value, // Number value (or null/undefined) from parent
+  onChange, // Parent's handler (updates global number state)
+  debounceDelay = 300, // Default debounce delay
 }) => {
-  // Verificare simplă a compatibilității configurației
+  // Config validation
   if (
     config.widgetType !== EditorWidgetType.NumberInput ||
     config.dataType !== PropertyDataType.Number
   ) {
-    console.error('Configurație invalidă pentru NumberEditorWidget:', config);
-    // Afisează un mesaj de eroare sau o componentă fallback
-    return <div>Eroare: Widget incompatibil</div>;
-  }
+    console.error('Invalid config for NumberEditorWidget:', config);
+    return <div>Error: Incompatible widget</div>;
+  } // --- LOCAL STATE for the input value (controlled) --- // This state holds the local value for immediate responsiveness while global state update is debounced. // Managed as number | undefined.
+
+  const [localValue, setLocalValue] = useState<number | undefined>(
+    value === undefined ||
+      value === null ||
+      (typeof value === 'number' && isNaN(value as number))
+      ? undefined // Convert undefined/null/NaN from prop to undefined for local state
+      : value // Use valid number value from prop
+  );
+
+  // --- Use useDebouncedCallback hook ---
+  // This hook handles the debouncing logic internally, returning a stable debounced function.
+  const debouncedOnChange = useDebouncedCallback(
+    // The callback to be debounced. This calls the parent's onChange handler.
+    (newValue: number | undefined | null) => {
+      onChange(newValue); // <-- Call the actual parent handler HERE
+    },
+    debounceDelay // The debounce delay
+  ); // useDebouncedCallback manages its own dependencies (the callback and delay) and cleanup. // --- useEffect for syncing prop value to local state --- // This effect is essential to keep the local state (number | undefined) in sync // with the 'value' prop (number | undefined | null) received from the parent (the source of truth). // It runs when the 'value' prop changes.
+
+  useEffect(() => {
+    // Calculate the desired local state value (number | undefined) based on the prop value.
+    const newValueForLocalState: number | undefined =
+      value === undefined ||
+      value === null ||
+      (typeof value === 'number' && isNaN(value as number))
+        ? undefined
+        : value;
+
+    // Sync local state DOAR if the new calculated value is different from the current state.
+    // Use Object.is for robust comparison.
+    if (!Object.is(localValue, newValueForLocalState)) {
+      setLocalValue(newValueForLocalState); // Update local state (number | undefined)
+    }
+
+    // --- Cleanup function for this effect ---
+    // This runs when the effect re-executes (when 'value' changes) or on unmount.
+    // Note: This specific cleanup does NOT need to cancel the debounce timer,
+    // as useDebouncedCallback handles its own cleanup internally.
+    return () => {
+      // Any cleanup specific to the *syncing process* goes here, but not debounce cancellation.
+    }; // --- DEPENDENCIES FOR SYNC EFFECT --- // This effect depends STRICTLY on the 'value' prop. // useDebouncedCallback manages its own internal dependencies and cleanup, so it's not needed here.
+  }, [value, version]); // DEPENDENCIES: ONLY 'value'. // handleInputChange - updates local state (number | undefined) and calls the debounced function
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const stringValue = event.target.value;
+    const stringValue = event.target.value; // Value from input is ALWAYS a string
 
+    // Convert stringValue from input to the desired format for local state AND for parent (number | undefined).
+    let valueForStateAndParent: number | undefined;
     if (stringValue === '') {
-      // Dacă input-ul este gol, considerăm valoarea ca undefined/null (depinde cum vrei să o stochezi)
-      // Undefined sau null ar putea însemna "folosește valoarea default" sau "proprietatea lipsește"
-      onChange(undefined); // sau null, depinde de modelul tau de date
+      valueForStateAndParent = undefined; // Empty string from input maps to undefined
     } else {
-      // Convertim string-ul la un număr. parseFloat permite numere cu zecimale.
-      const numberValue = parseFloat(stringValue);
-
-      // Verificăm dacă conversia a fost reușită (nu este NaN - Not a Number)
-      if (!isNaN(numberValue)) {
-        // Apelăm callback-ul onChange cu noua valoare numerică
-        onChange(numberValue);
-      }
-      // Nu facem nimic dacă input-ul conține text ne-numeric (browserul deja restricționează intr-un input type="number",
-      // dar aceasta este o siguranță suplimentară)
+      const parsedValue = parseFloat(stringValue);
+      // If parsing fails, the result (NaN) becomes undefined. Otherwise, it's the parsed number.
+      valueForStateAndParent = isNaN(parsedValue) ? undefined : parsedValue;
     }
-  };
 
-  // Manageriem afișarea valorii în input: afișăm '' pentru undefined/null
+    setLocalValue(valueForStateAndParent);
+
+    debouncedOnChange(valueForStateAndParent); // Call the debounced function
+  }; // --- displayValue: Convert local state (number | undefined) to string for the DOM input value prop --- // The 'value' prop of a controlled DOM input must be a string or number. undefined/null do not work directly. // We convert undefined to an empty string ('') to visually represent an empty input.
+
   const displayValue =
-    value === undefined || value === null || isNaN(value) ? '' : value;
+    localValue === undefined ||
+    localValue === null ||
+    (typeof localValue === 'number' && isNaN(localValue))
+      ? ''
+      : String(localValue);
+  // Log the displayed value (displayValue) and the internal local state (localValue) for debugging
 
   return (
     <div style={{ marginBottom: '10px' }}>
@@ -70,29 +122,26 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
           color: '#333',
         }}
       >
-        {config.label}: {/* Folosim eticheta din config */}
+        {config.label}:
       </label>
-      <input
-        type="number" // Tipul input-ului
-        value={displayValue} // Valoarea afișată
-        onChange={handleInputChange} // Handler-ul pentru schimbare
-        // Setăm atributele min, max, step dacă sunt definite în config
+      <input // The input type is always 'number' for this widget
+        type="number"
+        value={displayValue} // Input is controlled by displayValue (string)
+        onChange={handleInputChange} // Local handler // Apply specific attributes (min, max, step) from config
         min={config.min}
         step={config.step}
         style={{
-          width: '100%', // Ocupă lățimea disponibilă în containerul său
+          width: '100%',
           padding: '8px',
           border: '1px solid #ccc',
           borderRadius: '4px',
-          boxSizing: 'border-box', // Include padding și border în lățimea totală
-          fontSize: '14px', // Mărimea fontului pentru input
+          boxSizing: 'border-box',
+          fontSize: '14px',
         }}
       />
-      {/* Dacă proprietatea are unități (ex: % pentru poziție/mărime),
-          eticheta deja arată asta (ex: "Poziție Orizontală (%)").
-          Pentru widget-ul UnitInput, ar trebui să adaugi aici un dropdown separat pentru unitate. */}
     </div>
   );
 };
 
 export default NumberEditorWidget;
+// Make sure to export the correct component (NumberEditorWidget or TextInputEditorWidget)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
   TemplateSection,
   ElementType,
@@ -7,10 +7,12 @@ import {
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS } from '../constants';
+import RsvpElement from '../templateElements/RsvpElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
   [ElementType.Image]: ImageElement,
+  [ElementType.RSVP_ELEMENT]: RsvpElement,
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
@@ -39,12 +41,12 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '8px 0px 8px 8px;',
+    padding: '8px',
     zIndex: 2,
   };
 
   const validElements = sectionData.elements.filter(
-    (el) => elementComponentMap[el.type as 'text' | 'image']
+    (el) => elementComponentMap[el.type as keyof typeof elementComponentMap]
   );
 
   const handleMouseEnter = () => {
@@ -65,7 +67,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
           : ''
       } 
       ${!isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''} border-1
-      border-[transparent]`}
+      border-[transparent] ${sectionData.disabled && 'opacity-[0.5]'}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => {
@@ -90,7 +92,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
 
       {validElements.map((element) => {
         const ComponentToRender =
-          elementComponentMap[element.type as 'image' | 'text'];
+          elementComponentMap[element.type as keyof typeof elementComponentMap];
 
         switch (element.type) {
           case ElementType.Text:
@@ -102,6 +104,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 key={element.id}
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+                editMode={true}
               />
             );
           case ElementType.Image:
@@ -110,6 +113,16 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 key={element.id}
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+                editMode={true}
+              />
+            );
+          case ElementType.RSVP_ELEMENT:
+            return (
+              <ComponentToRender
+                key={element.id}
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
               />
             );
           default:

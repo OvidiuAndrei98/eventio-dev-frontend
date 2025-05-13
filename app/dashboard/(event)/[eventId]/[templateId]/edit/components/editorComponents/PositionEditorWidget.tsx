@@ -1,5 +1,5 @@
-// editor/widgets/PositionEditorWidget.tsx (MODIFICAT: Auto on blur, Raw on focus)
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+
 import {
   PropertyEditorConfig,
   EditorWidgetType,
@@ -21,24 +21,29 @@ interface PositionEditorWidgetProps {
 
 const MIN_PERCENT = 0;
 const MAX_PERCENT = 100;
-const DEFAULT_STEP = 0.1; // Still use step in config, even if not used by buttons
+const DEBOUNCE_DELAY = 500; // Manual debounce duration
 
-// Helper to map a data number (or undefined/null) to the internal string representation ("" for auto)
-const dataValueToString = (val: number | undefined | null): string => {
+// Helper to map a data value (number, undefined, null, 0) to the internal string representation ("" for auto display)
+const dataValueToInternalString = (val: number | undefined | null): string => {
   return val === undefined || val === null || val === 0 ? '' : val.toString();
 };
 
-/**
- * Widget editor for position (position: { top?, right?, bottom?, left? })
- * with direct numeric input for each side.
- * UI has 4 inputs arranged directionally.
- * **Behavior:**
- * - Input displays raw number while focused.
- * - Input displays "auto" when not focused IF the data value is undefined, null, or 0.
- * - Typing 0 or clearing input sets the property to undefined (ignored by CSS) on BLUR.
- * - Typing a non-zero number sets the property to that number on BLUR.
- * - Invalid input on BLUR resets to "auto" (undefined data).
- */
+// Helper to map an internal string ("" or numeric string) to the value for data (undefined or number)
+const internalStringToDataValue = (
+  str: string,
+  min: number,
+  max: number
+): number | undefined => {
+  if (str === '' || str === '0') {
+    return undefined;
+  }
+  const num = parseFloat(str);
+  if (isNaN(num)) {
+    return undefined; // Invalid input maps to undefined data
+  }
+  return Math.max(min, Math.min(max, num)); // Clamp valid numbers
+};
+
 const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
   config,
   value,
@@ -48,144 +53,227 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
     config.widgetType !== EditorWidgetType.PositionInput ||
     config.dataType !== PropertyDataType.Object
   ) {
-    console.error('Configurație invalidă pentru PositionEditorWidget:', config);
-    return <div>Eroare: Widget incompatibil</div>;
+    console.error('Invalid config for PositionEditorWidget:', config); // Translated console log
+    return <div>Error: Incompatible Widget</div>; // Translated error message
   }
 
-  const safeValue = value || {};
+  // Ensure a safe starting object for data
+  // useMemo helps stabilize the safeValue reference if only internal properties change
+  const safeValue = useMemo(() => value || {}, [value]);
 
   // Internal state for the RAW STRING values currently in the input fields.
-  const [top, setTop] = useState<string>(dataValueToString(safeValue.top));
+  const [top, setTop] = useState<string>(
+    dataValueToInternalString(safeValue.top)
+  );
   const [right, setRight] = useState<string>(
-    dataValueToString(safeValue.right)
+    dataValueToInternalString(safeValue.right)
   );
   const [bottom, setBottom] = useState<string>(
-    dataValueToString(safeValue.bottom)
+    dataValueToInternalString(safeValue.bottom)
   );
-  const [left, setLeft] = useState<string>(dataValueToString(safeValue.left));
+  const [left, setLeft] = useState<string>(
+    dataValueToInternalString(safeValue.left)
+  );
 
-  // State to track which input is currently focused
+  // Refs to store debounce timer IDs for each input
+  const topTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const rightTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const bottomTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const leftTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // State to track which input is focused (for display logic)
   const [focusedInput, setFocusedInput] = useState<keyof PositionValue | null>(
     null
   );
 
-  // Sync internal state when the parent's 'value' prop changes, BUT NOT WHILE AN INPUT IS FOCUSED
-  useEffect(() => {
-    if (focusedInput === null) {
-      // Only sync from parent if no input in THIS widget is focused
-      setTop(dataValueToString(safeValue.top));
-      setRight(dataValueToString(safeValue.right));
-      setBottom(dataValueToString(safeValue.bottom));
-      setLeft(dataValueToString(safeValue.left));
-    }
-    // If focusedInput is not null, the internal state is controlled by typing,
-    // and will be synced to the data model on blur.
-  }, [
-    safeValue.top,
-    safeValue.right,
-    safeValue.bottom,
-    safeValue.left,
-    focusedInput,
-  ]); // Add focusedInput as dependency
+  // Ref to prevent triggering onChange on initial render (if needed inside timer callbacks)
+  // It's better to rely on safeValue comparison to prevent initial calls.
 
   const min = config.min !== undefined ? config.min : MIN_PERCENT;
   const max = config.max !== undefined ? config.max : MAX_PERCENT;
-  const step = config.step ?? 0.1;
 
-  const clampValue = (val: number): number => {
-    return Math.max(min, Math.min(max, val));
-  };
+  // Helper function to get the latest internal string value (needed inside timer callbacks)
+  // Use a reference to the current state
+  const latestStateRef = useRef<{
+    top: string;
+    right: string;
+    bottom: string;
+    left: string;
+  }>({ top: '', right: '', bottom: '', left: '' });
 
-  // Helper to handle input changes (updates internal string state, NOT data model)
-  const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setter(event.target.value); // Update internal string state immediately
-      // Data model update happens on BLUR
+  // Effect to keep latestStateRef updated with the latest state values
+  useEffect(() => {
+    latestStateRef.current = { top, right, bottom, left };
+  }, [top, right, bottom, left]); // Update every time an internal state changes
+
+  // This effect runs on mount, when 'safeValue' changes (selecting another element), and on unmount.
+  useEffect(() => {
+    console.log('[PositionWidget Sync/Cleanup Effect] Running...', {
+      safeValue,
+      focusedInput,
+    }); // Log runs
+
+    // --- WHEN safeValue CHANGES OR ON UNMOUNT: CLEAR ALL PENDING TIMERS ---
+    // This prevents a timer from the old element from triggering after a new element is selected.
+    clearTimeout(topTimerRef.current as NodeJS.Timeout | undefined);
+    clearTimeout(rightTimerRef.current as NodeJS.Timeout | undefined);
+    clearTimeout(bottomTimerRef.current as NodeJS.Timeout | undefined);
+    clearTimeout(leftTimerRef.current as NodeJS.Timeout | undefined);
+
+    // This synchronization happens whenever the selected element changes (value/safeValue)
+    // Regardless of whether the input was focused or not.
+    console.log(
+      '[PositionWidget Sync/Cleanup Effect] Syncing internal state from parent value:',
+      safeValue
+    );
+    setTop(dataValueToInternalString(safeValue.top));
+    setRight(dataValueToInternalString(safeValue.right));
+    setBottom(dataValueToInternalString(safeValue.bottom));
+    setLeft(dataValueToInternalString(safeValue.left));
+
+    // Reset focus state and timer refs to null when the element changes
+    setFocusedInput(null);
+    topTimerRef.current = null;
+    rightTimerRef.current = null;
+    bottomTimerRef.current = null;
+    leftTimerRef.current = null;
+
+    // The cleanup function returned runs on unmount OR before the effect runs again (on safeValue change)
+    // We ensure timers are cleared before the effect re-executes as well.
+    return () => {
+      clearTimeout(topTimerRef.current as NodeJS.Timeout | undefined);
+      clearTimeout(rightTimerRef.current as NodeJS.Timeout | undefined);
+      clearTimeout(bottomTimerRef.current as NodeJS.Timeout | undefined);
+      clearTimeout(leftTimerRef.current as NodeJS.Timeout | undefined);
     };
+  }, [safeValue]); // Dependency on safeValue. This effect runs when the selected element changes.
 
-  // Helper to handle blur event (parses input, clamps, and updates data model via onChange)
-  const handleBlur =
-    (prop: keyof PositionValue, internalStringValue: string) => () => {
-      setFocusedInput(null); // Clear focused state
-
-      let newValue: PositionValue;
-      const numberValue = parseFloat(internalStringValue);
-
-      if (
-        internalStringValue === '' ||
-        internalStringValue === '0' ||
-        isNaN(numberValue)
-      ) {
-        // <<< If empty, "0", or invalid number on blur
-        // Set property to undefined in data model
-        newValue = { ...safeValue };
-        delete newValue[prop];
-        // Also reset the internal string state to "" to display "auto" next render
-        switch (prop) {
-          case 'top':
-            setTop('');
-            break;
-          case 'right':
-            setRight('');
-            break;
-          case 'bottom':
-            setBottom('');
-            break;
-          case 'left':
-            setLeft('');
-            break;
-        }
-      } else {
-        // If valid non-zero number on blur
-        const clampedValue = clampValue(numberValue);
-        newValue = {
-          ...safeValue,
-          [prop]: clampedValue, // Set property to the clamped number
-        };
-        // Ensure internal string state matches the clamped value for consistency
-        switch (prop) {
-          case 'top':
-            setTop(clampedValue.toString());
-            break;
-          case 'right':
-            setRight(clampedValue.toString());
-            break;
-          case 'bottom':
-            setBottom(clampedValue.toString());
-            break;
-          case 'left':
-            setLeft(clampedValue.toString());
-            break;
-        }
-      }
-
-      // Call onChange with the new position object
-      onChange(newValue);
-    };
-
-  // Helper to handle focus event
-  const handleFocus = (prop: keyof PositionValue) => () => {
-    setFocusedInput(prop); // Set focused state
-    // When focused, the input value will be the raw internal string state.
-    // If the internal state was "" (displaying "auto"), it will show "".
-  };
-
-  // Derived display value for the input fields based on internal state and focus
-  // Displays "auto" when NOT focused AND internal state is ""
-  const getDisplayValue = (
-    prop: keyof PositionValue,
-    internalStringValue: string
-  ): string => {
-    // While focused, always display the raw internal string
-    if (focusedInput === prop) {
-      return internalStringValue;
-    }
-    // When not focused, display "auto" if the internal string is empty, otherwise display the string
+  // Helper to get the value that should be DISPLAYED in the input.
+  const getDisplayValue = (internalStringValue: string): string => {
     return internalStringValue === '' ? 'auto' : internalStringValue;
   };
 
-  // Get the correct internal state setter based on the property name
+  // Helper to handle input changes (updates internal state AND starts/resets the debounce timer)
+  const handleInputChangeAndDebounce =
+    (
+      prop: keyof PositionValue,
+      setter: React.Dispatch<React.SetStateAction<string>>,
+      timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+    ) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const stringValue = event.target.value;
+      setter(stringValue); // Update internal string state immediately
+
+      // --- CLEAR THE OLD TIMER ---
+      clearTimeout(timerRef.current as NodeJS.Timeout | undefined);
+
+      // Create the callback inside the handler to capture stringValue and other relevant values
+      // But to build the complete newPosition, we need *all* four internal strings *at the moment the timer fires*.
+      // We use latestStateRef for that.
+      timerRef.current = setTimeout(() => {
+        console.log(
+          `[PositionWidget Debounce Timeout] Timer fired for ${prop}. Processing value: "${stringValue}"`
+        ); // Log timer fire
+
+        // Logic to parse, validate, build newPosition, and call onChange
+        // Get the most recent internal strings from latestStateRef
+        const {
+          top: latestTop,
+          right: latestRight,
+          bottom: latestBottom,
+          left: latestLeft,
+        } = latestStateRef.current;
+
+        const newPosition: PositionValue = {};
+        // Convert each string (from the latest ones) to the value for data
+        const newDataTop = internalStringToDataValue(latestTop, min, max);
+        if (newDataTop !== undefined) newPosition.top = newDataTop;
+        const newDataRight = internalStringToDataValue(latestRight, min, max);
+        if (newDataRight !== undefined) newPosition.right = newDataRight;
+        const newDataBottom = internalStringToDataValue(latestBottom, min, max);
+        if (newDataBottom !== undefined) newPosition.bottom = newDataBottom;
+        const newDataLeft = internalStringToDataValue(latestLeft, min, max);
+        if (newDataLeft !== undefined) newPosition.left = newDataLeft;
+
+        // Compare the calculated new object with the current parent prop value (safeValue)
+        // This prevents calling onChange if, for example, the user types 10, then deletes 0, then re-types 0.
+        // Or if safeValue has updated in the meantime for another reason (e.g., another breakpoint).
+        const currentJson = JSON.stringify(safeValue);
+        const newJson = JSON.stringify(newPosition);
+
+        // Call onChange ONLY if the data is different
+        if (currentJson !== newJson) {
+          onChange(newPosition);
+        } else {
+        }
+
+        // Clear the timer ref after it has fired
+        timerRef.current = null;
+      }, DEBOUNCE_DELAY); // Debounce delay
+    };
+
+  // Handler for the onFocus event (sets the focused state)
+  const handleFocus = (prop: keyof PositionValue) => () => {
+    setFocusedInput(prop); // Set focused state on the current input
+    // Due to the binding "value={focusedInput === prop ? stringIntern : ...}",
+    // the input will display the RAW internal string when focused.
+  };
+
+  // Handler for the onBlur event (clears the focused state and optionally executes debounce immediately)
+  const handleBlur =
+    (
+      prop: keyof PositionValue,
+      timerRef: React.MutableRefObject<NodeJS.Timeout | null>
+    ) =>
+    () => {
+      console.log('[PositionWidget Blur] Input blurred:', prop); // Log blur
+
+      // This provides immediate feedback on blur if the user has finished typing.
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        // Replicate the logic from the debounce callback
+        const {
+          top: latestTop,
+          right: latestRight,
+          bottom: latestBottom,
+          left: latestLeft,
+        } = latestStateRef.current; // Use the latest states
+
+        const newPosition: PositionValue = {};
+        const newDataTop = internalStringToDataValue(latestTop, min, max);
+        if (newDataTop !== undefined) newPosition.top = newDataTop;
+        const newDataRight = internalStringToDataValue(latestRight, min, max);
+        if (newDataRight !== undefined) newPosition.right = newDataRight;
+        const newDataBottom = internalStringToDataValue(latestBottom, min, max);
+        if (newDataBottom !== undefined) newPosition.bottom = newDataBottom;
+        const newDataLeft = internalStringToDataValue(latestLeft, min, max);
+        if (newDataLeft !== undefined) newPosition.left = newDataLeft;
+
+        const currentJson = JSON.stringify(safeValue);
+        const newJson = JSON.stringify(newPosition);
+
+        if (currentJson !== newJson) {
+          onChange(newPosition);
+        }
+
+        // Clear the timer ref AFTER execution
+        timerRef.current = null;
+      } else {
+        // If there was no pending timer (e.g., user didn't type, just clicked in and out),
+        // perform immediate visual cleanup for invalid strings if any.
+        const internalStringValue = getInternalStringValue(prop);
+        const num = parseFloat(internalStringValue);
+        if (internalStringValue !== '' && isNaN(num)) {
+          const setter = getSetter(prop);
+          setter('');
+          // The debounce effect would have handled this anyway, but we do a quicker visual reset.
+        }
+      }
+
+      setFocusedInput(null); // Clear focused state.
+    };
+
+  // Helper to get the correct internal state setter
   const getSetter = (
     prop: keyof PositionValue
   ): React.Dispatch<React.SetStateAction<string>> => {
@@ -203,7 +291,7 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
     }
   };
 
-  // Get the current internal string state based on the property name
+  // Helper to get the current internal string value (used in handleBlur and timer callback replication)
   const getInternalStringValue = (prop: keyof PositionValue): string => {
     switch (prop) {
       case 'top':
@@ -215,11 +303,11 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
       case 'left':
         return left;
       default:
-        return ''; // Should not happen
+        return '';
     }
   };
 
-  // >>> STILURI <<< (remains the same)
+  // >>> STYLES <<< (Remain the same)
   const gridContainerStyle: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: '1fr auto 1fr',
@@ -287,74 +375,74 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
       </label>
 
       <div style={gridContainerStyle}>
-        {/* Top Input */}
         <div
           style={{ ...inputGroupStyle, gridRow: '1 / 2', gridColumn: '2 / 3' }}
         >
-          {/* Top-Middle */}
-          <label style={labelStyle}>Top (%)</label>
+          <label style={labelStyle}>Sus (%)</label>
           <input
-            type="text" // Use type="text"
-            value={getDisplayValue('top', top)} // Use the derived display value based on internal state and focus
-            onChange={handleInputChange(setTop)} // Update internal state on change
-            onBlur={handleBlur('top', top)} // Update data model on blur
-            onFocus={handleFocus('top')} // Handle focus gain
+            type="text"
+            // BINDING: Display raw internal string WHEN FOCUSED, otherwise derived value ("auto" or number)
+            value={focusedInput === 'top' ? top : getDisplayValue(top)}
+            onChange={handleInputChangeAndDebounce('top', setTop, topTimerRef)}
+            onBlur={handleBlur('top', topTimerRef)}
+            onFocus={handleFocus('top')}
             style={inputStyle}
-            title="Poziție de la margine Superioară (%) (Lasă gol pentru auto)" // Update tooltip
+            title="Poziția față de marginea de sus (%) (Lăsați gol sau introduceți 0 pentru auto)"
           />
         </div>
-
-        {/* Left Input */}
         <div
           style={{ ...inputGroupStyle, gridRow: '2 / 3', gridColumn: '1 / 2' }}
         >
-          {/* Middle-Left */}
-          <label style={labelStyle}>Left (%)</label>
+          <label style={labelStyle}>Stanga (%)</label>
           <input
-            type="text" // Use type="text"
-            value={getDisplayValue('left', left)}
-            onChange={handleInputChange(setLeft)}
-            onBlur={handleBlur('left', left)}
+            type="text"
+            value={focusedInput === 'left' ? left : getDisplayValue(left)}
+            onChange={handleInputChangeAndDebounce(
+              'left',
+              setLeft,
+              leftTimerRef
+            )}
+            onBlur={handleBlur('left', leftTimerRef)}
             onFocus={handleFocus('left')}
             style={inputStyle}
-            title="Poziție de la margine Stângă (%) (Lasă gol pentru auto)" // Update tooltip
+            title="Poziția față de marginea din stanga (%) (Lăsați gol sau introduceți 0 pentru auto)"
           />
         </div>
-
-        {/* Center Placeholder */}
-        <div style={centerBoxStyle}>Poziție</div>
-
-        {/* Right Input */}
+        <div style={centerBoxStyle}>Pozitie</div>
         <div
           style={{ ...inputGroupStyle, gridRow: '2 / 3', gridColumn: '3 / 4' }}
         >
-          {/* Middle-Right */}
-          <label style={labelStyle}>Right (%)</label>
+          <label style={labelStyle}>dreapta (%)</label>
           <input
-            type="text" // Use type="text"
-            value={getDisplayValue('right', right)}
-            onChange={handleInputChange(setRight)}
-            onBlur={handleBlur('right', right)}
+            type="text"
+            value={focusedInput === 'right' ? right : getDisplayValue(right)}
+            onChange={handleInputChangeAndDebounce(
+              'right',
+              setRight,
+              rightTimerRef
+            )}
+            onBlur={handleBlur('right', rightTimerRef)}
             onFocus={handleFocus('right')}
             style={inputStyle}
-            title="Poziție de la margine Dreaptă (%) (Lasă gol pentru auto)" // Update tooltip
+            title="Poziția față de marginea din dreapta (%) (Lăsați gol sau introduceți 0 pentru auto)"
           />
         </div>
-
-        {/* Bottom Input */}
         <div
           style={{ ...inputGroupStyle, gridRow: '3 / 4', gridColumn: '2 / 3' }}
         >
-          {/* Bottom-Middle */}
-          <label style={labelStyle}>Bottom (%)</label>
+          <label style={labelStyle}>jos (%)</label>
           <input
-            type="text" // Use type="text"
-            value={getDisplayValue('bottom', bottom)}
-            onChange={handleInputChange(setBottom)}
-            onBlur={handleBlur('bottom', bottom)}
+            type="text"
+            value={focusedInput === 'bottom' ? bottom : getDisplayValue(bottom)}
+            onChange={handleInputChangeAndDebounce(
+              'bottom',
+              setBottom,
+              bottomTimerRef
+            )}
+            onBlur={handleBlur('bottom', bottomTimerRef)}
             onFocus={handleFocus('bottom')}
             style={inputStyle}
-            title="Poziție de la margine Inferioară (%) (Lasă gol pentru auto)" // Update tooltip
+            title="Poziția față de marginea de jos (%) (Lăsați gol sau introduceți 0 pentru auto)"
           />
         </div>
       </div>

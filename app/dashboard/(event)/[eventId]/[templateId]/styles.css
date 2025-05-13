@@ -57,6 +57,7 @@
   display: none;
 }
 
-.template-editor-section-card:hover .template-editor-section-controls {
+.template-editor-section-card:hover .template-editor-section-controls,
+.template-editor-element-card:hover .template-editor-section-controls {
   display: flex;
 }

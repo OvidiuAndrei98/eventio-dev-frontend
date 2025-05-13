@@ -62,6 +62,15 @@ const DashboardEventPage = () => {
             }}
           >
             <h2>{eventInstance?.eventName}</h2>
+            <span
+              className={`text-sm ${
+                eventInstance?.invitationActive ? 'text-green' : 'text-red-500'
+              }`}
+            >
+              {eventInstance?.invitationActive
+                ? 'Invitatie activa'
+                : 'Invitatie inactiva'}
+            </span>
           </div>
           <Image
             alt="Event Thumbnail"
@@ -69,7 +78,11 @@ const DashboardEventPage = () => {
             width={150}
             height={150}
           />
-          <Button icon={<SendOutlined />} type="primary">
+          <Button
+            icon={<SendOutlined />}
+            type="primary"
+            disabled={!eventInstance?.invitationActive}
+          >
             Trimite Invitatia
           </Button>
           <div className="confirmations-left">

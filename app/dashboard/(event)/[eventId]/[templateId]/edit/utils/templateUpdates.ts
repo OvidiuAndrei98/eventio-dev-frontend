@@ -1,138 +1,185 @@
-// editor/utils/templateUpdates.ts
 import {
   Template,
   TemplateSection,
   TemplateElement,
-  ResponsiveOverrides,
   ResponsiveProperties,
-} from '@/core/types'; // Asigură-te că importi toate tipurile relevante
-import { setNestedProperty } from './objectUtils'; // Vom crea imediat acest helper pentru setarea nested imutabil
+} from '@/core/types';
+import { findInheritedValue, setNestedProperty } from './objectUtils';
 
 // Helper function to find and update an element within a nested template structure immutably.
 // Handles updating default properties OR properties within a specific responsive breakpoint.
 // Returns the new, updated template object.
 // Returns the original template object if the element is not found or update fails.
 export const updateElementPropertyInTemplate = (
-  template: Template, // The original template object (immutable)
-  elementId: string, // The ID of the element to find
-  propertyPath: string, // The dot-notation path to the property (ex: 'position.x', 'style.fontSize', 'responsive.mobile.style.color')
-  newValue: any, // The new value for the property
-  // Optional: The breakpoint name if updating a responsive override
-  // If not provided or 'default', updates the default property.
-  breakpoint?: string | 'desktop'
+  template: Template, // State-ul template-ului curent (obiect imutabil)
+  elementId: string, // ID-ul elementului de actualizat
+  propertyPath: string, // Calea proprietatii la nivel DEFAULT (ex: 'style.fontSize', 'position.x')
+  newValue: any, // Noua valoare primita din input (poate fi '', null, numar, string)
+  propIsResponsive: boolean, // Flag: Aceasta proprietate POATE avea override-uri responsive (din editorConfig)
+  breakpoint?: 'desktop' | 'tablet' | 'mobile' // Breakpoint-ul ACTIV in UI (ex: 'mobile', 'tablet', 'desktop')
 ): Template => {
-  let elementFound = false; // Flag pentru a ști dacă am găsit elementul
-  let elementUpdated = false; // Flag pentru a ști dacă actualizarea a avut loc (important pentru imutabilitate)
-
-  // Step 1: Map over the sections to create a new array of sections
+  let elementFound = false; // Flag pentru a sti daca am gasit elementul in oricare sectiune // Nu mai avem neaparat nevoie de elementUpdated flag local, ne bazam pe succesul helper-urilor. // Parcurgem array-ul de sectiuni pentru a gasi sectiunea care contine elementul
   const updatedSections = template.elements.map((section) => {
-    // Step 2: Find the index of the element within the current section
     const elementIndex = section.elements.findIndex(
       (element) => element.id === elementId
-    );
+    ); // Daca elementul a fost gasit in aceasta sectiune
 
-    // Step 3: If the element is found in THIS section
     if (elementIndex > -1) {
-      elementFound = true; // Marcam ca am gasit elementul
+      elementFound = true; // Marcam ca l-am gasit
 
-      const originalElement = section.elements[elementIndex];
-      let updatedElement = originalElement; // Start with original element
+      const originalElement = section.elements[elementIndex]; // Obiectul elementului original
+      let updatedElement = originalElement; // Initial, plecam de la obiectul original
+      let updateApplied = false; // Flag pentru a sti daca o actualizare a avut loc efectiv // --- Determina daca actualizarea se aplica unui override RESPONSIVE --- // Conditii: avem un breakpoint specificat, nu este 'desktop', SI proprietatea este marcata ca responsive.
 
-      // Step 4: Determine where to update (default or responsive override)
-      if (breakpoint && breakpoint !== 'desktop') {
-        // >>> UPDATEAZA O PROPRIETATE RESPONSIVE <<<
-        // Verifică dacă path-ul începe cu 'responsive' sau este direct o proprietate responsive ('position', 'size', 'style', 'display')
-        // De obicei, path-ul va fi 'position.x', 'style.fontSize' etc. Aplicat DUPA navigarea la responsive[breakpoint]
+      const isResponsiveUpdate =
+        breakpoint && breakpoint !== 'desktop' && propIsResponsive;
 
-        // Creează o copie a obiectului responsive existent (dacă există)
-        const updatedResponsive = { ...(originalElement.responsive || {}) };
-        // Creează o copie a obiectului de override pentru breakpoint-ul specific (dacă există)
+      // --- Determina daca NOUA VALOARE semnaleaza un RESET (string vid sau null) ---
+      const isValueReset =
+        newValue === '' || newValue === null || newValue === undefined;
+
+      if (isResponsiveUpdate) {
+        // >>> Suntem in modul de actualizare a unui override RESPONSIVE <<<
+
+        // Facem copii imutabile pe calea responsive: element -> responsive -> [breakpoint]
+        // Incepem cu obiectul 'responsive' (creeaza {} daca nu exista)
+        const updatedResponsive = { ...(originalElement.responsive || {}) }; // Mergem la obiectul breakpoint-ului activ (creeaza {} daca nu exista)
         const updatedBreakpointProps = {
-          ...((updatedResponsive[breakpoint] || {}) as ResponsiveProperties),
-        }; // Asigură-te că tipul e corect
+          ...((updatedResponsive[breakpoint] || {}) as ResponsiveProperties), // Asigura-te ca ResponsiveProperties este tipul corect
+        }; // Acesta este obiectul unde trebuie setată proprietatea (ex: style, position)
 
-        // Setează proprietatea imbricată în obiectul override-ului folosind helper-ul imutabil
-        // Ex: setNestedProperty(updatedBreakpointProps, 'style.fontSize', 20)
-        const {
-          updatedObject: finalBreakpointProps,
-          success: setOverrideSuccess,
-        } = setNestedProperty(updatedBreakpointProps, propertyPath, newValue);
-
-        if (setOverrideSuccess) {
-          // Actualizează obiectul responsive pentru breakpoint-ul respectiv
-          updatedResponsive[breakpoint] = finalBreakpointProps;
-
-          // Creează noul obiect element cu noul obiect responsive
-          updatedElement = {
-            ...originalElement,
-            responsive: updatedResponsive,
-          } as TemplateElement; // Cast la tipul corect
-          elementUpdated = true; // Marcam ca actualizarea a avut loc
-        } else {
-          console.error(
-            `Failed to set responsive property "${propertyPath}" for element "${elementId}" at breakpoint "${breakpoint}".`
+        if (isValueReset) {
+          // --- CAZUL 1: RESETUL UNUI OVERRIDE RESPONSIVE (valoarea e '' sau null) ---
+          // In loc sa stergem, setam override-ul la valoarea mostenita.
+          console.log(
+            `updateElementPropertyInTemplate: Resetting responsive property "${propertyPath}" for element "${elementId}" at breakpoint "${breakpoint}" by setting to inherited value.`
           );
+
+          // --- Gasim valoarea mostenita ---
+          // Apelam functia helper findInheritedValue pasandu-i elementul original si breakpoint-ul curent.
+          // Aceasta va returna valoarea din breakpoint-ul superior cu override sau valoarea default.
+          const inheritedValue = findInheritedValue(
+            originalElement,
+            propertyPath,
+            breakpoint
+          ); // <-- Apelul catre helper
+
+          console.log(
+            `updateElementPropertyInTemplate: Valoare mostenita gasita:`,
+            inheritedValue,
+            `(Type: ${typeof inheritedValue})`
+          );
+
+          // --- Setam proprietatea responsiva la valoarea mostenita ---
+          // Folosim setNestedProperty pentru a actualiza updatedBreakpointProps cu valoarea mostenita.
+          const {
+            updatedObject: finalBreakpointProps,
+            success: setOverrideSuccess,
+          } = setNestedProperty(
+            updatedBreakpointProps,
+            propertyPath,
+            inheritedValue
+          ); // <-- Setam la valoarea mostenita
+
+          if (setOverrideSuccess) {
+            // Daca setarea a reusit
+            // Actualizăm obiectul responsive cu obiectul de breakpoint modificat.
+            updatedResponsive[breakpoint] = finalBreakpointProps; // Creează noul obiect element cu obiectul responsive actualizat
+
+            updatedElement = {
+              ...originalElement, // Copiaza proprietatile elementului original
+              responsive: updatedResponsive, // Foloseste obiectul responsive cu override-ul setat (chiar daca e valoarea mostenita)
+            } as TemplateElement; // Casteaza la tipul corect
+            updateApplied = true; // Marcam ca o actualizare a avut loc
+          } else {
+            console.error(
+              `updateElementPropertyInTemplate: Failed to set responsive property "${propertyPath}" to inherited value for element "${elementId}" at breakpoint "${breakpoint}". setNestedProperty reported failure.`
+            );
+            // updatedElement ramane originalElement, updateApplied ramane false.
+          }
+        } else {
+          // --- CAZUL 2: SETAREA UNEI VALORI PENTRU UN OVERRIDE RESPONSIVE (valoare NON-VIDA/NULL) ---
+          // Acest caz ramane la fel: setam proprietatea responsiva la newValue.
+          console.log(
+            `updateElementPropertyInTemplate: Setting responsive property "${propertyPath}" for element "${elementId}" at breakpoint "${breakpoint}" to value`,
+            newValue,
+            `(Type: ${typeof newValue})`
+          ); // Apelam setNestedProperty pentru a seta valoarea de la 'propertyPath' in updatedBreakpointProps
+          const {
+            updatedObject: finalBreakpointProps,
+            success: setOverrideSuccess,
+          } = setNestedProperty(updatedBreakpointProps, propertyPath, newValue); // <-- Setam la newValue
+
+          if (setOverrideSuccess) {
+            // Daca setarea a reusit
+            // Actualizează obiectul responsive cu obiectul de breakpoint modificat
+            updatedResponsive[breakpoint] = finalBreakpointProps; // Creează noul obiect element cu obiectul responsive actualizat
+
+            updatedElement = {
+              ...originalElement,
+              responsive: updatedResponsive,
+            } as TemplateElement;
+            updateApplied = true; // Marcam ca actualizarea a fost aplicata
+          } else {
+            console.error(
+              `updateElementPropertyInTemplate: Failed to set responsive property "${propertyPath}" to value for element "${elementId}" at breakpoint "${breakpoint}". setNestedProperty reported failure.`
+            );
+            // updatedElement ramane originalElement, updateApplied ramane false.
+          }
         }
       } else {
-        // >>> UPDATEAZA O PROPRIETATE DEFAULT <<<
-        // Setează proprietatea imbricată direct în obiectul elementului default
-        // Ex: setNestedProperty(updatedElement, 'position.x', 10)
+        // >>> Modul de actualizare a unei PROPRIETATI DEFAULT (nu e responsive) <<<
+        // Aceasta logica ramane neschimbata. Foloseste setNestedProperty direct pe elementul original.
+        // Aici nu tratam ''/null ca reset la valoarea mostenita, ci la valoarea default (care poate fi '' sau null).
+        console.log(
+          `updateElementPropertyInTemplate: Setting default property "${propertyPath}" for element "${elementId}" to value`,
+          newValue,
+          `(Type: ${typeof newValue})`
+        );
         const { updatedObject: finalElementProps, success: setDefaultSuccess } =
-          setNestedProperty(originalElement, propertyPath, newValue);
+          setNestedProperty(originalElement, propertyPath, newValue); // setNestedProperty trebuie sa gestioneze imutabilitatea
 
         if (setDefaultSuccess) {
-          updatedElement = finalElementProps as TemplateElement; // Cast la tipul corect
-          elementUpdated = true; // Marcam ca actualizarea a avut loc
+          updatedElement = finalElementProps as TemplateElement; // Noul obiect element actualizat
+          updateApplied = true; // Marcam ca actualizarea a fost aplicata
         } else {
           console.error(
-            `Failed to set default property "${propertyPath}" for element "${elementId}".`
+            `updateElementPropertyInTemplate: Failed to set default property "${propertyPath}" for element "${elementId}". setNestedProperty reported failure.`
           );
+          // updatedElement ramane originalElement, updateApplied ramane false.
         }
-      }
+      } // --- Creaza noul array de elemente pentru aceasta sectiune DOAR DACA elementul a fost actualizat/procesat ---
 
-      // Step 5: Dacă elementul a fost actualizat (suprascris), creează un nou array de elemente pentru această secțiune
-      if (elementUpdated) {
+      if (updateApplied) {
+        // Creeaza un NOU array de elemente, inlocuind elementul original cu cel actualizat.
         const newSectionElements = [
           ...section.elements.slice(0, elementIndex), // Elementele dinaintea celui actualizat
-          updatedElement, // Elementul actualizat
-          ...section.elements.slice(elementIndex + 1), // Elementele de după
-        ];
+          updatedElement, // Noul obiect element (cu override sters sau setat, sau default setat)
+          ...section.elements.slice(elementIndex + 1), // Elementele de dupa
+        ]; // Returneaza un NOU obiect sectiune cu array-ul de elemente modificat.
 
-        // Step 6: Creează un nou obiect secțiune cu noul array de elemente
         return {
-          ...section, // Copiază proprietățile secțiunii originale
-          elements: newSectionElements, // Folosește noul array de elemente
+          ...section, // Copiaza proprietatile sectiunii originale
+          elements: newSectionElements, // Foloseste noul array de elemente
         };
       } else {
-        // Dacă elementul a fost găsit, dar actualizarea lui a eșuat, returnează secțiunea originală
+        // Daca elementul a fost gasit in sectiune, dar actualizarea nu s-a aplicat, returneaza sectiunea originala.
         console.warn(
-          `Element "${elementId}" found in section "${section.id}", but property update failed or was not performed.`
+          `updateElementPropertyInTemplate: Element "${elementId}" found in section "${section.id}", but property update was not applied.`
         );
         return section;
       }
-    }
+    } // Daca elementul NU a fost gasit in aceasta sectiune, returneaza sectiunea originala.
 
-    // Step 7: Dacă elementul NU a fost găsit în această secțiune, returnează obiectul secțiunii originale
     return section;
-  });
+  }); // End map
 
-  // Step 8: Creează și returnează un nou obiect template cu noul array de secțiuni
-  // Indiferent dacă un element a fost actualizat sau nu, map returnează un array nou.
-  // Daca elementUpdated este true, inseamna ca updatedSections contine macar o sectiune noua.
-  // Daca elementUpdated este false, updatedSections contine doar referinte la sectiunile originale.
-  const finalUpdatedTemplate = {
-    ...template, // Copiază proprietățile template-ului original
-    elements: updatedSections, // Folosește noul array de secțiuni
+  // Dupa map, updatedSections este noul array de sectiuni.
+  // Returneaza un NOU obiect template cu array-ul de sectiuni actualizat.
+  return {
+    ...template, // Copiaza proprietatile template-ului original
+    elements: updatedSections, // Utilizeaza noul array de sectiuni
   };
-
-  if (!elementFound) {
-    console.warn(`Element with ID "${elementId}" not found in the template.`);
-    // Poți returna template-ul original sau null, în funcție de cum vrei să gestionezi cazul
-    return template; // Returneaza template-ul original daca elementul nu a fost gasit
-  }
-
-  // Returneaza template-ul actualizat (o copie noua)
-  return finalUpdatedTemplate;
 };
 
 /**

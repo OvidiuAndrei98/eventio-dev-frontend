@@ -27,6 +27,8 @@ export interface EventInstance {
   templateId: string;
   eventDate: string;
   eventTemplateThumbnailUrl: string;
+  invitationActive: boolean;
+  eventInvitationLink: string;
 }
 
 export interface Guest {
@@ -83,6 +85,7 @@ export enum EditorWidgetType {
   Slider = 'Slider',
   TextArea = 'TextArea',
   PositionInput = 'PositionInput',
+  RSVP = 'Rsvp',
 }
 
 export enum PropertyDataType {
@@ -99,6 +102,7 @@ export interface PropertyEditorConfig {
   label: string;
   dataType: PropertyDataType;
   widgetType: EditorWidgetType;
+  responsive: boolean;
   options?: { value: any; label: string }[];
   unitOptions?: string[];
   min?: number;
@@ -114,10 +118,14 @@ export enum ElementType {
   Text = 'text',
   Image = 'image',
   Section = 'section',
+  RSVP_SECTION = 'rsvp-section',
+  RSVP_ELEMENT = 'rsvp',
 }
 
+export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
+
 export interface Template {
-  id: string;
+  templateId: string;
   name: string;
   type: string;
   description: string;
@@ -140,6 +148,7 @@ export interface BaseTemplateElement {
     left?: number;
   };
   responsive: ResponsiveOverrides;
+  disabled: boolean;
 }
 
 export interface TemplateSection extends BaseTemplateElement {
@@ -172,6 +181,12 @@ export interface ImageTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.Image;
   url: string;
+}
+
+export interface RsvpTemplatelement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.RSVP_ELEMENT;
+  title: string;
 }
 
 export type TemplateElement =

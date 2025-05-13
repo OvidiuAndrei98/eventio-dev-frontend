@@ -55,7 +55,7 @@ const NewInvitationModal = ({
 
   const handleTemplateSelect = (templateId: string, type: string) => {
     const selectedTemplate = templates.find(
-      (template) => template.id === templateId && template.type === type
+      (template) => template.templateId === templateId && template.type === type
     );
     if (selectedTemplate) {
       router.push(`/invitations/new/${type}/${templateId}`);
@@ -98,7 +98,7 @@ const NewInvitationModal = ({
           style={{
             maxWidth: innerWidth < 765 ? 'auto' : '200px',
           }}
-          onSelect={(e) => {
+          onSelect={(e: Parameters<NonNullable<MenuProps['onSelect']>>[0]) => {
             setTemplateType(e.key);
           }}
         />
@@ -111,10 +111,10 @@ const NewInvitationModal = ({
             {templates.map((template) => (
               <InvitationCard
                 onTemplateSelect={handleTemplateSelect}
-                key={template.id}
+                key={template.templateId}
                 image={template.thumbnailUrl}
                 text={template.name}
-                templateId={template.id}
+                templateId={template.templateId}
                 type={template.type}
               />
             ))}

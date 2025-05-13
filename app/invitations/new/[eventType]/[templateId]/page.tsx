@@ -23,9 +23,12 @@ const NewInvitationPage = ({
   const { eventType, templateId } = use(params);
   const user = useAuth();
 
-  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+  const onFinish: FormProps<FieldType>['onFinish'] = async (
+    values: FieldType
+  ) => {
     const selectedTemplate = defaultTemplates.find(
-      (template) => template.id === templateId && template.type === eventType
+      (template) =>
+        template.templateId === templateId && template.type === eventType
     );
 
     if (!selectedTemplate) {
@@ -40,11 +43,13 @@ const NewInvitationPage = ({
     const newTemplateId = crypto.randomUUID();
     const eventData: EventInstance = {
       eventName,
+      invitationActive: false,
       eventDate: eventDateString,
       eventType,
       templateId: newTemplateId,
       eventActive: false,
       eventPlan: 'basic',
+      eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
       eventId: eventId,
       userId: user.userDetails.userId,
       eventTemplateThumbnailUrl: selectedTemplate.thumbnailUrl,
@@ -57,7 +62,9 @@ const NewInvitationPage = ({
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
-    errorInfo
+    errorInfo: Parameters<
+      NonNullable<FormProps<FieldType>['onFinishFailed']>
+    >[0]
   ) => {
     console.error('Failed creating event', errorInfo);
   };
