@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import {
   TemplateSection,
   ElementType,
@@ -8,6 +8,7 @@ import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
+import { template } from '@antv/g2plot/lib/utils';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -122,6 +123,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 key={element.id}
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+                eventId={template}
                 editMode={true}
               />
             );

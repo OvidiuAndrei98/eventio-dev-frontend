@@ -37,7 +37,7 @@ export const defaultElements = {
           style: {
             fontSize: 16,
             color: '#ffffff',
-            zIndex: 2,
+            zIndex: 3,
           },
           responsive: {
             mobile: {
@@ -98,7 +98,7 @@ export const defaultElements = {
       style: {
         fontSize: 16,
         color: '#ffffff',
-        zIndex: 2,
+        zIndex: 3,
       },
       responsive: {
         mobile: {

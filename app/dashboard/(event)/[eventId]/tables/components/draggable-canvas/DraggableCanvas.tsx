@@ -1,7 +1,7 @@
-import { useDroppable } from '@dnd-kit/core'
-import React from 'react'
-import CanvaDraggableElement from './draggable-element/CanvaDragableElement'
-import { CanvasElement } from '@/core/types'
+import { useDroppable } from '@dnd-kit/core';
+import React from 'react';
+import CanvaDraggableElement from './draggable-element/CanvaDragableElement';
+import { CanvasElement } from '@/core/types';
 
 const DraggableCanvas = ({
   id,
@@ -12,14 +12,13 @@ const DraggableCanvas = ({
   isEditing,
   eventId,
 }: {
-  id: string
-  // De schimbat in types.ts
-  canvasElements: CanvasElement[]
-  tableEditActive: (state: boolean) => void
-  setActiveEditTableId: (value: CanvasElement) => void
-  onDelete: (id: string) => void
-  isEditing: boolean
-  eventId?: string
+  id: string;
+  canvasElements: CanvasElement[];
+  tableEditActive: (state: boolean) => void;
+  setActiveEditTableId: (value: CanvasElement) => void;
+  onDelete: (id: string) => void;
+  isEditing: boolean;
+  eventId?: string;
 }) => {
   const { setNodeRef } = useDroppable({
     id: id,
@@ -27,7 +26,7 @@ const DraggableCanvas = ({
       parent: null,
       isContainer: true,
     },
-  })
+  });
 
   return (
     <div
@@ -38,8 +37,8 @@ const DraggableCanvas = ({
         <CanvaDraggableElement
           onClick={() => {
             if (element.type === 'table') {
-              tableEditActive(true)
-              setActiveEditTableId(element)
+              tableEditActive(true);
+              setActiveEditTableId(element);
             }
           }}
           onDelete={(id) => onDelete(id)}
@@ -54,7 +53,7 @@ const DraggableCanvas = ({
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default DraggableCanvas
+export default DraggableCanvas;

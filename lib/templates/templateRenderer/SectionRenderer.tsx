@@ -13,11 +13,15 @@ const elementComponentMap = {
 };
 
 interface SectionRendererProps {
+  eventId: string;
+  userId: string;
   sectionData: TemplateSection;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
 }
 
 const SectionRenderer: React.FC<SectionRendererProps> = ({
+  eventId,
+  userId,
   sectionData,
   activeBreakpoint,
 }) => {
@@ -67,6 +71,8 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}
+                eventId={eventId}
+                userId={userId}
               />
             );
           default:

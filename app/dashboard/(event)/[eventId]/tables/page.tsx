@@ -353,12 +353,9 @@ const TablesPage = () => {
           currentElement.positions.y +
           (e.delta.y / canvasElement.offsetHeight) * 100;
 
-        // Dacă da, elimină și aici clamparea. Dacă nu, păstreaz-o.
-        // Păstrăm clamparea la mutare pentru a preveni pierderea elementelor:
         newX = Math.max(0, Math.min(100, newX));
         newY = Math.max(0, Math.min(100, newY));
 
-        // Actualizare imutabilă
         setCanvasElements((currentElements) =>
           currentElements.map((el, index) => {
             if (index === movedElementIndex) {

@@ -1,9 +1,10 @@
-import { ElementType, Template } from '@/core/types'; // Asigură-te că tipurile sunt actualizate
+import { ElementType, Template } from '@/core/types';
 
-// lib/defaultTemplates.js
 export const defaultTemplates: Template[] = [
   {
-    templateId: 'wedding-responsive-demo',
+    templateId: 'demo-template',
+    eventId: 'demo-template',
+    userId: 'demo-template',
     name: 'Demo Invitație Nuntă Responsivă',
     type: 'wedding',
     description:

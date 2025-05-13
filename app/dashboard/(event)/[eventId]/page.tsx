@@ -14,6 +14,9 @@ import ActivityChart from './components/activityChart/ActivityChart';
 import Image from 'next/image';
 import TodoModal from '@/components/todoList/TodoModal';
 import { useEventContext } from '@/core/context/EventContext';
+import { Guest } from '@/core/types';
+import { queryLastGuestsByEventId } from '@/service/guest/queryLastGuestsByEventId';
+import { toast } from 'sonner';
 
 // Varianta abonomant
 
@@ -21,6 +24,7 @@ const DashboardEventPage = () => {
   const router = useRouter();
   const [todoOpen, setTodoOpen] = useState(false);
   const [shrinkElement, setShrinkElement] = useState(false);
+  const [guestList, setGuestList] = useState<Guest[]>([]);
   const { eventInstance } = useEventContext();
 
   useEffect(() => {
@@ -39,6 +43,21 @@ const DashboardEventPage = () => {
       observer.observe(element);
     }
   }, []);
+
+  useEffect(() => {
+    if (eventInstance?.eventId) {
+      try {
+        queryGuestList(eventInstance.eventId);
+      } catch (error) {
+        toast.error('Eroare la incarcare date eveniment');
+      }
+    }
+  }, [eventInstance]);
+
+  const queryGuestList = async (eventId: string) => {
+    const guests = await queryLastGuestsByEventId(eventId, 5);
+    setGuestList(guests);
+  };
 
   const onModalOk = () => {
     setTodoOpen(false);
@@ -85,7 +104,8 @@ const DashboardEventPage = () => {
           >
             Trimite Invitatia
           </Button>
-          <div className="confirmations-left">
+          {/* <div className="confirmations-left">
+            to be removed
             <div className="accepted dotted-card">
               <span className="number">3</span>
               <span className="text secondary-text-color-light">
@@ -96,7 +116,7 @@ const DashboardEventPage = () => {
               <span className="number">1</span>
               <span className="text secondary-text-color-light">Refuzuri</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="content-right">
@@ -115,11 +135,14 @@ const DashboardEventPage = () => {
               Vezi tot
             </Button>
           </div>
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
-          <ConfirmationCard />
+          {!guestList.length && (
+            <span className="text-xl text-gray-500 text-center my-[auto]">
+              Nu aveti niciun invitat.
+            </span>
+          )}
+          {guestList.map((guest) => (
+            <ConfirmationCard guest={guest} key={guest.guestId} />
+          ))}
         </div>
         <ActivityChart showActionButton />
         <div className="dashboard-card quick-actions pb-[6px]">

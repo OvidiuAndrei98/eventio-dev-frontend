@@ -11,7 +11,7 @@ const PreviewPage = ({
 }: {
   params: Promise<{ templateId: string; templateName: string }>;
 }) => {
-  const { templateId, templateName } = use(params);
+  const { templateId } = use(params);
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
 

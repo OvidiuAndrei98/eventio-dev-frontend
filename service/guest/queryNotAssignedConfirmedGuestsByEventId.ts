@@ -8,7 +8,16 @@ import {
 import db from '../../lib/firebase/fireStore';
 import { Guest } from '@/core/types';
 
-export const queryConfirmedGuestsByEventId = async (
+/**
+ * Queries the database to retrieve a list of confirmed guests for a specific event
+ * who have not been assigned to a table.
+ *
+ * @param eventId - The unique identifier of the event for which to fetch guests.
+ * @returns A promise that resolves to an array of `Guest` objects representing
+ *          the confirmed guests who are not assigned to any table.
+ * @throws Will throw an error if there is an issue fetching the data from the database.
+ */
+export const queryNotAssignedConfirmedGuestsByEventId = async (
   eventId: string
 ): Promise<Guest[]> => {
   try {
@@ -16,7 +25,7 @@ export const queryConfirmedGuestsByEventId = async (
     const q = query(
       collection(db, 'guest_registry'),
       where('eventId', '==', eventId),
-      where('confirmation', '==', 'confirmed'),
+      where('isAttending', '==', true),
       where('tableId', '==', null)
     );
     const querySnapshot = await getDocs(q);

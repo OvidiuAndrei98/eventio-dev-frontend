@@ -72,6 +72,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
             key={section.id}
             sectionData={section}
             activeBreakpoint={activeBreakpoint}
+            eventId={invitationData.eventId}
+            userId={invitationData.userId}
           />
         );
       })}

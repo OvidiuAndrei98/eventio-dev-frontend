@@ -1,43 +1,39 @@
-'use client'
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+'use client';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
+} from '@/components/ui/chart';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from 'antd'
+} from '@/components/ui/card';
+import { Button } from 'antd';
 
 const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 },
-]
+  { month: 'January', mobile: 186 },
+  { month: 'February', mobile: 305 },
+  { month: 'March', mobile: 237 },
+  { month: 'April', mobile: 73 },
+  { month: 'May', mobile: 209 },
+  { month: 'June', mobile: 214 },
+];
 const chartConfig = {
-  desktop: {
-    label: 'Vizualizari',
-    color: 'yellow',
-  },
   mobile: {
     label: 'Raspunsuri',
     color: 'blue',
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 const ActivityChart = ({
   showActionButton,
 }: {
-  showActionButton?: boolean
+  showActionButton?: boolean;
 }) => {
   return (
     <Card>
@@ -77,19 +73,11 @@ const ActivityChart = ({
               stroke="var(--color-mobile)"
               stackId="a"
             />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
           </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ActivityChart
+export default ActivityChart;

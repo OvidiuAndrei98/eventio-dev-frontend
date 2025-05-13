@@ -1,16 +1,16 @@
-import { useDraggable } from '@dnd-kit/core'
-import React, { useCallback, useEffect, useState } from 'react'
-import { restrictToParentElement } from '@dnd-kit/modifiers'
-import { DeleteOutlined } from '@ant-design/icons'
+import { useDraggable } from '@dnd-kit/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { DeleteOutlined } from '@ant-design/icons';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { DropdownOption } from '@/core/types'
-import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
-import { toast } from 'sonner'
+} from '@/components/ui/tooltip';
+import { DropdownOption } from '@/core/types';
+import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
+import { toast } from 'sonner';
 
 const CanvaDraggableElement = ({
   id,
@@ -23,15 +23,15 @@ const CanvaDraggableElement = ({
   onClick,
   eventId,
 }: {
-  id: string
-  name: string
-  positions: { x: number; y: number }
-  type: string
-  typeId: string
-  isEditing: boolean
-  onDelete: (id: string) => void
-  onClick?: () => void
-  eventId?: string
+  id: string;
+  name: string;
+  positions: { x: number; y: number };
+  type: string;
+  typeId: string;
+  isEditing: boolean;
+  onDelete: (id: string) => void;
+  onClick?: () => void;
+  eventId?: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
@@ -42,14 +42,14 @@ const CanvaDraggableElement = ({
       modifiers: [restrictToParentElement],
     },
     disabled: !isEditing,
-  })
+  });
 
   const style = {
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
       : undefined,
     position: 'absolute',
-  }
+  };
 
   const getElementHtmlByType = (
     type: string,
@@ -63,8 +63,8 @@ const CanvaDraggableElement = ({
           sizesString,
           rounded,
         }: {
-          sizesString: string
-          rounded: boolean
+          sizesString: string;
+          rounded: boolean;
         }) => {
           return (
             <TooltipProvider delayDuration={2}>
@@ -86,15 +86,15 @@ const CanvaDraggableElement = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          )
-        }
+          );
+        };
 
         if (id === 'round-table') {
-          return <TableBase rounded={true} sizesString="w-[80px] h-[80px]" />
+          return <TableBase rounded={true} sizesString="w-[80px] h-[80px]" />;
         } else if (id === 'horizontal-table') {
-          return <TableBase rounded={false} sizesString="w-[140px] h-[60px]" />
+          return <TableBase rounded={false} sizesString="w-[140px] h-[60px]" />;
         } else {
-          return <TableBase rounded={false} sizesString="w-[60px] h-[140px]" />
+          return <TableBase rounded={false} sizesString="w-[60px] h-[140px]" />;
         }
       case 'presidium':
         if (id === 'vertical-presidium') {
@@ -102,13 +102,13 @@ const CanvaDraggableElement = ({
             <div className="text-center rounded-sm h-[160px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         } else {
           return (
             <div className="text-center rounded-sm h-[60px] w-[160px]  flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         }
       case 'bar':
         if (id === 'horizontal-bar') {
@@ -116,13 +116,13 @@ const CanvaDraggableElement = ({
             <div className="text-center rounded-md h-[60px] w-[200px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         } else {
           return (
             <div className=" rounded-md h-[200px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         }
       case 'others':
         if (id === 'dance-floor') {
@@ -130,19 +130,19 @@ const CanvaDraggableElement = ({
             <div className="text-center rounded-md h-[250px] w-[250px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               {name}
             </div>
-          )
+          );
         } else if (id === 'entrance') {
           return (
             <div className="rounded-md h-[100px] w-[20px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               <span className="rotate-270">{name}</span>
             </div>
-          )
+          );
         } else {
           return (
             <div className="rounded-md h-[80px] w-[80px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         }
       case 'stage':
         if (id === 'horizontal-stage') {
@@ -150,18 +150,18 @@ const CanvaDraggableElement = ({
             <div className="text-center rounded-md h-[100px] w-[200px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               {name}
             </div>
-          )
+          );
         } else {
           return (
             <div className=" rounded-md h-[200px] w-[100px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
-          )
+          );
         }
       default:
-        break
+        break;
     }
-  }
+  };
 
   return (
     <div
@@ -188,10 +188,10 @@ const CanvaDraggableElement = ({
       )}
       {getElementHtmlByType(type, name, typeId, id)}
     </div>
-  )
-}
+  );
+};
 
-export default CanvaDraggableElement
+export default CanvaDraggableElement;
 
 const TooltipContentComponent = ({
   id,
@@ -199,36 +199,36 @@ const TooltipContentComponent = ({
   eventId,
   name,
 }: {
-  id: string
-  type: string
-  eventId: string
-  name: string
+  id: string;
+  type: string;
+  eventId: string;
+  name: string;
 }) => {
-  const [tableGuests, setTableGuests] = useState<DropdownOption[]>([])
-  const [loadingGuests, setLoadingGuests] = useState(false)
+  const [tableGuests, setTableGuests] = useState<DropdownOption[]>([]);
+  const [loadingGuests, setLoadingGuests] = useState(false);
 
   const queryTableGuests = useCallback(async () => {
     if (id && type === 'table' && eventId) {
       try {
-        setLoadingGuests(true)
-        const guests = await queryGuestsByTable(eventId, id)
+        setLoadingGuests(true);
+        const guests = await queryGuestsByTable(eventId, id);
         setTableGuests(
           guests.map((guest) => {
-            return { label: guest.guestInfo.name, value: guest.guestId }
+            return { label: guest.guestInfo.name, value: guest.guestId };
           })
-        )
+        );
         setTimeout(() => {
-          setLoadingGuests(false)
-        }, 200)
+          setLoadingGuests(false);
+        }, 200);
       } catch (error) {
-        toast.error('A aparut o eroare, te rugam sa reincarci pagina')
+        toast.error('A aparut o eroare, te rugam sa reincarci pagina');
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    queryTableGuests()
-  }, [queryTableGuests])
+    queryTableGuests();
+  }, [queryTableGuests]);
 
   return loadingGuests ? (
     <div className="flex items-center justify-center w-full h-full min-w-[220px] min-h-[60px]">
@@ -252,7 +252,7 @@ const TooltipContentComponent = ({
               >
                 {guest.label}
               </span>
-            )
+            );
           })}
         {tableGuests.length <= 0 && (
           <span className="text-slate-600 text-[16px] text-center">
@@ -261,5 +261,5 @@ const TooltipContentComponent = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

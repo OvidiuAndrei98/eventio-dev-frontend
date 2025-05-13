@@ -20,6 +20,8 @@ export const createEvent = async (
     await setDoc(doc(db, 'templates/' + event.templateId), {
       ...template,
       templateId: event.templateId,
+      eventId: event.eventId,
+      userId: userId,
     });
   } catch (error) {
     console.error('Error creating the event', error);

@@ -1,34 +1,28 @@
-// editor/widgets/RsvpElement.tsx
+import { Guest } from '@/core/types';
+import { addGuestToEvent } from '@/service/guest/addGuestToEvent';
 import React, { useState } from 'react';
-
-// Presupunem că EditorWidgetType și PropertyEditorConfig (sau un tip similar de bază pentru configurarea widget-urilor)
-// sunt definite în fișierul tău de tipuri. Ajustează calea de import dacă este necesar.
-import { EditorWidgetType, PropertyEditorConfig } from '@/core/types';
+import { toast } from 'sonner';
 
 // Definește tipul pentru state-ul local al datelor formularului din interiorul acestui widget.
 // Această interfață reprezintă structura datelor colectate din câmpurile de input ale formularului.
 interface RsvpFormData {
-  guestName: string; // Numele invitatului (input text)
-  isAttending: 'yes' | 'no' | ''; // Starea de participare (dropdown select). '' pentru starea inițială "ne-selectat".
-  numberOfGuests: number | ''; // Numărul de invitați (input number). Folosim '' pentru starea inițială goală. Va fi convertit la number pe input valid.
-  dietaryRestrictions: string; // Restricții dietetice (input textarea, opțional).
+  guestName: string;
+  isAttending: 'yes' | 'no' | '';
+  numberOfGuests: number | '';
+  dietaryRestrictions: string;
 }
 
-// Definește prop-urile (proprietățile) pe care componenta TemplateRenderer le va pasa acestui widget.
-// De obicei, TemplateRenderer pasează obiectul de configurare pentru elementul specific și ID-ul unic al acelui element din datele template-ului.
-// Ai putea avea nevoie și de alte date contextuale, cum ar fi ID-ul evenimentului.
+// Define the props (properties) that the TemplateRenderer component will pass to this widget.
 interface RsvpElementProps {
   /** Obiectul de configurare specific pentru acest element de widget RSVP din datele template-ului. */
   /** ID-ul unic al acestui element (instanță de widget) în cadrul structurii de date a template-ului. Folosit pentru chei React, ID-uri HTML, etc. */
-  elementId: string; // TemplateRenderer ar trebui să paseze acest prop
+  id: string;
 
   /** Alte date contextuale necesare widget-ului, de ex. ID-ul evenimentului pentru apelurile API de submitare. */
-  eventId: string; // Presupunem că eventId este disponibil în scope-ul TemplateRenderer și este pasat ca prop
+  eventId: string;
 
-  // Notă: Acest widget este conceput să fie auto-gestionat pentru logica sa de formular.
-  // NU folosește de obicei prop-urile generale `value` și `onChange`
-  // care sunt utilizate de widget-urile de editare a proprietăților (cum ar fi NumberInput, TextInput),
-  // care sunt gestionate de un state de nivel superior (cum ar fi în PropertyPanel).
+  /** Id of the user who owns the event, to make sure we are working on the right event */
+  userId: string;
 }
 
 /**
@@ -37,14 +31,12 @@ interface RsvpElementProps {
  * efectuează validare client-side și trimite datele colectate către un API backend.
  * Este concepută pentru a fi randată de componenta TemplateRenderer pe baza tipului de widget configurat în datele template-ului.
  */
-const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
-  // --- State Local pentru Datele Formularului ---
-  // Gestionează valorile curente ale câmpurilor formularului pe măsură ce utilizatorul interacționează cu ele.
+const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
   const [formData, setFormData] = useState<RsvpFormData>({
     guestName: '',
-    isAttending: '', // Stare inițială goală pentru dropdown
-    numberOfGuests: '', // Stare inițială goală pentru input-ul numeric
-    dietaryRestrictions: '', // Stare inițială goală pentru textarea
+    isAttending: '',
+    numberOfGuests: '',
+    dietaryRestrictions: '',
   });
 
   // --- State-uri Opționale pentru Feedback UI la Submitare ---
@@ -111,78 +103,32 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
       return; // Oprește dacă validarea eșuează
     }
 
-    // Dacă toate validările client-side trec, continuă cu trimiterea datelor către backend.
-    // setIsSubmitting(true); // Setează state-ul pentru a indica că submitarea este în curs
-    // setSubmissionStatus('loading'); // Setează state-ul UI la "loading"
-    // setSubmissionError(null); // Resetează mesajul de eroare anterior
-
-    // --- Logica de Trimitere a Datelor către Backend ---
-    // Aceasta este partea principală unde datele colectate din formular sunt trimise către API-ul tău backend pentru procesare (salvare în baza de date etc.).
-    // URL-ul specific al endpoint-ului API poate fi hardcodat aici, pasat ca prop componentului, sau obținut din obiectul de configurare (config).
-    // Utilizarea eventId și elementId în calea URL-ului endpoint-ului sau în corpul cererii (body) este o practică comună pentru a oferi context serverului.
-    const submitEndpoint = `/api/events/${eventId}/rsvp`; // Exemplu de cale URL pentru endpoint-ul API, bazată pe eventId
-
-    console.log(
-      `Submitting RSVP for element ${elementId}, event ${eventId} to ${submitEndpoint}:`,
-      formData
-    );
-
     try {
-      // Exemplu de apel API folosind API-ul fetch încorporat în browser (înlocuiește cu logica ta reală, de ex. folosind librăria axios)
-      const response = await fetch(submitEndpoint, {
-        method: 'POST', // Utilizează metoda HTTP POST pentru a trimite date noi către server
-        headers: {
-          'Content-Type': 'application/json', // Indică serverului că corpul cererii este în format JSON
-          // Adaugă orice alte headere necesare pentru autentificare, autorizare, etc.
-          // 'Authorization': `Bearer ${yourAuthToken}`, // Exemplu de header de autorizare
-        },
-        // Convertește obiectul formData colectat într-un șir de caractere JSON pentru a fi trimis în corpul cererii
-        body: JSON.stringify({
-          // Include orice identificatori necesari pe care backend-ul tău îi folosește pentru a lega răspunsul RSVP de un eveniment specific sau element de template
-          elementId: elementId, // Pasează ID-ul elementului de widget RSVP din template
-          eventId: eventId, // Pasează ID-ul evenimentului (dacă nu este deja în URL)
-          ...formData, // Expandază toate câmpurile colectate din state-ul formularului (guestName, isAttending, dietaryRestrictions) direct în obiectul trimis
-          // Curăță sau ajustează formatul datelor pentru backend dacă este necesar (de ex. convertește șirul vid '' pentru numărul de invitați la null dacă nu participă)
+      const guest: Guest = {
+        eventId: eventId,
+        guestId: crypto.randomUUID(),
+        guestInfo: {
+          name: formData.guestName,
           numberOfGuests:
-            formData.isAttending === 'yes' ? formData.numberOfGuests : null, // Trimite null dacă nu participă
-        }),
+            formData.isAttending === 'yes'
+              ? Number(formData.numberOfGuests)
+              : null,
+          dietaryRestrictions: formData.dietaryRestrictions,
+        },
+        isAttending: formData.isAttending === 'yes' ? true : false,
+        tableId: null,
+        date: Date.now(),
+      };
+      await addGuestToEvent(eventId, userId, guest);
+      setFormData({
+        guestName: '',
+        isAttending: '',
+        numberOfGuests: '',
+        dietaryRestrictions: '',
       });
-
-      // Verifică dacă codul de status HTTP al răspunsului indică succes (fetch singur nu aruncă eroare pentru coduri 4xx sau 5xx, doar pentru erori de rețea)
-      if (response.ok) {
-        // proprietatea `response.ok` este true pentru coduri de status în intervalul 200-299 (Succes)
-        const result = await response.json(); // Parsează corpul răspunsului de la backend ca JSON
-        console.log('RSVP Submission Successful:', result);
-        alert('RSVP submitted successfully!'); // Oferă feedback simplu de succes utilizatorului
-        // setSubmissionStatus('success'); // Actualizează state-ul UI pentru feedback
-        // Opțional, resetează state-ul formularului la starea inițială goală după o submitare reușită
-        setFormData({
-          guestName: '',
-          isAttending: '',
-          numberOfGuests: '',
-          dietaryRestrictions: '',
-        });
-      } else {
-        // Gestionează răspunsurile HTTP care indică o eroare (de ex. 400 Bad Request, 500 Internal Server Error)
-        // Presupunem că backend-ul trimite detalii despre eroare într-un format JSON în corpul răspunsului
-        const errorData = await response.json(); // Parsează detaliile erorii din corpul răspunsului
-        console.error('RSVP Submission Failed:', response.status, errorData);
-        alert(
-          `Failed to submit RSVP: ${
-            errorData.message || 'Unknown server error'
-          }`
-        ); // Arată un mesaj de eroare informativ utilizatorului
-        // setSubmissionStatus('error'); setSubmissionError(errorData.message || 'Unknown server error'); // Actualizează state-ul UI pentru feedback de eroare
-      }
+      toast.success('Raspuns inregistrat cu succes');
     } catch (error: any) {
-      // Prinde erorile de rețea sau erorile care apar în timpul procesului fetch în sine (ex: server inaccesibil)
-      console.error('An error occurred during submission:', error);
-      alert(
-        `An error occurred during submission: ${
-          error.message || 'Network error'
-        }`
-      ); // Arată un mesaj de eroare generic pentru probleme de rețea sau alte erori neașteptate
-      // setSubmissionStatus('error'); setSubmissionError(error.message || 'Network error'); // Actualizează state-ul UI
+      toast.error('A aparut o eroare la inregistrarea raspunsului');
     } finally {
       // Codul din acest bloc rulează indiferent dacă submitarea a avut succes sau a eșuat (de ex., resetează starea de "loading")
       // setIsSubmitting(false);
@@ -193,7 +139,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
     // Utilizează un div sau un element semantic <section> ca și container principal pentru widget.
     // Aplică stilurile aici (stiluri inline) sau prin clase CSS. Utilizarea elementId în ID-ul containerului permite țintirea specifică cu CSS.
     <div
-      id={`element-${elementId}`}
+      id={id}
       style={{
         padding: '20px',
         border: '1px solid #ccc',
@@ -228,7 +174,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
         <div style={{ marginBottom: '15px' }}>
           {/* Eticheta pentru accesibilitate, legată de elementul <input> prin atributul 'htmlFor' care se potrivește cu atributul 'id' al input-ului */}
           <label
-            htmlFor={`guestName-${elementId}`}
+            htmlFor={`guestName-${id}`}
             style={{
               display: 'block',
               marginBottom: '5px',
@@ -240,7 +186,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
           </label>
           <input
             type="text"
-            id={`guestName-${elementId}`} // ID unic pentru a asocia eticheta și input-ul
+            id={`guestName-${id}`} // ID unic pentru a asocia eticheta și input-ul
             name="guestName" // Atributul 'name', se potrivește cu cheia din state-ul formData pentru a fi preluat corect în handleInputChange
             value={formData.guestName} // Input controlat: valoarea sa curentă este citită din state-ul componentei
             onChange={handleInputChange} // Handler: actualizează state-ul când valoarea input-ului se schimbă
@@ -260,7 +206,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
         <div style={{ marginBottom: '15px' }}>
           {/* Eticheta pentru dropdown-ul select */}
           <label
-            htmlFor={`isAttending-${elementId}`}
+            htmlFor={`isAttending-${id}`}
             style={{
               display: 'block',
               marginBottom: '5px',
@@ -272,7 +218,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
           </label>
           {/* Elementul <select>, controlat de state-ul local React */}
           <select
-            id={`isAttending-${elementId}`} // ID unic pentru a lega eticheta și select-ul
+            id={`isAttending-${id}`} // ID unic pentru a lega eticheta și select-ul
             name="isAttending" // Atributul 'name', se potrivește cu cheia din state
             value={formData.isAttending} // Select controlat: valoarea sa curentă este citită din state
             onChange={handleInputChange} // Handler: actualizează state-ul când opțiunea selectată se schimbă
@@ -299,7 +245,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
           <div style={{ marginBottom: '15px' }}>
             {/* Eticheta pentru input-ul numeric */}
             <label
-              htmlFor={`numberOfGuests-${elementId}`}
+              htmlFor={`numberOfGuests-${id}`}
               style={{
                 display: 'block',
                 marginBottom: '5px',
@@ -311,7 +257,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
             </label>
             <input
               type="number"
-              id={`numberOfGuests-${elementId}`} // ID unic
+              id={`numberOfGuests-${id}`} // ID unic
               name="numberOfGuests" // Se potrivește cu cheia din state
               value={formData.numberOfGuests} // Input controlat
               onChange={handleInputChange} // Handler
@@ -333,7 +279,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
         <div style={{ marginBottom: '15px' }}>
           {/* Eticheta pentru textarea */}
           <label
-            htmlFor={`dietaryRestrictions-${elementId}`}
+            htmlFor={`dietaryRestrictions-${id}`}
             style={{
               display: 'block',
               marginBottom: '5px',
@@ -344,7 +290,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ elementId, eventId }) => {
             Restricții Dietetice (opțional):
           </label>
           <textarea
-            id={`dietaryRestrictions-${elementId}`} // ID unic
+            id={`dietaryRestrictions-${id}`} // ID unic
             name="dietaryRestrictions" // Se potrivește cu cheia din state
             value={formData.dietaryRestrictions} // Textarea controlată
             onChange={handleInputChange} // Handler

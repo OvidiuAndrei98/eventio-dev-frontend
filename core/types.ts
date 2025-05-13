@@ -34,11 +34,15 @@ export interface EventInstance {
 export interface Guest {
   guestId: string;
   guestInfo: {
-    email: string;
+    email?: string;
     name: string;
+    dietaryRestrictions: string;
+    numberOfGuests: number | null;
   };
+  isAttending: boolean;
   eventId: string;
-  tableId: string;
+  tableId: string | null;
+  date: number;
 }
 
 export interface CanvasElement {
@@ -53,14 +57,45 @@ export interface eventTableOrganization {
   elements: CanvasElement[];
 }
 
+/**
+ * Arguments for the `useDraggable` hook, which provides functionality
+ * for making elements draggable.
+ */
 export interface UseDraggableArguments {
+  /**
+   * A unique identifier for the draggable element. Can be a string or number.
+   */
   id: string | number;
+
+  /**
+   * Optional attributes to be applied to the draggable element.
+   */
   attributes?: {
+    /**
+     * The ARIA role of the element, e.g., "button" or "listitem".
+     */
     role?: string;
+
+    /**
+     * A description of the role for assistive technologies.
+     */
     roleDescription?: string;
+
+    /**
+     * The tab index of the element, used to control focus order.
+     */
     tabIndex?: number;
   };
+
+  /**
+   * Optional data associated with the draggable element.
+   * This can be any key-value pair.
+   */
   data?: Record<string, unknown>;
+
+  /**
+   * Whether the draggable functionality is disabled for this element.
+   */
   disabled?: boolean;
 }
 
@@ -85,7 +120,7 @@ export enum EditorWidgetType {
   Slider = 'Slider',
   TextArea = 'TextArea',
   PositionInput = 'PositionInput',
-  RSVP = 'Rsvp',
+  // RSVP = 'Rsvp',
 }
 
 export enum PropertyDataType {
@@ -125,7 +160,9 @@ export enum ElementType {
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
 
 export interface Template {
+  eventId: string;
   templateId: string;
+  userId: string;
   name: string;
   type: string;
   description: string;
