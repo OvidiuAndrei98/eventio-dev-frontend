@@ -15,7 +15,7 @@
   padding: var(--spacing-medium);
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xxl);
+  gap: var(--spacing-medium);
   display: flex;
   margin-bottom: 20px;
 }
@@ -27,7 +27,7 @@
   border: 1px dotted;
   max-width: 200px;
   width: 150px;
-  padding: var(--padding-large) 0;
+  padding: var(--padding-medium) 0;
   border-radius: var(--border-radius-m);
 }
 
@@ -43,7 +43,7 @@
 .response-container
   .summary-container
   .statistics-container
-  .statistic-card:nth-child(2) {
+  .statistic-card:nth-child(1) {
   background-color: rgba(228, 255, 228, 0.842);
   border-color: rgb(131, 255, 131);
 }
@@ -51,7 +51,7 @@
 .response-container
   .summary-container
   .statistics-container
-  .statistic-card:nth-child(3) {
+  .statistic-card:nth-child(2) {
   background-color: rgba(255, 232, 232, 0.842);
   border-color: rgb(255, 131, 131);
 }

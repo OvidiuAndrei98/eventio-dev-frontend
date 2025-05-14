@@ -1,14 +1,13 @@
-'use client'
+'use client';
 
 import {
   CheckCircleOutlined,
   CheckOutlined,
   CloseOutlined,
-  EyeOutlined,
+  MobileOutlined,
   SearchOutlined,
-  SendOutlined,
   SmileOutlined,
-} from '@ant-design/icons'
+} from '@ant-design/icons';
 import {
   Button,
   Input,
@@ -17,42 +16,39 @@ import {
   Table,
   TableColumnType,
   TableProps,
-} from 'antd'
-import './SummaryTable.css'
-import SadFaceIcon from '@/public/sad-face.svg'
-import Image from 'next/image'
-import { useRef } from 'react'
-import { FilterDropdownProps } from 'antd/es/table/interface'
-import { useIsMobile } from '@/hooks/use-mobile'
+} from 'antd';
+import './SummaryTable.css';
+import SadFaceIcon from '@/public/sad-face.svg';
+import Image from 'next/image';
+import { useRef } from 'react';
+import { FilterDropdownProps } from 'antd/es/table/interface';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Guest } from '@/core/types';
 
-interface DataType {
-  key: string
-  guest: string
-  sent: boolean
-  seen: boolean
-  confirmed: boolean
+type DataIndex = keyof Guest;
+
+interface SummaryTableProps {
+  guests: Guest[];
 }
 
-type DataIndex = keyof DataType
-
-const SummaryTable = () => {
-  const searchInput = useRef<InputRef>(null)
+const SummaryTable = ({ guests }: SummaryTableProps) => {
+  const searchInput = useRef<InputRef>(null);
 
   const handleSearch = (confirm: FilterDropdownProps['confirm']) => {
-    confirm()
-  }
+    confirm();
+  };
 
   const handleReset = (
     clearFilters: () => void,
     confirm: ({ closeDropdown }: { closeDropdown: boolean }) => void
   ) => {
-    clearFilters()
-    confirm({ closeDropdown: false })
-  }
+    clearFilters();
+    confirm({ closeDropdown: false });
+  };
 
   const getColumnSearchProps = (
     dataIndex: DataIndex
-  ): TableColumnType<DataType> => ({
+  ): TableColumnType<Guest> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -92,7 +88,7 @@ const SummaryTable = () => {
             type="link"
             size="small"
             onClick={() => {
-              confirm({ closeDropdown: false })
+              confirm({ closeDropdown: false });
             }}
           >
             Filter
@@ -101,7 +97,7 @@ const SummaryTable = () => {
             type="link"
             size="small"
             onClick={() => {
-              close()
+              close();
             }}
           >
             close
@@ -113,70 +109,49 @@ const SummaryTable = () => {
       <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
+      (record[dataIndex] ?? '')
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
     filterDropdownProps: {
       onOpenChange(open) {
         if (open) {
-          setTimeout(() => searchInput.current?.select(), 100)
+          setTimeout(() => searchInput.current?.select(), 100);
         }
       },
     },
     render: (text) => text,
-  })
+  });
 
-  const columns: TableProps<DataType>['columns'] = [
+  const columns: TableProps<Guest>['columns'] = [
     {
       title: 'Invitat',
-      dataIndex: 'guest',
-      key: 'guest',
-      ...getColumnSearchProps('guest'),
+      dataIndex: 'name',
+      key: 'name',
+      ...getColumnSearchProps('name'),
     },
     {
-      title: useIsMobile() ? <SendOutlined /> : 'Trimisa',
+      title: useIsMobile() ? <MobileOutlined /> : 'Telefon',
       width: useIsMobile() ? '50px' : 'auto',
       align: 'center',
-      dataIndex: 'sent',
-      key: 'sent',
+      dataIndex: 'primaryContactPhone',
+      key: 'primaryContactPhone',
       render: (
         _: any, // eslint-disable-line
-        record: DataType
-      ) =>
-        record.sent ? (
-          <CheckOutlined style={{ color: 'green' }} />
-        ) : (
-          <CloseOutlined style={{ color: 'red' }} />
-        ),
+        record: Guest
+      ) => (record.primaryContactPhone ? record.primaryContactPhone : '-'),
     },
     {
-      title: useIsMobile() ? <EyeOutlined /> : 'Vizualizata',
-      width: useIsMobile() ? '50px' : 'auto',
-      align: 'center',
-      dataIndex: 'seen',
-      key: 'seen',
-      render: (
-        _: any, // eslint-disable-line
-        record: DataType
-      ) =>
-        record.seen ? (
-          <CheckOutlined style={{ color: 'green' }} />
-        ) : (
-          <CloseOutlined style={{ color: 'red' }} />
-        ),
-    },
-    {
-      title: useIsMobile() ? <CheckCircleOutlined /> : 'Confirmata',
-      width: useIsMobile() ? '50px' : 'auto',
+      title: <CheckCircleOutlined />,
+      width: 20,
       align: 'center',
       dataIndex: 'confirmed',
-      key: 'condfirmed',
+      key: 'confirmed',
       render: (
         _: any, // eslint-disable-line
-        record: DataType
+        record: Guest
       ) =>
-        record.confirmed ? (
+        record.isAttending ? (
           <CheckOutlined style={{ color: 'green' }} />
         ) : (
           <CloseOutlined style={{ color: 'red' }} />
@@ -186,114 +161,14 @@ const SummaryTable = () => {
       width: useIsMobile() ? 100 : 'auto',
       key: 'action',
       align: 'center',
-      render: (_: any, record: DataType) => <Button>Sterge</Button>, // eslint-disable-line
+      render: (_: any, record: Guest) => <Button>Sterge</Button>, // eslint-disable-line
     },
-  ]
+  ];
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      guest: 'John Brown',
-      sent: true,
-      seen: true,
-      confirmed: true,
-    },
-    {
-      key: '2',
-      guest: 'Jim Green',
-      sent: true,
-      seen: true,
-      confirmed: false,
-    },
-    {
-      key: '3',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '4',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '5',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '6',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '7',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '8',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '9',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '10',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-    {
-      key: '11',
-      guest: 'Joe Black',
-      sent: true,
-      seen: false,
-      confirmed: false,
-    },
-  ]
+  const data: Guest[] = guests;
 
   return (
     <div className="summary-container">
-      <div className="statistics-container">
-        <div className="statistic-card">
-          <SendOutlined style={{ fontSize: useIsMobile() ? 12 : 20 }} /> Trimise{' '}
-          <span>180</span>
-        </div>
-        <div className="statistic-card">
-          <SmileOutlined
-            style={{ color: 'green', fontSize: useIsMobile() ? 12 : 20 }}
-          />
-          Confirmate <span>120</span>
-        </div>
-        <div className="statistic-card">
-          <Image
-            src={SadFaceIcon}
-            alt="sad-face"
-            width={useIsMobile() ? 12 : 20}
-            height={useIsMobile() ? 12 : 20}
-            style={{ color: 'rebeccapurple' }}
-          />
-          Refuzate <span>31</span>
-        </div>
-      </div>
       <div className="table-container">
         <div className="table-header">
           <div className="info-container">
@@ -302,11 +177,60 @@ const SummaryTable = () => {
               Invitatii si statusul lor
             </span>
           </div>
+          <div className="statistics-container">
+            <div className="statistic-card">
+              <SmileOutlined
+                style={{ color: 'green', fontSize: useIsMobile() ? 12 : 20 }}
+              />
+              Confirmate
+              <span>{guests.filter((guest) => guest.isAttending).length}</span>
+            </div>
+            <div className="statistic-card">
+              <Image
+                src={SadFaceIcon}
+                alt="sad-face"
+                width={useIsMobile() ? 12 : 20}
+                height={useIsMobile() ? 12 : 20}
+                style={{ color: 'rebeccapurple' }}
+              />
+              Refuzate
+              <span>{guests.filter((guest) => !guest.isAttending).length}</span>
+            </div>
+          </div>
         </div>
-        <Table<DataType> columns={columns} dataSource={data} />
+        <Table<Guest>
+          columns={
+            useIsMobile()
+              ? columns
+              : [
+                  ...columns.slice(0, 2),
+                  {
+                    title: 'Data',
+                    width: 'auto',
+                    align: 'center',
+                    dataIndex: 'date',
+                    key: 'date',
+                    render: (
+                      _: any, // eslint-disable-line
+                      record: Guest
+                    ) => (
+                      <span>
+                        {new Date(record.date).toLocaleString('RO', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    ),
+                  },
+                  ...columns.slice(2),
+                ]
+          }
+          dataSource={data}
+        />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SummaryTable
+export default SummaryTable;

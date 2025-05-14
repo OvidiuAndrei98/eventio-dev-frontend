@@ -33,16 +33,16 @@ export interface EventInstance {
 
 export interface Guest {
   guestId: string;
-  guestInfo: {
-    email?: string;
-    name: string;
-    dietaryRestrictions: string;
-    numberOfGuests: number | null;
-  };
+  submissionId: string;
+  name: string;
+  dietaryRestrictions: string;
   isAttending: boolean;
   eventId: string;
   tableId: string | null;
   date: number;
+  isPrimaryContact: boolean;
+  primaryContactPhone?: string;
+  totalGuests?: number;
 }
 
 export interface CanvasElement {
@@ -138,7 +138,7 @@ export interface PropertyEditorConfig {
   dataType: PropertyDataType;
   widgetType: EditorWidgetType;
   responsive: boolean;
-  options?: { value: any; label: string }[];
+  options?: { value: unknown; label: string }[];
   unitOptions?: string[];
   min?: number;
   max?: number;

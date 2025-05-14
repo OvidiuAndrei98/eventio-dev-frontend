@@ -1,145 +1,301 @@
 import { Guest } from '@/core/types';
-import { addGuestToEvent } from '@/service/guest/addGuestToEvent';
+import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 
-// Definește tipul pentru state-ul local al datelor formularului din interiorul acestui widget.
-// Această interfață reprezintă structura datelor colectate din câmpurile de input ale formularului.
 interface RsvpFormData {
-  guestName: string;
+  primaryGuestName: string;
+  primaryGuestEmail?: string;
+  primaryDietaryRestrictions: string;
   isAttending: 'yes' | 'no' | '';
-  numberOfGuests: number | '';
-  dietaryRestrictions: string;
+  totalGuests: number | '';
+  additionalGuestsDetails: Array<{
+    name: string;
+    dietaryRestrictions: string;
+  }>;
+  primaryGuestPhone?: string;
 }
 
-// Define the props (properties) that the TemplateRenderer component will pass to this widget.
 interface RsvpElementProps {
-  /** Obiectul de configurare specific pentru acest element de widget RSVP din datele template-ului. */
-  /** ID-ul unic al acestui element (instanță de widget) în cadrul structurii de date a template-ului. Folosit pentru chei React, ID-uri HTML, etc. */
   id: string;
-
-  /** Alte date contextuale necesare widget-ului, de ex. ID-ul evenimentului pentru apelurile API de submitare. */
   eventId: string;
-
-  /** Id of the user who owns the event, to make sure we are working on the right event */
   userId: string;
 }
 
 /**
  * Componentă de widget care randează o secțiune completă de formular RSVP.
- * Această componentă își gestionează propriul state intern al formularului, procesează schimbările din input-uri,
- * efectuează validare client-side și trimite datele colectate către un API backend.
- * Este concepută pentru a fi randată de componenta TemplateRenderer pe baza tipului de widget configurat în datele template-ului.
+ * Colectează datele pentru persoana principală ȘI pentru invitații suplimentari.
+ * La submit, creează documente separate în Firestore pentru FIECARE persoană.
+ * Este concepută pentru a fi randată de componenta TemplateRenderer.
  */
 const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
   const [formData, setFormData] = useState<RsvpFormData>({
-    guestName: '',
+    primaryGuestName: '',
+    primaryGuestEmail: '',
+    primaryDietaryRestrictions: '',
     isAttending: '',
-    numberOfGuests: '',
-    dietaryRestrictions: '',
+    totalGuests: '',
+    additionalGuestsDetails: [],
   });
 
-  // --- State-uri Opționale pentru Feedback UI la Submitare ---
-  // (Pot fi adăugate pentru a arăta utilizatorului că se trimit datele sau că a avut succes/eșec)
-  // const [isSubmitting, setIsSubmitting] = useState(false); // true cât timp datele se trimit
-  // const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle'); // Starea submitării
-  // const [submissionError, setSubmissionError] = useState<string | null>(null); // Mesajul de eroare în caz de eșec
-
-  // --- Handler pentru Schimbarea Valorilor din Input-uri ---
-  // Handler generic folosit pentru toate tipurile standard de input HTML (text, number, select, textarea).
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    const { name, value, type } = e.target; // Extrage atributul 'name', valoarea curentă și tipul elementului (<input>, <select>, <textarea>)
+    const { name, value } = e.target;
 
-    // Actualizează state-ul formularului imutabil.
-    // Creează un obiect nou bazat pe state-ul anterior și actualizează câmpul specific care s-a schimbat.
-    setFormData((prevState) => ({
-      ...prevState, // Copiază toate câmpurile și valorile existente din state-ul anterior (prevState)
-      // Actualizează câmpul specific identificat prin atributul său 'name'.
-      // Tratare specială pentru input-urile de tip "number": convertim șirurile de caractere non-goale la numere flotante.
-      // Un șir vid ('') din input-ul numeric va fi stocat tot ca șir vid în state.
-      [name]: type === 'number' && value !== '' ? parseFloat(value) : value,
-      // Notă: `parseFloat(value)` pentru un input invalid (ex: "abc") va returna `NaN`.
-      // Ai putea dori o validare mai robustă sau gestionarea `NaN` înainte de a seta state-ul dacă este necesar.
-    }));
+    if (
+      [
+        'primaryGuestName',
+        'primaryContactPhone',
+        'primaryDietaryRestrictions',
+        'isAttending',
+      ].includes(name)
+    ) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+    // Handler specific pentru input-ul "Număr total invitați"
+    else if (name === 'totalGuests') {
+      // Converteste valoarea string in numar, gestioneaza golul si NaN
+      const newTotal = value === '' ? '' : parseFloat(value);
+      // Valoarea valida trebuie sa fie un numar intreg >= 1, altfel ramane ''
+      const validNewTotal =
+        typeof newTotal === 'number' && !isNaN(newTotal) && newTotal >= 1
+          ? Math.floor(newTotal)
+          : '';
+
+      setFormData((prevState) => {
+        const prevAdditionalCount = prevState.additionalGuestsDetails.length; // Numarul actual de invitati suplimentari in state
+        // Calculeaza numarul NOU necesar de invitati suplimentari (totalGuests - 1)
+        const newAdditionalCount =
+          validNewTotal !== '' && validNewTotal > 0 ? validNewTotal - 1 : 0;
+
+        let newAdditionalGuestsDetails = [...prevState.additionalGuestsDetails]; // Copiaza array-ul existent
+
+        if (newAdditionalCount > prevAdditionalCount) {
+          // Daca noul numar necesar este mai mare, adauga obiecte goale pentru noii invitati
+          const itemsToAdd = newAdditionalCount - prevAdditionalCount;
+          for (let i = 0; i < itemsToAdd; i++) {
+            newAdditionalGuestsDetails.push({
+              name: '',
+              dietaryRestrictions: '',
+            }); // Adauga un obiect gol pentru fiecare invitat nou necesar
+          }
+        } else if (newAdditionalCount < prevAdditionalCount) {
+          // Daca noul numar necesar este mai mic, taie array-ul la dimensiunea corecta
+          newAdditionalGuestsDetails = newAdditionalGuestsDetails.slice(
+            0,
+            newAdditionalCount
+          );
+        }
+        // Daca numarul ramane la fel, array-ul (copiat) ramane neschimbat
+
+        return {
+          ...prevState,
+          totalGuests: validNewTotal, // Actualizeaza numarul total in state
+          additionalGuestsDetails: newAdditionalGuestsDetails, // Actualizeaza array-ul cu detaliile suplimentare
+        };
+      });
+    }
+    // Handler specific pentru input-urile generate DINAMIC pentru invitații suplimentari
+    // Numele input-urilor dinamice ar trebui să fie de forma "additionalGuest-{index}-{field}" (ex: "additionalGuest-0-name", "additionalGuest-1-dietaryRestrictions")
+    else if (name.startsWith('additionalGuest-')) {
+      const parts = name.split('-'); // Desparte numele in segmente (ex: ["additionalGuest", "0", "name"])
+      const index = parseInt(parts[1], 10); // Extrage indexul (partea a doua, convertita la numar)
+      const field =
+        parts[2] as keyof (typeof formData.additionalGuestsDetails)[0]; // Extrage numele câmpului (partea a treia: "name" sau "dietaryRestrictions")
+
+      // Verifica daca indexul este valid si se afla in limitele array-ului current
+      if (
+        !isNaN(index) &&
+        index >= 0 &&
+        index < formData.additionalGuestsDetails.length
+      ) {
+        setFormData((prevState) => {
+          const newAdditionalGuestsDetails = [
+            ...prevState.additionalGuestsDetails,
+          ]; // Copiaza array-ul
+          // Actualizeaza obiectul SPECIFIC la indexul gasit, creand un obiect NOU imutabil
+          newAdditionalGuestsDetails[index] = {
+            ...newAdditionalGuestsDetails[index], // Copiaza detaliile existente pentru acel invitat suplimentar
+            [field]: value, // Actualizeaza campul specific (name sau dietaryRestrictions) cu noua valoare
+          };
+          return {
+            ...prevState,
+            additionalGuestsDetails: newAdditionalGuestsDetails, // Actualizeaza state-ul cu noul array modificat
+          };
+        });
+      }
+    }
+    // Poti adauga aici logica pentru alte campuri specifice persoanei principale, daca le ai (ex: email, telefon)
   };
 
   // --- Handler pentru Submitarea Formularului ---
-  // Gestionează evenimentul care are loc atunci când formularul este submitat (ex: utilizatorul apasă butonul de submit).
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Previne comportamentul implicit al browserului la submitarea formularului (care reîncarcă pagina)
-    console.log('RSVP Submit attempt:', formData);
+    e.preventDefault(); // Previne reincarcarea paginii la submit
 
-    // --- Validare Client-Side Basică ---
-    // Efectuează verificări de validare pe datele din state-ul formularului înainte de a încerca să le trimiți către backend.
-    // Aceasta oferă feedback imediat utilizatorului fără a aștepta răspunsul de la server.
-    if (!formData.guestName.trim()) {
-      // Verifică dacă numele invitatului este gol sau conține doar spații albe
-      alert('Please enter your name.'); // Mesaj simplu de alertă pentru un câmp obligatoriu
-      // setSubmissionStatus('error'); setSubmissionError('Please enter your name.'); // Actualizează state-ul UI pentru feedback
-      return; // Oprește procesul de submitare dacă validarea eșuează
+    // --- Validare Client-Side ---
+    // Efectueaza validari esentiale pe datele colectate in state-ul local
+    if (!formData.primaryGuestName.trim()) {
+      // Verifica daca numele principal este gol sau doar spatii albe
+      toast.error('Please enter your name.');
+      return; // Opreste submitarea
     }
     if (formData.isAttending === '') {
-      // Verifică dacă participarea a fost selectată din dropdown
-      alert('Please select whether you will be attending.'); // Mesaj de alertă
-      // setSubmissionStatus('error'); setSubmissionError('Please select attendance.'); // Actualizează state-ul UI
-      return; // Oprește dacă nu este selectată
+      // Verifica daca s-a selectat participarea
+      toast.error('Please select whether you will be attending.');
+      return; // Opreste submitarea
     }
-    // Validare condițională: dacă utilizatorul confirmă participarea ('yes'), verifică numărul de invitați.
-    // Acesta nu trebuie să fie un șir vid (''), trebuie să fie un număr valid (!isNaN), și să fie cel puțin 1.
-    if (
-      formData.isAttending === 'yes' &&
-      (formData.numberOfGuests === '' ||
-        (typeof formData.numberOfGuests === 'number' &&
-          (isNaN(formData.numberOfGuests) || formData.numberOfGuests < 1)))
-    ) {
-      alert(
-        'Please specify a valid number of guests if attending (at least 1).'
-      ); // Mesaj de alertă
-      // setSubmissionStatus('error'); setSubmissionError('Invalid number of guests.'); // Actualizează state-ul UI
-      return; // Oprește dacă validarea eșuează
+    // Validare pentru numărul total de invitați, DACA participă
+    if (formData.isAttending === 'yes') {
+      if (
+        formData.totalGuests === '' ||
+        (typeof formData.totalGuests === 'number' &&
+          (isNaN(formData.totalGuests) || formData.totalGuests < 1))
+      ) {
+        toast.error(
+          'Please specify a valid number of guests if attending (at least 1).'
+        );
+        return; // Opreste submitarea
+      }
+      // Validare pentru numele invitaților suplimentari, DACA numărul total > 1
+      if (
+        typeof formData.totalGuests === 'number' &&
+        formData.totalGuests > 1
+      ) {
+        // Rescris: Itereaza prin array-ul additionalGuestsDetails folosind un loop for clasic
+        for (let i = 0; i < formData.additionalGuestsDetails.length; i++) {
+          const guest = formData.additionalGuestsDetails[i]; // Accesam invitatul curent din array folosind indexul 'i'
+          const guestNumber = i + 2; // Calculeaza numarul invitatului (index 0 este invitatul #2, index 1 este invitatul #3 etc.)
+
+          if (!guest.name.trim()) {
+            // Verifica daca numele invitatului suplimentar este gol sau doar spatii albe
+            toast.error(`Please enter the name for guest #${guestNumber}.`); // Foloseste numarul invitatului calculat
+            return; // Opreste submitarea imediat ce gasesti un nume lipsa
+          }
+        }
+      }
     }
 
-    try {
-      const guest: Guest = {
-        eventId: eventId,
-        guestId: crypto.randomUUID(),
-        guestInfo: {
-          name: formData.guestName,
-          numberOfGuests:
-            formData.isAttending === 'yes'
-              ? Number(formData.numberOfGuests)
-              : null,
-          dietaryRestrictions: formData.dietaryRestrictions,
-        },
-        isAttending: formData.isAttending === 'yes' ? true : false,
-        tableId: null,
-        date: Date.now(),
-      };
-      await addGuestToEvent(eventId, userId, guest);
-      setFormData({
-        guestName: '',
-        isAttending: '',
-        numberOfGuests: '',
-        dietaryRestrictions: '',
+    // --- Pregatirea Datelor pentru Salvare (Crearea obiectelor IndividualGuest) ---
+    const guestsToSave: Guest[] = []; // Array-ul care va contine toate obiectele IndividualGuest gata de salvare
+    const submissionId = crypto.randomUUID(); // <--- Genereaza un ID unic pentru ACEASTA submitere a formularului
+    const subbmisionTime = Date.now();
+
+    // 1. Creeaza obiectul IndividualGuest pentru persoana principală (contactul)
+    if (formData.primaryGuestName.trim()) {
+      // Asigura-te ca numele principal nu este gol (desi validarea de sus ar trebui sa prinda asta)
+      guestsToSave.push({
+        guestId: crypto.randomUUID(), // <--- Genereaza un ID unic PENTRU DOCUMENTUL acestei persoane in Firestore
+        submissionId: submissionId, // <--- Atribuie ID-ul unic al submitarii
+        name: formData.primaryGuestName.trim(), // Numele persoanei principale (fara spatii la capete)
+        dietaryRestrictions: formData.primaryDietaryRestrictions.trim() || '', // Restrictiile persoanei principale (string gol daca nu sunt)
+        isAttending: formData.isAttending === 'yes', // Boolean pe baza selectiei
+        eventId: eventId, // ID-ul evenimentului
+        tableId: null, // Initial, invitatul nu are alocata o masa
+        date: subbmisionTime, // Timestamp-ul submitarii
+        isPrimaryContact: true, // <--- Marcheaza aceasta persoana ca fiind contactul principal al grupului
+        primaryContactPhone: formData.primaryGuestPhone?.trim() || '',
+        totalGuests:
+          typeof formData.totalGuests === 'number' ? formData.totalGuests : 1,
       });
-      toast.success('Raspuns inregistrat cu succes');
-    } catch (error: any) {
-      toast.error('A aparut o eroare la inregistrarea raspunsului');
+    }
+
+    // 2. Creeaza obiecte IndividualGuest pentru invitații suplimentari, DACA participa si numarul total e > 1
+    if (
+      formData.isAttending === 'yes' &&
+      typeof formData.totalGuests === 'number' &&
+      formData.totalGuests > 1
+    ) {
+      // Itereaza prin array-ul cu detaliile invitatilor suplimentari
+      for (const guestDetails of formData.additionalGuestsDetails) {
+        if (guestDetails.name.trim()) {
+          // Asigura-te ca numele invitatului suplimentar nu este gol (validarea de sus ar trebui sa prinda asta)
+          guestsToSave.push({
+            guestId: crypto.randomUUID(), // <--- Genereaza un ID unic PENTRU DOCUMENTUL acestei persoane in Firestore
+            submissionId: submissionId, // <--- Atribuie ACELASI ID unic al submitarii pentru a lega grupul
+            name: guestDetails.name.trim(), // Numele invitatului suplimentar (fara spatii la capete)
+            dietaryRestrictions: guestDetails.dietaryRestrictions.trim() || '', // Restrictiile invitatului suplimentar (string gol daca nu sunt)
+            isAttending: true, // Ei participa, fiind inclusi in numarul total > 1 si fiind validati
+            eventId: eventId, // ID-ul evenimentului
+            tableId: null, // Initial, nu au alocata o masa
+            date: subbmisionTime, // Timestamp-ul submitarii (acelasi ca pentru principal)
+            isPrimaryContact: false, // <--- Marcheaza aceasta persoana ca NU fiind contactul principal
+          });
+        }
+      }
+    }
+
+    // 3. (Optional) Creeaza un obiect IndividualGuest pentru persoana principală dacă a răspuns "Nu"
+    // Aceasta depinde dacă dorești să ții evidența celor care au refuzat, salvați ca documente individuale.
+    // Dacă nu, poți sări acest pas.
+    if (formData.isAttending === 'no' && formData.primaryGuestName.trim()) {
+      guestsToSave.push({
+        guestId: crypto.randomUUID(), // ID unic pentru documentul "nu participa"
+        submissionId: submissionId, // ID-ul submitarii
+        name: formData.primaryGuestName.trim(), // Numele celui care a raspuns "nu"
+        dietaryRestrictions: formData.primaryDietaryRestrictions.trim() || '', // Restrictii (probabil irelevante, dar le poti salva)
+        isAttending: false, // <--- Marcheaza explicit ca NU participa
+        eventId: eventId,
+        tableId: null, // Fara masa
+        date: subbmisionTime, // Timestamp
+        isPrimaryContact: true, // Inca contactul principal pentru acest raspuns "nu"
+        primaryContactPhone: formData.primaryGuestPhone?.trim() || '',
+      });
+      // De obicei, daca raspunsul e "nu", nu sunt persoane suplimentare de salvat.
+    }
+
+    // --- Apelul Serviciului pentru Salvarea Datelor ---
+    // Verifică dacă există cel puțin un invitat de salvat (ar trebui să fie cazul dacă validarea a trecut)
+    if (guestsToSave.length === 0) {
+      console.warn('No valid guest data to save after processing form.');
+      toast.info('No guest data to save.'); // Poate ar trebui sa fie o eroare de validare aici
+      return;
+    }
+
+    console.log('Saving guests (batch):', guestsToSave); // Logheaza array-ul de obiecte IndividualGuest gata de salvare
+
+    try {
+      // Apelăm funcția serviciului care ar trebui să folosească Batch Writes în Firestore
+      // pentru a adăuga toate documentele din array-ul guestsToSave atomic.
+      // Aceasta funcție ar trebui să primească eventId, userId și array-ul de obiecte IndividualGuest.
+      await addGuestsToEventBatch(eventId, userId, guestsToSave);
+
+      // --- Feedback Utilizator și Resetare Formular ---
+      toast.success(
+        `Raspuns(uri) inregistrat(e) cu succes pentru ${guestsToSave.length} invitat(i)!`
+      ); // Notificare de succes
+
+      // Resetăm state-ul local al formularului la valorile inițiale goale după submitarea cu succes
+      setFormData({
+        primaryGuestName: '',
+        primaryGuestPhone: '', // Reseteaza si email-ul
+        primaryDietaryRestrictions: '',
+        isAttending: '',
+        totalGuests: '',
+        additionalGuestsDetails: [], // Reseteaza array-ul la gol
+      });
+    } catch (error) {
+      console.error('Error saving guests:', error);
+      toast.error(
+        'A aparut o eroare la inregistrarea raspunsului. Te rugam incearca din nou.'
+      );
     } finally {
-      // Codul din acest bloc rulează indiferent dacă submitarea a avut succes sau a eșuat (de ex., resetează starea de "loading")
+      // Codul din acest bloc rulează indiferent dacă submitarea a avut succes sau a eșuat
+      // (ex., resetează state-ul de "loading" dacă ai implementat așa ceva)
       // setIsSubmitting(false);
     }
   };
 
+  // --- Randarea Interfeței Utilizator (UI) a Formularului ---
   return (
-    // Utilizează un div sau un element semantic <section> ca și container principal pentru widget.
-    // Aplică stilurile aici (stiluri inline) sau prin clase CSS. Utilizarea elementId în ID-ul containerului permite țintirea specifică cu CSS.
+    // Containerul principal al widget-ului. Folosește prop-ul 'id' pentru un ID HTML unic.
     <div
-      id={id}
+      id={`rsvp-element-${id}`} // Utilizează un prefix + id-ul din props pentru un ID HTML unic al div-ului container
       style={{
         padding: '20px',
         border: '1px solid #ccc',
@@ -147,13 +303,12 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
         maxWidth: '500px',
         margin: '20px auto',
         backgroundColor: '#f9f9f9',
-        fontFamily: 'sans-serif',
+        fontFamily: 'sans-serif', // Adaugă un font generic pentru consistență vizuală
+        boxSizing: 'border-box', // Include padding-ul și bordura în lățimea totală
       }}
     >
-      {' '}
-      {/* Adaugă și un font generic */}
       {/* --- Titlul Secțiunii RSVP --- */}
-      {/* Afișează un titlu pentru secțiunea RSVP. Utilizează textul din config.label dacă este furnizat, altfel un titlu implicit. */}
+      {/* Poți trece titlul ca prop sau folosi un text fix. Dacă ai config.label, folosește-l. */}
       <h2
         style={{
           textAlign: 'center',
@@ -162,19 +317,19 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
           fontSize: '24px',
         }}
       >
-        {/* {config.label || 'Confirmă Prezența (RSVP)'} */}
+        Confirmă Prezența (RSVP)
       </h2>
+
       {/* --- Elementul HTML Form --- */}
       {/* onSubmit leagă submitarea formularului de handler-ul nostru React (handleSubmit).
-                noValidate dezactivează UI-ul implicit de validare al browser-ului, astfel încât să putem gestiona validarea complet manual în handleSubmit. */}
+          noValidate dezactivează UI-ul implicit de validare al browser-ului, lăsând validarea complet în handler-ul handleSubmit. */}
       <form onSubmit={handleSubmit} noValidate>
-        {/* --- Câmpurile Formularului, mapate la state-ul RsvpFormData --- */}
-
-        {/* Câmp Input: Nume Invitat (Tip="text") */}
+        {/* --- Câmpurile pentru Persoana Principală --- */}
+        {/* Câmp Input: Nume Persoană Principală (Tip="text") */}
         <div style={{ marginBottom: '15px' }}>
-          {/* Eticheta pentru accesibilitate, legată de elementul <input> prin atributul 'htmlFor' care se potrivește cu atributul 'id' al input-ului */}
+          {/* Eticheta, legată de input prin 'htmlFor' = 'id' */}
           <label
-            htmlFor={`guestName-${id}`}
+            htmlFor={`primaryGuestName-${id}`} // ID unic bazat pe id-ul din props
             style={{
               display: 'block',
               marginBottom: '5px',
@@ -183,14 +338,17 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             }}
           >
             Numele Tău:
+            {/* Poți folosi o etichetă mai clară dacă este Persoana de Contact */}
+            {/* Numele Persoanei de Contact: */}
           </label>
+          {/* Input controlat de state-ul local */}
           <input
             type="text"
-            id={`guestName-${id}`} // ID unic pentru a asocia eticheta și input-ul
-            name="guestName" // Atributul 'name', se potrivește cu cheia din state-ul formData pentru a fi preluat corect în handleInputChange
-            value={formData.guestName} // Input controlat: valoarea sa curentă este citită din state-ul componentei
-            onChange={handleInputChange} // Handler: actualizează state-ul când valoarea input-ului se schimbă
-            required // Atribut de validare HTML5 (oferă o verificare de bază în browser, dar handler-ul nostru o face și el)
+            id={`primaryGuestName-${id}`} // ID unic
+            name="primaryGuestName" // Numele se potrivește cu cheia din state
+            value={formData.primaryGuestName} // Valoarea din state
+            onChange={handleInputChange} // Handler la schimbare
+            required // Marcheaza ca obligatoriu (validarea noastră face și ea asta)
             style={{
               width: '100%',
               padding: '10px',
@@ -201,12 +359,67 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             }}
           />
         </div>
-
-        {/* Câmp Select: Confirmare Participare (Dropdown) */}
         <div style={{ marginBottom: '15px' }}>
-          {/* Eticheta pentru dropdown-ul select */}
           <label
-            htmlFor={`isAttending-${id}`}
+            htmlFor={`primaryGuestPhone-${id}`}
+            style={{
+              display: 'block',
+              marginBottom: '5px',
+              fontWeight: 'bold',
+              color: '#555',
+            }}
+          >
+            Telefon:
+          </label>
+          <input
+            type="text"
+            id={`primaryGuestPhone-${id}`}
+            name="primaryGuestPhone"
+            value={formData.primaryGuestPhone}
+            onChange={handleInputChange}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              boxSizing: 'border-box',
+              fontSize: '16px',
+            }}
+          />
+        </div>
+        {/* Câmp Textarea: Restricții Dietetice Persoană Principală (Opțional) */}
+        <div style={{ marginBottom: '15px' }}>
+          <label
+            htmlFor={`primaryDietaryRestrictions-${id}`} // ID unic
+            style={{
+              display: 'block',
+              marginBottom: '5px',
+              fontWeight: 'bold',
+              color: '#555',
+            }}
+          >
+            Restricții Dietetice (Doar pentru Tine, opțional):
+          </label>
+          <textarea
+            id={`primaryDietaryRestrictions-${id}`} // ID unic
+            name="primaryDietaryRestrictions" // Numele se potrivește cu cheia din state
+            value={formData.primaryDietaryRestrictions} // Valoarea din state
+            onChange={handleInputChange} // Handler la schimbare
+            rows={2} // Numărul de linii vizibile
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              boxSizing: 'border-box',
+              fontSize: '16px',
+            }}
+          />
+        </div>
+        {/* --- Câmp Select: Confirmare Participare (Dropdown) --- */}
+        <div style={{ marginBottom: '15px' }}>
+          <label
+            htmlFor={`isAttending-${id}`} // ID unic
             style={{
               display: 'block',
               marginBottom: '5px',
@@ -216,13 +429,13 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
           >
             Vei participa?
           </label>
-          {/* Elementul <select>, controlat de state-ul local React */}
+          {/* Select controlat de state-ul local */}
           <select
-            id={`isAttending-${id}`} // ID unic pentru a lega eticheta și select-ul
-            name="isAttending" // Atributul 'name', se potrivește cu cheia din state
-            value={formData.isAttending} // Select controlat: valoarea sa curentă este citită din state
-            onChange={handleInputChange} // Handler: actualizează state-ul când opțiunea selectată se schimbă
-            required // Validare HTML5
+            id={`isAttending-${id}`} // ID unic
+            name="isAttending" // Numele se potrivește cu cheia din state
+            value={formData.isAttending} // Valoarea din state
+            onChange={handleInputChange} // Handler la schimbare
+            required // Marcheaza ca obligatoriu
             style={{
               width: '100%',
               padding: '10px',
@@ -233,19 +446,16 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             }}
           >
             <option value="">-- Alege --</option>{' '}
-            {/* Opțiune goală implicită pentru a forța selecția */}
             <option value="yes">Da, voi participa</option>
             <option value="no">Nu voi participa</option>
           </select>
         </div>
-
-        {/* Câmp Input: Număr de Invitați (Tip="number") */}
-        {/* Acest div este randat condițional. El apare în UI DOAR dacă state-ul 'isAttending' este 'yes'. */}
+        {/* --- Câmp Input: Număr Total Invitați (Condițional Randat) --- */}
+        {/* Acest bloc apare DOAR dacă s-a selectat "Da, voi participa" */}
         {formData.isAttending === 'yes' && (
           <div style={{ marginBottom: '15px' }}>
-            {/* Eticheta pentru input-ul numeric */}
             <label
-              htmlFor={`numberOfGuests-${id}`}
+              htmlFor={`totalGuests-${id}`} // ID unic
               style={{
                 display: 'block',
                 marginBottom: '5px',
@@ -253,16 +463,17 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
                 color: '#555',
               }}
             >
-              Număr de invitați (inclusiv tu):
+              Număr total invitați (inclusiv tu):
             </label>
+            {/* Input numeric controlat */}
             <input
               type="number"
-              id={`numberOfGuests-${id}`} // ID unic
-              name="numberOfGuests" // Se potrivește cu cheia din state
-              value={formData.numberOfGuests} // Input controlat
-              onChange={handleInputChange} // Handler
-              min="1" // Validare HTML5: valoarea minimă permisă
-              required={formData.isAttending === 'yes'} // Marchează ca obligatoriu DOAR dacă 'isAttending' este 'yes'
+              id={`totalGuests-${id}`} // ID unic
+              name="totalGuests" // Numele se potrivește cu cheia din state
+              value={formData.totalGuests} // Valoarea din state (number sau '')
+              onChange={handleInputChange} // Handler la schimbare (actualizeaza si array-ul suplimentar)
+              min="1" // Valoare minimă 1 (cel puțin persoana principală)
+              required={formData.isAttending === 'yes'} // Obligatoriu doar daca participa
               style={{
                 width: '100%',
                 padding: '10px',
@@ -274,41 +485,125 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             />
           </div>
         )}
-
-        {/* Câmp Textarea: Restricții Dietetice (Opțional) */}
-        <div style={{ marginBottom: '15px' }}>
-          {/* Eticheta pentru textarea */}
-          <label
-            htmlFor={`dietaryRestrictions-${id}`}
-            style={{
-              display: 'block',
-              marginBottom: '5px',
-              fontWeight: 'bold',
-              color: '#555',
-            }}
-          >
-            Restricții Dietetice (opțional):
-          </label>
-          <textarea
-            id={`dietaryRestrictions-${id}`} // ID unic
-            name="dietaryRestrictions" // Se potrivește cu cheia din state
-            value={formData.dietaryRestrictions} // Textarea controlată
-            onChange={handleInputChange} // Handler
-            rows={4} // Setează numărul vizibil de linii în textarea
-            style={{
-              width: '100%',
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              boxSizing: 'border-box',
-              fontSize: '16px',
-            }}
-          />
-        </div>
-
+        {/* --- Secțiune Randată Dinamic pentru Invitații Suplimentari --- */}
+        {/* Acest bloc apare DOAR dacă s-a selectat "Da" ȘI numărul total este > 1 */}
+        {formData.isAttending === 'yes' &&
+          typeof formData.totalGuests === 'number' &&
+          formData.totalGuests > 1 && (
+            <div
+              style={{
+                borderTop: '1px dashed #ccc',
+                paddingTop: '15px',
+                marginTop: '15px',
+              }}
+            >
+              <h3
+                style={{
+                  marginBottom: '15px',
+                  fontSize: '18px',
+                  color: '#555',
+                }}
+              >
+                Detalii Invitați Suplimentari (Persoana #{' '}
+                {/* Calculeaza de la ce numar incepe primul invitat suplimentar */}
+                {1 + 1}{' '}
+                {/* Primul invitat suplimentar e invitatul #2 (principalul e #1) */}{' '}
+                până la #{' '}
+                {/* Numarul ultimului invitat suplimentar = Numar total */}
+                {formData.totalGuests}
+                ):
+              </h3>
+              {/* Mapează peste array-ul additionalGuestsDetails pentru a randa câmpuri pentru fiecare invitat suplimentar */}
+              {formData.additionalGuestsDetails.map((guest, index) => (
+                <div
+                  key={index} // Foloseste indexul ca key (atentie cu reordonarea, dar ok pentru adaugare/stergere la final)
+                  style={{
+                    marginBottom: '20px',
+                    padding: '15px',
+                    border: '1px solid #eee',
+                    borderRadius: '4px',
+                    backgroundColor: '#fff',
+                  }}
+                >
+                  {/* Titlu pentru fiecare invitat suplimentar */}
+                  <h4
+                    style={{
+                      marginBottom: '10px',
+                      fontSize: '16px',
+                      color: '#333',
+                    }}
+                  >
+                    Invitat #{index + 2}{' '}
+                    {/* Index + 2 pentru că index începe de la 0, iar primul invitat suplimentar este al 2-lea din grup */}
+                  </h4>
+                  {/* Input: Nume Invitat Suplimentar */}
+                  <div style={{ marginBottom: '15px' }}>
+                    <label
+                      htmlFor={`additionalGuest-${index}-name-${id}`} // ID unic bazat pe index si id-ul widget-ului
+                      style={{
+                        display: 'block',
+                        marginBottom: '5px',
+                        fontWeight: 'bold',
+                        color: '#555',
+                      }}
+                    >
+                      Nume:
+                    </label>
+                    <input
+                      type="text"
+                      id={`additionalGuest-${index}-name-${id}`} // ID unic
+                      name={`additionalGuest-${index}-name`} // Nume pentru handler (format: additionalGuest-index-name)
+                      value={guest.name} // Valoarea din state (din array)
+                      onChange={handleInputChange} // Handler (proceseaza numele special)
+                      required // Numele invitatilor suplimentari este obligatoriu
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        boxSizing: 'border-box',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                  {/* Textarea: Restricții Dietetice Invitat Suplimentar (Opțional) */}
+                  <div style={{ marginBottom: '0' }}>
+                    {' '}
+                    {/* Nu adaugă margin-bottom la ultimul element din div */}
+                    <label
+                      htmlFor={`additionalGuest-${index}-dietary-${id}`} // ID unic
+                      style={{
+                        display: 'block',
+                        marginBottom: '5px',
+                        fontWeight: 'bold',
+                        color: '#555',
+                      }}
+                    >
+                      Restricții Dietetice (opțional):
+                    </label>
+                    <textarea
+                      id={`additionalGuest-${index}-dietary-${id}`} // ID unic
+                      name={`additionalGuest-${index}-dietaryRestrictions`} // Nume pentru handler (format: additionalGuest-index-dietaryRestrictions)
+                      value={guest.dietaryRestrictions} // Valoarea din state (din array)
+                      onChange={handleInputChange} // Handler (proceseaza numele special)
+                      rows={1} // Randuri vizibile (doar 1 sau 2 ca default)
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        boxSizing: 'border-box',
+                        fontSize: '16px',
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         {/* --- Butonul de Submit --- */}
         <button
-          type="submit"
+          type="submit" // Declanseaza onSubmit al formularului
           style={{
             display: 'block',
             width: '100%',
@@ -321,6 +616,13 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             fontSize: '18px',
             fontWeight: 'bold',
             transition: 'background-color 0.2s ease-in-out',
+            // Adauga margin-top daca sectiunea cu invitati suplimentari este vizibila
+            marginTop:
+              formData.isAttending === 'yes' &&
+              typeof formData.totalGuests === 'number' &&
+              formData.totalGuests > 1
+                ? '20px'
+                : '15px', // Margin-top standard daca nu sunt invitati suplimentari
           }}
         >
           Trimite Confirmarea {/* Textul butonului */}

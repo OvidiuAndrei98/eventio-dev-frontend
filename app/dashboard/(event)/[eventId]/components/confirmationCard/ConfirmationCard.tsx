@@ -16,10 +16,10 @@ const ConfirmationCard = ({ guest }: { guest: Guest }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="field-content">{guest.guestInfo.name}</span>
+              <span className="field-content">{guest.name}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <span className="field-content">{guest.guestInfo.name}</span>
+              <span className="field-content">{guest.name}</span>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -28,9 +28,7 @@ const ConfirmationCard = ({ guest }: { guest: Guest }) => {
         <span className="field-title secondary-text-color-light">
           Nr. invitati
         </span>
-        <span className="field-content">
-          {guest.guestInfo.numberOfGuests ?? '-'}
-        </span>
+        <span className="field-content">{guest.totalGuests ?? '-'}</span>
       </div>
       <div className="confirmation-field">
         <span className="field-title secondary-text-color-light">Data</span>
