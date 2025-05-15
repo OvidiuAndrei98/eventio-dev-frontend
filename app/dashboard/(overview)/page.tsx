@@ -19,6 +19,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (!user?.userId) {
+      setQueryEventLoading(false);
       return;
     }
     queryEventsByUser(user.userId).then((events) => {

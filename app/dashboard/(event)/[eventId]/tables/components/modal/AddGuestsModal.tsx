@@ -37,7 +37,7 @@ const Modal: React.FC<ModalProps> = ({
     const guests = await queryNotAssignedConfirmedGuestsByEventId(eventId);
     return guests.map((guest) => {
       return {
-        label: guest.guestInfo.name,
+        label: guest.name,
         value: guest.guestId,
       };
     });

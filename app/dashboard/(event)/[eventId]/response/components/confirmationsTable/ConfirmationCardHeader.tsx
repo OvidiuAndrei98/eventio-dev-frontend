@@ -1,13 +1,23 @@
-import './ConfirmationCardHeader.css'
+import { Guest } from '@/core/types';
+import './ConfirmationCardHeader.css';
 
-const ConfirmationCardHeader = () => {
-  return (
-    <div className="card-header-container">
-      <span>Andu</span>
-      <span>02.02.2025 19:32</span>
-      <span>1</span>
-    </div>
-  )
+interface ConfirmationCardHeaderProps {
+  guest: Guest;
 }
 
-export default ConfirmationCardHeader
+const ConfirmationCardHeader = ({ guest }: ConfirmationCardHeaderProps) => {
+  return (
+    <div className="card-header-container">
+      <span>{guest.name}</span>
+      <span>
+        {new Date(guest.date).toLocaleString('RO', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </span>
+    </div>
+  );
+};
+
+export default ConfirmationCardHeader;

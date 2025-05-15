@@ -1,4 +1,4 @@
-import Modal from '@/app/dashboard/(event)/[eventId]/tables/components/modal/AddGuestsModal'
+import Modal from '@/app/dashboard/(event)/[eventId]/tables/components/modal/AddGuestsModal';
 import {
   Sheet,
   SheetClose,
@@ -7,19 +7,19 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet'
-import { CanvasElement, DropdownOption, EventInstance } from '@/core/types'
-import { updateTableNameById } from '@/service/event/updateTableNameById'
-import { assignTableToGuests } from '@/service/guest/assignTableToGuest'
-import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable'
-import { DeleteOutlined } from '@ant-design/icons'
-import { Button, Form, FormProps, Input } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'sonner'
+} from '@/components/ui/sheet';
+import { CanvasElement, DropdownOption, EventInstance } from '@/core/types';
+import { updateTableNameById } from '@/service/event/updateTableNameById';
+import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
+import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Button, Form, FormProps, Input } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 type FieldType = {
-  name: string
-}
+  name: string;
+};
 
 const LateralDrawer = ({
   tableElement,
@@ -29,81 +29,81 @@ const LateralDrawer = ({
   setEventInstance,
   deleteTable,
 }: {
-  tableElement: CanvasElement
-  eventId: string
-  tableEditActive: boolean
-  setTableEditActive: (state: boolean) => void
-  setEventInstance: (event: EventInstance) => void
-  deleteTable: (tableId: string) => void
+  tableElement: CanvasElement;
+  eventId: string;
+  tableEditActive: boolean;
+  setTableEditActive: (state: boolean) => void;
+  setEventInstance: (event: EventInstance) => void;
+  deleteTable: (tableId: string) => void;
 }) => {
-  const [form] = Form.useForm()
-  const [addGuestsOpen, setAddGuestsOpen] = useState(false)
-  const [tableGuests, setTableGuests] = useState<DropdownOption[]>([])
+  const [form] = Form.useForm();
+  const [addGuestsOpen, setAddGuestsOpen] = useState(false);
+  const [tableGuests, setTableGuests] = useState<DropdownOption[]>([]);
   const [removedGuestsList, setRemovedGuestsList] = useState<DropdownOption[]>(
     []
-  )
-  const [inputValue, setInputValue] = useState<string>(tableElement.name)
+  );
+  const [inputValue, setInputValue] = useState<string>(tableElement.name);
 
   const queryTableGuests = async () => {
     if (tableElement?.elementId) {
-      const guests = await queryGuestsByTable(eventId, tableElement?.elementId)
+      const guests = await queryGuestsByTable(eventId, tableElement?.elementId);
       setTableGuests(
         guests.map((guest) => {
-          return { label: guest.guestInfo.name, value: guest.guestId }
+          return { label: guest.name, value: guest.guestId };
         })
-      )
+      );
     }
-  }
+  };
 
   // Initial query
   useEffect(() => {
-    queryTableGuests()
-  }, [])
+    queryTableGuests();
+  }, []);
 
   useEffect(() => {
-    setInputValue(tableElement.name)
-  }, [tableElement.name])
+    setInputValue(tableElement.name);
+  }, [tableElement.name]);
 
   useEffect(() => {
-    queryTableGuests()
+    queryTableGuests();
     form.setFieldsValue({
       name: tableElement?.name,
-    })
-  }, [tableElement?.elementId, tableEditActive, tableElement.name])
+    });
+  }, [tableElement?.elementId, tableEditActive, tableElement.name]);
 
   const handleGuestsDelete = (guest: DropdownOption) => {
     setRemovedGuestsList((oldValues) => {
-      return [...oldValues, guest]
-    })
+      return [...oldValues, guest];
+    });
     setTableGuests((oldValues) => {
-      return [...oldValues.filter((g) => g.value !== guest.value)]
-    })
-  }
+      return [...oldValues.filter((g) => g.value !== guest.value)];
+    });
+  };
 
   const updateGuestsTableRef = async () => {
-    assignTableToGuests(tableElement?.elementId, tableGuests)
+    assignTableToGuests(tableElement?.elementId, tableGuests);
     if (removedGuestsList.length) {
-      assignTableToGuests(null, removedGuestsList)
+      assignTableToGuests(null, removedGuestsList);
       // Reset the list after each save
-      setRemovedGuestsList([])
+      setRemovedGuestsList([]);
     }
-  }
+  };
 
   const onFinish: FormProps<FieldType>['onFinish'] = async () => {
     const updatedEvent = await updateTableNameById(
       inputValue,
       tableElement?.elementId,
       eventId
-    )
-    updateGuestsTableRef()
-    setEventInstance(updatedEvent)
-    toast.success('Masa actualizata cu succes')
-    setTableEditActive(false)
-  }
+    );
+    updateGuestsTableRef();
+    setEventInstance(updatedEvent);
+    toast.success('Masa actualizata cu succes');
+    setTableEditActive(false);
+  };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
-    toast.error('Masa nu a putut fii actualizata')
-  }
+    toast.error('Masa nu a putut fii actualizata');
+  };
 
   return (
     <>
@@ -194,7 +194,7 @@ const LateralDrawer = ({
                 ...newValues.filter((v) =>
                   oldValues.every((o) => o.value !== v.value)
                 ),
-              ]
+              ];
             })
           }
           isOpen={addGuestsOpen}
@@ -203,7 +203,7 @@ const LateralDrawer = ({
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default LateralDrawer
+export default LateralDrawer;

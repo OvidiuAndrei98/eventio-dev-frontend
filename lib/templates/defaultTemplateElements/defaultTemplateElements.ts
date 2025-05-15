@@ -1,4 +1,4 @@
-import { ElementType } from '@/core/types';
+import { ElementType, ImageTemplateElement } from '@/core/types';
 
 export const defaultElements = {
   // >>>>>>>>>>SECTIONS<<<<<<<<<<<<<<<
@@ -82,16 +82,25 @@ export const defaultElements = {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
       position: {},
-      content: 'text',
       disabled: false,
       responsive: {},
-      style: {},
-    };
+      backgroundImage: {
+        name: 'placeholder-image',
+        opacity: 'rgba(0,0,0,0)',
+        url: '/placeholder-image.jpg',
+      },
+      style: {
+        width: 100,
+        height: 100,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      },
+    } as ImageTemplateElement;
   },
   rsvp: (elementName: string) => {
     return {
       id: `element-${crypto.randomUUID()}`,
-      name: 'RSVP',
+      name: elementName.toUpperCase(),
       disabled: false,
       type: ElementType.RSVP_ELEMENT,
       position: { top: 0, left: 0, right: 0, bottom: 0 }, // Desktop: sub text link, centrat

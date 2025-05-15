@@ -44,6 +44,11 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     alignItems: 'center',
     padding: '8px',
     zIndex: 2,
+    backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
+    backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
+    backgroundImage: sectionData.backgroundImage
+      ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
+      : 'unset',
   };
 
   const validElements = sectionData.elements.filter(
@@ -111,8 +116,11 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
           case ElementType.Image:
             return (
               <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
                 key={element.id}
                 {...(element as any)}
+                onSelect={onSelect}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}
               />

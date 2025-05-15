@@ -1,5 +1,5 @@
 import { ElementType } from '@/core/types';
-import { FormInputIcon, SectionIcon, TextIcon } from 'lucide-react';
+import { FormInputIcon, ImageIcon, SectionIcon, TextIcon } from 'lucide-react';
 
 // !important -> add here all the elements to be available in the editor for the user to be selected
 
@@ -23,6 +23,12 @@ export const availableElementTypes = [
     type: ElementType.Text,
     name: 'Text',
     icon: TextIcon,
+    availableFor: [ElementType.Section],
+  },
+  {
+    type: ElementType.Image,
+    name: 'Imagine',
+    icon: ImageIcon,
     availableFor: [ElementType.Section],
   },
   {

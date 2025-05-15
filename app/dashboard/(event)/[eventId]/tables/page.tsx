@@ -453,7 +453,7 @@ const TablesPage = () => {
   const exportGuestsToExcel = async () => {
     const guestsTableOrganization: {
       tableName: string;
-      guests: Guest['guestInfo'][];
+      guests: Guest[];
     }[] = [];
 
     if (eventInstance?.eventTableOrganization.elements) {
@@ -467,7 +467,7 @@ const TablesPage = () => {
             if (tableGuests.length) {
               guestsTableOrganization.push({
                 tableName: el.name,
-                guests: tableGuests.map((guest) => guest.guestInfo),
+                guests: tableGuests,
               });
             }
           }
@@ -503,7 +503,7 @@ const TablesPage = () => {
           await assignTableToGuests(
             null,
             guestsToBeRemoved.map((guest) => {
-              return { value: guest.guestId, label: guest.guestInfo.name };
+              return { value: guest.guestId, label: guest.name };
             })
           );
         }

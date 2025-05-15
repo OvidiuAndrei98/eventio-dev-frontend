@@ -26,6 +26,12 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ColorPicker,
       responsive: false,
     },
+    backgroundImage: {
+      label: 'Imagine Fundal',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.ImageUpload,
+      responsive: false,
+    },
   },
   text: {
     name: {
@@ -61,6 +67,45 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       min: 0,
       max: 100,
       step: 1,
+    },
+  },
+  image: {
+    name: {
+      label: 'Nume Element',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.height': {
+      label: 'Înălțime Secțiune (px)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      responsive: true,
+    },
+    'style.width': {
+      label: 'Latime Secțiune (px)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      responsive: true,
+    },
+    position: {
+      responsive: true,
+      label: 'Poziție Element (%)',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.PositionInput,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
+    backgroundImage: {
+      label: 'Imagine Fundal',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.ImageUpload,
+      responsive: false,
     },
   },
 };

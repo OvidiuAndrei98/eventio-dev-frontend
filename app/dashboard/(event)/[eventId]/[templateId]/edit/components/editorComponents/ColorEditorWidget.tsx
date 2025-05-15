@@ -38,12 +38,14 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
   }
 
   const handleInputChange = (color: Color) => {
-    onChange('#' + color.toHex());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onChange((color as any).toHexString());
   };
 
   return (
     <div style={{ marginBottom: '10px' }}>
       <ColorPicker
+        format="hex"
         value={value}
         onChange={handleInputChange}
         showText

@@ -35,6 +35,11 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     alignItems: 'center',
     padding: '8px 8px 8px 8px',
     zIndex: 2,
+    backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
+    backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
+    backgroundImage: sectionData.backgroundImage
+      ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
+      : 'unset',
   };
 
   const validElements = sectionData.elements.filter(

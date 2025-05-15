@@ -73,41 +73,55 @@
   font-size: 22px;
 }
 
-.ant-table-wrapper {
-  height: 100%;
-
-  .ant-spin-nested-loading {
+.summary-container {
+  .ant-table-wrapper {
     height: 100%;
 
-    .ant-spin-container {
+    .ant-spin-nested-loading {
       height: 100%;
-      display: flex;
-      flex-flow: column nowrap;
 
-      .ant-table {
-        flex: auto;
-        overflow: hidden;
+      .ant-spin-container {
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
 
-        .ant-table-container {
-          height: 100%;
-          display: flex;
-          flex-flow: column nowrap;
+        .ant-table {
+          flex: auto;
+          overflow: hidden;
 
-          .ant-table-header {
-            flex: none;
-          }
+          .ant-table-container {
+            height: 100%;
+            display: flex;
+            flex-flow: column nowrap;
 
-          .ant-table-body {
-            flex: auto;
-            overflow: scroll;
+            .ant-table-header {
+              flex: none;
+            }
+
+            .ant-table-body {
+              flex: auto;
+              overflow: scroll;
+              min-height: 80svh !important;
+            }
           }
         }
-      }
 
-      .ant-table-pagination {
-        flex: none;
+        .ant-table-pagination {
+          flex: none;
+        }
       }
     }
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .response-container .summary-container .statistics-container {
+    flex-direction: column;
+    gap: var(--spacing-medium);
+    margin-bottom: 4px;
+  }
+  .response-container .summary-container .statistics-container .statistic-card {
+    padding: 4px 2px;
   }
 }
 

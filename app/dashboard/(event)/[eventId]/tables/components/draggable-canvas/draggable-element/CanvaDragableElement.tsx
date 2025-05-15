@@ -214,7 +214,7 @@ const TooltipContentComponent = ({
         const guests = await queryGuestsByTable(eventId, id);
         setTableGuests(
           guests.map((guest) => {
-            return { label: guest.guestInfo.name, value: guest.guestId };
+            return { label: guest.name, value: guest.guestId };
           })
         );
         setTimeout(() => {

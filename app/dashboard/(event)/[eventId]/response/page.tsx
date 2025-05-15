@@ -29,9 +29,6 @@ const ResponsePage = () => {
     const guestsList = await queryGuestsByEvent(eventId);
     setGuests(guestsList);
   };
-  const onChange = (key: string) => {
-    console.log(key);
-  };
 
   const items: TabsProps['items'] = [
     {
@@ -42,18 +39,18 @@ const ResponsePage = () => {
     {
       key: '2',
       label: 'Confirmari',
-      children: <ConfirmationsTable />,
+      children: <ConfirmationsTable guests={guests} />,
     },
     {
       key: '3',
       label: 'Refuzuri',
-      children: <RefusalsTable />,
+      children: <RefusalsTable guests={guests} />,
     },
   ];
 
   return (
     <div className="response-container">
-      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+      <Tabs defaultActiveKey="1" items={items} />
     </div>
   );
 };

@@ -468,7 +468,7 @@ const EditPage = ({
                 activeBreakpoint={editViewMode}
                 selectedElement={selectedItemData}
                 handlePropertyChanged={handlePropertyChanged}
-                // updateSelectedElement={updateSelectedElement}
+                templateId={templateId}
               />
             </div>
           </div>

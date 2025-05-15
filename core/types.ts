@@ -120,7 +120,7 @@ export enum EditorWidgetType {
   Slider = 'Slider',
   TextArea = 'TextArea',
   PositionInput = 'PositionInput',
-  // RSVP = 'Rsvp',
+  ImageUpload = 'ImageUpload',
 }
 
 export enum PropertyDataType {
@@ -186,6 +186,11 @@ export interface BaseTemplateElement {
   };
   responsive: ResponsiveOverrides;
   disabled: boolean;
+  backgroundImage?: {
+    url: string;
+    opacity: string;
+    name: string;
+  };
 }
 
 export interface TemplateSection extends BaseTemplateElement {
@@ -217,7 +222,6 @@ export interface TextTemplateElement extends BaseTemplateElement {
 export interface ImageTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.Image;
-  url: string;
 }
 
 export interface RsvpTemplatelement extends BaseTemplateElement {

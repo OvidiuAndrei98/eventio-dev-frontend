@@ -143,7 +143,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
     },
     {
       title: <CheckCircleOutlined />,
-      width: 20,
+      width: 50,
       align: 'center',
       dataIndex: 'confirmed',
       key: 'confirmed',

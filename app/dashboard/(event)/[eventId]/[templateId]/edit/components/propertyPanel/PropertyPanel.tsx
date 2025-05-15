@@ -7,9 +7,11 @@ import InputEditorWidget from '../editorComponents/InputEditorWidget';
 import ColorEditorWidget from '../editorComponents/ColorEditorWidget';
 import PositionEditorWidget from '../editorComponents/PositionEditorWidget';
 import { getNestedValue } from '../../utils/objectUtils';
+import ImageUploadWidget from '../editorComponents/ImageUploadWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
+  templateId: string;
   activeBreakpoint: 'desktop' | 'tablet' | 'mobile';
   handlePropertyChanged: (
     propertyPath: string,
@@ -19,6 +21,7 @@ export interface PropertyPanelProps {
 }
 
 const PropertyPanel = ({
+  templateId,
   selectedElement,
   activeBreakpoint,
   handlePropertyChanged,
@@ -149,6 +152,28 @@ const PropertyPanel = ({
                     | undefined
                     | null
                 }
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.ImageUpload:
+            return (
+              <ImageUploadWidget
+                key={propertyPath}
+                config={config}
+                value={
+                  currentValue as {
+                    name: string;
+                    opacity: string;
+                    url: string;
+                  }
+                }
+                templateId={templateId}
                 onChange={(newValue) =>
                   handlePropertyChanged(
                     propertyPath,

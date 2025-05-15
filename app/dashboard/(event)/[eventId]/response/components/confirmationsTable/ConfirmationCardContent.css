@@ -12,16 +12,8 @@
   .card-content-container
   .card-row {
   display: grid;
-  grid-template-columns: 130px 1fr;
+  grid-template-columns: minmax(auto, 130px) 1fr;
   border-bottom: 1.5px dotted rgb(207, 207, 207);
-}
-
-.confirmations-container
-  .confirmations-table-container
-  .card-content-container
-  .card-row
-  span:first-child {
-  width: 15%;
 }
 
 .confirmations-container

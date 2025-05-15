@@ -9,7 +9,7 @@ export const defaultTemplates: Template[] = [
     type: 'wedding',
     description:
       'Un template demonstrativ care utilizează poziționare și stiluri specifice pe breakpoint-uri.',
-    thumbnailUrl: '/thumbnails/responsive-demo.jpg', // Placeholder
+    thumbnailUrl: '/thumbnails/thumbnail-1.jpg',
     settings: {
       backgroundColor: '#f8f0e8', // Un crem delicat
     },

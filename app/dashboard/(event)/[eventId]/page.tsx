@@ -2,11 +2,12 @@
 
 import '@/styles/globals.css';
 import {
+  ExclamationCircleOutlined,
   FileExcelFilled,
   SendOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import { Button } from 'antd';
+import { Button, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ConfirmationCard from './components/confirmationCard/ConfirmationCard';
@@ -71,7 +72,7 @@ const DashboardEventPage = () => {
     <div
       className={`dashboard-content-container ${shrinkElement ? 'shrink' : ''}`}
     >
-      <div className="content-left">
+      <div className="content-left ">
         <div className="left-card">
           <div
             style={{
@@ -81,21 +82,31 @@ const DashboardEventPage = () => {
             }}
           >
             <h2>{eventInstance?.eventName}</h2>
+            <span className="text-gray-400 text-sm">
+              {eventInstance?.eventType}
+            </span>
             <span
               className={`text-sm ${
                 eventInstance?.invitationActive ? 'text-green' : 'text-red-500'
               }`}
             >
-              {eventInstance?.invitationActive
-                ? 'Invitatie activa'
-                : 'Invitatie inactiva'}
+              {eventInstance?.invitationActive ? (
+                <Tag bordered={false} color="success">
+                  Invitatie activa
+                </Tag>
+              ) : (
+                <Tag bordered={false} color="error">
+                  Invitatie inactiva
+                </Tag>
+              )}
             </span>
           </div>
           <Image
+            className="object-cover w-[80px] h-[80px]"
             alt="Event Thumbnail"
             src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
-            width={150}
-            height={150}
+            width={80}
+            height={80}
           />
           <Button
             icon={<SendOutlined />}
@@ -117,6 +128,14 @@ const DashboardEventPage = () => {
               <span className="text secondary-text-color-light">Refuzuri</span>
             </div>
           </div> */}
+          <Tag
+            className="!text-wrap"
+            bordered={false}
+            icon={<ExclamationCircleOutlined />}
+            color="warning"
+          >
+            Linkul o sa functioneze doar cand invitatia este activa
+          </Tag>
         </div>
       </div>
       <div className="content-right">

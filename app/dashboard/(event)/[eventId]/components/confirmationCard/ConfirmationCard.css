@@ -17,6 +17,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--padding-medium);
+  flex: 0.2;
+  text-align: center;
 }
 
 @media screen and (max-width: 1066px) {
