@@ -76,7 +76,7 @@ export function AppSidebar({
       },
       {
         title: 'Editare invitatie',
-        url: `/dashboard/${eventInstance?.eventId}/tables`,
+        url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/settings`,
         icon: <Settings2 />,
         onClick: onClickNav,
       },
