@@ -18,15 +18,12 @@ export const updateElementPropertyInTemplate = (
   propIsResponsive: boolean, // Flag: Aceasta proprietate POATE avea override-uri responsive (din editorConfig)
   breakpoint?: 'desktop' | 'tablet' | 'mobile' // Breakpoint-ul ACTIV in UI (ex: 'mobile', 'tablet', 'desktop')
 ): Template => {
-  let elementFound = false; // Flag pentru a sti daca am gasit elementul in oricare sectiune // Nu mai avem neaparat nevoie de elementUpdated flag local, ne bazam pe succesul helper-urilor. // Parcurgem array-ul de sectiuni pentru a gasi sectiunea care contine elementul
   const updatedSections = template.elements.map((section) => {
     const elementIndex = section.elements.findIndex(
       (element) => element.id === elementId
     ); // Daca elementul a fost gasit in aceasta sectiune
 
     if (elementIndex > -1) {
-      elementFound = true; // Marcam ca l-am gasit
-
       const originalElement = section.elements[elementIndex]; // Obiectul elementului original
       let updatedElement = originalElement; // Initial, plecam de la obiectul original
       let updateApplied = false; // Flag pentru a sti daca o actualizare a avut loc efectiv // --- Determina daca actualizarea se aplica unui override RESPONSIVE --- // Conditii: avem un breakpoint specificat, nu este 'desktop', SI proprietatea este marcata ca responsive.

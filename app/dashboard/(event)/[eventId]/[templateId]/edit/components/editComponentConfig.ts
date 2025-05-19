@@ -92,6 +92,15 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       step: 1,
       responsive: true,
     },
+    'style.borderRadius': {
+      label: 'Rotunjire colturi (%)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      max: 100,
+      step: 1,
+      responsive: true,
+    },
     position: {
       responsive: true,
       label: 'Poziție Element (%)',

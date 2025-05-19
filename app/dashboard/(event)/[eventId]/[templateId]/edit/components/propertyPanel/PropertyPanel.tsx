@@ -26,8 +26,6 @@ const PropertyPanel = ({
   activeBreakpoint,
   handlePropertyChanged,
 }: PropertyPanelProps) => {
-  console.log('>>> RENDERING PropertyPanel <<<');
-  console.log('PropertyPanel: Received selectedItemData:', selectedElement);
   const configSet = componentsConfig[selectedElement?.type];
 
   const getPropertyValue = (
@@ -68,7 +66,7 @@ const PropertyPanel = ({
   }
 
   return (
-    <div className="overflow-y-auto">
+    <div className="overflow-y-auto h-full">
       {Object.entries(configSet).map(([propertyPath, config]) => {
         if (propertyPath === 'elements' || propertyPath === 'responsive')
           return null;

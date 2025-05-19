@@ -44,6 +44,17 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
 
   return (
     <div style={{ marginBottom: '10px' }}>
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '5px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          color: '#333',
+        }}
+      >
+        {config.label}:
+      </label>
       <ColorPicker
         format="hex"
         value={value}

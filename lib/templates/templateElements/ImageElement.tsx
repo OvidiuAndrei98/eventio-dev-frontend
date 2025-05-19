@@ -2,7 +2,6 @@ import {
   ElementType,
   ImageTemplateElement,
   TemplateElement,
-  TextTemplateElement,
 } from '@/core/types';
 import React from 'react';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
@@ -49,7 +48,7 @@ const ImageElement = ({
     },
     responsive,
     activeBreakpoint
-  ) as TemplateElement;
+  ) as ImageTemplateElement;
 
   const baseStyle: React.CSSProperties = {
     top:
@@ -78,6 +77,7 @@ const ImageElement = ({
       ? `linear-gradient( ${finalElementProps.backgroundImage.opacity}, ${finalElementProps.backgroundImage.opacity} ), url('${finalElementProps.backgroundImage.url}')`
       : 'unset',
     ...finalElementProps.style,
+    borderRadius: finalElementProps.style.borderRadius + '%',
   };
 
   const elementStyle = {

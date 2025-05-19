@@ -5,8 +5,9 @@ import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer'
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
 import { notFound } from 'next/navigation';
 import React, { use, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-const PreviewPage = ({
+const InvitationPage = ({
   params,
 }: {
   params: Promise<{ templateId: string; templateName: string }>;
@@ -21,6 +22,7 @@ const PreviewPage = ({
       setTemplate(response);
     } catch (error) {
       console.error('Error fetching template:', error);
+      toast.error('A aparut o eroare la incarcarea invitatie');
     } finally {
       setLoading(false);
     }
@@ -40,15 +42,11 @@ const PreviewPage = ({
     </div>
   ) : (
     <div
-      className={`w-full h-[calc(100svh-80px)] overflow-y-[auto] ${template.settings.backgroundColor} max-w-[1200px] mx-auto`}
+      className={`w-full h-auto ${template.settings.backgroundColor} max-w-[1200px] mx-auto`}
     >
       <TemplateRenderer invitationData={template} editMode={false} />
-      <div className="bg-black h-[80px] text-white p-4 absolute bottom-0 left-0 right-0 flex justify-center items-center z-2">
-        Atentie! Aceasta este o previzualizare a invitatiei vizibila doar pentru
-        tine.
-      </div>
     </div>
   );
 };
 
-export default PreviewPage;
+export default InvitationPage;
