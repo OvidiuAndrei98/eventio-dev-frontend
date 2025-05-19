@@ -32,6 +32,7 @@ const EventsTable = <_EventInstance, TValue>({
   data,
 }: DataTableProps<TValue>) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 5,

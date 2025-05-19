@@ -79,16 +79,6 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
       url: '',
     });
 
-  // Verificăm dacă configurația este potrivită pentru acest widget
-  if (
-    config.widgetType !== EditorWidgetType.ImageUpload ||
-    config.dataType !== PropertyDataType.Object
-  ) {
-    console.error('Configurație invalidă pentru ImageUploadWidget:', config);
-    // Renderizăm un mesaj de eroare sau o componentă fallback dacă configurația nu este validă
-    return <div>Eroare: Widget incompatibil</div>;
-  }
-
   useEffect(() => {
     if (value) {
       setBackgroundImageFields(value);
@@ -165,14 +155,23 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
   };
 
   const handleInputChange = (color: Color) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedData = {
       ...backgoundImageFields,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       opacity: (color as any).toRgbString(),
     };
     setBackgroundImageFields(updatedData);
     onChange(updatedData);
   };
+
+  if (
+    config.widgetType !== EditorWidgetType.ImageUpload ||
+    config.dataType !== PropertyDataType.Object
+  ) {
+    console.error('Configurație invalidă pentru ImageUploadWidget:', config);
+    // Renderizăm un mesaj de eroare sau o componentă fallback dacă configurația nu este validă
+    return <div>Eroare: Widget incompatibil</div>;
+  }
 
   return (
     <div style={{ marginBottom: '10px' }}>

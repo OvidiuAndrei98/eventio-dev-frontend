@@ -15,7 +15,7 @@ import {
   TableProps,
 } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import { MobileOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 
 type DataIndex = keyof Guest;
 

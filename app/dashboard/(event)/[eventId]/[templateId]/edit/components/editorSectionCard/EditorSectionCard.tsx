@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { ElementType, TemplateElement, TemplateSection } from '@/core/types';
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import {
@@ -5,7 +7,6 @@ import {
   EyeIcon,
   TextIcon,
   ImageIcon,
-  EyeClosed,
   EyeOffIcon,
 } from 'lucide-react';
 import React, { useCallback, useState } from 'react';

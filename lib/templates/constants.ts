@@ -58,6 +58,7 @@ export const mergeResponsiveProperties = <
   activeBreakpointName?: keyof typeof BREAKPOINTS | 'desktop'
 ): Omit<T, 'responsive'> & ResponsiveProperties => {
   // Start with default properties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const finalProps: any = { ...defaultProps };
 
   if (!responsiveOverrides || !activeBreakpointName) {

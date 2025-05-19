@@ -57,6 +57,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
             return (
               <ComponentToRender
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
               />
@@ -65,6 +66,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
             return (
               <ComponentToRender
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
               />
@@ -73,6 +75,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
             return (
               <ComponentToRender
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}

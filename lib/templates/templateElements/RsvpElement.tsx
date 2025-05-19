@@ -172,7 +172,6 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
         autoFocus={false}
         name="table-edit"
         onFinish={handleSubmit}
-        onFinishFailed={() => {}}
         autoComplete="off"
         layout="vertical"
       >

@@ -1,4 +1,3 @@
-// editor/PropertyPanel.tsx (Exemplu Conceptual)
 import React from 'react';
 import { EditorWidgetType, TemplateElement } from '@/core/types'; // Importă configurația și tipurile de widget-uri
 import NumberEditorWidget from '../editorComponents/NumberEditorWidget';
@@ -15,7 +14,7 @@ export interface PropertyPanelProps {
   activeBreakpoint: 'desktop' | 'tablet' | 'mobile';
   handlePropertyChanged: (
     propertyPath: string,
-    newValue: any,
+    newValue: unknown,
     propIsResponsive: boolean
   ) => void;
 }
@@ -33,7 +32,7 @@ const PropertyPanel = ({
     defaultPropertyPath: string,
     activeBreakpoint: 'desktop' | 'tablet' | 'mobile',
     isPropertyResponsive: boolean
-  ): any => {
+  ): unknown => {
     if (!data || !defaultPropertyPath) {
       return undefined;
     }
@@ -184,7 +183,7 @@ const PropertyPanel = ({
           default:
             return (
               <div key={propertyPath}>
-                Widget pentru "{config.label}" ({config.widgetType}) nu este
+                Widget pentru {config.label} ({config.widgetType}) nu este
                 implementat.
               </div>
             );

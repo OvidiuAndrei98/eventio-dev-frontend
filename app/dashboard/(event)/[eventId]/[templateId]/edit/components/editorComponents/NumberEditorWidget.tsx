@@ -34,15 +34,6 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
   onChange, // Parent's handler (updates global number state)
   debounceDelay = 300, // Default debounce delay
 }) => {
-  // Config validation
-  if (
-    config.widgetType !== EditorWidgetType.NumberInput ||
-    config.dataType !== PropertyDataType.Number
-  ) {
-    console.error('Invalid config for NumberEditorWidget:', config);
-    return <div>Error: Incompatible widget</div>;
-  } // --- LOCAL STATE for the input value (controlled) --- // This state holds the local value for immediate responsiveness while global state update is debounced. // Managed as number | undefined.
-
   const [localValue, setLocalValue] = useState<number | undefined>(
     value === undefined ||
       value === null ||
@@ -61,6 +52,7 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
     debounceDelay // The debounce delay
   ); // useDebouncedCallback manages its own dependencies (the callback and delay) and cleanup. // --- useEffect for syncing prop value to local state --- // This effect is essential to keep the local state (number | undefined) in sync // with the 'value' prop (number | undefined | null) received from the parent (the source of truth). // It runs when the 'value' prop changes.
 
+  /* eslint-disable no-use-before-define */
   useEffect(() => {
     // Calculate the desired local state value (number | undefined) based on the prop value.
     const newValueForLocalState: number | undefined =
@@ -82,8 +74,9 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
     // as useDebouncedCallback handles its own cleanup internally.
     return () => {
       // Any cleanup specific to the *syncing process* goes here, but not debounce cancellation.
-    }; // --- DEPENDENCIES FOR SYNC EFFECT --- // This effect depends STRICTLY on the 'value' prop. // useDebouncedCallback manages its own internal dependencies and cleanup, so it's not needed here.
-  }, [value, version]); // DEPENDENCIES: ONLY 'value'. // handleInputChange - updates local state (number | undefined) and calls the debounced function
+    };
+  }, [value, version]);
+  /* eslint-enable no-use-before-define */
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const stringValue = event.target.value; // Value from input is ALWAYS a string
@@ -109,7 +102,14 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
     (typeof localValue === 'number' && isNaN(localValue))
       ? ''
       : String(localValue);
-  // Log the displayed value (displayValue) and the internal local state (localValue) for debugging
+
+  if (
+    config.widgetType !== EditorWidgetType.NumberInput ||
+    config.dataType !== PropertyDataType.Number
+  ) {
+    console.error('Invalid config for NumberEditorWidget:', config);
+    return <div>Error: Incompatible widget</div>;
+  }
 
   return (
     <div style={{ marginBottom: '10px' }}>

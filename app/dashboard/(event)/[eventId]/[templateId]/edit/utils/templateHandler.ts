@@ -1,4 +1,4 @@
-import { Template, TemplateSection, TemplateElement } from '@/core/types';
+import { Template, TemplateElement } from '@/core/types';
 
 export const findItemInTemplateById = (
   template: Template | null,

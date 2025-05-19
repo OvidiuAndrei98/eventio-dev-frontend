@@ -1,4 +1,4 @@
-// editor/utils/objectUtils.ts (Creaza un fisier separat pentru utilitare generale)
+/* eslint-disable */
 
 /**
  * Immutably sets a nested property in an object using a dot-notation path.

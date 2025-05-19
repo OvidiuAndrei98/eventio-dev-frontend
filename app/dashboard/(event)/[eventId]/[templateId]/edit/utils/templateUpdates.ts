@@ -14,7 +14,7 @@ export const updateElementPropertyInTemplate = (
   template: Template, // State-ul template-ului curent (obiect imutabil)
   elementId: string, // ID-ul elementului de actualizat
   propertyPath: string, // Calea proprietatii la nivel DEFAULT (ex: 'style.fontSize', 'position.x')
-  newValue: any, // Noua valoare primita din input (poate fi '', null, numar, string)
+  newValue: unknown, // Noua valoare primita din input (poate fi '', null, numar, string)
   propIsResponsive: boolean, // Flag: Aceasta proprietate POATE avea override-uri responsive (din editorConfig)
   breakpoint?: 'desktop' | 'tablet' | 'mobile' // Breakpoint-ul ACTIV in UI (ex: 'mobile', 'tablet', 'desktop')
 ): Template => {
@@ -189,7 +189,7 @@ export const updateSectionPropertyInTemplate = (
   template: Template, // The original template object (immutable)
   sectionId: string, // The ID of the section to find
   propertyPath: string, // The dot-notation path to the property (ex: 'name', 'position.x', 'style.backgroundColor', 'display')
-  newValue: any, // The new value for the property
+  newValue: unknown, // The new value for the property
   // Optional: The breakpoint name if updating a responsive override
   // If not provided or 'default', updates the default property.
   breakpoint?: string | 'desktop'

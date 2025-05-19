@@ -1,6 +1,6 @@
 import { Collapse } from 'antd';
 import ConfirmationCardHeader from './ConfirmationCardHeader';
-import { CloseOutlined, SendOutlined, SmileOutlined } from '@ant-design/icons';
+import { SmileOutlined } from '@ant-design/icons';
 import './ConfirmationsTable.css';
 import ConfirmationCardContent from './ConfirmationCardContent';
 import { Guest } from '@/core/types';

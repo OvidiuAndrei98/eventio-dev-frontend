@@ -108,6 +108,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 isSelected={selectedElementId === element.id}
                 onSelect={onSelect}
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}
@@ -119,6 +120,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 selectedElementId={selectedElementId}
                 isSelected={selectedElementId === element.id}
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 onSelect={onSelect}
                 activeBreakpoint={activeBreakpoint}
@@ -129,6 +131,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
             return (
               <ComponentToRender
                 key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
                 eventId={template}

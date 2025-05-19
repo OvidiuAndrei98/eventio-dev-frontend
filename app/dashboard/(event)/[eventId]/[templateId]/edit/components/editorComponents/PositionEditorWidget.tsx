@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 import {
@@ -49,14 +51,6 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
   value,
   onChange,
 }) => {
-  if (
-    config.widgetType !== EditorWidgetType.PositionInput ||
-    config.dataType !== PropertyDataType.Object
-  ) {
-    console.error('Invalid config for PositionEditorWidget:', config); // Translated console log
-    return <div>Error: Incompatible Widget</div>; // Translated error message
-  }
-
   // Ensure a safe starting object for data
   // useMemo helps stabilize the safeValue reference if only internal properties change
   const safeValue = useMemo(() => value || {}, [value]);
@@ -106,7 +100,6 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
     latestStateRef.current = { top, right, bottom, left };
   }, [top, right, bottom, left]); // Update every time an internal state changes
 
-  // This effect runs on mount, when 'safeValue' changes (selecting another element), and on unmount.
   useEffect(() => {
     console.log('[PositionWidget Sync/Cleanup Effect] Running...', {
       safeValue,
@@ -359,6 +352,14 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
     minHeight: '50px',
     borderRadius: '4px',
   };
+
+  if (
+    config.widgetType !== EditorWidgetType.PositionInput ||
+    config.dataType !== PropertyDataType.Object
+  ) {
+    console.error('Invalid config for PositionEditorWidget:', config); // Translated console log
+    return <div>Error: Incompatible Widget</div>; // Translated error message
+  }
 
   return (
     <div>

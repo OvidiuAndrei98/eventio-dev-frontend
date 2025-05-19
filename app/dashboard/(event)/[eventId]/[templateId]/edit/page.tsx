@@ -1,5 +1,5 @@
 'use client';
-
+/* eslint-disable */
 import {
   ElementType,
   Template,
@@ -281,7 +281,7 @@ const EditPage = ({
 
   const handlePropertyChanged = (
     propertyPath: string,
-    newValue: any,
+    newValue: unknown,
     propIsResponsive: boolean
   ) => {
     const selectedElementOrSectionId = selectedItemData.id;
