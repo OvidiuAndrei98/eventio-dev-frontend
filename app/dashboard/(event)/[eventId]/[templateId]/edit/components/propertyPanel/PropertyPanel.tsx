@@ -65,25 +65,16 @@ const PropertyPanel = ({
   }
 
   return (
-    <div className="overflow-y-auto h-full">
+    <div>
       {Object.entries(configSet).map(([propertyPath, config]) => {
         if (propertyPath === 'elements' || propertyPath === 'responsive')
           return null;
-        console.log(
-          `PropertyPanel: Mapping "${propertyPath}". Config ref:`,
-          config
-        ); // Log referinta config
 
         const currentValue = getPropertyValue(
           selectedElement,
           propertyPath,
           activeBreakpoint,
           config.responsive
-        );
-
-        console.log(
-          `PropertyPanel: Mapping property "${propertyPath}". Passing value:`,
-          currentValue
         );
 
         switch (config.widgetType) {

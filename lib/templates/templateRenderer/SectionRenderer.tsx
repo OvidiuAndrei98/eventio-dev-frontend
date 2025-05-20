@@ -30,7 +30,6 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     minHeight: '300px',
     ...(sectionData.style as React.CSSProperties),
     position: 'relative' as const,
-    display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: '8px 8px 8px 8px',
@@ -47,7 +46,11 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   );
 
   return (
-    <div id={sectionData.id} style={sectionStyle}>
+    <div
+      id={sectionData.id}
+      style={sectionStyle}
+      className={`${sectionData.disabled ? '!hidden' : '!flex'}`}
+    >
       {validElements.map((element) => {
         const ComponentToRender =
           elementComponentMap[element.type as keyof typeof elementComponentMap];

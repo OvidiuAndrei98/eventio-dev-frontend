@@ -356,6 +356,21 @@ const EditPage = ({
     });
   };
 
+  // Function used to update the template with the new elements order for in a section after the drag end event finshed
+  const handleElementPositionUpdate = (
+    elements: TemplateElement[],
+    sectionId: string
+  ) => {
+    setTemplate((prevTemplate) => {
+      const sectionIndex = prevTemplate.elements.findIndex(
+        (section) => section.id === sectionId
+      );
+      const templateCopy = { ...prevTemplate };
+      templateCopy.elements[sectionIndex].elements = elements;
+      return templateCopy;
+    });
+  };
+
   return loading || !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
       <span className="loader"></span>
@@ -434,6 +449,9 @@ const EditPage = ({
             {template.elements.map((section, index) => (
               <React.Fragment key={index}>
                 <EditorSectionCard
+                  onPositionChanged={(elements: TemplateElement[]) =>
+                    handleElementPositionUpdate(elements, section.id)
+                  }
                   onAddElement={handleAddElement}
                   onDeleteElement={handleDeleteElement}
                   onDeleteSection={handleDeleteSectionClick}
@@ -481,18 +499,16 @@ const EditPage = ({
               handleTemplateDragAndDrop={handleTemplateDragAndDrop}
             />
           </div>
-          <div>
-            <div className="settings-panel p-4 bg-white rounded shadow h-full">
-              <h2 className="text-lg font-semibold mb-4">
-                {selectedItemData?.name}
-              </h2>
-              <PropertyPanel
-                activeBreakpoint={editViewMode}
-                selectedElement={selectedItemData}
-                handlePropertyChanged={handlePropertyChanged}
-                templateId={templateId}
-              />
-            </div>
+          <div className="overflow-y-auto settings-panel p-4 bg-white rounded shadow h-full">
+            <h2 className="text-lg font-semibold mb-4">
+              {selectedItemData?.name}
+            </h2>
+            <PropertyPanel
+              activeBreakpoint={editViewMode}
+              selectedElement={selectedItemData}
+              handlePropertyChanged={handlePropertyChanged}
+              templateId={templateId}
+            />
           </div>
         </div>
         <div className="p-2"></div>

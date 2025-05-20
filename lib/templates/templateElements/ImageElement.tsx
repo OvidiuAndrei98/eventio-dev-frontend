@@ -5,6 +5,11 @@ import {
 } from '@/core/types';
 import React from 'react';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
+import { useDraggable } from '@dnd-kit/core';
+import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
 
 const ImageElement = ({
   id,
@@ -50,17 +55,24 @@ const ImageElement = ({
     activeBreakpoint
   ) as ImageTemplateElement;
 
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id,
+    data: {
+      name: name,
+      id: id,
+      modifiers:
+        finalElementProps.position.elementAlignment !== 'auto'
+          ? [restrictToParentElement, restrictToVerticalAxis]
+          : [restrictToParentElement],
+    },
+  });
+
   const baseStyle: React.CSSProperties = {
-    top:
-      finalElementProps.position.y !== 0 &&
-      finalElementProps.position.y !== undefined
-        ? `${finalElementProps.position.y}%`
-        : 'auto', // Explicit 'auto' or 'unset' if undefined
+    top: `${finalElementProps.position.y}%`,
     left:
-      finalElementProps.position.x !== 0 &&
-      finalElementProps.position.x !== undefined
-        ? `${finalElementProps.position.x}%`
-        : 'auto',
+      finalElementProps.position.elementAlignment !== 'auto'
+        ? 'auto'
+        : `${finalElementProps.position.x}%`,
     backgroundRepeat: finalElementProps.backgroundImage ? 'no-repeat' : 'usent',
     backgroundSize: finalElementProps.backgroundImage ? 'cover' : 'usnet',
     backgroundImage: finalElementProps.backgroundImage
@@ -68,6 +80,7 @@ const ImageElement = ({
       : 'unset',
     ...finalElementProps.style,
     borderRadius: finalElementProps.style.borderRadius + '%',
+    alignSelf: finalElementProps.position.elementAlignment,
   };
 
   const elementStyle = {
@@ -77,8 +90,16 @@ const ImageElement = ({
 
   return (
     <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
       id={id}
-      style={elementStyle}
+      style={{
+        ...elementStyle,
+        transform: transform
+          ? `translate(${transform.x}px, ${transform.y}px)`
+          : undefined,
+      }}
       className={` ${
         editMode && isSelected && selectedElementId === id
           ? '!border-2 !border-[#CB93D9]'

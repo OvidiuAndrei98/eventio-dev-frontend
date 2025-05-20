@@ -2,17 +2,30 @@
 
 import { ElementType, TemplateElement, TemplateSection } from '@/core/types';
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import {
-  ChevronRight,
-  EyeIcon,
-  TextIcon,
-  ImageIcon,
-  EyeOffIcon,
-} from 'lucide-react';
-import React, { useCallback, useState } from 'react';
+import { ChevronRight, EyeIcon, EyeOffIcon } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AddSectionModal from '../addSectionModal/AddSectionModal';
 import { availableElementTypes } from '../../utils/editorUtils';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import SortableElementCard from './SortableElementCard';
+import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
 
 export interface EditorSectionCardProps {
   section: TemplateSection;
@@ -26,6 +39,7 @@ export interface EditorSectionCardProps {
     elementId: string | undefined
   ) => void;
   onAddElement: (newElement: TemplateElement, sectionId: string) => void;
+  onPositionChanged: (elements: TemplateElement[]) => void;
 }
 
 const EditorSectionCard = ({
@@ -37,10 +51,24 @@ const EditorSectionCard = ({
   onDeleteElement,
   onToggleVisibility,
   onAddElement,
+  onPositionChanged,
 }: EditorSectionCardProps) => {
   // Starea locala pentru a controla daca sectiunea este extinsa (deschisa) in panoul lateral
   const [isOpen, setIsOpen] = React.useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+
+  const [items, setItems] = useState(section.elements);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
+  useEffect(() => {
+    setItems(section.elements);
+  }, [section]);
 
   // Folosim useEffect pentru a sincroniza starea locală 'isOpen' cu starea de selectie
   // Daca sectiunea insasi e selectata SAU un element din ea e selectat, extindem sectiunea.
@@ -54,19 +82,6 @@ const EditorSectionCard = ({
     // Daca vrei ca sectiunea sa se restranga automat cand NU mai este selectata,
     // poti adauga un 'else { setIsOpen(false); }' aici.
   }, [isSelected, selectedItemId, section.id, section.elements]);
-
-  // Helper pentru a obtine iconita in functie de tipul elementului (presupune ca TemplateElement are un camp 'type')
-  const getElementIcon = (element: TemplateElement) => {
-    switch (element.type) {
-      case 'text':
-        return <TextIcon size={14} />;
-      case 'image':
-        return <ImageIcon size={14} />;
-      // Adauga cazuri pentru alte tipuri de elemente pe masura ce le adaugi in aplicatie
-      default:
-        return <TextIcon size={14} />; // Iconita default pentru tipuri necunoscute
-    }
-  };
 
   // Handler-ul pentru click-ul pe cardul sectiunii SAU elementului.
   // Notifica parintele despre item-ul selectat (sectiune sau element).
@@ -143,6 +158,18 @@ const EditorSectionCard = ({
     [isPopoverOpen, section]
   );
 
+  function handleDragEndSortable(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = items.findIndex((el) => el.id == active.id);
+      const newIndex = over ? items.findIndex((el) => el.id == over.id) : -1;
+      const newElementsList = arrayMove(items, oldIndex, newIndex);
+      setItems(newElementsList);
+      onPositionChanged(newElementsList);
+    }
+  }
+
   return (
     <>
       <div
@@ -186,44 +213,31 @@ const EditorSectionCard = ({
 
       {isOpen && (
         <div className="template-editor-section-content flex flex-col w-full pl-5 pt-2">
-          {section.elements.map((element) => (
-            <div
-              key={element.id}
-              onClick={() => handleCardClick(element)}
-              className={`template-editor-element-card flex items-center gap-2 hover:bg-gray-100 p-[4px] rounded cursor-pointer w-full text-gray-700 ${
-                isSelected && selectedItemId === element.id ? 'bg-gray-200' : ''
-              }`}
+          <DndContext
+            sensors={sensors}
+            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEndSortable}
+          >
+            <SortableContext
+              items={items}
+              strategy={verticalListSortingStrategy}
             >
-              {getElementIcon(element)}
-              <span className="text-sm font-[600] truncate">
-                {element.name || element.type}
-              </span>
-              <div className="template-editor-section-controls flex items-center gap-1 ml-auto justify-center">
-                <DeleteOutlined
-                  size={12}
-                  className="hover:bg-gray-200 h-[20px] w-[20px] rounded-sm p-1 cursor-pointer z-2"
-                  onClick={(e) => handleDeleteElementClick(e, element.id)}
+              {section.elements.map((element) => (
+                <SortableElementCard
+                  element={element}
+                  handleCardClick={handleCardClick}
+                  handleDeleteElementClick={handleDeleteElementClick}
+                  handleToggleElementVisibilityClick={
+                    handleToggleElementVisibilityClick
+                  }
+                  isSelected={isSelected}
+                  selectedItemId={selectedItemId}
+                  key={element.id}
                 />
-                {element.disabled ? (
-                  <EyeOffIcon
-                    size={14}
-                    className="hover:bg-gray-200 h-[20px] w-[20px] rounded-sm p-1 cursor-pointer z-2"
-                    onClick={(e) =>
-                      handleToggleElementVisibilityClick(e, element.id)
-                    }
-                  />
-                ) : (
-                  <EyeIcon
-                    size={14}
-                    className="hover:bg-gray-200 h-[20px] w-[20px] rounded-sm p-1 cursor-pointer z-2"
-                    onClick={(e) =>
-                      handleToggleElementVisibilityClick(e, element.id)
-                    }
-                  />
-                )}
-              </div>
-            </div>
-          ))}
+              ))}
+            </SortableContext>
+          </DndContext>
           <AddSectionModal
             placeholder="Cauta elemente"
             open={isPopoverOpen}

@@ -47,11 +47,7 @@ export const defaultElements = {
       responsive: {},
       style: {
         height: 'auto',
-        justifyContent: 'center' as
-          | 'auto'
-          | 'center'
-          | 'self-start'
-          | 'self-end',
+        justifyContent: 'center',
       },
     };
   },
@@ -89,6 +85,7 @@ export const defaultElements = {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
       position: {
+        x: 40,
         elementAlignment: 'auto' as
           | 'auto'
           | 'center'
