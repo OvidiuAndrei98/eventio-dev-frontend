@@ -196,7 +196,7 @@ export interface BaseTemplateElement {
 export interface TemplateSection extends BaseTemplateElement {
   elements: TemplateElement[];
   id: string;
-  type: ElementType.Section;
+  type: ElementType.Section | ElementType.RSVP_SECTION;
 }
 
 export interface ResponsiveProperties {

@@ -5,7 +5,7 @@ export const defaultTemplates: Template[] = [
     templateId: 'demo-template',
     eventId: 'demo-template',
     userId: 'demo-template',
-    name: 'Demo Invitație Nuntă Responsivă',
+    name: 'Demo Invitație Nuntă',
     type: 'wedding',
     description:
       'Un template demonstrativ care utilizează poziționare și stiluri specifice pe breakpoint-uri.',
@@ -180,101 +180,28 @@ export const defaultTemplates: Template[] = [
       // --- Secțiunea RSVP ---
       {
         id: 'section-rsvp',
-        name: 'RSVP Section',
-        position: { top: 50, left: 30, right: 0, bottom: 0 },
-        type: ElementType.Section,
-        responsive: {},
+        name: 'Sectiune RSVP',
         disabled: false,
-        style: {
-          zIndex: 1,
-          backgroundColor: 'rgba(240, 230, 224, 0.7)', // Fundal semi-transparent crem
-          height: 300,
-        },
+        type: ElementType.RSVP_SECTION,
+        position: {},
+        responsive: {},
+        style: { height: 'auto', justifyContent: 'center' },
         elements: [
           {
-            id: 'rsvp-heading',
+            id: `element-${crypto.randomUUID()}`,
+            name: 'RSVP',
             disabled: false,
-            type: ElementType.Text,
-            name: 'Text',
-            content: 'Vă rugăm să confirmați prezența',
-            position: { top: 15, left: 50, right: 0, bottom: 0 }, // Desktop: centrat
+            type: ElementType.RSVP_ELEMENT,
+            position: { top: 0, left: 0, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
             style: {
-              fontFamily: 'Playfair Display',
-              fontSize: 20, // Număr
-              color: '#4b3732',
-              textAlign: 'center',
-            },
-            responsive: {
-              mobile: {
-                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
-                position: { top: 10, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 16 },
-              },
-            },
-          },
-          {
-            id: 'rsvp-deadline',
-            type: ElementType.Text,
-            name: 'Text',
-            disabled: false,
-            content: 'Termen limită: 1 August 2024',
-            position: { top: 40, left: 50, right: 0, bottom: 0 }, // Desktop: sub antet, centrat
-            style: {
-              fontFamily: 'Playfair Display',
-              fontSize: 18, // Număr
-              color: '#7d665d',
-              textAlign: 'center',
-            },
-            responsive: {
-              mobile: {
-                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
-                position: { top: 30, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 14 },
-              },
-            },
-          },
-          {
-            id: 'rsvp-link-text',
-            type: ElementType.Text,
-            name: 'Text',
-            content: 'Confirmați aici:',
-            disabled: false,
-            position: { top: 60, left: 50, right: 0, bottom: 0 }, // Desktop: sub termen, centrat
-            style: {
-              fontFamily: 'Arial',
-
-              fontSize: 16, // Număr
-              color: '#4b3732',
-              textAlign: 'center',
-            },
-            responsive: {
-              mobile: {
-                // Pe mobil: font mai mic, poziție diferită, aliniat stânga
-                position: { top: 50, left: 5, right: 0, bottom: 0 },
-                style: { fontSize: 12 },
-              },
-            },
-          },
-          {
-            id: 'rsvp-link-button',
-            name: 'Text',
-            disabled: false,
-            type: ElementType.Text, // Folosim text ca și cum ar fi un buton
-            content: '[Pagina Confirmare]',
-            position: { top: 75, left: 50, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
-            style: {
-              fontFamily: 'Arial',
-              fontSize: 16, // Număr
-              color: '#ffffff', // Text alb
-              backgroundColor: '#a0522d', // Fundal maro arămiu
-              padding: '8px 15px', // Padding în pixeli (va fi scalat)
-              borderRadius: '5px', // Border radius în pixeli (va fi scalat)
-              textAlign: 'center',
+              fontSize: 16,
+              color: '#ffffff',
+              zIndex: 3,
             },
             responsive: {
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
-                position: { top: 65, left: 5, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
+                position: { top: 0, left: 0, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
                 style: { fontSize: 14 },
               },
               // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil
@@ -282,8 +209,6 @@ export const defaultTemplates: Template[] = [
           },
         ],
       },
-
-      // Poți adăuga alte secțiuni aici
     ],
   },
 ];
