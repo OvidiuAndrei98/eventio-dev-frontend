@@ -32,7 +32,7 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
   version,
   value, // Number value (or null/undefined) from parent
   onChange, // Parent's handler (updates global number state)
-  debounceDelay = 300, // Default debounce delay
+  debounceDelay = 500, // Default debounce delay
 }) => {
   const [localValue, setLocalValue] = useState<number | undefined>(
     value === undefined ||

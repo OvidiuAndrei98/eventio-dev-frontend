@@ -5,6 +5,11 @@ import {
 } from '@/core/types';
 import React from 'react';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
+import { useDraggable } from '@dnd-kit/core';
+import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from '@dnd-kit/modifiers';
 
 const TextElement = ({
   id,
@@ -50,30 +55,29 @@ const TextElement = ({
     activeBreakpoint
   ) as TemplateElement;
 
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id,
+    data: {
+      name: name,
+      id: id,
+      modifiers:
+        finalElementProps.position.elementAlignment !== 'auto'
+          ? [restrictToParentElement, restrictToVerticalAxis]
+          : [restrictToParentElement],
+    },
+  });
+
   const baseStyle: React.CSSProperties = {
-    top:
-      finalElementProps.position.top !== 0 &&
-      finalElementProps.position.top !== undefined
-        ? `${finalElementProps.position.top}%`
-        : 'auto', // Explicit 'auto' or 'unset' if undefined
-    right:
-      finalElementProps.position.right !== 0 &&
-      finalElementProps.position.right !== undefined
-        ? `${finalElementProps.position.right}%`
-        : 'auto',
-    bottom:
-      finalElementProps.position.bottom !== 0 &&
-      finalElementProps.position.bottom !== undefined
-        ? `${finalElementProps.position.bottom}%`
-        : 'auto',
+    top: `${finalElementProps.position.y}%`,
+
     left:
-      finalElementProps.position.left !== 0 &&
-      finalElementProps.position.left !== undefined
-        ? `${finalElementProps.position.left}%`
-        : 'auto',
+      finalElementProps.position.elementAlignment !== 'auto'
+        ? 'auto'
+        : `${finalElementProps.position.x}%`,
     ...finalElementProps.style,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
+    alignSelf: finalElementProps.position.elementAlignment,
   };
 
   const elementStyle = {
@@ -83,6 +87,9 @@ const TextElement = ({
 
   return (
     <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
       className={` ${
         editMode && isSelected && selectedElementId === id
           ? '!border-2 !border-[#CB93D9]'
@@ -101,7 +108,12 @@ const TextElement = ({
         : 'block'
     }`}
       id={id}
-      style={elementStyle}
+      style={{
+        ...elementStyle,
+        transform: transform
+          ? `translate(${transform.x}px, ${transform.y}px)`
+          : undefined,
+      }}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}
       onClick={

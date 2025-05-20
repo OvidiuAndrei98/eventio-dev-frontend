@@ -328,11 +328,32 @@ const EditPage = ({
       setTemplateUpdateLoading(true);
       await updateTemplate(templateId, template.elements);
       setTemplateUpdateLoading(false);
-      toast.success('Tempalte-ul a fost actualizat');
+      toast.success('Template-ul a fost actualizat');
     } catch (error) {
       setTemplateUpdateLoading(false);
       toast.success('Eroare la actualizarea template-ului');
     }
+  };
+
+  const handleTemplateDragAndDrop = (
+    elementId: string,
+    position: { x: number; y: number }
+  ) => {
+    setTemplate((prevTemplate) => {
+      // Apelam helper-ul pentru actualizarea imutabila a elementului
+      // Trecem ID-ul elementului selectat, calea proprietatii, noua valoare
+      // si breakpoint-ul activ (daca nu e 'default')
+      const updatedTemplate = updateElementPropertyInTemplate(
+        prevTemplate,
+        elementId,
+        'position',
+        position,
+        true,
+        editViewMode
+      );
+
+      return updatedTemplate;
+    });
   };
 
   return loading || !template ? (
@@ -457,6 +478,7 @@ const EditPage = ({
               editMode={true}
               onSelect={handleSectionSelect}
               activeBreakpointValue={editViewMode}
+              handleTemplateDragAndDrop={handleTemplateDragAndDrop}
             />
           </div>
           <div>

@@ -179,10 +179,11 @@ export interface BaseTemplateElement {
   style: Record<string, unknown>;
   name: string;
   position: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
+    x?: number;
+    y?: number;
+    elementAlignment?: 'auto' | 'self-start' | 'center' | 'self-end';
+    // bottom?: number;
+    // left?: number;
   };
   responsive: ResponsiveOverrides;
   disabled: boolean;
@@ -201,10 +202,11 @@ export interface TemplateSection extends BaseTemplateElement {
 
 export interface ResponsiveProperties {
   position?: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
+    x?: number;
+    y?: number;
+    elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
+    // bottom?: number;
+    // left?: number;
   };
   style?: Record<string, unknown>;
   display?: string;

@@ -22,7 +22,7 @@ export const defaultTemplates: Template[] = [
           backgroundColor: 'rgba(255, 255, 255, 0.5)', // Fundal semi-transparent
           height: 300,
         },
-        position: { top: 0, left: 0, right: 0, bottom: 0 },
+        position: { y: 0, x: 0 },
         type: ElementType.Section,
         responsive: {},
         disabled: false,
@@ -33,7 +33,7 @@ export const defaultTemplates: Template[] = [
             name: 'Text',
             type: ElementType.Text,
             content: 'Invitație la Căsătorie',
-            position: { top: 50, left: 30, right: 0, bottom: 0 }, // Desktop: Centrat
+            position: { y: 50, x: 30, elementAlignment: 'auto' }, // Desky: Centrat
             style: {
               fontFamily: 'Playfair Display',
               fontSize: 36, // Număr (px intenție la 600px)
@@ -43,15 +43,15 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: aliniat stânga, font mai mic, lățime mai mare, poziție diferită
-                position: { top: 30, left: 5, right: 0, bottom: 0 },
+                position: { y: 30, x: 5, elementAlignment: 'auto' },
                 style: {
                   fontSize: 24, // Font mai mic pe mobil
                   textAlign: 'left',
                 },
               },
               tablet: {
-                // Pe tabletă: font intermediar, poziție similară desktop
-                position: { top: 30, left: 50, right: 0, bottom: 0 },
+                // Pe tabletă: font intermediar, poziție similară desky
+                position: { y: 30, x: 50, elementAlignment: 'auto' },
                 style: { fontSize: 30, textAlign: 'center' },
               },
             },
@@ -62,7 +62,7 @@ export const defaultTemplates: Template[] = [
             name: 'Text',
             type: ElementType.Text,
             content: '"O nouă poveste începe..."',
-            position: { top: 60, left: 50, right: 0, bottom: 0 }, // Desktop: sub titlu, centrat
+            position: { y: 60, x: 50, elementAlignment: 'auto' }, // Desky: sub titlu, centrat
             style: {
               fontFamily: 'Great Vibes', // Font caligrafic
               fontSize: 24, // Număr
@@ -72,12 +72,12 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
-                position: { top: 5, left: 65, right: 0, bottom: 0 },
+                position: { y: 5, x: 65, elementAlignment: 'auto' },
                 style: { fontSize: 18, textAlign: 'left' },
               },
               tablet: {
-                // Pe tabletă: font intermediar, poziție similară desktop
-                position: { top: 60, left: 50, right: 0, bottom: 0 },
+                // Pe tabletă: font intermediar, poziție similară desky
+                position: { y: 60, x: 50, elementAlignment: 'auto' },
                 style: { fontSize: 20, textAlign: 'center' },
               },
             },
@@ -90,7 +90,7 @@ export const defaultTemplates: Template[] = [
         id: 'section-main-details',
         style: { zIndex: 1, height: 300 }, // Sub antet, peste fundal
         name: 'Detalii eveniment',
-        position: { top: 50, left: 30, right: 0, bottom: 0 },
+        position: { y: 50, x: 30, elementAlignment: 'auto' },
         type: ElementType.Section,
         responsive: {},
         disabled: false,
@@ -101,7 +101,7 @@ export const defaultTemplates: Template[] = [
             name: 'Text',
             type: ElementType.Text,
             content: 'Andreea Popescu\nși\nIon Ionescu',
-            position: { top: 15, left: 50, right: 0, bottom: 0 }, // Desktop: centrat
+            position: { y: 15, x: 50, elementAlignment: 'auto' }, // Desky: centrat
             style: {
               fontFamily: 'Great Vibes',
               fontSize: 40, // Număr
@@ -112,7 +112,7 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, aliniat stânga
-                position: { top: 5, left: 5, right: 0, bottom: 0 }, // Poziție la începutul secțiunii pe mobil
+                position: { y: 5, x: 5, elementAlignment: 'auto' }, // Poziție la începutul secțiunii pe mobil
                 style: { fontSize: 30 },
               },
               tablet: {
@@ -127,7 +127,7 @@ export const defaultTemplates: Template[] = [
             disabled: false,
             name: 'Text',
             content: '***',
-            position: { top: 35, left: 50, right: 0, bottom: 0 }, // Desktop: sub nume, centrat
+            position: { y: 35, x: 50, elementAlignment: 'auto' }, // Desky: sub nume, centrat
             style: {
               fontFamily: 'Arial',
               fontSize: 18,
@@ -137,12 +137,12 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: sub nume, aliniat stânga, poziție diferită
-                position: { top: 25, left: 5, right: 0, bottom: 0 }, // Poziție sub nume pe mobil
+                position: { y: 25, x: 5, elementAlignment: 'auto' }, // Poziție sub nume pe mobil
                 style: { textAlign: 'left' },
               },
               tablet: {
-                // Pe tabletă: similar desktop
-                position: { top: 35, left: 50, right: 0, bottom: 0 },
+                // Pe tabletă: similar desky
+                position: { y: 35, x: 50, elementAlignment: 'auto' },
                 style: { textAlign: 'center' },
               },
             },
@@ -154,7 +154,7 @@ export const defaultTemplates: Template[] = [
             name: 'Text',
             content:
               'Sâmbătă, 21 Septembrie 2024\nOra 17:00\n\nRestaurant Panoramic\nStr. Speranței, Nr. 12\nOrașul Nostru',
-            position: { top: 45, left: 50, right: 0, bottom: 0 }, // Desktop: sub separator, centrat
+            position: { y: 45, x: 50, elementAlignment: 'auto' }, // Desky: sub separator, centrat
             style: {
               fontFamily: 'Playfair Display',
               fontSize: 20,
@@ -165,7 +165,7 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită (sub separator), aliniat stânga
-                position: { top: 35, left: 5, right: 0, bottom: 0 }, // Poziție sub separator pe mobil
+                position: { y: 35, x: 5, elementAlignment: 'auto' }, // Poziție sub separator pe mobil
                 style: { fontSize: 16 },
               },
               tablet: {
@@ -192,7 +192,7 @@ export const defaultTemplates: Template[] = [
             name: 'RSVP',
             disabled: false,
             type: ElementType.RSVP_ELEMENT,
-            position: { top: 0, left: 0, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
+            position: { y: 0, x: 0, elementAlignment: 'auto' }, // Desky: sub text link, centrat
             style: {
               fontSize: 16,
               color: '#ffffff',
@@ -201,7 +201,7 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
-                position: { top: 0, left: 0, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
+                position: { y: 0, x: 0, elementAlignment: 'auto' }, // Poziție sub text link pe mobil
                 style: { fontSize: 14 },
               },
               // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil

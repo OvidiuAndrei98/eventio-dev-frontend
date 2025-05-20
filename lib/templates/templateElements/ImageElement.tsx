@@ -52,24 +52,14 @@ const ImageElement = ({
 
   const baseStyle: React.CSSProperties = {
     top:
-      finalElementProps.position.top !== 0 &&
-      finalElementProps.position.top !== undefined
-        ? `${finalElementProps.position.top}%`
+      finalElementProps.position.y !== 0 &&
+      finalElementProps.position.y !== undefined
+        ? `${finalElementProps.position.y}%`
         : 'auto', // Explicit 'auto' or 'unset' if undefined
-    right:
-      finalElementProps.position.right !== 0 &&
-      finalElementProps.position.right !== undefined
-        ? `${finalElementProps.position.right}%`
-        : 'auto',
-    bottom:
-      finalElementProps.position.bottom !== 0 &&
-      finalElementProps.position.bottom !== undefined
-        ? `${finalElementProps.position.bottom}%`
-        : 'auto',
     left:
-      finalElementProps.position.left !== 0 &&
-      finalElementProps.position.left !== undefined
-        ? `${finalElementProps.position.left}%`
+      finalElementProps.position.x !== 0 &&
+      finalElementProps.position.x !== undefined
+        ? `${finalElementProps.position.x}%`
         : 'auto',
     backgroundRepeat: finalElementProps.backgroundImage ? 'no-repeat' : 'usent',
     backgroundSize: finalElementProps.backgroundImage ? 'cover' : 'usnet',

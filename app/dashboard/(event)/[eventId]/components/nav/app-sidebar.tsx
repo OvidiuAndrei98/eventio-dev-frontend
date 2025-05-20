@@ -75,7 +75,7 @@ export function AppSidebar({
         onClick: onClickNav,
       },
       {
-        title: 'Editare invitatie',
+        title: 'Setari invitatie',
         url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/settings`,
         icon: <Settings2 />,
         onClick: onClickNav,

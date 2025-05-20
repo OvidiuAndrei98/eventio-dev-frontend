@@ -1,8 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import SectionRenderer from './SectionRenderer';
-import { Template, TemplateElement } from '@/core/types';
+import { Template, TemplateElement, TemplateSection } from '@/core/types';
 import { BREAKPOINTS, getBreakpointName } from '../constants';
 import EditSectionRenderer from './EditSectionRenderer';
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  MouseSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
+import { DragEventData } from '@/app/dashboard/(event)/[eventId]/tables/page';
 
 interface TemplateRendererProps {
   invitationData: Template;
@@ -10,6 +21,14 @@ interface TemplateRendererProps {
   editMode?: boolean;
   onSelect?: (section: TemplateElement) => void;
   activeBreakpointValue?: string;
+  handleTemplateDragAndDrop?: (
+    elementId: string,
+    position: {
+      x: number;
+      y: number;
+      elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
+    }
+  ) => void;
 }
 
 const TemplateRenderer: React.FC<TemplateRendererProps> = ({
@@ -18,6 +37,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   editMode = false,
   onSelect,
   activeBreakpointValue,
+  handleTemplateDragAndDrop,
 }) => {
   // if (!invitationData || !invitationData.elements) {
   //   return <div>Nu s-au găsit date pentru invitație.</div>;
@@ -29,6 +49,19 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   >((activeBreakpointValue as 'mobile' | 'tablet' | 'desktop') ?? 'desktop');
   const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
+
+  const [activeElementData, setActiveElementData] = useState<{
+    modifiers: [];
+  } | null>(null);
+
+  // Used to prevent drag event to fire on a normal click
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
 
   useEffect(() => {
     const updateContainerWidth = () => {
@@ -55,18 +88,121 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     overflowY: 'auto',
   };
 
+  const getPropertyValue = (
+    data: TemplateElement,
+    defaultPropertyPath: string,
+    activeBreakpoint: 'desktop' | 'tablet' | 'mobile',
+    isPropertyResponsive: boolean
+  ): unknown => {
+    if (!data || !defaultPropertyPath) {
+      return undefined;
+    }
+
+    if (activeBreakpoint !== 'desktop' && isPropertyResponsive) {
+      const responsivePath = `responsive.${activeBreakpoint}.${defaultPropertyPath}`;
+
+      const responsiveValue = getNestedValue(data, responsivePath);
+
+      if (responsiveValue !== undefined) {
+        return responsiveValue;
+      }
+    }
+
+    const defaultValue = getNestedValue(data, defaultPropertyPath);
+
+    return defaultValue;
+  };
+
+  const handleDragStart = (e: DragStartEvent) => {
+    const { active } = e;
+    const activeData = active.data.current as DragEventData;
+    if (!activeData) {
+      return;
+    }
+    setActiveElementData(activeData);
+  };
+
+  const handleDragEnd = (e: DragEndEvent, section: TemplateSection) => {
+    const canvasElement: HTMLElement = document.querySelector(
+      '#' + section.id
+    ) as HTMLElement;
+
+    const movedElementIndex = section.elements.findIndex(
+      (x) => x.id === e.active.id
+    );
+
+    if (movedElementIndex !== -1) {
+      const currentElement = section.elements[movedElementIndex];
+      const rect = canvasElement.getBoundingClientRect();
+      const canvasWidth = rect.width; // Lățimea vizuală renderată a canvasului (în pixeli CSS)
+      const canvasHeight = rect.height; // Înălțimea vizuală renderată a canvasului (în pixeli CSS)
+
+      // --- REAPLICĂ ACEASTĂ AJUSTARE ---
+      // Această linie convertește delta din pixeli fizici în pixeli CSS,
+      // asigurând o consistență cu dimensiunile canvasului raportate de getBoundingClientRect().
+      const adjustedDeltaX = e.delta.x / window.devicePixelRatio;
+      const adjustedDeltaY = e.delta.y / window.devicePixelRatio;
+      // --- SFÂRȘIT AJUSTARE ---
+
+      // Converteste `delta` ajustată (în pixeli CSS) în procente.
+      const deltaX_percent = (adjustedDeltaX / canvasWidth) * 100;
+      const deltaY_percent = (adjustedDeltaY / canvasHeight) * 100;
+
+      const currentValue = getPropertyValue(
+        currentElement,
+        'position',
+        activeBreakpoint,
+        true
+      );
+
+      // Calculează noua poziție finală adunând deplasarea procentuală la poziția inițială procentuală.
+      let newX = ((currentValue as { x: number }).x ?? 0) + deltaX_percent;
+      let newY = ((currentValue as { y: number }).y ?? 0) + deltaY_percent;
+
+      // Limitează valorile pentru a se asigura că rămân în limitele 0-100%.
+      newX = Number(Math.max(0.1, Math.min(100, newX)).toFixed(1));
+      newY = Number(Math.max(0.1, Math.min(100, newY)).toFixed(1));
+
+      handleTemplateDragAndDrop &&
+        handleTemplateDragAndDrop(e.active.id as string, {
+          x: newX,
+          y: newY,
+          elementAlignment: (
+            currentValue as {
+              elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
+            }
+          ).elementAlignment,
+        });
+    } else {
+      console.warn(
+        `Elementul cu ID ${e.active?.id} nu a fost găsit pentru mutare.`
+      );
+    }
+  };
+
   return (
     <div ref={containerRef} style={invitationAreaStyle}>
       {sections?.map((section) => {
         return editMode && onSelect && slectedElementId ? (
-          <EditSectionRenderer
-            key={section.id}
-            sectionData={section}
-            activeBreakpoint={activeBreakpoint}
-            selectedElementId={slectedElementId}
-            isSelected={slectedElementId === section.id}
-            onSelect={onSelect}
-          />
+          <DndContext
+            sensors={sensors}
+            modifiers={
+              activeElementData
+                ? activeElementData.modifiers
+                : [restrictToParentElement]
+            }
+            onDragStart={handleDragStart}
+            onDragEnd={(e) => handleDragEnd(e, section)}
+          >
+            <EditSectionRenderer
+              key={section.id}
+              sectionData={section}
+              activeBreakpoint={activeBreakpoint}
+              selectedElementId={slectedElementId}
+              isSelected={slectedElementId === section.id}
+              onSelect={onSelect}
+            />
+          </DndContext>
         ) : (
           <SectionRenderer
             key={section.id}

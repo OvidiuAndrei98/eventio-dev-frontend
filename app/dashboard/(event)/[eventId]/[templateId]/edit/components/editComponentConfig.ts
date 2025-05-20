@@ -61,7 +61,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
     },
     position: {
       responsive: true,
-      label: 'Poziție Element (%)',
+      label: 'Poziție Element',
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.PositionInput,
       min: 0,

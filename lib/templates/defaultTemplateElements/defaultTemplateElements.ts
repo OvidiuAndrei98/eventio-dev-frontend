@@ -33,26 +33,26 @@ export const defaultElements = {
           name: 'RSVP',
           disabled: false,
           type: ElementType.RSVP_ELEMENT,
-          position: { top: 0, left: 0, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
+          position: {}, // Desktop: sub text link, centrat
           style: {
             fontSize: 16,
             color: '#ffffff',
             zIndex: 3,
           },
-          responsive: {
-            mobile: {
-              // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
-              position: { top: 0, left: 0, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
-              style: { fontSize: 14 },
-            },
-            // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil
-          },
+          responsive: {},
         },
       ],
       position: {},
       disabled: false,
       responsive: {},
-      style: { height: 'auto', justifyContent: 'center' },
+      style: {
+        height: 'auto',
+        justifyContent: 'center' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
     };
   },
   // >>>>>>>>>>ELEMENTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -65,7 +65,14 @@ export const defaultElements = {
         .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
-      position: {},
+      position: {
+        x: 40,
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
       content: 'text',
       disabled: false,
       responsive: {},
@@ -81,7 +88,13 @@ export const defaultElements = {
         .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
-      position: {},
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
       disabled: false,
       responsive: {},
       backgroundImage: {
@@ -104,7 +117,13 @@ export const defaultElements = {
       name: elementName.toUpperCase(),
       disabled: false,
       type: ElementType.RSVP_ELEMENT,
-      position: { top: 0, left: 0, right: 0, bottom: 0 }, // Desktop: sub text link, centrat
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      }, // Desktop: sub text link, centrat
       style: {
         fontSize: 16,
         color: '#ffffff',
@@ -113,7 +132,13 @@ export const defaultElements = {
       responsive: {
         mobile: {
           // Pe mobil: font mai mic, poziție diferită, lățime mai mare, padding/border-radius scalate (din cauza styleScaleFactor)
-          position: { top: 0, left: 0, right: 0, bottom: 0 }, // Poziție sub text link pe mobil
+          position: {
+            elementAlignment: 'auto' as
+              | 'auto'
+              | 'center'
+              | 'self-start'
+              | 'self-end',
+          }, // Poziție sub text link pe mobil
           style: { fontSize: 14 },
         },
         // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil

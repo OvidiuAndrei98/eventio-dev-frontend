@@ -99,7 +99,6 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
       {validElements.map((element) => {
         const ComponentToRender =
           elementComponentMap[element.type as keyof typeof elementComponentMap];
-
         switch (element.type) {
           case ElementType.Text:
             return (
@@ -107,7 +106,6 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 selectedElementId={selectedElementId}
                 isSelected={selectedElementId === element.id}
                 onSelect={onSelect}
-                key={element.id}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
