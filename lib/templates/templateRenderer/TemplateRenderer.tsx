@@ -17,7 +17,7 @@ import { DragEventData } from '@/app/dashboard/(event)/[eventId]/tables/page';
 
 interface TemplateRendererProps {
   invitationData: Template;
-  slectedElementId?: string;
+  selectedElementId?: string;
   editMode?: boolean;
   onSelect?: (section: TemplateElement) => void;
   activeBreakpointValue?: string;
@@ -33,7 +33,7 @@ interface TemplateRendererProps {
 
 const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   invitationData,
-  slectedElementId,
+  selectedElementId,
   editMode = false,
   onSelect,
   activeBreakpointValue,
@@ -133,20 +133,6 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
     if (movedElementIndex !== -1) {
       const currentElement = section.elements[movedElementIndex];
-      const rect = canvasElement.getBoundingClientRect();
-      const canvasWidth = rect.width; // Lățimea vizuală renderată a canvasului (în pixeli CSS)
-      const canvasHeight = rect.height; // Înălțimea vizuală renderată a canvasului (în pixeli CSS)
-
-      // --- REAPLICĂ ACEASTĂ AJUSTARE ---
-      // Această linie convertește delta din pixeli fizici în pixeli CSS,
-      // asigurând o consistență cu dimensiunile canvasului raportate de getBoundingClientRect().
-      const adjustedDeltaX = e.delta.x / window.devicePixelRatio;
-      const adjustedDeltaY = e.delta.y / window.devicePixelRatio;
-      // --- SFÂRȘIT AJUSTARE ---
-
-      // Converteste `delta` ajustată (în pixeli CSS) în procente.
-      const deltaX_percent = (adjustedDeltaX / canvasWidth) * 100;
-      const deltaY_percent = (adjustedDeltaY / canvasHeight) * 100;
 
       const currentValue = getPropertyValue(
         currentElement,
@@ -155,9 +141,12 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         true
       );
 
-      // Calculează noua poziție finală adunând deplasarea procentuală la poziția inițială procentuală.
-      let newX = ((currentValue as { x: number }).x ?? 0) + deltaX_percent;
-      let newY = ((currentValue as { y: number }).y ?? 0) + deltaY_percent;
+      let newX =
+        ((currentValue as { x: number }).x ?? 0) +
+        (e.delta.x / canvasElement.offsetWidth) * 100;
+      let newY =
+        ((currentValue as { y: number }).y ?? 0) +
+        (e.delta.y / canvasElement.offsetHeight) * 100;
 
       // Limitează valorile pentru a se asigura că rămân în limitele 0-100%.
       newX = Number(Math.max(0.1, Math.min(100, newX)).toFixed(1));
@@ -183,7 +172,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   return (
     <div ref={containerRef} style={invitationAreaStyle}>
       {sections?.map((section) => {
-        return editMode && onSelect && slectedElementId ? (
+        return editMode && onSelect && selectedElementId ? (
           <DndContext
             sensors={sensors}
             modifiers={
@@ -198,8 +187,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
               key={section.id}
               sectionData={section}
               activeBreakpoint={activeBreakpoint}
-              selectedElementId={slectedElementId}
-              isSelected={slectedElementId === section.id}
+              selectedElementId={selectedElementId}
+              isSelected={selectedElementId === section.id}
               onSelect={onSelect}
             />
           </DndContext>

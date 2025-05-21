@@ -492,7 +492,7 @@ const EditPage = ({
           >
             <TemplateRenderer
               invitationData={template}
-              slectedElementId={selectedItemId}
+              selectedElementId={selectedItemId}
               editMode={true}
               onSelect={handleSectionSelect}
               activeBreakpointValue={editViewMode}
