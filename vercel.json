@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/__/auth/:path*",
-      "destination": "planyvite-18d36.firebaseapp.com/__/auth/:path*"
+      "destination": "https://planyvite-18d36.firebaseapp.com/__/auth/:path*"
     },
     {
       "source": "/:path*",
