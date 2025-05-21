@@ -233,6 +233,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
     const auth = firebaseAuth;
     signInWithPopup(auth, provider)
       .then(async (result) => {
+        setAuthenticationState(AuthenticationState.Unknown);
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         if (credential) {
@@ -258,12 +259,14 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
               displayName: result.user.displayName,
               photoURL: result.user.photoURL,
             };
-            setLoggedInUser(user);
             await addUser(user);
+            setLoggedInUser(user);
+            setAuthenticationState(AuthenticationState.Authenticated);
           }
         }
       })
       .catch((error) => {
+        setAuthenticationState(AuthenticationState.Unauthenticated);
         console.log(error);
         setUserLoading(false);
       });
