@@ -64,19 +64,24 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   );
 
   useEffect(() => {
-    const updateContainerWidth = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.offsetWidth;
-        setActiveBreakpoint(getBreakpointName(width));
-      }
-    };
+    setActiveBreakpoint(
+      activeBreakpointValue as 'mobile' | 'tablet' | 'desktop'
+    );
+    if (!editMode) {
+      const updateContainerWidth = () => {
+        if (containerRef.current) {
+          const width = containerRef.current.offsetWidth;
+          setActiveBreakpoint(getBreakpointName(width));
+        }
+      };
 
-    updateContainerWidth();
-    window.addEventListener('resize', updateContainerWidth);
+      updateContainerWidth();
+      window.addEventListener('resize', updateContainerWidth);
 
-    return () => {
-      window.removeEventListener('resize', updateContainerWidth);
-    };
+      return () => {
+        window.removeEventListener('resize', updateContainerWidth);
+      };
+    }
   }, [activeBreakpointValue]);
 
   const invitationAreaStyle: React.CSSProperties = {

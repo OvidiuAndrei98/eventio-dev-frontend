@@ -95,7 +95,6 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
       {isHovered && (
         <div className="absolute top-0 left-0 bottom-0 right-0 !bg-purple-100/20 transition-colors duration-200"></div>
       )}
-
       {validElements.map((element) => {
         const ComponentToRender =
           elementComponentMap[element.type as keyof typeof elementComponentMap];

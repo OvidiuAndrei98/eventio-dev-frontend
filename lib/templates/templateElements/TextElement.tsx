@@ -68,13 +68,13 @@ const TextElement = ({
   });
 
   const baseStyle: React.CSSProperties = {
+    ...finalElementProps.style,
     top: `${finalElementProps.position.y}%`,
 
     left:
       finalElementProps.position.elementAlignment !== 'auto'
         ? 'auto'
         : `${finalElementProps.position.x}%`,
-    ...finalElementProps.style,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
     alignSelf: finalElementProps.position.elementAlignment,
