@@ -1,5 +1,6 @@
 'use client';
 import '@/styles/globals.css';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
@@ -23,7 +24,10 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            <AuthenticationBoundary>{children}</AuthenticationBoundary>
+            <AuthenticationBoundary>
+              {children}
+              <SpeedInsights />
+            </AuthenticationBoundary>
           </ConfigProvider>
         </AntdRegistry>
         <Toaster />
