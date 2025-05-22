@@ -117,4 +117,36 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
   },
+  blob: {
+    name: {
+      label: 'Nume Element',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.width': {
+      label: 'Latime Secțiune (%)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      max: 100,
+      responsive: true,
+    },
+    'style.color': {
+      label: 'Culoare text',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    position: {
+      responsive: true,
+      label: 'Poziție Element (%)',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.PositionInput,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
+  },
 };

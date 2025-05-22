@@ -1,5 +1,11 @@
 import { ElementType } from '@/core/types';
-import { FormInputIcon, ImageIcon, SectionIcon, TextIcon } from 'lucide-react';
+import {
+  FormInputIcon,
+  ImageIcon,
+  SectionIcon,
+  ShapesIcon,
+  TextIcon,
+} from 'lucide-react';
 
 // !important -> add here all the elements to be available in the editor for the user to be selected
 
@@ -36,5 +42,11 @@ export const availableElementTypes = [
     name: 'RSVP',
     icon: FormInputIcon,
     availableFor: [ElementType.RSVP_SECTION],
+  },
+  {
+    type: ElementType.Blob,
+    name: 'Blob',
+    icon: ShapesIcon,
+    availableFor: [ElementType.Section],
   },
 ];

@@ -23,6 +23,7 @@ interface PositionValue {
 
 interface PositionEditorWidgetProps {
   config: PropertyEditorConfig;
+  version: number;
   value: PositionValue | undefined | null;
   onChange: (newValue: PositionValue) => void;
 }
@@ -59,13 +60,14 @@ const internalStringToDataValue = (
 
 const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
   config,
+  version,
   value,
   onChange,
 }) => {
   // Ensure a safe starting object for data
   const safeValue = useMemo(() => {
     return value || {};
-  }, [value]);
+  }, [value, version]);
 
   // Internal state for the RAW STRING values currently in the input fields.
   const [top, setTop] = useState<string>(

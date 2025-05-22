@@ -138,8 +138,25 @@ export const defaultElements = {
           }, // Poziție sub text link pe mobil
           style: { fontSize: 14 },
         },
-        // Nu am adăugat display: none aici, dar ai putea dacă vrei să ascunzi link-ul pe mobil
       },
+    };
+  },
+  blob: (elementName: string) => {
+    return {
+      id: `element-${crypto.randomUUID()}`,
+      name: elementName,
+      disabled: false,
+      blobName: 'blob_01',
+      type: ElementType.Blob,
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
+      style: {},
+      responsive: {},
     };
   },
 };

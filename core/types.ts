@@ -155,6 +155,7 @@ export enum ElementType {
   Section = 'section',
   RSVP_SECTION = 'rsvp-section',
   RSVP_ELEMENT = 'rsvp',
+  Blob = 'blob',
 }
 
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
@@ -232,8 +233,15 @@ export interface RsvpTemplatelement extends BaseTemplateElement {
   title: string;
 }
 
+export interface BlobTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.Blob;
+  blobName: string;
+}
+
 export type TemplateElement =
   | BaseTemplateElement
   | TextTemplateElement
   | ImageTemplateElement
+  | BlobTemplateElement
   | TemplateSection;

@@ -149,7 +149,9 @@ const EditorSectionCard = ({
       section: TemplateSection
     ) => {
       const newElement: TemplateElement =
-        defaultElements[elementType](elementName);
+        defaultElements[elementType as keyof typeof defaultElements](
+          elementName
+        );
 
       onAddElement(newElement, section.id);
 

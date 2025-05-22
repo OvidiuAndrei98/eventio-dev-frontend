@@ -4,11 +4,14 @@ import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
+import BlobsElement from '../templateElements/BlobsElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
   [ElementType.Image]: ImageElement,
   [ElementType.RSVP_ELEMENT]: RsvpElement,
+  [ElementType.Blob]: BlobsElement,
+
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
@@ -84,6 +87,15 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 editMode={true}
                 eventId={eventId}
                 userId={userId}
+              />
+            );
+          case ElementType.Blob:
+            return (
+              <ComponentToRender
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
               />
             );
           default:

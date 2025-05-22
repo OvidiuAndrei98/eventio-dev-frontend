@@ -128,6 +128,7 @@ const PropertyPanel = ({
             return (
               <PositionEditorWidget
                 key={propertyPath}
+                version={Date.now()}
                 config={config}
                 value={
                   currentValue as

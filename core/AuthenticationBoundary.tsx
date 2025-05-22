@@ -187,6 +187,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       setUserLoading(false);
       setAuthenticationState(AuthenticationState.Authenticated);
     } catch (error) {
+      setAuthenticationState(AuthenticationState.Unauthenticated);
       console.error('Error fetching user by ID:', error);
       setUserLoading(false);
     }
