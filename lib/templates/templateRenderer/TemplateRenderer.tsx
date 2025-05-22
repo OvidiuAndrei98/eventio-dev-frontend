@@ -154,8 +154,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         (e.delta.y / canvasElement.offsetHeight) * 100;
 
       // Limitează valorile pentru a se asigura că rămân în limitele 0-100%.
-      newX = Number(Math.max(0.1, Math.min(100, newX)).toFixed(1));
-      newY = Number(Math.max(0.1, Math.min(100, newY)).toFixed(1));
+      newX = Number(Math.max(0, Math.min(100, newX)).toFixed(1));
+      newY = Number(Math.max(0, Math.min(100, newY)).toFixed(1));
 
       handleTemplateDragAndDrop &&
         handleTemplateDragAndDrop(e.active.id as string, {

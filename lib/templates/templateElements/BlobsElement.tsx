@@ -78,11 +78,11 @@ const BlobsElement = ({
         : `${finalElementProps.position.x}%`,
     alignSelf: finalElementProps.position.elementAlignment,
     width: `${finalElementProps.style.width}%`,
+    padding: 0,
   };
 
   const elementStyle = {
     position: 'absolute' as const,
-    padding: 0,
     ...baseStyle,
   };
   return (
@@ -92,21 +92,22 @@ const BlobsElement = ({
       {...attributes}
       className={` ${
         editMode && isSelected && selectedElementId === id
-          ? '!border-2 !border-[#CB93D9]'
+          ? 'ring-inset ring-2 ring-[#CB93D9]'
           : ''
       } 
     ${
-      editMode && !isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''
-    }  border-1
-    border-[transparent] z-3 p-2 !box-border${
-      editMode
-        ? disabled
-          ? 'opacity-[0.5]'
-          : 'opacity-[1]'
-        : disabled
-        ? 'hidden'
-        : 'block'
-    }`}
+      editMode && !isSelected && isHovered
+        ? 'ring-inset ring-1 ring-[#CB93D9]'
+        : ''
+    } z-3 p-2 ${
+        editMode
+          ? disabled
+            ? 'opacity-[0.5]'
+            : 'opacity-[1]'
+          : disabled
+          ? 'hidden'
+          : 'block'
+      }`}
       id={id}
       style={{
         ...elementStyle,

@@ -155,7 +155,7 @@ export const defaultElements = {
           | 'self-start'
           | 'self-end',
       },
-      style: {},
+      style: { width: 100 },
       responsive: {},
     };
   },
