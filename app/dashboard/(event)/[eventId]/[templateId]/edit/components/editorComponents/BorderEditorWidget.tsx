@@ -18,7 +18,7 @@ import { AggregationColor } from 'antd/es/color-picker/color';
 import Input from 'antd/es/input/Input';
 import React, { useEffect, useState, useCallback } from 'react';
 
-interface BorderEditorWidgettProps {
+interface BorderEditorWidgetProps {
   config: PropertyEditorConfig;
   value: { size: string; color: string; sides: string } | undefined | null;
   onChange: (newValue: { size: string; color: string; sides: string }) => void;
@@ -28,7 +28,7 @@ const BorderEditorWidget = ({
   config,
   value,
   onChange,
-}: BorderEditorWidgettProps) => {
+}: BorderEditorWidgetProps) => {
   const [selectedBorderPositions, setSelectedBordersPositions] = useState<
     string[]
   >([]);
