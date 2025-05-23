@@ -169,6 +169,11 @@ a {
   width: 100% !important;
 }
 
+.border-editor-input {
+  padding: 0 7px;
+  margin: 0;
+}
+
 @keyframes rotation {
   0% {
     transform: rotate(0deg);

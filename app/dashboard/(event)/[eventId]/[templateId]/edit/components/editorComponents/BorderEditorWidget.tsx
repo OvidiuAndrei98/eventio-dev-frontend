@@ -256,6 +256,7 @@ const BorderEditorWidget = ({
       </div>
       <div className="flex gap-2 p-1 ring-1 ring-gray-300 rounded-md">
         <Input
+          className="border-editor-input"
           size="small"
           value={borderSize}
           onChange={handleBorderSizeChange}
