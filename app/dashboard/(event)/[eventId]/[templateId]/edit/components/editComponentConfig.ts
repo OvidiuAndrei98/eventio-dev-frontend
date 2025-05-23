@@ -148,5 +148,11 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       max: 100,
       step: 1,
     },
+    blobName: {
+      responsive: false,
+      label: 'Selectare model',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.BlobSelector,
+    },
   },
 };

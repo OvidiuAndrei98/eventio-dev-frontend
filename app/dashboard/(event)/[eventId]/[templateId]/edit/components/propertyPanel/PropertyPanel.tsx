@@ -7,6 +7,7 @@ import ColorEditorWidget from '../editorComponents/ColorEditorWidget';
 import PositionEditorWidget from '../editorComponents/PositionEditorWidget';
 import { getNestedValue } from '../../utils/objectUtils';
 import ImageUploadWidget from '../editorComponents/ImageUploadWidget';
+import BlobSelectorWidget from '../editorComponents/BlobSelectorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -166,6 +167,21 @@ const PropertyPanel = ({
                   }
                 }
                 templateId={templateId}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.BlobSelector:
+            return (
+              <BlobSelectorWidget
+                key={propertyPath}
+                config={config}
+                value={currentValue as string}
                 onChange={(newValue) =>
                   handlePropertyChanged(
                     propertyPath,

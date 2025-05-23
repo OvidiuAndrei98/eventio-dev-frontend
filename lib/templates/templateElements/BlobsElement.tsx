@@ -146,8 +146,7 @@ const BlobsElement = ({
           )}
         </>
       )}
-      {templateBlobsFactory.blob_1()}
-      {/* <templateBlobsFactory.blob_1 /> */}
+      {templateBlobsFactory[blobName as keyof typeof templateBlobsFactory]()}
     </div>
   );
 };

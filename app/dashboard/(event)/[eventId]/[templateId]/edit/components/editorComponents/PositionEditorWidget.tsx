@@ -319,7 +319,7 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
   const gridContainerStyle: React.CSSProperties = {
     display: 'grid',
     gridTemplateColumns: '1fr auto 1fr',
-    gridTemplateRows: '1fr auto 1fr',
+    gridTemplateRows: '1fr auto',
     gap: '5px',
     alignItems: 'center',
     justifyItems: 'center',

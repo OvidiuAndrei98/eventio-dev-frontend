@@ -146,7 +146,7 @@ export const defaultElements = {
       id: `element-${crypto.randomUUID()}`,
       name: elementName,
       disabled: false,
-      blobName: 'blob_01',
+      blobName: 'blob_1',
       type: ElementType.Blob,
       position: {
         elementAlignment: 'auto' as

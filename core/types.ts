@@ -121,6 +121,7 @@ export enum EditorWidgetType {
   TextArea = 'TextArea',
   PositionInput = 'PositionInput',
   ImageUpload = 'ImageUpload',
+  BlobSelector = 'BlobSelector',
 }
 
 export enum PropertyDataType {
