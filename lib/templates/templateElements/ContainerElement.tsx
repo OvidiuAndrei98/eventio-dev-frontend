@@ -75,7 +75,6 @@ const ContainerElement = ({
       finalElementProps.position.elementAlignment !== 'auto'
         ? 'auto'
         : `${finalElementProps.position.x}%`,
-        backgroundColor: finalElementProps.style
     borderStyle: `${finalElementProps.borderStyles.sides}`,
     borderWidth: `${finalElementProps.borderStyles.size}px`,
     borderColor: `${finalElementProps.borderStyles.color}`,
