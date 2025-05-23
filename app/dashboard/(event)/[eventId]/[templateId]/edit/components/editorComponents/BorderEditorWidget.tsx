@@ -13,7 +13,8 @@ import {
   DashOutlined,
   LineOutlined,
 } from '@ant-design/icons';
-import { ColorPicker, Radio, Switch } from 'antd';
+import { ColorPicker, Radio, RadioChangeEvent } from 'antd';
+import { AggregationColor } from 'antd/es/color-picker/color';
 import Input from 'antd/es/input/Input';
 import React, { useEffect, useState, useCallback } from 'react';
 
@@ -94,9 +95,6 @@ const BorderEditorWidget = ({
         if (bottom !== 'none') positions.push('bottom');
         if (left !== 'none') positions.push('left');
 
-        // Determine if border is active based on 'none' presence
-        const anyBorderActive = sidesArray.some((side) => side !== 'none');
-
         if (
           positions.length === 4 &&
           top === right &&
@@ -149,8 +147,8 @@ const BorderEditorWidget = ({
   };
 
   // Handler for border style changes
-  const handleBorderStyleChange = (e: any) => {
-    const style = e.target.value as 'solid' | 'dashed';
+  const handleBorderStyleChange = (e: RadioChangeEvent) => {
+    const style = (e.target as HTMLInputElement).value as 'solid' | 'dashed';
     setBorderStyle(style);
     // Pass the NEW style, but current (latest) values for others
     triggerChange(selectedBorderPositions, style, borderSize, borderColor);
@@ -165,7 +163,7 @@ const BorderEditorWidget = ({
   };
 
   // Handler for border color changes
-  const handleBorderColorChange = (color: any) => {
+  const handleBorderColorChange = (color: AggregationColor) => {
     const hexColor = typeof color === 'string' ? color : color.toHexString();
     setBorderColor(hexColor);
     // Pass the NEW color, but current (latest) values for others

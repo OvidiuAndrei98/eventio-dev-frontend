@@ -180,6 +180,15 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       max: 100,
       responsive: true,
     },
+    'style.borderRadius': {
+      label: 'Rotunjire colturi (%)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      max: 100,
+      step: 1,
+      responsive: true,
+    },
     'style.backgroundColor': {
       label: 'Culoare text',
       dataType: PropertyDataType.Color,
