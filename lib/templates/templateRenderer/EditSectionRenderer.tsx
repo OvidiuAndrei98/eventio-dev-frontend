@@ -9,6 +9,7 @@ import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
+import ContainerElement from '../templateElements/ContainerElement';
 // import { template } from '@antv/g2plot/lib/utils';
 
 const elementComponentMap = {
@@ -16,6 +17,8 @@ const elementComponentMap = {
   [ElementType.Image]: ImageElement,
   [ElementType.RSVP_ELEMENT]: RsvpElement,
   [ElementType.Blob]: BlobsElement,
+  [ElementType.Container]: ContainerElement,
+
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
@@ -138,6 +141,19 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
               />
             );
           case ElementType.Blob:
+            return (
+              <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                onSelect={onSelect}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
+              />
+            );
+          case ElementType.Container:
             return (
               <ComponentToRender
                 selectedElementId={selectedElementId}

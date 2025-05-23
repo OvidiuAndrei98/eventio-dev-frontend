@@ -72,7 +72,7 @@ const DashboardEventPage = () => {
     <div
       className={`dashboard-content-container ${shrinkElement ? 'shrink' : ''}`}
     >
-      <div className="content-left ">
+      <div className="content-left flex flex-col gap-4">
         <div className="left-card">
           <div
             style={{
@@ -87,10 +87,10 @@ const DashboardEventPage = () => {
             </span>
             <span
               className={`text-sm ${
-                eventInstance?.invitationActive ? 'text-green' : 'text-red-500'
+                eventInstance?.eventActive ? 'text-green' : 'text-red-500'
               }`}
             >
-              {eventInstance?.invitationActive ? (
+              {eventInstance?.eventActive ? (
                 <Tag bordered={false} color="success">
                   Invitatie activa
                 </Tag>
@@ -111,23 +111,10 @@ const DashboardEventPage = () => {
           <Button
             icon={<SendOutlined />}
             type="primary"
-            disabled={!eventInstance?.invitationActive}
+            disabled={!eventInstance?.eventActive}
           >
             Trimite Invitatia
           </Button>
-          {/* <div className="confirmations-left">
-            to be removed
-            <div className="accepted dotted-card">
-              <span className="number">3</span>
-              <span className="text secondary-text-color-light">
-                Confirmari
-              </span>
-            </div>
-            <div className="declined dotted-card">
-              <span className="number">1</span>
-              <span className="text secondary-text-color-light">Refuzuri</span>
-            </div>
-          </div> */}
           <Tag
             className="!text-wrap"
             bordered={false}
@@ -135,6 +122,17 @@ const DashboardEventPage = () => {
             color="warning"
           >
             Linkul o sa functioneze doar cand invitatia este activa
+          </Tag>
+        </div>
+        <div className="left-card !p-2">
+          <Tag
+            className="!text-wrap !m-0"
+            bordered={false}
+            icon={<ExclamationCircleOutlined />}
+            color="processing"
+          >
+            Pentru a importa o invitatie externa, se poate seta in format
+            png/jpg intr-o sectiune goala.
           </Tag>
         </div>
       </div>

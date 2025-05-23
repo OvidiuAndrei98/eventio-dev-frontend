@@ -44,23 +44,21 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
     values: RsvpFormData
   ) => {
     // --- Pregatirea Datelor pentru Salvare (Crearea obiectelor IndividualGuest) ---
-    const guestsToSave: Guest[] = []; // Array-ul care va contine toate obiectele IndividualGuest gata de salvare
-    const submissionId = crypto.randomUUID(); // <--- Genereaza un ID unic pentru ACEASTA submitere a formularului
+    const guestsToSave: Guest[] = [];
+    const submissionId = crypto.randomUUID();
     const subbmisionTime = Date.now();
 
-    // 1. Creeaza obiectul IndividualGuest pentru persoana principală (contactul)
     if (values.isAttending === 'yes' && values.primaryGuestName?.trim()) {
-      // Asigura-te ca numele principal nu este gol (desi validarea de sus ar trebui sa prinda asta)
       guestsToSave.push({
-        guestId: crypto.randomUUID(), // <--- Genereaza un ID unic PENTRU DOCUMENTUL acestei persoane in Firestore
-        submissionId: submissionId, // <--- Atribuie ID-ul unic al submitarii
-        name: values.primaryGuestName.trim(), // Numele persoanei principale (fara spatii la capete)
-        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '', // Restrictiile persoanei principale (string gol daca nu sunt)
-        isAttending: values.isAttending === 'yes', // Boolean pe baza selectiei
-        eventId: eventId, // ID-ul evenimentului
-        tableId: null, // Initial, invitatul nu are alocata o masa
-        date: subbmisionTime, // Timestamp-ul submitarii
-        isPrimaryContact: true, // <--- Marcheaza aceasta persoana ca fiind contactul principal al grupului
+        guestId: crypto.randomUUID(),
+        submissionId: submissionId,
+        name: values.primaryGuestName.trim(),
+        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
+        isAttending: values.isAttending === 'yes',
+        eventId: eventId,
+        tableId: null,
+        date: subbmisionTime,
+        isPrimaryContact: true,
         primaryContactPhone: values.primaryContactPhone?.trim() || '',
         totalGuests:
           typeof values.totalGuests === 'number' ? values.totalGuests : 1,
@@ -73,20 +71,18 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
       typeof values.totalGuests === 'number' &&
       values.totalGuests > 1
     ) {
-      // Itereaza prin array-ul cu detaliile invitatilor suplimentari
       for (const guestDetails of values.additionalGuestsDetails) {
         if (guestDetails.name.trim()) {
-          // Asigura-te ca numele invitatului suplimentar nu este gol (validarea de sus ar trebui sa prinda asta)
           guestsToSave.push({
-            guestId: crypto.randomUUID(), // <--- Genereaza un ID unic PENTRU DOCUMENTUL acestei persoane in Firestore
-            submissionId: submissionId, // <--- Atribuie ACELASI ID unic al submitarii pentru a lega grupul
-            name: guestDetails.name.trim(), // Numele invitatului suplimentar (fara spatii la capete)
-            dietaryRestrictions: guestDetails.dietaryRestrictions?.trim() || '', // Restrictiile invitatului suplimentar (string gol daca nu sunt)
-            isAttending: true, // Ei participa, fiind inclusi in numarul total > 1 si fiind validati
-            eventId: eventId, // ID-ul evenimentului
-            tableId: null, // Initial, nu au alocata o masa
-            date: subbmisionTime, // Timestamp-ul submitarii (acelasi ca pentru principal)
-            isPrimaryContact: false, // <--- Marcheaza aceasta persoana ca NU fiind contactul principal
+            guestId: crypto.randomUUID(),
+            submissionId: submissionId,
+            name: guestDetails.name.trim(),
+            dietaryRestrictions: guestDetails.dietaryRestrictions?.trim() || '',
+            isAttending: true,
+            eventId: eventId,
+            tableId: null,
+            date: subbmisionTime,
+            isPrimaryContact: false,
           });
         }
       }
@@ -94,25 +90,23 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
 
     if (values.isAttending === 'no' && values.primaryGuestName?.trim()) {
       guestsToSave.push({
-        guestId: crypto.randomUUID(), // ID unic pentru documentul "nu participa"
-        submissionId: submissionId, // ID-ul submitarii
-        name: values.primaryGuestName.trim(), // Numele celui care a raspuns "nu"
-        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '', // Restrictii (probabil irelevante, dar le poti salva)
-        isAttending: false, // <--- Marcheaza explicit ca NU participa
+        guestId: crypto.randomUUID(),
+        submissionId: submissionId,
+        name: values.primaryGuestName.trim(),
+        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
+        isAttending: false,
         eventId: eventId,
-        tableId: null, // Fara masa
+        tableId: null,
         date: subbmisionTime, // Timestamp
-        isPrimaryContact: true, // Inca contactul principal pentru acest raspuns "nu"
+        isPrimaryContact: true,
         primaryContactPhone: values.primaryContactPhone?.trim() || '',
       });
-      // De obicei, daca raspunsul e "nu", nu sunt persoane suplimentare de salvat.
     }
 
     // --- Apelul Serviciului pentru Salvarea Datelor ---
-    // Verifică dacă există cel puțin un invitat de salvat (ar trebui să fie cazul dacă validarea a trecut)
     if (guestsToSave.length === 0) {
       console.warn('No valid guest data to save after processing form.');
-      toast.info('No guest data to save.'); // Poate ar trebui sa fie o eroare de validare aici
+      toast.info('No guest data to save.');
       return;
     }
 

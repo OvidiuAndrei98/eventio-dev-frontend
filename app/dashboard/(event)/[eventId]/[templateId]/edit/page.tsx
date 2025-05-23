@@ -412,7 +412,7 @@ const EditPage = ({
             </Button>
           </div>
         </div>
-        <div className="relative w-full h-[calc(100dvh-142px)] bg-[#F1F5F9] p-2 grid grid-cols-[250px_1fr_200px] gap-2">
+        <div className="relative w-full h-[calc(100dvh-142px)] bg-[#F1F5F9] p-2 grid grid-cols-[250px_1fr_210px] gap-2">
           <div className="bg-white shadow rounded p-4 flex flex-col items-center overflow-y-auto">
             <AddSectionModal
               placeholder="Cauta sectiuni"

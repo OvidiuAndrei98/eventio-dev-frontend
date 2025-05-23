@@ -159,4 +159,27 @@ export const defaultElements = {
       responsive: {},
     };
   },
+  container: (elementName: string) => {
+    return {
+      id: `element-${crypto.randomUUID()}`,
+      name: elementName,
+      disabled: false,
+      type: ElementType.Container,
+      borderStyles: {
+        size: '1',
+        color: '#1677ff',
+        sides: 'none none none none',
+      },
+      position: {
+        x: 40,
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
+      style: { width: 100, height: 100 },
+      responsive: {},
+    };
+  },
 };

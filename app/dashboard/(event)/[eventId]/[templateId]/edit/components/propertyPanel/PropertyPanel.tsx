@@ -8,6 +8,7 @@ import PositionEditorWidget from '../editorComponents/PositionEditorWidget';
 import { getNestedValue } from '../../utils/objectUtils';
 import ImageUploadWidget from '../editorComponents/ImageUploadWidget';
 import BlobSelectorWidget from '../editorComponents/BlobSelectorWidget';
+import BorderEditorWidget from '../editorComponents/BorderEditorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -182,6 +183,27 @@ const PropertyPanel = ({
                 key={propertyPath}
                 config={config}
                 value={currentValue as string}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.BorderEditor:
+            return (
+              <BorderEditorWidget
+                key={propertyPath}
+                config={config}
+                value={
+                  currentValue as {
+                    size: string;
+                    color: string;
+                    sides: string;
+                  }
+                }
                 onChange={(newValue) =>
                   handlePropertyChanged(
                     propertyPath,

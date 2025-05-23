@@ -70,7 +70,7 @@ const BlobsElement = ({
 
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
-    top: `${finalElementProps.position.y}%`,
+    top: `${finalElementProps.position.y ?? 0}%`,
 
     left:
       finalElementProps.position.elementAlignment !== 'auto'

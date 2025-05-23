@@ -27,7 +27,6 @@ export interface EventInstance {
   templateId: string;
   eventDate: string;
   eventTemplateThumbnailUrl: string;
-  invitationActive: boolean;
   eventInvitationLink: string;
 }
 
@@ -122,6 +121,7 @@ export enum EditorWidgetType {
   PositionInput = 'PositionInput',
   ImageUpload = 'ImageUpload',
   BlobSelector = 'BlobSelector',
+  BorderEditor = 'BorderEditor',
 }
 
 export enum PropertyDataType {
@@ -157,6 +157,7 @@ export enum ElementType {
   RSVP_SECTION = 'rsvp-section',
   RSVP_ELEMENT = 'rsvp',
   Blob = 'blob',
+  Container = 'container',
 }
 
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
@@ -207,11 +208,14 @@ export interface ResponsiveProperties {
     x?: number;
     y?: number;
     elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
-    // bottom?: number;
-    // left?: number;
   };
   style?: Record<string, unknown>;
   display?: string;
+  borderStyles?: {
+    size: string;
+    color: string;
+    sides: string;
+  };
 }
 
 export interface ResponsiveOverrides {
@@ -228,7 +232,7 @@ export interface ImageTemplateElement extends BaseTemplateElement {
   type: ElementType.Image;
 }
 
-export interface RsvpTemplatelement extends BaseTemplateElement {
+export interface RsvpTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.RSVP_ELEMENT;
   title: string;
@@ -240,9 +244,20 @@ export interface BlobTemplateElement extends BaseTemplateElement {
   blobName: string;
 }
 
+export interface ContainerTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.Container;
+  borderStyles: {
+    size: string;
+    color: string;
+    sides: string;
+  };
+}
+
 export type TemplateElement =
   | BaseTemplateElement
   | TextTemplateElement
   | ImageTemplateElement
   | BlobTemplateElement
+  | ContainerTemplateElement
   | TemplateSection;

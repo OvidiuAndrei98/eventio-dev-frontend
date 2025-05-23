@@ -79,6 +79,10 @@ export const mergeResponsiveProperties = <
       finalProps.display = activeOverride.display;
     }
 
+    if (activeOverride.borderStyles !== undefined) {
+      finalProps.borderStyles = activeOverride.borderStyles;
+    }
+
     // Combine styles: breakpoint styles override default styles
     if (activeOverride.style) {
       finalProps.style = {

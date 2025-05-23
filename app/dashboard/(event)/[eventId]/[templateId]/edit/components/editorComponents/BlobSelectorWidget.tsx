@@ -32,7 +32,7 @@ const BlobSelectorWidget = ({
     config.widgetType !== EditorWidgetType.BlobSelector ||
     config.dataType !== PropertyDataType.String
   ) {
-    console.error('Configurație invalidă pentru InputEditorWidget:', config);
+    console.error('Configurație invalidă pentru BlobSelectorWidget:', config);
     return <div>Eroare: Widget incompatibil</div>;
   }
   return (

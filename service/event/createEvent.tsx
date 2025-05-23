@@ -1,6 +1,6 @@
 import { setDoc, doc } from 'firebase/firestore';
 import db from '../../lib/firebase/fireStore';
-import { EventInstance, Template, User } from '@/core/types';
+import { EventInstance, Template } from '@/core/types';
 import { queryUserById } from '../user/queryUserById';
 
 export const createEvent = async (

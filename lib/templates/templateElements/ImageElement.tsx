@@ -68,7 +68,7 @@ const ImageElement = ({
   });
 
   const baseStyle: React.CSSProperties = {
-    top: `${finalElementProps.position.y}%`,
+    top: `${finalElementProps.position.y ?? 0}%`,
     left:
       finalElementProps.position.elementAlignment !== 'auto'
         ? 'auto'

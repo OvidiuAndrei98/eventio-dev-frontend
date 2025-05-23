@@ -1,4 +1,5 @@
 import { ElementType } from '@/core/types';
+import { ContainerOutlined } from '@ant-design/icons';
 import {
   FormInputIcon,
   ImageIcon,
@@ -47,6 +48,12 @@ export const availableElementTypes = [
     type: ElementType.Blob,
     name: 'Blob',
     icon: ShapesIcon,
+    availableFor: [ElementType.Section],
+  },
+  {
+    type: ElementType.Container,
+    name: 'Container',
+    icon: ContainerOutlined,
     availableFor: [ElementType.Section],
   },
 ];

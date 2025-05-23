@@ -43,7 +43,6 @@ const NewInvitationPage = ({
     const newTemplateId = crypto.randomUUID();
     const eventData: EventInstance = {
       eventName,
-      invitationActive: false,
       eventDate: eventDateString,
       eventType,
       templateId: newTemplateId,
