@@ -6,7 +6,7 @@ import {
 } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
-import { BREAKPOINTS } from '../constants';
+import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
@@ -39,10 +39,24 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  const sectionStyle: React.CSSProperties = {
+  const sectionStyle = mergeResponsiveProperties(
+    {
+      backgroundImage: sectionData.backgroundImage,
+      id: sectionData.id,
+      type: ElementType.Section,
+      position: sectionData.position,
+      name: sectionData.name,
+      disabled: sectionData.disabled,
+      style: sectionData.style,
+    },
+    sectionData.responsive,
+    activeBreakpoint
+  ) as TemplateElement;
+
+  const finalSectionStyle = {
+    ...sectionStyle.style,
     width: '100%',
     minHeight: '300px',
-    ...(sectionData.style as React.CSSProperties),
     position: 'relative' as const,
     display: 'flex',
     flexDirection: 'column',
@@ -54,7 +68,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     backgroundImage: sectionData.backgroundImage
       ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
       : 'unset',
-  };
+  } as React.CSSProperties;
 
   const validElements = sectionData.elements.filter(
     (el) => elementComponentMap[el.type as keyof typeof elementComponentMap]
@@ -71,7 +85,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   return (
     <div
       id={sectionData.id}
-      style={sectionStyle}
+      style={{ ...finalSectionStyle }}
       className={`${
         isSelected && selectedElementId === sectionData.id
           ? '!border-2 !border-[#CB93D9]'

@@ -116,6 +116,7 @@ export const defaultTemplates: Template[] = [
             disabled: false,
             style: {
               color: '#ffffff',
+              fontWeight: '500',
             },
             content: 'Doru',
             type: ElementType.Text,
@@ -128,6 +129,7 @@ export const defaultTemplates: Template[] = [
           {
             type: ElementType.Text,
             style: {
+              fontWeight: '500',
               color: '#ffffff',
             },
             name: 'Nume mireasa',
@@ -154,6 +156,7 @@ export const defaultTemplates: Template[] = [
           {
             style: {
               color: '#ffffff',
+              fontWeight: '500',
             },
             disabled: false,
             id: 'element-fac7a20d-8c55-468a-9083-0a1dafe43963',
@@ -195,11 +198,13 @@ export const defaultTemplates: Template[] = [
             },
             style: {
               color: '#ffffff',
+              fontWeight: '500',
             },
           },
           {
             type: ElementType.Text,
             style: {
+              fontWeight: '500',
               color: '#ffffff',
             },
             name: 'Când',
@@ -334,6 +339,7 @@ export const defaultTemplates: Template[] = [
             },
             name: 'Mesaj',
             style: {
+              fontWeight: '500',
               color: '#ffffff',
             },
             id: 'element-d4f1a364-8283-4fd2-9fa6-0a8e4f99ebf4',
@@ -360,6 +366,7 @@ export const defaultTemplates: Template[] = [
             },
             style: {
               color: '#ffffff',
+              fontWeight: '500',
             },
             id: 'element-1c023bc2-5d22-482a-8f24-b3176f4c8a8f',
             disabled: true,
@@ -556,6 +563,7 @@ export const defaultTemplates: Template[] = [
             responsive: {
               mobile: {
                 style: {
+                  fontWeight: '500',
                   fontSize: 12,
                 },
                 position: {
@@ -617,6 +625,7 @@ export const defaultTemplates: Template[] = [
                   elementAlignment: 'auto',
                 },
                 style: {
+                  fontWeight: '500',
                   fontSize: 12,
                 },
               },
@@ -679,7 +688,7 @@ export const defaultTemplates: Template[] = [
               },
             },
             type: ElementType.Text,
-            style: {},
+            style: { fontWeight: '500' },
             id: 'element-515edda4-d779-47db-8a85-727d24529d33',
             content: 'Petrecerea',
             name: 'Petrecerea',

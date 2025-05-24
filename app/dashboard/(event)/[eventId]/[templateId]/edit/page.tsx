@@ -312,7 +312,7 @@ const EditPage = ({
           selectedElementOrSectionId,
           propertyPath,
           newValue,
-          'desktop'
+          editViewMode
         );
         return updatedTemplate;
       });

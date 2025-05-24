@@ -107,7 +107,6 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
-                editMode={true}
               />
             );
           default:

@@ -11,7 +11,7 @@ import {
   PropertyDataType,
   PropertyEditorConfig,
 } from '@/core/types';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface FontWeightEditorWidgetProps {
   config: PropertyEditorConfig;
@@ -24,6 +24,14 @@ const FontWeightEditorWidget = ({
   value,
   onChange,
 }: FontWeightEditorWidgetProps) => {
+  const [fontWeight, setFontWeight] = React.useState<string | undefined>(value);
+
+  useEffect(() => {
+    if (value != undefined && value !== fontWeight) {
+      setFontWeight(value);
+    }
+  }, [value, fontWeight]);
+
   if (
     config.widgetType !== EditorWidgetType.FontWeight ||
     config.dataType !== PropertyDataType.String
@@ -47,7 +55,7 @@ const FontWeightEditorWidget = ({
       >
         {config.label}:
       </label>
-      <Select value={value} onValueChange={onChange}>
+      <Select value={fontWeight} onValueChange={onChange}>
         <SelectTrigger className="w-full border-[#ccc]">
           <SelectValue placeholder="Grosime text" />
         </SelectTrigger>
