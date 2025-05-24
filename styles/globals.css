@@ -170,8 +170,8 @@ a {
 }
 
 .border-editor-input {
-  padding: 0 7px;
-  margin: 0;
+  padding: 0 7px !important;
+  margin: 0 !important;
 }
 
 @keyframes rotation {

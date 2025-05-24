@@ -18,7 +18,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
       step: 1,
-      responsive: false,
+      responsive: true,
     },
     'style.backgroundColor': {
       label: 'Culoare Fundal',
@@ -43,8 +43,28 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
     content: {
       label: 'Introdu textul',
       dataType: PropertyDataType.String,
-      widgetType: EditorWidgetType.TextInput,
+      widgetType: EditorWidgetType.TextArea,
       responsive: false,
+    },
+    'style.width': {
+      label: 'Latime element (px)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      responsive: true,
+    },
+    'style.textAlign': {
+      label: 'Aliniere text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextAlignment,
+      responsive: true,
+    },
+    'style.fontWeight': {
+      label: 'Grosime text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.FontWeight,
+      responsive: true,
     },
     'style.fontSize': {
       label: 'Dimensiune text',
@@ -65,7 +85,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.PositionInput,
       min: 0,
-      max: 100,
+      max: 9999,
       step: 1,
     },
   },

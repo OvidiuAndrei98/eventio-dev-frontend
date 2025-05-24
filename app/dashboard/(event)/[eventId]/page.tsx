@@ -110,6 +110,12 @@ const DashboardEventPage = () => {
           />
           <Button
             icon={<SendOutlined />}
+            onClick={async () => {
+              await navigator.clipboard.writeText(
+                'https://planyvite.ro' + eventInstance?.eventInvitationLink
+              );
+              toast.success('Link copiat cu succes!');
+            }}
             type="primary"
             disabled={!eventInstance?.eventActive}
           >

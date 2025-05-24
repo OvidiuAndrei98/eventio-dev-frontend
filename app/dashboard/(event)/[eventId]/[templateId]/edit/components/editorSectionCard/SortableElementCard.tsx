@@ -2,8 +2,14 @@ import { useSortable } from '@dnd-kit/sortable';
 import React from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { TemplateElement, TemplateSection } from '@/core/types';
-import { EyeIcon, EyeOffIcon, ImageIcon, TextIcon } from 'lucide-react';
-import { DeleteOutlined } from '@ant-design/icons';
+import {
+  EyeIcon,
+  EyeOffIcon,
+  ImageIcon,
+  ShapesIcon,
+  TextIcon,
+} from 'lucide-react';
+import { ContainerOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface SortableElementCardProps {
   isSelected: boolean;
@@ -33,16 +39,18 @@ const SortableElementCard = ({
     transition,
   };
 
-  // Helper pentru a obtine iconita in functie de tipul elementului (presupune ca TemplateElement are un camp 'type')
   const getElementIcon = (element: TemplateElement) => {
     switch (element.type) {
       case 'text':
         return <TextIcon size={14} />;
       case 'image':
         return <ImageIcon size={14} />;
-      // Adauga cazuri pentru alte tipuri de elemente pe masura ce le adaugi in aplicatie
+      case 'container':
+        return <ContainerOutlined size={14} />;
+      case 'blob':
+        return <ShapesIcon size={14} />;
       default:
-        return <TextIcon size={14} />; // Iconita default pentru tipuri necunoscute
+        return <TextIcon size={14} />;
     }
   };
 

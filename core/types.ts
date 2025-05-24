@@ -122,6 +122,8 @@ export enum EditorWidgetType {
   ImageUpload = 'ImageUpload',
   BlobSelector = 'BlobSelector',
   BorderEditor = 'BorderEditor',
+  TextAlignment = 'TextAlignment',
+  FontWeight = 'FontWeight',
 }
 
 export enum PropertyDataType {

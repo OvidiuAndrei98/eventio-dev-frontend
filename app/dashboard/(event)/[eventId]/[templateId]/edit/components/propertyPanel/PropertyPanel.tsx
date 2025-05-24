@@ -9,6 +9,9 @@ import { getNestedValue } from '../../utils/objectUtils';
 import ImageUploadWidget from '../editorComponents/ImageUploadWidget';
 import BlobSelectorWidget from '../editorComponents/BlobSelectorWidget';
 import BorderEditorWidget from '../editorComponents/BorderEditorWidget';
+import TextareaEditorElement from '../editorComponents/TextareaEditorElement';
+import TextAlignmentWidget from '../editorComponents/TextAlignmentWidget';
+import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -102,6 +105,51 @@ const PropertyPanel = ({
                 key={propertyPath}
                 config={config}
                 value={currentValue as string | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.TextArea:
+            return (
+              <TextareaEditorElement
+                key={propertyPath}
+                config={config}
+                value={currentValue as string | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.TextAlignment:
+            return (
+              <TextAlignmentWidget
+                key={propertyPath}
+                config={config}
+                value={currentValue as string | undefined | null}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.FontWeight:
+            return (
+              <FontWeightEditorWidget
+                key={propertyPath}
+                config={config}
+                value={currentValue as string | undefined}
                 onChange={(newValue) =>
                   handlePropertyChanged(
                     propertyPath,

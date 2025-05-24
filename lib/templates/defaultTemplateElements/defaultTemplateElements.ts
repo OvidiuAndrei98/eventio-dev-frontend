@@ -72,7 +72,11 @@ export const defaultElements = {
       content: 'text',
       disabled: false,
       responsive: {},
-      style: {},
+      style: {
+        fontSize: 16,
+        textAlign: 'center',
+        fontWeight: '500',
+      },
     };
   },
   image: (elementName: string) => {
@@ -178,7 +182,11 @@ export const defaultElements = {
           | 'self-start'
           | 'self-end',
       },
-      style: { width: 100, height: 100 },
+      style: {
+        width: 100,
+        height: 100,
+        backgroundColor: 'rgba(2, 2, 2, 0.44)',
+      },
       responsive: {},
     };
   },
