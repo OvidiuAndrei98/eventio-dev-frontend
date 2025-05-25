@@ -248,7 +248,8 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       console.error('Email/password login error:', error);
       if (
         error.code === 'auth/user-not-found' ||
-        error.code === 'auth/wrong-password'
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/invalid-credential'
       ) {
         toast.error('Email sau parolă incorectă.');
       } else if (error.code === 'auth/invalid-email') {

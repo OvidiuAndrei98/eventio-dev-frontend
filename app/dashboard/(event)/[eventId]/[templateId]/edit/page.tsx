@@ -312,6 +312,7 @@ const EditPage = ({
           selectedElementOrSectionId,
           propertyPath,
           newValue,
+          propIsResponsive,
           editViewMode
         );
         return updatedTemplate;

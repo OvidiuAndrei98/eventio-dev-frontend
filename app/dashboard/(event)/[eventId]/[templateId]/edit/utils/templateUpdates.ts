@@ -190,6 +190,7 @@ export const updateSectionPropertyInTemplate = (
   sectionId: string, // The ID of the section to find
   propertyPath: string, // The dot-notation path to the property (ex: 'name', 'position.x', 'style.backgroundColor', 'display')
   newValue: unknown, // The new value for the property
+  isPropResponsive: boolean,
   // Optional: The breakpoint name if updating a responsive override
   // If not provided or 'default', updates the default property.
   breakpoint?: string | 'desktop'
@@ -207,7 +208,7 @@ export const updateSectionPropertyInTemplate = (
       let updatedSection = originalSection; // Pornim cu secțiunea originală
 
       // Step 3: Determine where to update (default or responsive override)
-      if (breakpoint && breakpoint !== 'desktop') {
+      if (breakpoint && breakpoint !== 'desktop' && isPropResponsive) {
         // >>> UPDATEAZA O PROPRIETATE RESPONSIVE PE SECTIUNE <<<
 
         // Creează o copie a obiectului responsive existent (dacă există)

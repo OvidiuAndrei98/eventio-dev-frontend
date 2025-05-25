@@ -5,7 +5,7 @@ module.exports = {
     appDir: true,
     esmExternals: 'loose',
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: '10mb',
     },
   },
   images: {
