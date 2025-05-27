@@ -194,7 +194,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     // pentru a fi considerat "lipit" de acea margine (și să seteze valoarea la 0%).
     const tolerancePercent = 1; // 1% din lățimea/înălțimea părinte
 
-    let finalPosition: FlexiblePosition = {
+    const finalPosition: FlexiblePosition = {
       elementAlignment: currentPosition?.elementAlignment || 'auto', // Păstrează alinierea existentă
     };
 
