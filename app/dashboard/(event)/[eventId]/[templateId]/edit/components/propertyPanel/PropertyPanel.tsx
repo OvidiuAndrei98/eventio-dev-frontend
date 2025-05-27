@@ -183,13 +183,15 @@ const PropertyPanel = ({
                 value={
                   currentValue as
                     | {
-                        y?: number;
-                        elementAlignment?:
+                        top?: number;
+                        left?: number;
+                        bottom?: number;
+                        right?: number;
+                        elementAlignment:
                           | 'auto'
                           | 'self-start'
                           | 'center'
                           | 'self-end';
-                        x?: number;
                       }
                     | undefined
                     | null
