@@ -184,10 +184,10 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
         if (newDataLeft !== undefined) newPosition.left = newDataLeft;
 
         const newDataBottom = internalStringToDataValue(latestBottom, min, max);
-        if (newDataBottom !== undefined) newPosition.top = newDataBottom;
+        if (newDataBottom !== undefined) newPosition.bottom = newDataBottom;
 
         const newDataRight = internalStringToDataValue(latestRight, min, max);
-        if (newDataRight !== undefined) newPosition.left = newDataRight;
+        if (newDataRight !== undefined) newPosition.right = newDataRight;
 
         // Clean up undefined values for consistent JSON.stringify comparison
         if (newPosition.top === undefined) {
@@ -550,8 +550,7 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
             onBlur={handleBlur('bottom', bottomTimerRef)}
             onFocus={handleFocus('bottom')}
             style={inputStyle}
-            title="Poziția față de marginea din stânga (%) (Valoare salvată, aplicată doar la poziționare manuală)"
-            disabled={elementAlignment !== 'auto'}
+            title="Poziția față de marginea de jos (%)"
           />
         </div>
         <div
@@ -570,7 +569,7 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
             onBlur={handleBlur('right', rightTimerRef)}
             onFocus={handleFocus('right')}
             style={inputStyle}
-            title="Poziția față de marginea din stânga (%) (Valoare salvată, aplicată doar la poziționare manuală)"
+            title="Poziția față de marginea din dreapta (%)"
             disabled={elementAlignment !== 'auto'}
           />
         </div>
