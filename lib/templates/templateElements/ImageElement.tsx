@@ -68,11 +68,6 @@ const ImageElement = ({
   });
 
   const baseStyle: React.CSSProperties = {
-    top: `${finalElementProps.position.y ?? 0}%`,
-    left:
-      finalElementProps.position.elementAlignment !== 'auto'
-        ? 'auto'
-        : `${finalElementProps.position.x}%`,
     backgroundRepeat: finalElementProps.backgroundImage ? 'no-repeat' : 'usent',
     backgroundSize: finalElementProps.backgroundImage ? 'cover' : 'usnet',
     backgroundImage: finalElementProps.backgroundImage
@@ -87,6 +82,41 @@ const ImageElement = ({
     position: 'absolute' as const,
     ...baseStyle,
   };
+
+  if (finalElementProps.position.elementAlignment === 'auto') {
+    if (finalElementProps.position.left !== undefined) {
+      elementStyle.left = `${finalElementProps.position.left}%`;
+      elementStyle.right = 'auto'; // Asigură-te că nu ai ambele setate
+    } else if (finalElementProps.position.right !== undefined) {
+      elementStyle.right = `${finalElementProps.position.right}%`;
+      elementStyle.left = 'auto';
+    } else {
+      // Fallback dacă nici left, nici right nu sunt definite (ar trebui să ai cel puțin left)
+      elementStyle.left = '0%'; // Sau o poziție default
+      elementStyle.right = 'auto';
+    }
+
+    if (finalElementProps.position.top !== undefined) {
+      elementStyle.top = `${finalElementProps.position.top}%`;
+      elementStyle.bottom = 'auto';
+    } else if (finalElementProps.position.bottom !== undefined) {
+      elementStyle.bottom = `${finalElementProps.position.bottom}%`;
+      elementStyle.top = 'auto';
+    } else {
+      // Fallback
+      elementStyle.top = '0%';
+      elementStyle.bottom = 'auto';
+    }
+  } else {
+    elementStyle.left = 'auto';
+    elementStyle.right = 'auto';
+    if (finalElementProps.position.top !== undefined) {
+      elementStyle.top = `${finalElementProps.position.top}%`;
+    }
+    if (finalElementProps.position.bottom !== undefined) {
+      elementStyle.bottom = `${finalElementProps.position.bottom}%`;
+    }
+  }
 
   return (
     <div

@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
-import { firebaseAuth, provider } from '@/lib/firebase/firebaseConfig';
+import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { LoginForm } from '@/app/login/components/login-form';
 import { useRouter, usePathname } from 'next/navigation'; // Import usePathname from next/navigation directly
 import { addUser } from '@/service/user/addUser';
@@ -275,7 +275,10 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
     setAuthenticationState(AuthenticationState.Unknown); // Temporarily unknown while logging in
 
     try {
-      const result = await signInWithPopup(firebaseAuth, provider);
+      const result = await signInWithPopup(
+        firebaseAuth,
+        new GoogleAuthProvider()
+      );
 
       const credential = GoogleAuthProvider.credentialFromResult(result);
       if (!credential || !credential.idToken) {

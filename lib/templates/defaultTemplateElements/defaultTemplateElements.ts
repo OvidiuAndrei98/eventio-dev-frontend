@@ -12,7 +12,13 @@ export const defaultElements = {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
       elements: [],
-      position: {},
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
       disabled: false,
       responsive: {},
       style: { height: 300 },
@@ -42,7 +48,13 @@ export const defaultElements = {
           responsive: {},
         },
       ],
-      position: {},
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
       disabled: false,
       responsive: {},
       style: {
@@ -62,7 +74,7 @@ export const defaultElements = {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
       position: {
-        x: 40,
+        left: 40,
         elementAlignment: 'auto' as
           | 'auto'
           | 'center'
@@ -89,7 +101,7 @@ export const defaultElements = {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' '),
       position: {
-        x: 40,
+        left: 40,
         elementAlignment: 'auto' as
           | 'auto'
           | 'center'
@@ -175,7 +187,7 @@ export const defaultElements = {
         sides: 'none none none none',
       },
       position: {
-        x: 40,
+        left: 40,
         elementAlignment: 'auto' as
           | 'auto'
           | 'center'

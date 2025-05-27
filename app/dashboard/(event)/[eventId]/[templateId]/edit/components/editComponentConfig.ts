@@ -47,7 +47,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
     'style.width': {
-      label: 'Latime element (px)',
+      label: 'Latime element (%)',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
@@ -97,7 +97,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
     'style.height': {
-      label: 'Înălțime Secțiune (px)',
+      label: 'Înălțime imagine (px)',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
@@ -105,7 +105,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: true,
     },
     'style.width': {
-      label: 'Latime Secțiune (px)',
+      label: 'Latime imagine (px)',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
@@ -183,7 +183,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
     'style.width': {
-      label: 'Latime Secțiune (%)',
+      label: 'Latime container (%)',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
@@ -192,7 +192,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: true,
     },
     'style.height': {
-      label: 'Inaltime Secțiune (%)',
+      label: 'Inaltime container (px)',
       dataType: PropertyDataType.Number,
       widgetType: EditorWidgetType.NumberInput,
       min: 0,
@@ -210,7 +210,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: true,
     },
     'style.backgroundColor': {
-      label: 'Culoare text',
+      label: 'Culoare fundal',
       dataType: PropertyDataType.Color,
       widgetType: EditorWidgetType.ColorPicker,
       responsive: false,

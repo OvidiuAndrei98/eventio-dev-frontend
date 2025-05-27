@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { BREAKPOINTS } from '@/lib/templates/constants';
+
 /**
  * Immutably sets a nested property in an object using a dot-notation path.
  * Creates nested objects if they don't exist.
@@ -141,4 +143,70 @@ export const findInheritedValue = (
   }
 
   return defaultValue; // Returneaza valoarea default (number, string etc.)
+};
+
+export const generateInterpolatedCssValue = (
+  valueAtStartBp: number,
+  valueAtEndBp: number,
+  startBpWidth: number,
+  endBpWidth: number,
+  unit: string = '%'
+): string => {
+  const valStartWithUnit = `${valueAtStartBp}${unit}`;
+  const diffVal = valueAtEndBp - valueAtStartBp;
+  const diffBpWidth = endBpWidth - startBpWidth;
+
+  if (diffBpWidth === 0) {
+    return valStartWithUnit;
+  }
+  // Această funcție generează calc() pentru interpolarea liniară
+  return `calc(${valStartWithUnit} + (${diffVal}${unit} * ((100vw - ${startBpWidth}px) / ${diffBpWidth})))`;
+};
+
+export const generateFluidFontSize = (
+  mobilePx: number | undefined,
+  tabletPx: number | undefined,
+  desktopPx: number | undefined
+): string | undefined => {
+  // 1. Determină valorile MIN și MAX pentru clamp()
+  // Folosim valorile efectiv definite, cu fallback-uri simple:
+  // Minima va fi cea mai mică valoare definită sau un fallback sigur (ex: mobile, apoi tablet, apoi desktop)
+  const minFontSize = mobilePx ?? tabletPx ?? desktopPx;
+  // Maxima va fi cea mai mare valoare definită sau un fallback sigur (ex: desktop, apoi tablet, apoi mobile)
+  const maxFontSize = desktopPx ?? tabletPx ?? mobilePx;
+
+  if (minFontSize === undefined || maxFontSize === undefined) {
+    // Dacă nu avem măcar o valoare definită pentru min/max, nu putem genera clamp().
+    // Returnăm doar o valoare fixă dacă există, altfel undefined.
+    return minFontSize ? `${minFontSize}px` : undefined;
+  }
+
+  // 2. Calculează "preferred value" (valoarea vw)
+  // Vom scala fontul între lățimile breakpoint-urilor de mobile și desktop.
+  const viewportMin = BREAKPOINTS.mobile;
+  const viewportMax = BREAKPOINTS.desktop; // Sau o lățime maximă specifică (ex: BREAKPOINTS.maxDesktop)
+
+  // Formula pentru a obține o valoare `vw` care interpolează liniar între `minFontSize` și `maxFontSize`
+  // pe intervalul de viewport `viewportMin` la `viewportMax`.
+  // Aceasta este ecuația unei linii drepte: y = mx + c
+  // unde y = font-size, x = 100vw, m = slope, c = intercept
+  const slope = (maxFontSize - minFontSize) / (viewportMax - viewportMin);
+  const intercept = minFontSize - viewportMin * slope;
+
+  // Prefered value: (slope * 100)vw + intercept px
+  // Rotunjim pentru a evita numerele lungi în CSS
+  const preferredValue = `${(slope * 100).toFixed(4)}vw + ${intercept.toFixed(
+    4
+  )}px`;
+
+  // Verificăm dacă rezultatele sunt valide (nu NaN)
+  if (isNaN(slope) || isNaN(intercept)) {
+    console.warn(
+      'Calculul fluid font-size a rezultat în NaN. Verifică valorile breakpoint-urilor sau font-size.'
+    );
+    return `${minFontSize}px`; // Fallback la valoarea minimă fixă
+  }
+
+  // 3. Returnează string-ul CSS clamp()
+  return `clamp(${minFontSize}px, ${preferredValue}, ${maxFontSize}px)`;
 };

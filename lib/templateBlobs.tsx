@@ -1,6 +1,6 @@
 const Blob_001 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -12,7 +12,7 @@ const Blob_001 = () => {
 
 const Blob_002 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -24,7 +24,7 @@ const Blob_002 = () => {
 
 const Blob_003 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -36,7 +36,7 @@ const Blob_003 = () => {
 
 const Blob_004 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -48,7 +48,7 @@ const Blob_004 = () => {
 
 const Blob_005 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -60,7 +60,7 @@ const Blob_005 = () => {
 
 const Blob_006 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -72,7 +72,7 @@ const Blob_006 = () => {
 
 const Blob_007 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"
@@ -84,7 +84,7 @@ const Blob_007 = () => {
 
 const Blob_008 = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 310">
       <path
         fill="currentColor"
         fillOpacity="1"

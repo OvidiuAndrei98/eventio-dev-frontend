@@ -178,18 +178,20 @@ export interface Template {
   elements: TemplateSection[];
 }
 
+export interface FlexiblePosition {
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
+  elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
+}
+
 export interface BaseTemplateElement {
   id: string;
   type: ElementType;
   style: Record<string, unknown>;
   name: string;
-  position: {
-    x?: number;
-    y?: number;
-    elementAlignment?: 'auto' | 'self-start' | 'center' | 'self-end';
-    // bottom?: number;
-    // left?: number;
-  };
+  position: FlexiblePosition;
   responsive: ResponsiveOverrides;
   disabled: boolean;
   backgroundImage?: {
@@ -206,11 +208,7 @@ export interface TemplateSection extends BaseTemplateElement {
 }
 
 export interface ResponsiveProperties {
-  position?: {
-    x?: number;
-    y?: number;
-    elementAlignment: 'auto' | 'self-start' | 'center' | 'self-end';
-  };
+  position?: FlexiblePosition;
   style?: Record<string, unknown>;
   display?: string;
   borderStyles?: {

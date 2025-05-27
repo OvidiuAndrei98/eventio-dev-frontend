@@ -2,6 +2,7 @@
 /* eslint-disable */
 import {
   ElementType,
+  FlexiblePosition,
   Template,
   TemplateElement,
   TemplateSection,
@@ -294,6 +295,7 @@ const EditPage = ({
         // Apelam helper-ul pentru actualizarea imutabila a elementului
         // Trecem ID-ul elementului selectat, calea proprietatii, noua valoare
         // si breakpoint-ul activ (daca nu e 'default')
+
         const updatedTemplate = updateElementPropertyInTemplate(
           prevTemplate,
           selectedElementOrSectionId,
@@ -338,7 +340,7 @@ const EditPage = ({
 
   const handleTemplateDragAndDrop = (
     elementId: string,
-    position: { x: number; y: number }
+    position: FlexiblePosition
   ) => {
     setTemplate((prevTemplate) => {
       // Apelam helper-ul pentru actualizarea imutabila a elementului
@@ -488,7 +490,11 @@ const EditPage = ({
           </div>
           <div
             className={`overflow-y-auto h-full ${
-              editViewMode === 'mobile' ? 'w-[390px] mx-auto' : 'w-full '
+              editViewMode === 'mobile'
+                ? 'w-[367px] mx-auto'
+                : editViewMode === 'tablet'
+                ? 'w-[700px] mx-auto'
+                : 'max-w-[900px] ml-[calc(-23vw_+_50%)]'
             }`}
           >
             <TemplateRenderer

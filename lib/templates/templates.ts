@@ -2,743 +2,939 @@ import { ElementType, Template } from '@/core/types';
 
 export const defaultTemplates: Template[] = [
   {
-    name: 'Demo Invitație Nuntă',
+    thumbnailUrl: '/thumbnails/thumbnail-1.jpg',
     elements: [
       {
-        responsive: {},
-        backgroundImage: {
-          name: 'Elena-Doru_767.jpg',
-          opacity: 'rgba(0,0,0,0.24)',
-          url: '/demo_template_1/template_1_1.jpeg',
-        },
+        type: ElementType.Section,
+        disabled: false,
         style: {
+          zIndex: 2,
           height: 400,
           backgroundColor: 'rgba(255, 255, 255, 0.5)',
-          zIndex: 2,
+        },
+        backgroundImage: {
+          opacity: 'rgba(0,0,0,0.24)',
+          name: 'Elena-Doru_767.jpg',
+          url: '/demo_template_1/template_1_1.jpeg',
         },
         name: 'Header',
-        type: ElementType.Section,
         elements: [
           {
+            disabled: false,
+            blobName: 'blob_7',
             position: {
+              left: 0,
+              top: 0,
               elementAlignment: 'auto',
             },
-            style: {
-              color: '#aeaba0cf',
-              width: 100,
-            },
-            name: 'Blob sus',
-            disabled: false,
-            id: 'element-dd1308b4-5632-46a3-b0e1-0784cfeeaa4b',
-            type: ElementType.Blob,
             responsive: {
               mobile: {
                 position: {
-                  x: 0,
-                  y: 0,
+                  top: 0,
                   elementAlignment: 'auto',
+                  left: 0,
+                },
+              },
+              tablet: {
+                position: {
+                  elementAlignment: 'auto',
+                  top: 0,
+                  left: 0,
                 },
               },
             },
-            blobName: 'blob_7',
-          },
-          {
-            position: {
-              elementAlignment: 'auto',
-            },
             type: ElementType.Blob,
+            name: 'Blob sus',
             style: {
               width: 100,
-              color: '#aeaba078',
+              color: '#aeaba0cf',
             },
-            name: 'Blob jos',
+            id: 'element-dd1308b4-5632-46a3-b0e1-0784cfeeaa4b',
+          },
+          {
             blobName: 'blob_3',
             id: 'element-e6c11664-84fa-429b-85c1-b4cb2cd96342',
-            disabled: false,
             responsive: {
               mobile: {
                 position: {
-                  y: 79.5,
-                  x: 0,
                   elementAlignment: 'auto',
+                  bottom: 0,
+                  left: 0,
                 },
               },
-            },
-          },
-          {
-            borderStyles: {
-              size: '1',
-              color: '#1677ff',
-              sides: 'none none none none',
-            },
-            style: {
-              height: 100,
-              backgroundColor: '#a9876ea8',
-              width: 100,
-            },
-            responsive: {
-              mobile: {
-                style: {
-                  height: 100,
-                  width: 150,
-                  borderRadius: 15,
-                },
+              tablet: {
                 position: {
-                  x: 82.3,
-                  elementAlignment: 'center',
-                  y: 53.5,
+                  bottom: 0,
+                  elementAlignment: 'auto',
+                  left: 0,
                 },
               },
             },
             position: {
+              bottom: 0,
               elementAlignment: 'auto',
-              x: 40,
+              left: 0,
             },
+            type: ElementType.Blob,
+            name: 'Blob jos',
+            style: {
+              width: 100,
+              color: '#acacacc2',
+            },
+            disabled: false,
+          },
+          {
             type: ElementType.Container,
+            position: {
+              elementAlignment: 'auto',
+              top: 36,
+              left: 41.7,
+            },
             name: 'Container',
+            style: {
+              width: 20,
+              backgroundColor: '#a9876ea8',
+              height: 100,
+            },
+            responsive: {
+              mobile: {
+                position: {
+                  left: 28.39,
+                  top: 52.36,
+                  elementAlignment: 'center',
+                },
+                style: {
+                  height: 100,
+                  width: 45,
+                  borderRadius: 15,
+                },
+              },
+              tablet: {
+                style: {
+                  width: 40,
+                  borderRadius: 10,
+                  height: 200,
+                },
+                position: {
+                  elementAlignment: 'center',
+                  left: 27.52,
+                  top: 35.86,
+                },
+              },
+            },
+            borderStyles: {
+              sides: 'none none none none',
+              size: '1',
+              color: '#1677ff',
+            },
             id: 'element-0a5f1e57-759e-476a-a524-16d393c9ec13',
             disabled: false,
           },
           {
+            content: 'Doru',
+            id: 'element-3e4f52fa-df62-4772-b820-afb520cd1453',
+            type: ElementType.Text,
+            style: {
+              fontWeight: '500',
+              color: '#ffffff',
+            },
             responsive: {
+              tablet: {
+                style: {
+                  fontSize: 24,
+                  fontWeight: '700',
+                },
+                position: {
+                  top: 17.29,
+                  left: 76.57,
+                  elementAlignment: 'auto',
+                },
+              },
               mobile: {
                 style: {
                   fontSize: 20,
                 },
                 position: {
+                  left: 11.76,
+                  top: 30.34,
                   elementAlignment: 'auto',
-                  x: 11.8,
-                  y: 42.5,
                 },
               },
             },
-            name: 'Nume mire',
             disabled: false,
-            style: {
-              color: '#ffffff',
-              fontWeight: '500',
-            },
-            content: 'Doru',
-            type: ElementType.Text,
-            id: 'element-3e4f52fa-df62-4772-b820-afb520cd1453',
+            name: 'Nume mire',
             position: {
-              x: 40,
               elementAlignment: 'auto',
+              left: 40,
             },
           },
           {
+            id: 'element-e6fe456e-4cb0-4d45-ad50-7a59aaf9d04e',
             type: ElementType.Text,
-            style: {
-              fontWeight: '500',
-              color: '#ffffff',
-            },
+            disabled: false,
             name: 'Nume mireasa',
             responsive: {
               mobile: {
+                position: {
+                  elementAlignment: 'auto',
+                  left: 70.14,
+                  top: 29.36,
+                },
                 style: {
                   fontSize: 20,
                 },
+              },
+              tablet: {
+                style: {
+                  fontWeight: '700',
+                  fontSize: 24,
+                },
                 position: {
-                  y: 42.5,
-                  x: 73.5,
+                  left: 11.81,
+                  top: 18.27,
                   elementAlignment: 'auto',
                 },
               },
             },
+            content: 'Elena',
             position: {
-              x: 40,
+              left: 40,
               elementAlignment: 'auto',
             },
-            disabled: false,
-            content: 'Elena',
-            id: 'element-e6fe456e-4cb0-4d45-ad50-7a59aaf9d04e',
+            style: {
+              fontWeight: '500',
+              color: '#ffffff',
+            },
           },
           {
-            style: {
-              color: '#ffffff',
-              fontWeight: '500',
-            },
-            disabled: false,
-            id: 'element-fac7a20d-8c55-468a-9083-0a1dafe43963',
-            responsive: {
-              mobile: {
-                position: {
-                  x: 44.9,
-                  elementAlignment: 'center',
-                  y: 53.5,
-                },
-              },
-            },
-            position: {
-              elementAlignment: 'auto',
-              x: 40,
-            },
             type: ElementType.Text,
             content: 'Nașii',
+            id: 'element-fac7a20d-8c55-468a-9083-0a1dafe43963',
+            style: {
+              fontWeight: '500',
+              color: '#ffffff',
+            },
+            position: {
+              left: 40,
+              elementAlignment: 'auto',
+            },
+            responsive: {
+              mobile: {
+                position: {
+                  top: 52.18,
+                  elementAlignment: 'center',
+                  left: 41.98,
+                },
+              },
+              tablet: {
+                position: {
+                  left: 44.39,
+                  top: 37.5,
+                  elementAlignment: 'center',
+                },
+                style: {
+                  fontSize: 18,
+                },
+              },
+            },
             name: 'Nașii',
+            disabled: false,
           },
           {
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
-            },
-            disabled: false,
-            id: 'element-72ecd937-7d42-425b-bb79-f3af32e5c4dd',
             content: 'Narci și Andu',
-            type: ElementType.Text,
-            name: 'Nume nași',
+            position: {
+              elementAlignment: 'auto',
+              left: 40,
+            },
             responsive: {
-              mobile: {
+              tablet: {
+                style: {
+                  fontSize: 18,
+                },
                 position: {
-                  x: 45.1,
-                  y: 59.8,
+                  left: 38.42,
+                  top: 51,
                   elementAlignment: 'center',
                 },
               },
-            },
-            style: {
-              color: '#ffffff',
-              fontWeight: '500',
-            },
-          },
-          {
-            type: ElementType.Text,
-            style: {
-              fontWeight: '500',
-              color: '#ffffff',
-            },
-            name: 'Când',
-            content: '09 Septembrie 2025',
-            id: 'element-c4714338-ad9e-4a7f-b5f4-db6429c5a8f2',
-            responsive: {
               mobile: {
                 position: {
-                  y: 67,
-                  x: 34.3,
+                  left: 33.47,
                   elementAlignment: 'center',
+                  top: 59.92,
                 },
               },
             },
             disabled: false,
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
+            type: ElementType.Text,
+            style: {
+              color: '#ffffff',
+              fontWeight: '500',
             },
+            name: 'Nume nași',
+            id: 'element-72ecd937-7d42-425b-bb79-f3af32e5c4dd',
+          },
+          {
+            name: 'Când',
+            position: {
+              elementAlignment: 'auto',
+              left: 40,
+            },
+            responsive: {
+              mobile: {
+                position: {
+                  left: 26.29,
+                  top: 67.58,
+                  elementAlignment: 'center',
+                },
+              },
+              tablet: {
+                position: {
+                  top: 66.25,
+                  elementAlignment: 'center',
+                  left: 33.37,
+                },
+                style: {
+                  fontSize: 18,
+                },
+              },
+            },
+            disabled: false,
+            content: '09 Septembrie 2025',
+            style: {
+              fontWeight: '500',
+              color: '#ffffff',
+            },
+            id: 'element-c4714338-ad9e-4a7f-b5f4-db6429c5a8f2',
+            type: ElementType.Text,
           },
         ],
-        disabled: false,
         id: 'section-header',
         position: {
-          y: 0,
-          x: 0,
+          elementAlignment: 'auto',
+          left: 0,
         },
+        responsive: {},
       },
       {
-        style: {
-          zIndex: 1,
-          backgroundColor: '#120b01f0',
-          height: 300,
-        },
+        id: 'section-main-details',
+        name: 'Detalii eveniment',
         elements: [
           {
-            style: {
-              width: 100,
-              height: 100,
-              backgroundColor: '#b4b0b099',
+            blobName: 'blob_8',
+            position: {
+              left: 0,
+              bottom: 0,
+              elementAlignment: 'auto',
             },
-            type: ElementType.Container,
-            borderStyles: {
-              size: '1',
-              color: '#1677ff',
-              sides: 'none none none none',
+            name: ElementType.Blob,
+            style: {
+              color: '#edd850',
+              width: 100,
+            },
+            type: ElementType.Blob,
+            id: 'element-c350313a-21ca-45d3-b18c-516ce11c4ee4',
+            responsive: {
+              tablet: {
+                position: {
+                  left: 0,
+                  elementAlignment: 'auto',
+                  bottom: 0,
+                },
+              },
+              mobile: {
+                position: {
+                  bottom: 0,
+                  elementAlignment: 'auto',
+                  left: 0,
+                },
+              },
             },
             disabled: false,
+          },
+          {
             name: 'Container',
             id: 'element-e84a1cff-0a5f-4778-825e-de99da7c2790',
-            position: {
-              elementAlignment: 'auto',
-              x: 40,
+            borderStyles: {
+              size: '1',
+              color: '#000000',
+              sides: 'dashed dashed dashed dashed',
             },
+            position: {
+              bottom: 3.35,
+              elementAlignment: 'auto',
+              right: 11.91,
+            },
+            style: {
+              backgroundColor: '#dfdddd33',
+              borderRadius: 10,
+              width: 70,
+              height: 245,
+            },
+            disabled: false,
+            type: ElementType.Container,
             responsive: {
               mobile: {
+                style: {
+                  width: 73,
+                  borderRadius: 10,
+                  height: 127,
+                },
                 borderStyles: {
                   size: '2',
-                  sides: 'dashed dashed dashed dashed',
                   color: '#000000',
+                  sides: 'dashed dashed dashed dashed',
                 },
                 position: {
-                  x: 5.1,
+                  top: 7.55,
                   elementAlignment: 'auto',
-                  y: 54,
+                  left: 14.68,
                 },
+              },
+              tablet: {
                 style: {
-                  width: 290,
                   borderRadius: 10,
-                  height: 130,
+                  height: 146,
+                  width: 45,
+                },
+                position: {
+                  top: 10.05,
+                  elementAlignment: 'auto',
+                  left: 9.49,
+                },
+                borderStyles: {
+                  sides: 'dashed dashed dashed dashed',
+                  color: '#000000',
+                  size: '1',
                 },
               },
             },
           },
           {
-            disabled: false,
             name: 'Container',
-            style: {
-              width: 100,
-              backgroundColor: '#b4b0b099',
-              height: 100,
+            position: {
+              left: 10.73,
+              top: 3.99,
+              elementAlignment: 'auto',
             },
+            disabled: false,
             id: 'element-1ec2d9b9-09e2-41fa-84ff-ba2efd84624c',
             responsive: {
-              mobile: {
-                borderStyles: {
-                  color: '#0e0e0e',
-                  sides: 'dashed dashed dashed dashed',
-                  size: '2',
-                },
+              tablet: {
                 style: {
+                  width: 45,
+                  height: 145,
                   borderRadius: 10,
-                  width: 290,
-                  height: 130,
                 },
                 position: {
+                  right: 8.98,
                   elementAlignment: 'auto',
-                  x: 16.9,
-                  y: 3,
+                  bottom: 5.95,
+                },
+                borderStyles: {
+                  size: '1',
+                  color: '#000000',
+                  sides: 'dashed dashed dashed dashed',
+                },
+              },
+              mobile: {
+                style: {
+                  height: 127,
+                  borderRadius: 10,
+                  width: 73,
+                },
+                borderStyles: {
+                  size: '2',
+                  sides: 'dashed dashed dashed dashed',
+                  color: '#0e0e0e',
+                },
+                position: {
+                  left: 8.74,
+                  bottom: 5.07,
+                  elementAlignment: 'auto',
                 },
               },
             },
             type: ElementType.Container,
-            position: {
-              elementAlignment: 'auto',
-              x: 40,
+            style: {
+              borderRadius: 10,
+              backgroundColor: '#dfdddd24',
+              height: 245,
+              width: 70,
             },
             borderStyles: {
-              sides: 'none none none none',
-              color: '#1677ff',
+              color: '#000000',
+              sides: 'dashed dashed dashed dashed',
               size: '1',
             },
           },
           {
-            content: 'O zi specială, un moment unic, o invitație din suflet.',
-            responsive: {
-              mobile: {
-                style: {
-                  fontSize: 12,
-                },
-                position: {
-                  x: 6,
-                  y: 60.3,
-                  elementAlignment: 'auto',
-                },
-              },
-            },
-            type: ElementType.Text,
+            disabled: false,
             position: {
+              top: 2.8,
               elementAlignment: 'auto',
-              x: 40,
+              left: 1.47,
             },
-            name: 'Mesaj',
+            id: 'element-91dacb85-7278-4efa-8e7f-7e417eba7431',
+            backgroundImage: {
+              url: '/demo_template_1/template_1_3.jpeg',
+              opacity: 'rgba(0,0,0,0.15)',
+              name: 'Elena-Doru_764.jpg',
+            },
+            name: 'Poza mire',
             style: {
-              fontWeight: '500',
-              color: '#ffffff',
-            },
-            id: 'element-d4f1a364-8283-4fd2-9fa6-0a8e4f99ebf4',
-            disabled: true,
-          },
-          {
-            content:
-              'Vă așteptăm să ne fiți alături la începutul călătoriei noastre împreună',
-            position: {
-              elementAlignment: 'auto',
-              x: 40,
-            },
-            responsive: {
-              mobile: {
-                style: {
-                  fontSize: 12,
-                },
-                position: {
-                  y: 9.7,
-                  elementAlignment: 'auto',
-                  x: 22.6,
-                },
-              },
-            },
-            style: {
-              color: '#ffffff',
-              fontWeight: '500',
-            },
-            id: 'element-1c023bc2-5d22-482a-8f24-b3176f4c8a8f',
-            disabled: true,
-            type: ElementType.Text,
-            name: 'Mesaj',
-          },
-          {
-            id: 'element-77464651-1662-4856-8c6a-840d91610651',
-            type: ElementType.Image,
-            style: {
-              width: 100,
-              backgroundSize: 'cover',
-              height: 100,
               backgroundRepeat: 'no-repeat',
-              borderRadius: 0,
+              width: 250,
+              borderRadius: 50,
+              backgroundSize: 'cover',
+              height: 250,
+            },
+            responsive: {
+              mobile: {
+                position: {
+                  elementAlignment: 'auto',
+                  bottom: 3.71,
+                  right: 0,
+                },
+                style: {
+                  width: 130,
+                  height: 130,
+                  borderRadius: 50,
+                },
+              },
+              tablet: {
+                style: {
+                  height: 150,
+                  borderRadius: 50,
+                  width: 150,
+                },
+                position: {
+                  left: 1.09,
+                  top: 8.94,
+                  elementAlignment: 'auto',
+                },
+              },
+            },
+            type: ElementType.Image,
+          },
+          {
+            responsive: {
+              mobile: {
+                position: {
+                  left: 2.29,
+                  top: 6.81,
+                  elementAlignment: 'auto',
+                },
+                style: {
+                  height: 130,
+                  borderRadius: 50,
+                  width: 130,
+                },
+              },
+              tablet: {
+                position: {
+                  bottom: 5.39,
+                  right: 1.4,
+                  elementAlignment: 'auto',
+                },
+                style: {
+                  width: 150,
+                  borderRadius: 50,
+                  height: 150,
+                },
+              },
+            },
+            type: ElementType.Image,
+            position: {
+              right: 1.91,
+              elementAlignment: 'auto',
+              bottom: 2.79,
             },
             name: 'Poza mireasa',
             backgroundImage: {
-              url: '/demo_template_1/template_1_2.jpeg',
-              opacity: 'rgba(0,0,0,0.15)',
               name: 'Elena-Doru_207.jpg',
-            },
-            disabled: false,
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
-            },
-            responsive: {
-              mobile: {
-                position: {
-                  x: 0.5,
-                  y: 2.3,
-                  elementAlignment: 'auto',
-                },
-                style: {
-                  borderRadius: 50,
-                  width: 130,
-                  height: 130,
-                },
-              },
-            },
-          },
-          {
-            backgroundImage: {
-              name: 'Elena-Doru_764.jpg',
               opacity: 'rgba(0,0,0,0.15)',
-              url: '/demo_template_1/template_1_3.jpeg',
+              url: '/demo_template_1/template_1_2.jpeg',
             },
-            responsive: {
-              mobile: {
-                position: {
-                  y: 53.7,
-                  elementAlignment: 'auto',
-                  x: 63.8,
-                },
-                style: {
-                  borderRadius: 50,
-                  width: 130,
-                  height: 130,
-                },
-              },
-            },
-            id: 'element-91dacb85-7278-4efa-8e7f-7e417eba7431',
             style: {
-              width: 100,
-              borderRadius: 0,
+              width: 250,
+              height: 250,
               backgroundSize: 'cover',
-              height: 100,
+              borderRadius: 50,
               backgroundRepeat: 'no-repeat',
             },
+            disabled: false,
+            id: 'element-77464651-1662-4856-8c6a-840d91610651',
+          },
+          {
+            style: {
+              textAlign: 'start',
+              width: 50,
+              fontWeight: '700',
+              fontSize: 31,
+              color: '#ffffff',
+            },
+            content:
+              'Vă așteptăm să ne fiți alături la începutul călătoriei noastre împreună',
             position: {
-              x: 40,
+              bottom: 10.29,
+              elementAlignment: 'auto',
+              left: 18.62,
+            },
+            id: 'element-1c023bc2-5d22-482a-8f24-b3176f4c8a8f',
+            disabled: false,
+            responsive: {
+              tablet: {
+                position: {
+                  right: 23.96,
+                  bottom: 8.61,
+                  elementAlignment: 'auto',
+                },
+                style: {
+                  width: 30,
+                  fontSize: 16,
+                },
+              },
+              mobile: {
+                position: {
+                  elementAlignment: 'auto',
+                  left: 9.38,
+                  bottom: 13.22,
+                },
+                style: {
+                  textAlign: 'start',
+                  fontSize: 12,
+                  width: 51,
+                },
+              },
+            },
+            type: ElementType.Text,
+            name: 'Mesaj',
+          },
+          {
+            id: 'element-a0305b34-86b6-492c-8b3a-47230606e639',
+            position: {
+              right: 19.76,
+              top: 7.5,
               elementAlignment: 'auto',
             },
             disabled: false,
-            name: 'Poza mire',
-            type: ElementType.Image,
+            responsive: {
+              tablet: {
+                style: {
+                  fontSize: 16,
+                  width: 30,
+                },
+                position: {
+                  elementAlignment: 'auto',
+                  top: 14.14,
+                  left: 23.91,
+                },
+              },
+              mobile: {
+                position: {
+                  right: 12.96,
+                  top: 12.86,
+                  elementAlignment: 'auto',
+                },
+                style: {
+                  fontSize: 12,
+                  textAlign: 'end',
+                  width: 46,
+                },
+              },
+            },
+            style: {
+              width: 50,
+              color: '#ffffff',
+              fontWeight: '700',
+              textAlign: 'end',
+              fontSize: 31,
+            },
+            name: 'Mesaj',
+            type: ElementType.Text,
+            content:
+              'O zi specială, un moment unic, o invitație din suflet.\nO zi specială, un moment unic, o invitație din suflet.',
           },
         ],
+        position: {
+          elementAlignment: 'auto',
+        },
+        type: ElementType.Section,
         disabled: false,
         backgroundImage: {
-          url: '/demo_template_1/template_1_4.png',
-          name: 'Elena-Doru_122(1).png',
           opacity: 'rgba(32,28,28,0.21)',
+          name: 'Elena-Doru_122(1).png',
+          url: '/demo_template_1/template_1_4.png',
         },
-        name: 'Detalii eveniment',
-        type: ElementType.Section,
-        position: {
-          x: 30,
-          elementAlignment: 'auto',
-          y: 50,
+        responsive: {
+          mobile: {
+            style: {
+              height: 300,
+            },
+          },
+          tablet: {
+            style: {
+              height: 449,
+            },
+          },
         },
-        responsive: {},
-        id: 'section-main-details',
+        style: {
+          backgroundColor: '#fffffff0',
+          height: 600,
+          zIndex: 1,
+        },
       },
       {
-        type: ElementType.Section,
-        name: 'Sectiune',
         style: {
-          backgroundColor: '#ffffff',
           height: 300,
+          backgroundColor: '#edd850',
         },
-        responsive: {},
-        position: {},
         elements: [
           {
-            name: 'Blob',
-            disabled: false,
-            position: {
-              elementAlignment: 'auto',
-            },
-            style: {
-              width: 100,
-            },
             type: ElementType.Blob,
-            responsive: {
-              mobile: {
-                position: {
-                  elementAlignment: 'auto',
-                  y: 72.9,
-                  x: 0,
-                },
-              },
+            position: {
+              bottom: 0,
+              left: 0,
+              elementAlignment: 'auto',
             },
-            id: 'element-38c55d58-8ea6-4744-bbfe-37f5d7d14e45',
-            blobName: 'blob_3',
-          },
-          {
-            blobName: 'blob_5',
-            id: 'element-5bd27ebf-3c73-47c2-a4f3-f789b7b81f50',
-            disabled: false,
-            responsive: {
-              mobile: {
-                position: {
-                  y: 0,
-                  elementAlignment: 'auto',
-                  x: 0,
-                },
-              },
-            },
-            type: ElementType.Blob,
             style: {
+              color: '#fce8ff',
               width: 100,
             },
-            position: {
-              elementAlignment: 'auto',
-            },
-            name: 'Blob',
-          },
-          {
-            type: ElementType.Image,
             disabled: false,
-            name: 'LOGO Cununia civilă',
-            style: {
-              width: 100,
-              borderRadius: 0,
-              backgroundSize: 'cover',
-              height: 100,
-              backgroundRepeat: 'no-repeat',
-            },
+            name: ElementType.Blob,
+            blobName: 'blob_1',
             responsive: {
-              mobile: {
-                style: {
-                  width: 100,
-                  borderRadius: 50,
-                  height: 100,
-                },
+              tablet: {
                 position: {
-                  y: 22,
-                  elementAlignment: 'self-start',
-                  x: 36.2,
+                  bottom: 0,
+                  left: 0,
+                  elementAlignment: 'auto',
+                },
+              },
+              mobile: {
+                position: {
+                  bottom: 0,
+                  elementAlignment: 'auto',
+                  left: 0,
                 },
               },
             },
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
-            },
-            id: 'element-09b595a1-fece-4269-954d-18e32c42ea03',
-            backgroundImage: {
-              opacity: 'rgba(0,0,0,0)',
-              url: '/demo_template_1/template_1_5.png',
-              name: 'Wedding arch.png',
-            },
+            id: 'element-7779f98d-3d14-4d42-8df8-a2990d6a0ab7',
           },
           {
-            disabled: false,
-            style: {},
-            id: 'element-ea937ab5-d0ab-4d2b-9033-65a939cc3348',
             position: {
               elementAlignment: 'auto',
-              x: 40,
+              left: 21.88,
+              top: 12.85,
             },
+            id: 'element-5ba5fe3c-e4ec-4a1f-939a-e93c215e6e7f',
+            type: ElementType.Container,
+            disabled: false,
+            name: 'Container',
             responsive: {
-              mobile: {
+              tablet: {
                 style: {
-                  fontWeight: '500',
-                  fontSize: 12,
+                  width: 70,
+                  height: 0,
+                },
+                borderStyles: {
+                  color: '#fce8ff',
+                  sides: 'solid none none none',
+                  size: '4',
                 },
                 position: {
                   elementAlignment: 'auto',
-                  x: 4.4,
-                  y: 55,
+                  right: 15.1,
+                  top: 46.7,
+                },
+              },
+              mobile: {
+                borderStyles: {
+                  sides: 'none none none solid',
+                  color: '#fce8ff',
+                  size: '4',
+                },
+                position: {
+                  top: 18.22,
+                  elementAlignment: 'auto',
+                  left: 22.62,
+                },
+                style: {
+                  height: 150,
+                  width: 0,
                 },
               },
             },
+            borderStyles: {
+              color: '#fce8ff',
+              sides: 'none none none solid',
+              size: '4',
+            },
+            style: {
+              backgroundColor: '#ffffff00',
+              height: 150,
+              width: 0,
+            },
+          },
+          {
+            position: {
+              right: 11.98,
+              elementAlignment: 'auto',
+              top: 44.2,
+            },
+            name: 'Container',
+            borderStyles: {
+              sides: 'solid none none none',
+              color: '#fce8ff',
+              size: '4',
+            },
+            disabled: false,
+            type: ElementType.Container,
+            responsive: {
+              tablet: {
+                borderStyles: {
+                  sides: 'none none none solid',
+                  size: '4',
+                  color: '#fce8ff',
+                },
+                position: {
+                  elementAlignment: 'auto',
+                  left: 20.55,
+                  top: 9.39,
+                },
+                style: {
+                  width: 0,
+                  height: 200,
+                },
+              },
+              mobile: {
+                style: {
+                  width: 70,
+                  height: 0,
+                },
+                position: {
+                  elementAlignment: 'auto',
+                  top: 46.99,
+                  left: 11.15,
+                },
+                borderStyles: {
+                  sides: 'solid none none none',
+                  size: '4',
+                  color: '#fce8ff',
+                },
+              },
+            },
+            id: 'element-4d1071f8-705c-4575-90b9-b2cff8bbd21a',
+            style: {
+              height: 0,
+              width: 70,
+              backgroundColor: '#02020200',
+            },
+          },
+          {
             type: ElementType.Text,
-            name: 'Cununia civilă',
-            content: 'Cununia civilă',
-          },
-          {
-            disabled: false,
-            backgroundImage: {
-              name: 'Church (1).png',
-              url: '/demo_template_1/template_1_6.png',
-              opacity: 'rgba(0,0,0,0)',
+            style: {
+              textAlign: 'center',
+              fontWeight: '700',
+              color: '#f09afd',
+              fontSize: 42,
             },
             position: {
-              x: 40,
+              top: 19.79,
               elementAlignment: 'auto',
+              left: 22.4,
             },
-            type: ElementType.Image,
-            name: 'LOGO Cununia religioasă',
-            style: {
-              borderRadius: 0,
-              height: 100,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'cover',
-              width: 100,
-            },
-            responsive: {
-              mobile: {
-                style: {
-                  borderRadius: 50,
-                },
-                position: {
-                  elementAlignment: 'center',
-                  x: 5.4,
-                  y: 22,
-                },
-              },
-            },
-            id: 'element-778b8c6b-45ec-4b0b-b0fd-b5a735185b00',
-          },
-          {
-            disabled: false,
-            style: {},
-            type: ElementType.Text,
-            content: 'Cununia religioasă',
-            id: 'element-0296f46d-ef1a-4e6e-9922-f843549eaae6',
+            id: 'element-58568958-36b3-42f9-8181-937188a98fc0',
             responsive: {
               mobile: {
                 position: {
-                  y: 55.7,
-                  x: 34.9,
+                  top: 30.96,
+                  left: 22.84,
                   elementAlignment: 'auto',
                 },
                 style: {
-                  fontWeight: '500',
-                  fontSize: 12,
+                  fontWeight: '700',
+                  fontSize: 24,
                 },
               },
-            },
-            name: 'Cununia religioasă',
-            position: {
-              elementAlignment: 'auto',
-              x: 40,
-            },
-          },
-          {
-            backgroundImage: {
-              url: '/demo_template_1/template_1_7.png',
-              opacity: 'rgba(0,0,0,0)',
-              name: 'Champagne.png',
-            },
-            style: {
-              backgroundSize: 'cover',
-              width: 100,
-              borderRadius: 0,
-              backgroundRepeat: 'no-repeat',
-              height: 100,
-            },
-            name: 'LOGO Petrecerea',
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
-            },
-            type: ElementType.Image,
-            responsive: {
-              mobile: {
-                position: {
-                  x: 72.9,
-                  elementAlignment: 'self-end',
-                  y: 22,
-                },
+              tablet: {
                 style: {
-                  borderRadius: 50,
+                  fontWeight: '700',
+                  fontSize: 42,
                 },
-              },
-            },
-            disabled: false,
-            id: 'element-6c6009f3-ba05-4e61-a4f4-aeee99a8fbf5',
-          },
-          {
-            position: {
-              x: 40,
-              elementAlignment: 'auto',
-            },
-            responsive: {
-              mobile: {
                 position: {
-                  x: 74.7,
-                  y: 56,
+                  top: 22.34,
                   elementAlignment: 'auto',
-                },
-                style: {
-                  fontSize: 12,
+                  left: 21.4,
                 },
               },
             },
-            type: ElementType.Text,
-            style: { fontWeight: '500' },
-            id: 'element-515edda4-d779-47db-8a85-727d24529d33',
-            content: 'Petrecerea',
-            name: 'Petrecerea',
+            name: 'Text',
+            content: 'Party with us',
             disabled: false,
           },
         ],
-        id: 'section-c07485ca-b854-435d-b8f4-56dee3c11c44',
+        type: ElementType.Section,
+        position: { elementAlignment: 'auto' },
+        name: 'Sectiune',
+        id: 'section-f3cd98d3-dd18-493b-8785-d1769a00f6f8',
         disabled: false,
+        responsive: {},
       },
       {
+        id: 'section-c07485ca-b854-435d-b8f4-56dee3c11c44',
+        position: { elementAlignment: 'auto' },
         responsive: {},
         disabled: false,
+        elements: [],
+        name: 'Sectiune',
+        type: ElementType.Section,
+        style: {
+          backgroundColor: '#fce8ff',
+          height: 300,
+        },
+      },
+      {
+        style: {
+          justifyContent: 'center',
+          height: 'auto',
+        },
+        responsive: {},
         name: 'Sectiune RSVP',
-        position: {},
-        type: ElementType.RSVP_SECTION,
-        id: 'section-rsvp',
+        disabled: false,
+        position: { elementAlignment: 'auto' },
         elements: [
           {
+            style: {
+              color: '#ffffff',
+              zIndex: 3,
+              fontSize: 16,
+            },
+            type: ElementType.RSVP_ELEMENT,
+            position: {
+              elementAlignment: 'auto',
+              left: 0,
+            },
             disabled: false,
             responsive: {
               mobile: {
+                position: {
+                  elementAlignment: 'auto',
+                  left: 0,
+                },
                 style: {
                   fontSize: 14,
                 },
-                position: {
-                  y: 0,
-                  x: 0,
-                  elementAlignment: 'auto',
-                },
               },
             },
-            type: ElementType.RSVP_ELEMENT,
-            id: 'element-75610eef-09c9-47d2-80b7-78f361408bc7',
-            position: {
-              x: 0,
-              elementAlignment: 'auto',
-              y: 0,
-            },
             name: 'RSVP',
-            style: {
-              zIndex: 3,
-              fontSize: 16,
-              color: '#ffffff',
-            },
+            id: 'element-75610eef-09c9-47d2-80b7-78f361408bc7',
           },
         ],
-        style: {
-          height: 'auto',
-          justifyContent: 'center',
-        },
+        type: ElementType.RSVP_SECTION,
+        id: 'section-rsvp',
       },
     ],
     settings: {
@@ -746,9 +942,9 @@ export const defaultTemplates: Template[] = [
     },
     description:
       'Un template demonstrativ care utilizează poziționare și stiluri specifice pe breakpoint-uri.',
-    templateId: 'demo-template-1',
-    thumbnailUrl: '/thumbnails/thumbnail-1.jpg',
     type: 'wedding',
+    name: 'Demo Invitație Nuntă',
+    templateId: 'demo-template-1',
     userId: 'demo-template-1',
     eventId: 'demo-template-1',
   },

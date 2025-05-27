@@ -69,21 +69,51 @@ const TextElement = ({
 
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
-    top: `${finalElementProps.position.y ?? 0}%`,
-
-    left:
-      finalElementProps.position.elementAlignment !== 'auto'
-        ? 'auto'
-        : `${finalElementProps.position.x}%`,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
     alignSelf: finalElementProps.position.elementAlignment,
+    width: `${finalElementProps.style.width}%`,
   };
 
   const elementStyle = {
     position: 'absolute' as const,
     ...baseStyle,
   };
+
+  if (finalElementProps.position.elementAlignment === 'auto') {
+    if (finalElementProps.position.left !== undefined) {
+      elementStyle.left = `${finalElementProps.position.left}%`;
+      elementStyle.right = 'auto'; // Asigură-te că nu ai ambele setate
+    } else if (finalElementProps.position.right !== undefined) {
+      elementStyle.right = `${finalElementProps.position.right}%`;
+      elementStyle.left = 'auto';
+    } else {
+      // Fallback dacă nici left, nici right nu sunt definite (ar trebui să ai cel puțin left)
+      elementStyle.left = '0%'; // Sau o poziție default
+      elementStyle.right = 'auto';
+    }
+
+    if (finalElementProps.position.top !== undefined) {
+      elementStyle.top = `${finalElementProps.position.top}%`;
+      elementStyle.bottom = 'auto';
+    } else if (finalElementProps.position.bottom !== undefined) {
+      elementStyle.bottom = `${finalElementProps.position.bottom}%`;
+      elementStyle.top = 'auto';
+    } else {
+      // Fallback
+      elementStyle.top = '0%';
+      elementStyle.bottom = 'auto';
+    }
+  } else {
+    elementStyle.left = 'auto';
+    elementStyle.right = 'auto';
+    if (finalElementProps.position.top !== undefined) {
+      elementStyle.top = `${finalElementProps.position.top}%`;
+    }
+    if (finalElementProps.position.bottom !== undefined) {
+      elementStyle.bottom = `${finalElementProps.position.bottom}%`;
+    }
+  }
 
   return (
     <div

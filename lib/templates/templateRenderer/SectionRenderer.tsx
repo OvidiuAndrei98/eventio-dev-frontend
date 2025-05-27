@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateSection, ElementType } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
-import { BREAKPOINTS } from '../constants';
+import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
@@ -30,10 +30,24 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   sectionData,
   activeBreakpoint,
 }) => {
+  const finalElementProps = mergeResponsiveProperties<TemplateSection>(
+    {
+      id: sectionData.id,
+      type: ElementType.Section,
+      position: sectionData.position,
+      name: sectionData.name,
+      disabled: sectionData.disabled,
+      style: sectionData.style,
+      elements: sectionData.elements,
+    },
+    sectionData.responsive,
+    activeBreakpoint
+  ) as TemplateSection;
+
   const sectionStyle: React.CSSProperties = {
+    ...finalElementProps.style,
     width: '100%',
     minHeight: '300px',
-    ...(sectionData.style as React.CSSProperties),
     position: 'relative' as const,
     flexDirection: 'column',
     alignItems: 'center',
