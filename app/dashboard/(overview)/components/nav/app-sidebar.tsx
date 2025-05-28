@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Bot, Command, Mails, ReceiptText, SquareTerminal } from 'lucide-react';
+import { Command, Mails, ReceiptText } from 'lucide-react';
 
 import {
   Sidebar,
