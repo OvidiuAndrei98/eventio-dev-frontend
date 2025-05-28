@@ -19,6 +19,7 @@ const ImageElement = ({
   name,
   disabled,
   responsive,
+  borderStyles,
   activeBreakpoint,
   isSelected,
   selectedElementId,
@@ -47,6 +48,7 @@ const ImageElement = ({
       id: id,
       type: ElementType.Image,
       position: position,
+      borderStyles: borderStyles,
       name: name,
       disabled: disabled,
       style: style,
@@ -76,6 +78,9 @@ const ImageElement = ({
     ...finalElementProps.style,
     borderRadius: finalElementProps.style.borderRadius + '%',
     alignSelf: finalElementProps.position.elementAlignment,
+    borderStyle: `${finalElementProps.borderStyles.sides}`,
+    borderWidth: `${finalElementProps.borderStyles.size}px`,
+    borderColor: `${finalElementProps.borderStyles.color}`,
   };
 
   const elementStyle = {

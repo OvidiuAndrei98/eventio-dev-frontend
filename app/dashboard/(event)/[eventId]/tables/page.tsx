@@ -431,9 +431,6 @@ const TablesPage = () => {
 
       html2canvas(canvasElement, { allowTaint: true }).then(function (canvas) {
         canvas.getContext('2d');
-
-        console.log(canvas.height + '  ' + canvas.width);
-
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         const pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
         pdf.addImage(

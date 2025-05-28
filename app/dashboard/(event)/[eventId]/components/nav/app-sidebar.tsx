@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {
-  BookOpen,
-  Bot,
   Command,
+  LayoutTemplate,
+  LucideCheckCircle,
+  LucideHouse,
   PieChart,
+  ReceiptText,
   Settings2,
-  SquareTerminal,
+  TrendingUp,
 } from 'lucide-react';
 
 import { NavMain } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-main';
@@ -22,6 +24,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { useEventContext } from '@/core/context/EventContext';
+import { ControlOutlined } from '@ant-design/icons';
 
 export interface MenuItem {
   title: string;
@@ -47,31 +50,31 @@ export function AppSidebar({
       {
         title: 'Panou de control',
         url: `/dashboard/${eventInstance?.eventId}`,
-        icon: <SquareTerminal />,
+        icon: <ControlOutlined />,
         onClick: onClickNav,
       },
       {
         title: 'Raspunsuri',
         url: `/dashboard/${eventInstance?.eventId}/response`,
-        icon: <Bot />,
+        icon: <LucideCheckCircle />,
         onClick: onClickNav,
       },
       {
         title: 'Statistici',
         url: `/dashboard/${eventInstance?.eventId}/statistics`,
-        icon: <BookOpen />,
+        icon: <TrendingUp />,
         onClick: onClickNav,
       },
       {
-        title: 'Organizare',
+        title: 'Plan locatie',
         url: `/dashboard/${eventInstance?.eventId}/tables`,
-        icon: <Settings2 />,
+        icon: <LucideHouse />,
         onClick: onClickNav,
       },
       {
-        title: 'Editare template',
+        title: 'Editare invitație',
         url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/edit`,
-        icon: <Settings2 />,
+        icon: <LayoutTemplate />,
         onClick: onClickNav,
       },
       {
@@ -85,7 +88,7 @@ export function AppSidebar({
       {
         title: 'Plati si facturi',
         url: '#',
-        icon: <PieChart />,
+        icon: <ReceiptText />,
       },
       {
         title: 'Actiuni rapide',

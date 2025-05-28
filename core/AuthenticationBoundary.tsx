@@ -147,13 +147,9 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
             console.error('Could not persist authorization token.', e);
           }
         } else {
-          // Token expired
-          console.log('Token expired. Logging out.');
           handleLogoutCleanup(); // Use dedicated cleanup function
         }
       } else {
-        // Token decode failed
-        console.log('Could not decode token. Logging out.');
         handleLogoutCleanup(); // Use dedicated cleanup function
       }
     } else if (token === undefined) {
@@ -183,7 +179,6 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       if (user && user.userId) {
         setLoggedInUser(user);
         setAuthenticationState(AuthenticationState.Authenticated);
-        console.log('Successfully fetched user data:', user);
       } else {
         // This case indicates a token exists but user data is missing in Firestore.
         // It implies a potential sync issue or deletion from Firestore.
@@ -228,16 +223,9 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           photoURL: user.photoURL || '',
         };
         await addUser(newUser);
-        console.log(
-          'New user added to Firestore after email/password login:',
-          newUser
-        );
+
         currentUserDetails = newUser;
       } else {
-        console.log(
-          'Existing user found in Firestore after email/password login:',
-          existingUser
-        );
         currentUserDetails = existingUser;
       }
 
@@ -297,13 +285,8 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
           photoURL: result.user.photoURL || '',
         };
         await addUser(newUser);
-        console.log('New user added to Firestore after Google login:', newUser);
         currentUserDetails = newUser;
       } else {
-        console.log(
-          'Existing user found in Firestore after Google login:',
-          existingUser
-        );
         currentUserDetails = existingUser;
       }
 

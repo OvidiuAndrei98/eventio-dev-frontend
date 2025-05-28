@@ -1,22 +1,22 @@
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Form, FormProps, Input } from 'antd'
-import LoginImage from '../../../public/LoginImage.svg'
-import Image from 'next/image'
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form, FormProps, Input } from 'antd';
+import LoginImage from '../../../public/LoginImage.svg';
+import Image from 'next/image';
 
 export interface LoginPageProps {
   /**
    * Invoked when the sign in button is pressed. Must start the authentication
    * flow.
    */
-  onLogin(email: string, password: string): void
+  onLogin(email: string, password: string): void;
   /** Invoked when the login with google button is clicked */
-  onLoginWithGoogle: () => void
+  onLoginWithGoogle: () => void;
   /**
    * When set to `true`, a loading indicator is displayed over the login form.
    */
-  loggingIn?: boolean
+  loggingIn?: boolean;
 }
 
 export function LoginForm({
@@ -24,19 +24,19 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<'div'> & LoginPageProps) {
   type FieldType = {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    props.onLogin(values.email, values.password)
-  }
+    props.onLogin(values.email, values.password);
+  };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
     errorInfo
   ) => {
-    console.log('Failed:', errorInfo)
-  }
+    console.log('Failed:', errorInfo);
+  };
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -131,5 +131,5 @@ export function LoginForm({
         and <a href="#">Privacy Policy</a>.
       </div>
     </div>
-  )
+  );
 }

@@ -117,6 +117,8 @@ const TextElement = ({
 
   return (
     <div
+      data-x={50}
+      data-y={80}
       ref={setNodeRef}
       {...listeners}
       {...attributes}

@@ -14,11 +14,7 @@ export const uploadProfilePicture = async (
 ): Promise<string | undefined> => {
   const storage = getStorage();
   const avatarStgRef = ref(storage, user.uid + '/profilePicture');
-  await uploadString(avatarStgRef, url, 'data_url').then((snapshot) => {
-    console.log('Uploaded a data_url string!');
-    console.log(snapshot);
-  });
-
+  await uploadString(avatarStgRef, url, 'data_url');
   await getDownloadURL(avatarStgRef).then((downloadURL) => {
     const userRef = doc(db, 'users', user.uid);
 

@@ -136,6 +136,12 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ImageUpload,
       responsive: false,
     },
+    borderStyles: {
+      responsive: false,
+      label: 'Configurare margini',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.BorderEditor,
+    },
   },
   blob: {
     name: {

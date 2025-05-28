@@ -28,6 +28,8 @@ export interface EventInstance {
   eventDate: string;
   eventTemplateThumbnailUrl: string;
   eventInvitationLink: string;
+  eventLocation: EventLocation;
+  eventGuestCount: number;
 }
 
 export interface Guest {
@@ -230,6 +232,16 @@ export interface TextTemplateElement extends BaseTemplateElement {
 export interface ImageTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.Image;
+  borderStyles: {
+    size: string;
+    color: string;
+    sides: string;
+  };
+}
+export interface EventLocation {
+  formatted_address: string;
+  name: string;
+  location: { lat: string; long: string };
 }
 
 export interface RsvpTemplateElement extends BaseTemplateElement {

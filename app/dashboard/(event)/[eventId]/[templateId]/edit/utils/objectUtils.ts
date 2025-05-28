@@ -117,10 +117,6 @@ export const findInheritedValue = (
       parentOverrideValue !== null &&
       !(typeof parentOverrideValue === 'number' && isNaN(parentOverrideValue))
     ) {
-      console.log(
-        `findInheritedValue: Found override at parent breakpoint "${parentBreakpoint}" for path "${propertyPath}". Value:`,
-        parentOverrideValue
-      );
       return parentOverrideValue;
     }
   }
@@ -128,10 +124,6 @@ export const findInheritedValue = (
   // Daca nu gasim override la niciun breakpoint superior, returnam valoarea default.
   // Valoarea default este stocata direct pe obiectul elementului (ex: elementData.style.fontSize).
   const defaultValue = getNestedValue(elementData, propertyPath);
-  console.log(
-    `findInheritedValue: No override found in parent breakpoints. Returning default value for path "${propertyPath}". Value:`,
-    defaultValue
-  );
 
   // Daca valoarea default este undefined/null/NaN, o tratam ca undefined pentru consistenta.
   if (

@@ -11,6 +11,7 @@ import EditSectionRenderer from './EditSectionRenderer';
 import {
   DndContext,
   DragEndEvent,
+  DragMoveEvent,
   DragStartEvent,
   MouseSensor,
   useSensor,
@@ -19,6 +20,10 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
 import { DragEventData } from '@/app/dashboard/(event)/[eventId]/tables/page';
+import {
+  Guideline,
+  calculateGuidelines,
+} from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
 
 interface TemplateRendererProps {
   invitationData: Template;
@@ -50,6 +55,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   >((activeBreakpointValue as 'mobile' | 'tablet' | 'desktop') ?? 'desktop');
   const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
+  const [activeSection, setActiveSection] = useState<TemplateSection | null>();
+  const [currentGuidelines, setCurrentGuidelines] = useState<Guideline[]>([]);
 
   const [activeElementData, setActiveElementData] = useState<{
     modifiers: [];
@@ -119,19 +126,44 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     return defaultValue;
   };
 
-  const handleDragStart = (e: DragStartEvent) => {
+  const handleDragStart = (e: DragStartEvent, section: TemplateSection) => {
     const { active } = e;
     const activeData = active.data.current as DragEventData;
     if (!activeData) {
       return;
     }
     setActiveElementData(activeData);
+    setActiveSection(section);
+  };
+
+  const handleDragMove = (e: DragMoveEvent) => {
+    // Calculăm și actualizăm liniile de ghidaj la fiecare mișcare
+    if (e.active && e.active.rect.current?.translated && activeSection) {
+      const canvasElement: HTMLElement = document.querySelector(
+        '#' + activeSection.id
+      ) as HTMLElement;
+
+      if (canvasElement) {
+        const draggedRect = e.active.rect.current.translated;
+        const containerRect = canvasElement.getBoundingClientRect();
+
+        // Preluăm toate elementele vizibile pentru a calcula alinierea cu ele
+        // Este esențial ca ID-urile elementelor din `section.elements` să corespundă
+        // cu ID-urile DOM pentru a putea prelua getBoundingClientRect().
+        setCurrentGuidelines(
+          calculateGuidelines(
+            draggedRect,
+            containerRect,
+            activeSection.elements,
+            e.active.id as string
+          )
+        );
+      }
+    }
   };
 
   const handleDragEnd = (e: DragEndEvent, section: TemplateSection) => {
-    // ----------------------------------------------------------------------
-    // Partea existentă de preluare a elementelor și dimensiunilor
-    // ----------------------------------------------------------------------
+    setCurrentGuidelines([]);
     const canvasElement: HTMLElement = document.querySelector(
       '#' + section.id
     ) as HTMLElement;
@@ -185,10 +217,6 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       0,
       Math.min(parentHeight_px - elementHeight_px, newY_px)
     );
-
-    // ----------------------------------------------------
-    // START LOGICA DE ANCORARE (LEFT/RIGHT, TOP/BOTTOM)
-    // ----------------------------------------------------
 
     // Toleranța în procente. Definește cât de aproape trebuie să fie de margine
     // pentru a fi considerat "lipit" de acea margine (și să seteze valoarea la 0%).
@@ -260,20 +288,6 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         delete finalPosition.top;
       }
     }
-    // ----------------------------------------------------
-    // END LOGICA DE ANCORARE
-    // ----------------------------------------------------
-
-    console.log(
-      'Calculated percentages - X:',
-      newX_percent.toFixed(2),
-      'Y:',
-      newY_percent.toFixed(2)
-    );
-    console.log(
-      'Final Position to be sent (Percentages & Anchored):',
-      finalPosition
-    );
 
     // Salvarea dimensiunilor (width/height) NU se face aici,
     // ci prin intermediul updateElementPropertyInTemplate așa cum am discutat.
@@ -293,8 +307,13 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
                 ? activeElementData.modifiers
                 : [restrictToParentElement]
             }
-            onDragStart={handleDragStart}
+            onDragCancel={() => {
+              setActiveElementData(null);
+              setCurrentGuidelines([]);
+            }}
+            onDragStart={(e) => handleDragStart(e, section)}
             onDragEnd={(e) => handleDragEnd(e, section)}
+            onDragMove={(e) => handleDragMove(e)}
           >
             <EditSectionRenderer
               key={section.id}
@@ -303,6 +322,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
               selectedElementId={selectedElementId}
               isSelected={selectedElementId === section.id}
               onSelect={onSelect}
+              currentGuidelines={currentGuidelines}
             />
           </DndContext>
         ) : (

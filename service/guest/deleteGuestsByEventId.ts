@@ -16,9 +16,6 @@ export const deleteGuestsByEventId = async (eventId: string): Promise<void> => {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      console.log(
-        'No documents found for the specified eventId. Nothing to delete.'
-      );
       return;
     }
 

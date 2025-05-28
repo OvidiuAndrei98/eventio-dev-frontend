@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { Bot, Command, SquareTerminal } from 'lucide-react'
+import * as React from 'react';
+import { Bot, Command, Mails, ReceiptText, SquareTerminal } from 'lucide-react';
 
 import {
   Sidebar,
@@ -8,46 +8,46 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarRail,
-} from '@/components/ui/sidebar'
-import { NavMain } from './nav-main'
-import { NavUser } from './nav-user'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/core/AuthenticationBoundary'
+} from '@/components/ui/sidebar';
+import { NavMain } from './nav-main';
+import { NavUser } from './nav-user';
+import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/core/AuthenticationBoundary';
 
 export interface MenuItem {
-  title: string
-  url: string
-  icon?: JSX.Element
-  onClick?: (info: { title: string; url: string }) => void
-  subMenu?: MenuItem[]
+  title: string;
+  url: string;
+  icon?: JSX.Element;
+  onClick?: (info: { title: string; url: string }) => void;
+  subMenu?: MenuItem[];
 }
 
-export type MenuData = Record<string, MenuItem[]>
+export type MenuData = Record<string, MenuItem[]>;
 
 export function AppSidebar({
   onClickNav,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  onClickNav: (info: { title: string; url: string }) => void
+  onClickNav: (info: { title: string; url: string }) => void;
 }) {
-  const user = useAuth().userDetails
+  const user = useAuth().userDetails;
 
   const data: MenuData = {
     navMain: [
       {
         title: 'Invitațiile mele',
         url: '/dashboard',
-        icon: <SquareTerminal />,
+        icon: <Mails />,
         onClick: onClickNav,
       },
       {
         title: 'Plăți și facturi',
         url: '/dashboard/billing',
-        icon: <Bot />,
+        icon: <ReceiptText />,
         onClick: onClickNav,
       },
     ],
-  }
+  };
   return (
     <Sidebar
       variant="inset"
@@ -87,5 +87,5 @@ export function AppSidebar({
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

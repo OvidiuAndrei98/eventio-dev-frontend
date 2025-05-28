@@ -1,30 +1,29 @@
-'use client'
+'use client';
 
-import './LoginPageComponent.css'
-import { Button, Divider, Form, FormProps, Input } from 'antd'
-import GoogleLogo from '../../../../public/Google.svg'
-import LoginBackgorund from '../../../../public/login-backgorund.png'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import './LoginPageComponent.css';
+import { Button, Divider, Form, FormProps, Input } from 'antd';
+import GoogleLogo from '../../../../public/Google.svg';
+import LoginBackgorund from '../../../../public/login-backgorund.png';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const LoginPageComponent = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   type FieldType = {
-    email?: string
-    password?: string
-  }
+    email?: string;
+    password?: string;
+  };
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values)
-    router.push('/dashboard')
-  }
+  const onFinish: FormProps<FieldType>['onFinish'] = () => {
+    router.push('/dashboard');
+  };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
     errorInfo
   ) => {
-    console.log('Failed:', errorInfo)
-  }
+    console.log('Failed:', errorInfo);
+  };
 
   return (
     <div className="login-page-container">
@@ -88,7 +87,7 @@ const LoginPageComponent = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPageComponent
+export default LoginPageComponent;

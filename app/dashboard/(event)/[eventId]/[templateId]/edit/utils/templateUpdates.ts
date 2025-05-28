@@ -46,12 +46,6 @@ export const updateElementPropertyInTemplate = (
         }; // Acesta este obiectul unde trebuie setată proprietatea (ex: style, position)
 
         if (isValueReset) {
-          // --- CAZUL 1: RESETUL UNUI OVERRIDE RESPONSIVE (valoarea e '' sau null) ---
-          // In loc sa stergem, setam override-ul la valoarea mostenita.
-          console.log(
-            `updateElementPropertyInTemplate: Resetting responsive property "${propertyPath}" for element "${elementId}" at breakpoint "${breakpoint}" by setting to inherited value.`
-          );
-
           // --- Gasim valoarea mostenita ---
           // Apelam functia helper findInheritedValue pasandu-i elementul original si breakpoint-ul curent.
           // Aceasta va returna valoarea din breakpoint-ul superior cu override sau valoarea default.
@@ -59,12 +53,6 @@ export const updateElementPropertyInTemplate = (
             originalElement,
             propertyPath,
             breakpoint
-          ); // <-- Apelul catre helper
-
-          console.log(
-            `updateElementPropertyInTemplate: Valoare mostenita gasita:`,
-            inheritedValue,
-            `(Type: ${typeof inheritedValue})`
           );
 
           // --- Setam proprietatea responsiva la valoarea mostenita ---
@@ -95,13 +83,6 @@ export const updateElementPropertyInTemplate = (
             // updatedElement ramane originalElement, updateApplied ramane false.
           }
         } else {
-          // --- CAZUL 2: SETAREA UNEI VALORI PENTRU UN OVERRIDE RESPONSIVE (valoare NON-VIDA/NULL) ---
-          // Acest caz ramane la fel: setam proprietatea responsiva la newValue.
-          console.log(
-            `updateElementPropertyInTemplate: Setting responsive property "${propertyPath}" for element "${elementId}" at breakpoint "${breakpoint}" to value`,
-            newValue,
-            `(Type: ${typeof newValue})`
-          ); // Apelam setNestedProperty pentru a seta valoarea de la 'propertyPath' in updatedBreakpointProps
           const {
             updatedObject: finalBreakpointProps,
             success: setOverrideSuccess,
@@ -125,14 +106,6 @@ export const updateElementPropertyInTemplate = (
           }
         }
       } else {
-        // >>> Modul de actualizare a unei PROPRIETATI DEFAULT (nu e responsive) <<<
-        // Aceasta logica ramane neschimbata. Foloseste setNestedProperty direct pe elementul original.
-        // Aici nu tratam ''/null ca reset la valoarea mostenita, ci la valoarea default (care poate fi '' sau null).
-        console.log(
-          `updateElementPropertyInTemplate: Setting default property "${propertyPath}" for element "${elementId}" to value`,
-          newValue,
-          `(Type: ${typeof newValue})`
-        );
         const { updatedObject: finalElementProps, success: setDefaultSuccess } =
           setNestedProperty(originalElement, propertyPath, newValue); // setNestedProperty trebuie sa gestioneze imutabilitatea
 

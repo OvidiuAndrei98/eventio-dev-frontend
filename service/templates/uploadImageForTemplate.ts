@@ -15,10 +15,7 @@ export const uploadImageForTemplate = async (
   try {
     const storage = getStorage();
     const imageRef = ref(storage, user.userId + `/${templateId}/${name}`);
-    await uploadString(imageRef, url, 'data_url').then((snapshot) => {
-      console.log(snapshot);
-    });
-
+    await uploadString(imageRef, url, 'data_url');
     return await getDownloadURL(imageRef).then((downloadURL) => {
       return downloadURL;
     });

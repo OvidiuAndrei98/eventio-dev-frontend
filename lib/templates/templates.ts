@@ -482,6 +482,11 @@ export const defaultTemplates: Template[] = [
               name: 'Elena-Doru_764.jpg',
             },
             name: 'Poza mire',
+            borderStyles: {
+              size: '1',
+              color: '#1677ff',
+              sides: 'none none none none',
+            },
             style: {
               backgroundRepeat: 'no-repeat',
               width: 250,
@@ -555,6 +560,11 @@ export const defaultTemplates: Template[] = [
               name: 'Elena-Doru_207.jpg',
               opacity: 'rgba(0,0,0,0.15)',
               url: '/demo_template_1/template_1_2.jpeg',
+            },
+            borderStyles: {
+              size: '1',
+              color: '#1677ff',
+              sides: 'none none none none',
             },
             style: {
               width: 250,

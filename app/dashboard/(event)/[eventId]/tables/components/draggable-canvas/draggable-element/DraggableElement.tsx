@@ -1,7 +1,7 @@
-import { useDraggable } from '@dnd-kit/core'
-import React, { useRef } from 'react'
-import Image, { StaticImageData } from 'next/image'
-import { nanoid } from 'nanoid'
+import { useDraggable } from '@dnd-kit/core';
+import React, { useRef } from 'react';
+import Image, { StaticImageData } from 'next/image';
+import { nanoid } from 'nanoid';
 
 const DraggableElement = ({
   name,
@@ -10,13 +10,13 @@ const DraggableElement = ({
   typeId,
   isEditing,
 }: {
-  name: string
-  icon: StaticImageData
-  type: string
-  typeId: string
-  isEditing: boolean
+  name: string;
+  icon: StaticImageData;
+  type: string;
+  typeId: string;
+  isEditing: boolean;
 }) => {
-  const id = useRef(nanoid())
+  const id = useRef(nanoid());
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     attributes: {
       role: 'button',
@@ -33,17 +33,18 @@ const DraggableElement = ({
       type: type,
       isEditing: isEditing,
     },
-  })
+  });
 
   const style = {
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
       : undefined,
-  }
+  };
 
+  //TODO remove this when not needed
   const handlePointerUp = (event: React.PointerEvent) => {
-    console.log(event)
-  }
+    console.log(event);
+  };
 
   return (
     <div
@@ -57,7 +58,7 @@ const DraggableElement = ({
       <Image src={icon} alt="Round Table" width={24} height={24} />
       {name}
     </div>
-  )
-}
+  );
+};
 
-export default DraggableElement
+export default DraggableElement;

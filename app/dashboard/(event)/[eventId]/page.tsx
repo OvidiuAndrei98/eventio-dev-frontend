@@ -81,7 +81,9 @@ const DashboardEventPage = () => {
               alignItems: 'center',
             }}
           >
-            <h2>{eventInstance?.eventName}</h2>
+            <h2 className="font-semibold text-[#28282B] text-lg mb-2">
+              {eventInstance?.eventName}
+            </h2>
             <span className="text-gray-400 text-sm">
               {eventInstance?.eventType}
             </span>
@@ -102,11 +104,11 @@ const DashboardEventPage = () => {
             </span>
           </div>
           <Image
-            className="object-cover w-[80px] h-[80px]"
+            className="object-cover w-[100px] h-[100px] rounded-lg shadow-md"
             alt="Event Thumbnail"
             src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
-            width={80}
-            height={80}
+            width={100}
+            height={100}
           />
           <Button
             icon={<SendOutlined />}

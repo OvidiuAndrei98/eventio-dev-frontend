@@ -108,6 +108,11 @@ export const defaultElements = {
           | 'self-start'
           | 'self-end',
       },
+      borderStyles: {
+        size: '1',
+        color: '#1677ff',
+        sides: 'none none none none',
+      },
       disabled: false,
       responsive: {},
       backgroundImage: {

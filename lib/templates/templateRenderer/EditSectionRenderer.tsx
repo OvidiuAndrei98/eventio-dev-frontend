@@ -10,7 +10,8 @@ import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
-// import { template } from '@antv/g2plot/lib/utils';
+import DragOverlayGuidelines from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/components/DragOverlayGuidelines';
+import { Guideline } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -28,6 +29,7 @@ interface EditSectionRendererProps {
   selectedElementId: string;
   isSelected?: boolean;
   onSelect: (section: TemplateElement) => void;
+  currentGuidelines: Guideline[];
 }
 
 const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
@@ -36,6 +38,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   selectedElementId,
   isSelected,
   onSelect,
+  currentGuidelines,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
@@ -81,6 +84,13 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  const canvasElement = document.querySelector(
+    '#' + sectionData.id
+  ) as HTMLElement;
+  const canvasRect = canvasElement
+    ? canvasElement.getBoundingClientRect()
+    : null;
 
   return (
     <div
@@ -188,6 +198,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
             return null;
         }
       })}
+      {canvasRect && <DragOverlayGuidelines guidelines={currentGuidelines} />}
     </div>
   );
 };
