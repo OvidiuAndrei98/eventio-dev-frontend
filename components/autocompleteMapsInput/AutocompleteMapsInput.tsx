@@ -139,6 +139,7 @@ const AutocompleteMapsInput = ({
   const handleFormSubmit = async (values: any) => {
     setSaveTriggeredFlag(true);
     if (selectedPlace) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       let imageWasUploaded: () => void = () => {};
       afterImageUploaded = new Promise((r) => (imageWasUploaded = r));
 

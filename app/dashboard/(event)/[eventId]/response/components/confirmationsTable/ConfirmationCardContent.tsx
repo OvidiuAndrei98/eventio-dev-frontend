@@ -28,8 +28,8 @@ const ConfirmationCardContent = ({ guest }: ConfirmationCardContentProps) => {
           <span className="value">{guest.dietaryRestrictions}</span>
         </div>
       )}
-      {guest.eventAditionalQuestions?.map((q) => (
-        <div className="card-row">
+      {guest.eventAditionalQuestions?.map((q, index) => (
+        <div className="card-row" key={index}>
           <span className="secondary-text-color-light title">
             {q.key.replace(/_/g, ' ')}
           </span>

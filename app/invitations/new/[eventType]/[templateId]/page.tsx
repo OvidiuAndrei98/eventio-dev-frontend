@@ -104,6 +104,7 @@ const NewInvitationPage = ({
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     let imageWasUploaded: () => void = () => {};
     afterImageUploaded = new Promise((r) => (imageWasUploaded = r));
 

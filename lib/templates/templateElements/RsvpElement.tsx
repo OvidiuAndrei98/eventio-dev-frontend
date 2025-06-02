@@ -239,11 +239,17 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
             <Select.Option value="no">Nu</Select.Option>
           </Select>
         </Form.Item>
-        {eventAditionalQuestions.map((q) => (
-          <Form.Item label={q.qName} name={q.qName.replace(/\s+/g, '_')}>
+        {eventAditionalQuestions.map((q, index) => (
+          <Form.Item
+            label={q.qName}
+            name={q.qName.replace(/\s+/g, '_')}
+            key={q.qName + index}
+          >
             <Select placeholder={'--Alege--'}>
-              {q.qAnswers.map((qa) => (
-                <Select.Option value={qa.value}>{qa.value}</Select.Option>
+              {q.qAnswers.map((qa, index) => (
+                <Select.Option value={qa.value} key={index}>
+                  {qa.value}
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>

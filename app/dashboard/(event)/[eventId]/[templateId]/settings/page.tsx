@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useRef, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import ColorEditorWidget from '../edit/components/editorComponents/ColorEditorWidget';
 import {
   EditorWidgetType,
@@ -291,8 +291,8 @@ const SettingsPage = ({
                                   rowGap: 16,
                                 }}
                               >
-                                {subFields.map((subField) => (
-                                  <div className="flex gap-2 mr-6">
+                                {subFields.map((subField, index) => (
+                                  <div className="flex gap-2 mr-6" key={index}>
                                     <Form.Item
                                       noStyle
                                       name={[subField.name, 'value']}
@@ -434,7 +434,10 @@ const SettingsPage = ({
                 </div>
               )}
               {templateSettings?.aditionalLocations?.map((loc) => (
-                <div className="rounded p-3 flex flex-row items-center gap-4 max-w-[400px] hover:shadow-md hover:bg-[#fcf2ff] transition-shadow duration-200 group">
+                <div
+                  className="rounded p-3 flex flex-row items-center gap-4 max-w-[400px] hover:shadow-md hover:bg-[#fcf2ff] transition-shadow duration-200 group"
+                  key={loc.locationId}
+                >
                   <span className="text-red-500 mr-2 flex-shrink-0 shadow-sm bg-gray-50 w-16 h-16 flex items-center justify-center rounded-md">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
