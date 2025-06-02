@@ -63,6 +63,41 @@ export const defaultElements = {
       },
     };
   },
+  'locations-section': (elementName: string) => {
+    return {
+      id: `section-${crypto.randomUUID()}`, // Genereaza un ID unic
+      type: ElementType.LocationsSection,
+      name: elementName
+        .replace(/-/g, ' ')
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' '),
+      elements: [
+        {
+          id: `element-${crypto.randomUUID()}`,
+          name: 'Locatii Eveniment',
+          disabled: false,
+          type: ElementType.locationsElement,
+          position: {}, // Desktop: sub text link, centrat
+          style: {},
+          responsive: {},
+        },
+      ],
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
+      disabled: false,
+      responsive: {},
+      style: {
+        height: 'auto',
+        justifyContent: 'center',
+      },
+    };
+  },
   // >>>>>>>>>>ELEMENTS<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   text: (elementName: string) => {
     return {
@@ -204,6 +239,23 @@ export const defaultElements = {
         height: 100,
         backgroundColor: 'rgba(2, 2, 2, 0.44)',
       },
+      responsive: {},
+    };
+  },
+  locations: (elementName: string) => {
+    return {
+      id: `element-${crypto.randomUUID()}`,
+      name: elementName.toUpperCase(),
+      disabled: false,
+      type: ElementType.locationsElement,
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      }, // Desktop: sub text link, centrat
+      style: { width: 100 },
       responsive: {},
     };
   },

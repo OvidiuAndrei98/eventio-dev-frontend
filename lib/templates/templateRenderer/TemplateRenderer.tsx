@@ -45,10 +45,6 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   activeBreakpointValue,
   handleTemplateDragAndDrop,
 }) => {
-  // if (!invitationData || !invitationData.elements) {
-  //   return <div>Nu s-au găsit date pentru invitație.</div>;
-  // }
-
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeBreakpoint, setActiveBreakpoint] = useState<
     keyof typeof BREAKPOINTS | 'desktop'
@@ -296,6 +292,10 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       handleTemplateDragAndDrop(e.active.id as string, finalPosition); // Fără finalStyle aici
   };
 
+  if (!invitationData || !invitationData.elements) {
+    return <div>Nu s-au găsit date pentru invitație.</div>;
+  }
+
   return (
     <div ref={containerRef} style={invitationAreaStyle}>
       {sections?.map((section) => {
@@ -317,6 +317,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
           >
             <EditSectionRenderer
               key={section.id}
+              templateData={invitationData}
               sectionData={section}
               activeBreakpoint={activeBreakpoint}
               selectedElementId={selectedElementId}
@@ -328,10 +329,12 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         ) : (
           <SectionRenderer
             key={section.id}
+            templateData={invitationData}
             sectionData={section}
             activeBreakpoint={activeBreakpoint}
             eventId={invitationData.eventId}
             userId={invitationData.userId}
+            //de adaugat isActive pt ferificare in link daca e activa
           />
         );
       })}

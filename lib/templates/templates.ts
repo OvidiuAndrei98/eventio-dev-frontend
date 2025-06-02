@@ -949,6 +949,15 @@ export const defaultTemplates: Template[] = [
     ],
     settings: {
       backgroundColor: '#f8f0e8',
+      aditionalLocations: [],
+      eventAditionalQuestions: [],
+      eventLocation: {
+        locationId: 'demo-template-1',
+        formatted_address: 'demo-template-1',
+        location: { lat: '0', long: '0' },
+        name: 'demo-template-1 ',
+      },
+      eventActive: false,
     },
     description:
       'Un template demonstrativ care utilizează poziționare și stiluri specifice pe breakpoint-uri.',
@@ -957,6 +966,7 @@ export const defaultTemplates: Template[] = [
     templateId: 'demo-template-1',
     userId: 'demo-template-1',
     eventId: 'demo-template-1',
+    eventDate: 'demo-template-1',
   },
 ];
 

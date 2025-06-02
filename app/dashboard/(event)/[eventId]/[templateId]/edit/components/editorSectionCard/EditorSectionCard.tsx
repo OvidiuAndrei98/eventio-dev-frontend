@@ -143,7 +143,9 @@ const EditorSectionCard = ({
     (
       elementType: Exclude<
         ElementType,
-        ElementType.Section | ElementType.RSVP_SECTION
+        | ElementType.Section
+        | ElementType.RSVP_SECTION
+        | ElementType.LocationsSection
       >,
       elementName: string,
       section: TemplateSection
@@ -250,7 +252,9 @@ const EditorSectionCard = ({
               handleSelectElementType(
                 elementType as Exclude<
                   ElementType,
-                  ElementType.Section | ElementType.RSVP_SECTION
+                  | ElementType.Section
+                  | ElementType.RSVP_SECTION
+                  | ElementType.LocationsSection
                 >,
                 elementName,
                 section

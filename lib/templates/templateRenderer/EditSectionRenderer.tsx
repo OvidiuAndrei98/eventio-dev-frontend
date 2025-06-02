@@ -3,6 +3,7 @@ import {
   TemplateSection,
   ElementType,
   TemplateElement,
+  Template,
 } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
@@ -12,6 +13,7 @@ import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
 import DragOverlayGuidelines from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/components/DragOverlayGuidelines';
 import { Guideline } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
+import LocationsElement from '../templateElements/LocationsElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -19,12 +21,14 @@ const elementComponentMap = {
   [ElementType.RSVP_ELEMENT]: RsvpElement,
   [ElementType.Blob]: BlobsElement,
   [ElementType.Container]: ContainerElement,
+  [ElementType.locationsElement]: LocationsElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
 interface EditSectionRendererProps {
   sectionData: TemplateSection;
+  templateData: Template;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
   selectedElementId: string;
   isSelected?: boolean;
@@ -34,6 +38,7 @@ interface EditSectionRendererProps {
 
 const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   sectionData,
+  templateData,
   activeBreakpoint,
   selectedElementId,
   isSelected,
@@ -88,6 +93,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   const canvasElement = document.querySelector(
     '#' + sectionData.id
   ) as HTMLElement;
+
   const canvasRect = canvasElement
     ? canvasElement.getBoundingClientRect()
     : null;
@@ -162,6 +168,9 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 activeBreakpoint={activeBreakpoint}
                 eventId={''}
                 editMode={true}
+                eventAditionalQuestions={
+                  templateData.settings.eventAditionalQuestions
+                }
               />
             );
           case ElementType.Blob:
@@ -188,6 +197,25 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 onSelect={onSelect}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}
+              />
+            );
+
+          case ElementType.locationsElement:
+            return (
+              <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                onSelect={onSelect}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
+                eventLocation={templateData.settings.eventLocation}
+                eventAditionalLocations={
+                  templateData.settings.aditionalLocations
+                }
+                eventDate={templateData.eventDate}
               />
             );
           default:

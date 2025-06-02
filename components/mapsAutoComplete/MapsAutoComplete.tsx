@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Libraries, useJsApiLoader } from '@react-google-maps/api';
+import { useJsApiLoader } from '@react-google-maps/api';
 import { Input } from '../ui/input';
-
-const libs = ['places', 'core', 'maps', 'marker'] as Libraries;
+import { libs } from '@/lib/utils';
 
 interface MapsAutoCompleteProps {
   onLocationSelect: (location: {
     formatted_address: string;
     name: string;
     location: { lat: string; long: string };
+    locationId: string;
   }) => void;
 }
 
@@ -66,6 +66,7 @@ const MapsAutoComplete = ({ onLocationSelect }: MapsAutoCompleteProps) => {
               lat: place.geometry.location?.lat().toString() || '',
               long: place.geometry.location?.lng().toString() || '',
             },
+            locationId: '',
           });
           if (map) {
             const position = place.geometry?.location;
@@ -85,7 +86,7 @@ const MapsAutoComplete = ({ onLocationSelect }: MapsAutoCompleteProps) => {
   }, [autocomplete, map]);
 
   return (
-    <div>
+    <div className="flex-2">
       <Input
         ref={autocompleteRef}
         className="focus:outline-[#B46ACA] focus:border-[#B46ACA] hover:border-[#B46ACA] my-4 focus:outline-[#B46ACA]"
@@ -93,7 +94,7 @@ const MapsAutoComplete = ({ onLocationSelect }: MapsAutoCompleteProps) => {
       {isLoaded ? (
         <div className=" h-[400px]" ref={mapRef} />
       ) : (
-        <span>loading</span>
+        <span className="loader"></span>
       )}
     </div>
   );

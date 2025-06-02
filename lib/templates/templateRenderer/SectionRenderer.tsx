@@ -1,11 +1,12 @@
 import React from 'react';
-import { TemplateSection, ElementType } from '../../../core/types';
+import { TemplateSection, ElementType, Template } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
+import LocationsElement from '../templateElements/LocationsElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -13,6 +14,7 @@ const elementComponentMap = {
   [ElementType.RSVP_ELEMENT]: RsvpElement,
   [ElementType.Blob]: BlobsElement,
   [ElementType.Container]: ContainerElement,
+  [ElementType.locationsElement]: LocationsElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
@@ -22,6 +24,7 @@ interface SectionRendererProps {
   userId: string;
   sectionData: TemplateSection;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
+  templateData: Template;
 }
 
 const SectionRenderer: React.FC<SectionRendererProps> = ({
@@ -29,6 +32,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   userId,
   sectionData,
   activeBreakpoint,
+  templateData,
 }) => {
   const finalElementProps = mergeResponsiveProperties<TemplateSection>(
     {
@@ -103,6 +107,9 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 editMode={true}
                 eventId={eventId}
                 userId={userId}
+                eventAditionalQuestions={
+                  templateData.settings.eventAditionalQuestions
+                }
               />
             );
           case ElementType.Blob:
@@ -121,6 +128,20 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+              />
+            );
+          case ElementType.locationsElement:
+            return (
+              <ComponentToRender
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
+                eventLocation={templateData.settings.eventLocation}
+                eventAditionalLocations={
+                  templateData.settings.aditionalLocations
+                }
+                eventDate={templateData.eventDate}
               />
             );
           default:

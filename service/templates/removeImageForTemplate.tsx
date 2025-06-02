@@ -1,11 +1,5 @@
-import { User } from 'firebase/auth';
-import {
-  getStorage,
-  ref,
-  uploadString,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
+import { User } from '@/core/types';
+import { getStorage, ref, deleteObject } from 'firebase/storage';
 
 export const removeImageForTemplate = async (
   user: User,
@@ -13,6 +7,6 @@ export const removeImageForTemplate = async (
   name: string
 ): Promise<void> => {
   const storage = getStorage();
-  const imageRef = ref(storage, user.uid + `/${templateId}/${name}`);
+  const imageRef = ref(storage, user.userId + `/${templateId}/${name}`);
   deleteObject(imageRef);
 };

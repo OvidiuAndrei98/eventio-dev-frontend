@@ -17,7 +17,6 @@ import {
 import { UploadOutlined } from '@ant-design/icons';
 import { toast } from 'sonner';
 import { Color } from 'antd/es/color-picker';
-import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { useAuth } from '@/core/AuthenticationBoundary';
@@ -140,13 +139,9 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
       });
     }
     if (info.file.status === 'removed') {
-      if (firebaseAuth.currentUser) {
+      if (user) {
         try {
-          await removeImageForTemplate(
-            firebaseAuth.currentUser,
-            templateId,
-            info.file.name
-          );
+          await removeImageForTemplate(user, templateId, info.file.name);
 
           setBackgroundImageFields({ opacity: '', url: '', name: '' });
           setUploadObject(undefined);

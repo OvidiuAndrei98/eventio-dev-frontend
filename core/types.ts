@@ -16,6 +16,24 @@ export interface UserDTO {
   surname: string;
 }
 
+export interface EventLocation {
+  locationId: string;
+  formatted_address: string;
+  name: string;
+  location: { lat: string; long: string };
+  title?: string;
+  locationImage?: {
+    url: string;
+    name: string;
+  };
+  locationStartTime?: string;
+}
+
+export interface EventQuestions {
+  qName: string;
+  qAnswers: { value: string }[];
+}
+
 export interface EventInstance {
   eventId: string;
   userId: string;
@@ -30,6 +48,8 @@ export interface EventInstance {
   eventInvitationLink: string;
   eventLocation: EventLocation;
   eventGuestCount: number;
+  adiotionalLocations: EventLocation[];
+  eventAditionalQuestions: EventQuestions[];
 }
 
 export interface Guest {
@@ -44,6 +64,7 @@ export interface Guest {
   isPrimaryContact: boolean;
   primaryContactPhone?: string;
   totalGuests?: number;
+  eventAditionalQuestions?: Record<string, string>[];
 }
 
 export interface CanvasElement {
@@ -162,6 +183,8 @@ export enum ElementType {
   RSVP_ELEMENT = 'rsvp',
   Blob = 'blob',
   Container = 'container',
+  LocationsSection = 'locations-section',
+  locationsElement = 'locations',
 }
 
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
@@ -172,10 +195,15 @@ export interface Template {
   userId: string;
   name: string;
   type: string;
+  eventDate: string;
   description: string;
   thumbnailUrl: string;
   settings: {
     backgroundColor: string;
+    eventActive: boolean;
+    eventLocation: EventLocation;
+    aditionalLocations: EventLocation[];
+    eventAditionalQuestions: EventQuestions[];
   };
   elements: TemplateSection[];
 }
@@ -237,11 +265,6 @@ export interface ImageTemplateElement extends BaseTemplateElement {
     color: string;
     sides: string;
   };
-}
-export interface EventLocation {
-  formatted_address: string;
-  name: string;
-  location: { lat: string; long: string };
 }
 
 export interface RsvpTemplateElement extends BaseTemplateElement {

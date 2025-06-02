@@ -5,21 +5,34 @@ import { useAuth } from '@/core/AuthenticationBoundary';
 import { EventInstance, EventLocation } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { createEvent } from '@/service/event/createEvent';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
+import { QuestionCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import {
   Button,
   Calendar,
   Form,
   FormInstance,
   FormProps,
+  GetProp,
   Input,
   InputNumber,
   Steps,
   Tag,
+  Upload,
+  UploadProps,
 } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import { useRouter } from 'next/navigation';
 import React, { use, useState } from 'react';
 import { toast } from 'sonner';
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
+const getBase64 = (img: FileType, callback: (url: string) => void) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result as string));
+  reader.readAsDataURL(img);
+};
 
 const NewInvitationPage = ({
   params,
@@ -32,6 +45,7 @@ const NewInvitationPage = ({
   const [current, setCurrent] = useState(0);
   const [eventDateForm] = Form.useForm();
   const [selectedEventType, setSelectedEventType] = useState<string>(eventType);
+  const [form] = useForm();
   const [newEventDate, setNewEventDate] = useState<{
     eventName: string;
     guestsCount: string;
@@ -40,6 +54,24 @@ const NewInvitationPage = ({
   const [newEventLocation, setNewEventLocation] = useState<EventLocation>(
     {} as EventLocation
   );
+
+  let afterImageUploaded: Promise<void>;
+
+  const beforeUpload = (file: FileType) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      toast.error('You can only upload JPG/PNG file!');
+    }
+    // const isLt2M = file.size / 1024 / 1024 < 2;
+    const isLt10M = file.size / 1024 / 1024 < 10;
+    if (!isLt10M) {
+      toast.error('Image must be smaller than 10MB!');
+    }
+    // if (!isLt2M) {
+    //   toast.error('Image must smaller than 2MB!');
+    // }
+    return isJpgOrPng && isLt10M;
+  };
 
   const onSelectEventTypeAction = (eventType: string) => {
     setSelectedEventType(eventType);
@@ -53,6 +85,102 @@ const NewInvitationPage = ({
   }) => {
     setNewEventDate(eventDate);
     next();
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleFormSubmit = async (values: any) => {
+    if (!newEventLocation.location) {
+      toast.error('Te rugam sa selectezi o locatie valida');
+      return;
+    }
+    const selectedTemplate = defaultTemplates.find(
+      (template) =>
+        template.templateId === templateId && template.type === eventType
+    );
+
+    if (!selectedTemplate) {
+      console.error('Template not found');
+      toast.error('A aparut o eroare la crearea invitatiei');
+      return;
+    }
+
+    let imageWasUploaded: () => void = () => {};
+    afterImageUploaded = new Promise((r) => (imageWasUploaded = r));
+
+    const eventId = crypto.randomUUID();
+    const newTemplateId = crypto.randomUUID();
+    const newEventLocationCopy = { ...newEventLocation };
+
+    if (values.locationPhoto.file.status === 'error') {
+      imageWasUploaded();
+      return;
+    }
+    if (values.locationPhoto.file.status === 'done') {
+      // Get this url from response in real world.
+      getBase64(
+        values.locationPhoto.file.originFileObj as FileType,
+        async (url) => {
+          if (user.userDetails) {
+            try {
+              const storageUrl = await uploadImageForTemplate(
+                url,
+                user.userDetails,
+                templateId,
+                values.locationPhoto.file.name
+              );
+              if (storageUrl) {
+                newEventLocationCopy.locationImage = {
+                  name: values.locationPhoto.file.name,
+                  url: storageUrl,
+                };
+              }
+            } catch (error) {
+              toast.error('A aparut o eroare la incarcarea imaginii');
+            }
+          }
+          imageWasUploaded();
+        }
+      );
+    }
+
+    if (values.locationPhoto.file.status === 'removed') {
+      imageWasUploaded();
+    }
+
+    await afterImageUploaded;
+
+    newEventLocationCopy.title = values.locationTitle;
+    newEventLocationCopy.locationStartTime = values.locationStartTime;
+
+    newEventLocationCopy.locationId = crypto.randomUUID();
+
+    const eventName = newEventDate.eventName;
+    const eventDateString = newEventDate.eventDate;
+
+    selectedTemplate.settings.eventLocation = newEventLocationCopy;
+    selectedTemplate.eventDate = eventDateString;
+
+    const eventData: EventInstance = {
+      eventGuestCount: parseInt(newEventDate.guestsCount, 10),
+      eventLocation: newEventLocation,
+      eventName: eventName,
+      eventDate: eventDateString,
+      eventType: selectedEventType,
+      templateId: newTemplateId,
+      eventActive: false,
+      eventPlan: 'basic',
+      eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
+      eventId: eventId,
+      userId: user.userDetails.userId,
+      eventTemplateThumbnailUrl: selectedTemplate.thumbnailUrl,
+      eventTableOrganization: {
+        elements: [],
+      },
+      adiotionalLocations: [],
+      eventAditionalQuestions: [],
+    };
+    await createEvent(eventData, user.userDetails.userId, selectedTemplate);
+    router.push(`/dashboard/${eventId}`);
   };
 
   const steps = [
@@ -77,9 +205,57 @@ const NewInvitationPage = ({
     {
       title: 'Locatie eveniment',
       content: (
-        <MapsAutoComplete
-          onLocationSelect={(location) => setNewEventLocation(location)}
-        />
+        <div className="flex flex-col gap-4 mt-2 sm:flex-row">
+          <MapsAutoComplete
+            onLocationSelect={(location) => setNewEventLocation(location)}
+          />
+          <Form
+            className="flex-1 max-w-[210px]"
+            form={form}
+            autoFocus={false}
+            name="addAditionalLocation"
+            onFinish={handleFormSubmit}
+            autoComplete="off"
+            layout="vertical"
+          >
+            <Form.Item
+              label="Titlu locatie"
+              name="locationTitle"
+              rules={[
+                {
+                  required: true,
+                  message: 'Titlul este obligatoriu.',
+                },
+              ]}
+            >
+              <Input placeholder="Ex: Petrecerea" />
+            </Form.Item>
+            <Form.Item
+              label="Ora eveniment"
+              name="locationStartTime"
+              rules={[
+                {
+                  required: true,
+                  message: 'Ora este obligatorie.',
+                },
+              ]}
+            >
+              <Input
+                placeholder="Ex: 12:00"
+                pattern={'^([0-1]?d|2[0-3])(?::([0-5]?d))?$'}
+              />
+            </Form.Item>
+            <Form.Item label="Fotografie" name="locationPhoto">
+              <Upload
+                name="locationPhoto"
+                listType="picture"
+                beforeUpload={beforeUpload}
+              >
+                <Button icon={<UploadOutlined />}>Adauga imagine</Button>
+              </Upload>
+            </Form.Item>
+          </Form>
+        </div>
       ),
     },
   ];
@@ -95,44 +271,7 @@ const NewInvitationPage = ({
   };
 
   const onFinish = async () => {
-    if (!newEventLocation.location) {
-      toast.error('Te rugam sa selectezi o locatie valida');
-      return;
-    }
-    const selectedTemplate = defaultTemplates.find(
-      (template) =>
-        template.templateId === templateId && template.type === eventType
-    );
-
-    if (!selectedTemplate) {
-      console.error('Template not found');
-      toast.error('A aparut o eroare la crearea invitatiei');
-      return;
-    }
-
-    const eventName = newEventDate.eventName;
-    const eventDateString = newEventDate.eventDate;
-    const eventId = crypto.randomUUID();
-    const newTemplateId = crypto.randomUUID();
-    const eventData: EventInstance = {
-      eventGuestCount: parseInt(newEventDate.guestsCount, 10),
-      eventLocation: newEventLocation,
-      eventName: eventName,
-      eventDate: eventDateString,
-      eventType: selectedEventType,
-      templateId: newTemplateId,
-      eventActive: false,
-      eventPlan: 'basic',
-      eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
-      eventId: eventId,
-      userId: user.userDetails.userId,
-      eventTemplateThumbnailUrl: selectedTemplate.thumbnailUrl,
-      eventTableOrganization: {
-        elements: [],
-      },
-    };
-    await createEvent(eventData, user.userDetails.userId, selectedTemplate);
-    router.push(`/dashboard/${eventId}`);
+    form.submit();
   };
 
   return (

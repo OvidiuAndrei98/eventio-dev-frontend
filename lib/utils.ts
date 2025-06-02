@@ -1,4 +1,5 @@
 import { Guest } from '@/core/types';
+import { Libraries } from '@react-google-maps/api';
 import { clsx, type ClassValue } from 'clsx';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { twMerge } from 'tailwind-merge';
@@ -97,3 +98,5 @@ export const createXlsxWorkbook = (
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Invitați');
   XLSX.writeFile(workbook, 'Lista_Invitati.xlsx', { compression: true });
 };
+
+export const libs = ['places', 'core', 'maps', 'marker'] as Libraries;

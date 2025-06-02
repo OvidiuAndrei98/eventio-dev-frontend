@@ -1,4 +1,4 @@
-import { Guest } from '@/core/types';
+import { EventQuestions, Guest } from '@/core/types';
 import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
 import { Button, Form, FormProps, Input, InputNumber, Select } from 'antd';
 import React, { useState } from 'react';
@@ -20,6 +20,7 @@ interface RsvpElementProps {
   id: string;
   eventId: string;
   userId: string;
+  eventAditionalQuestions: EventQuestions[];
 }
 
 /**
@@ -28,7 +29,12 @@ interface RsvpElementProps {
  * La submit, creează documente separate în Firestore pentru FIECARE persoană.
  * Este concepută pentru a fi randată de componenta TemplateRenderer.
  */
-const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
+const RsvpElement: React.FC<RsvpElementProps> = ({
+  id,
+  eventId,
+  userId,
+  eventAditionalQuestions,
+}) => {
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RsvpFormData>({
     primaryGuestName: '',
@@ -49,6 +55,14 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
     const subbmisionTime = Date.now();
 
     if (values.isAttending === 'yes' && values.primaryGuestName?.trim()) {
+      // Collect additional fields that are not part of RsvpFormData
+      const additionalFields: { key: string; value: string }[] = [];
+      Object.entries(values).forEach(([key, value]) => {
+        if (!(key in formData)) {
+          additionalFields.push({ key, value });
+        }
+      });
+
       guestsToSave.push({
         guestId: crypto.randomUUID(),
         submissionId: submissionId,
@@ -62,6 +76,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
         primaryContactPhone: values.primaryContactPhone?.trim() || '',
         totalGuests:
           typeof values.totalGuests === 'number' ? values.totalGuests : 1,
+        eventAditionalQuestions: additionalFields,
       });
     }
 
@@ -224,6 +239,15 @@ const RsvpElement: React.FC<RsvpElementProps> = ({ id, eventId, userId }) => {
             <Select.Option value="no">Nu</Select.Option>
           </Select>
         </Form.Item>
+        {eventAditionalQuestions.map((q) => (
+          <Form.Item label={q.qName} name={q.qName.replace(/\s+/g, '_')}>
+            <Select placeholder={'--Alege--'}>
+              {q.qAnswers.map((qa) => (
+                <Select.Option value={qa.value}>{qa.value}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        ))}
         {formData.isAttending === 'yes' && (
           <Form.Item<RsvpFormData>
             label="Număr total invitați (inclusiv tu):"

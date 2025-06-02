@@ -3,6 +3,7 @@ import { ContainerOutlined } from '@ant-design/icons';
 import {
   FormInputIcon,
   ImageIcon,
+  MapPlusIcon,
   SectionIcon,
   ShapesIcon,
   TextIcon,
@@ -20,6 +21,11 @@ export const availableSectionTypes = [
   {
     type: ElementType.RSVP_SECTION,
     name: 'Sectiune RSVP',
+    icon: FormInputIcon,
+  },
+  {
+    type: ElementType.LocationsSection,
+    name: 'Sectiune locatii',
     icon: FormInputIcon,
   },
 ];
@@ -55,5 +61,11 @@ export const availableElementTypes = [
     name: 'Container',
     icon: ContainerOutlined,
     availableFor: [ElementType.Section],
+  },
+  {
+    type: ElementType.locationsElement,
+    name: 'Locatii eveniment',
+    icon: MapPlusIcon,
+    availableFor: [ElementType.LocationsSection],
   },
 ];

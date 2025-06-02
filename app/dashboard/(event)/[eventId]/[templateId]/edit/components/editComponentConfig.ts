@@ -33,6 +33,26 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
   },
+  'locations-section': {
+    name: {
+      label: 'Nume Secțiune',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.backgroundColor': {
+      label: 'Culoare Fundal',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    backgroundImage: {
+      label: 'Imagine Fundal',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.ImageUpload,
+      responsive: false,
+    },
+  },
   text: {
     name: {
       label: 'Nume Element',

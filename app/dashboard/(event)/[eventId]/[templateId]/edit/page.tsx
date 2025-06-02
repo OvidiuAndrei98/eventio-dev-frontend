@@ -289,7 +289,11 @@ const EditPage = ({
     const selectedElementType = selectedItemData.type;
 
     // Decide daca actualizezi un element sau o sectiune
-    if (selectedElementType !== 'section') {
+    if (
+      selectedElementType !== ElementType.Section &&
+      selectedElementType !== ElementType.RSVP_ELEMENT &&
+      selectedElementType !== ElementType.LocationsSection
+    ) {
       // Este un element (Text, Image etc.)
       setTemplate((prevTemplate) => {
         // Apelam helper-ul pentru actualizarea imutabila a elementului
@@ -494,7 +498,7 @@ const EditPage = ({
                 ? 'w-[367px] mx-auto'
                 : editViewMode === 'tablet'
                 ? 'w-[700px] mx-auto'
-                : 'max-w-[900px] ml-[calc(-23vw_+_50%)]'
+                : 'max-w-[900px] min-w-[800px] ml-[calc(-23vw_+_50%)]'
             }`}
           >
             <TemplateRenderer

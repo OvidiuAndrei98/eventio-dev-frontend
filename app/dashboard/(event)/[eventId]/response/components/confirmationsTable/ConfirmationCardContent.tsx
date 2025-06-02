@@ -28,6 +28,14 @@ const ConfirmationCardContent = ({ guest }: ConfirmationCardContentProps) => {
           <span className="value">{guest.dietaryRestrictions}</span>
         </div>
       )}
+      {guest.eventAditionalQuestions?.map((q) => (
+        <div className="card-row">
+          <span className="secondary-text-color-light title">
+            {q.key.replace(/_/g, ' ')}
+          </span>
+          <span className="value">{q.value}</span>
+        </div>
+      ))}
     </div>
   );
 };
