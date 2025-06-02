@@ -165,6 +165,8 @@ const SettingsPage = ({
     }
 
     onSettingsChange('aditionalLocations', updatedLocations);
+
+    setEditLocationModalOpen(false);
   };
 
   const handleDeleteAditionalLocation = async (locationId: string) => {
@@ -422,7 +424,7 @@ const SettingsPage = ({
                   </div>
                   <div className="ml-auto">
                     <Button
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      className="md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       type="text"
                       icon={<EditOutlined />}
                       onClick={() => {
@@ -457,7 +459,7 @@ const SettingsPage = ({
                   </div>
                   <div className="ml-auto flex">
                     <Button
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      className="md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       type="text"
                       icon={<EditOutlined />}
                       onClick={() => {
@@ -466,7 +468,7 @@ const SettingsPage = ({
                       }}
                     />
                     <Button
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      className="md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       type="text"
                       icon={<DeleteOutlined />}
                       onClick={() =>
@@ -481,11 +483,11 @@ const SettingsPage = ({
         </div>
       </div>
       <Modal
-        title="Vertically centered modal dialog"
+        title="Editeaza locatia"
         centered
         open={editLocationModalOpen}
+        footer={false}
         destroyOnClose
-        // onOk={() => setModal2Open(false)}
         onCancel={() => setEditLocationModalOpen(false)}
       >
         <AutocompleteMapsInput

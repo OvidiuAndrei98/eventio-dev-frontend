@@ -211,7 +211,7 @@ const NewInvitationPage = ({
             onLocationSelect={(location) => setNewEventLocation(location)}
           />
           <Form
-            className="flex-1 max-w-[210px]"
+            className="flex-1 md:max-w-[210px]"
             form={form}
             autoFocus={false}
             name="addAditionalLocation"
@@ -229,7 +229,7 @@ const NewInvitationPage = ({
                 },
               ]}
             >
-              <Input placeholder="Ex: Petrecerea" />
+              <Input placeholder="Ex: Petrecerea" className="!w-full" />
             </Form.Item>
             <Form.Item
               label="Ora eveniment"
@@ -285,12 +285,13 @@ const NewInvitationPage = ({
         <div>{steps[current].content}</div>
         <div className="mt-[24px] flex justify-between gap-2">
           {current > 0 && (
-            <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-              Previous
+            <Button onClick={() => prev()} size="large" className="!px-4">
+              Inapoi
             </Button>
           )}
           {current < steps.length - 1 && (
             <Button
+              size="large"
               className="self-end"
               type="primary"
               onClick={() => {
@@ -302,12 +303,12 @@ const NewInvitationPage = ({
                 }
               }}
             >
-              Next
+              Inainte
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => onFinish()}>
-              Done
+            <Button type="primary" onClick={() => onFinish()} size="large">
+              Finalizare
             </Button>
           )}
         </div>

@@ -88,6 +88,7 @@ const MapsAutoComplete = ({ onLocationSelect }: MapsAutoCompleteProps) => {
   return (
     <div className="flex-2">
       <Input
+        placeholder="Cauta locatie"
         ref={autocompleteRef}
         className="focus:outline-[#B46ACA] focus:border-[#B46ACA] hover:border-[#B46ACA] my-4 focus:outline-[#B46ACA]"
       />

@@ -130,6 +130,9 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
                 });
                 return { ...prevData, url: storageUrl, name: info.file.name };
               });
+              if (value.name) {
+                await removeImageForTemplate(user, templateId, value.name);
+              }
             }
           } catch (error) {
             toast.error('A aparut o eroare la incarcarea imaginii');

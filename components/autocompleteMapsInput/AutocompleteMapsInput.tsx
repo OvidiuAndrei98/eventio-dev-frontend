@@ -165,6 +165,13 @@ const AutocompleteMapsInput = ({
                       name: values.locationPhoto.file.name,
                     };
                   }
+                  if (editingLocation?.locationImage?.name) {
+                    await removeImageForTemplate(
+                      user,
+                      templateId,
+                      editingLocation.locationImage.name
+                    );
+                  }
                 } catch (error) {
                   toast.error('A aparut o eroare la incarcarea imaginii');
                 }
@@ -232,7 +239,7 @@ const AutocompleteMapsInput = ({
       </p>
       <Input
         defaultValue={editingLocation?.name}
-        placeholder="Locatie"
+        placeholder="Cauta locatie"
         ref={autocompleteRef}
         className="focus:outline-[#B46ACA] focus:border-[#B46ACA] hover:border-[#B46ACA] my-2 focus:outline-[#B46ACA]"
       />
