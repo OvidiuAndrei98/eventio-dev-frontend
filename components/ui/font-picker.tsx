@@ -209,7 +209,7 @@ export function FontPicker({
       </PopoverTrigger>
       <PopoverContent
         className="p-0 border-1 border-[#e5e7eb]"
-        style={{ width: 300, height, marginRight: 30, background: 'white' }}
+        style={{ width: 300, height, marginRight: 40, background: 'white' }}
         align="start"
       >
         <Command>
