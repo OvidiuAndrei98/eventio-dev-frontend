@@ -10,7 +10,7 @@ import {
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
 import { Button, Radio, RadioChangeEvent } from 'antd';
-import React, { use, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import '../styles.css';
 import EditorSectionCard from './components/editorSectionCard/EditorSectionCard';
 import PropertyPanel from './components/propertyPanel/PropertyPanel';
@@ -27,13 +27,12 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useEventContext } from '@/core/context/EventContext';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
+import { useParams } from 'next/navigation';
 
-const EditPage = ({
-  params,
-}: {
-  params: Promise<{ eventId: string; templateId: string }>;
-}) => {
-  const { templateId } = use(params);
+const EditPage = () => {
+  const { templateId } = useParams<{
+    templateId: string;
+  }>();
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState<string>('');

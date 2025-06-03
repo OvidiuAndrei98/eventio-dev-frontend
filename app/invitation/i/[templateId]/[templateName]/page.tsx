@@ -3,16 +3,14 @@
 import { Template } from '@/core/types';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
-import { notFound } from 'next/navigation';
-import React, { use, useEffect, useState } from 'react';
+import { notFound, useParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-const InvitationPage = ({
-  params,
-}: {
-  params: Promise<{ templateId: string; templateName: string }>;
-}) => {
-  const { templateId } = use(params);
+const InvitationPage = () => {
+  const { templateId } = useParams<{
+    templateId: string;
+  }>();
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
 

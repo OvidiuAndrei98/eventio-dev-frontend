@@ -22,8 +22,8 @@ import {
   UploadProps,
 } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useRouter } from 'next/navigation';
-import React, { use, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -40,7 +40,10 @@ const NewInvitationPage = ({
   params: Promise<{ eventType: string; templateId: string }>;
 }) => {
   const router = useRouter();
-  const { eventType, templateId } = use(params);
+  const { eventType, templateId } = useParams<{
+    eventType: string;
+    templateId: string;
+  }>();
   const user = useAuth();
   const [current, setCurrent] = useState(0);
   const [eventDateForm] = Form.useForm();

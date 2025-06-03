@@ -30,6 +30,7 @@ import {
   FixedSizeList as _FixedSizeList,
   FixedSizeListProps,
 } from 'react-window';
+import { ListChildComponentProps } from 'react-window';
 
 const FixedSizeList =
   _FixedSizeList as unknown as ComponentType<FixedSizeListProps>;
@@ -167,11 +168,11 @@ export function FontPicker({
     setIsOpen(open);
   }, []);
 
-  const Row = React.useCallback(
-    ({ index, style }: { index: number; style: React.CSSProperties }) => {
+  const Row: React.FC<ListChildComponentProps> = React.useCallback(
+    ({ index, style }: ListChildComponentProps) => {
       const font = filteredFonts[index];
       return (
-        <div style={style} key={String(font.family)}>
+        <div style={style}>
           <FontListItem
             font={font}
             isSelected={selectedFont?.family === font.family}

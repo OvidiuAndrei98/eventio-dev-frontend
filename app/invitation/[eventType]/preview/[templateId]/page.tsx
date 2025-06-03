@@ -1,17 +1,16 @@
 'use client';
 
 import { defaultTemplates } from '@/lib/templates/templates';
-import { notFound, useRouter } from 'next/navigation';
-import React, { use, useEffect, useMemo, useState } from 'react';
+import { notFound, useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from 'antd';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 
-const InvitationPreviewPage = ({
-  params,
-}: {
-  params: Promise<{ eventType: string; templateId: string }>;
-}) => {
-  const { eventType, templateId } = use(params);
+const InvitationPreviewPage = () => {
+  const { eventType, templateId } = useParams<{
+    eventType: string;
+    templateId: string;
+  }>();
   const [innerWidth, setInnerWidth] = useState(0);
   const router = useRouter();
 

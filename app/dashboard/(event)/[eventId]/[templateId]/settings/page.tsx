@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ColorEditorWidget from '../edit/components/editorComponents/ColorEditorWidget';
 import {
   EditorWidgetType,
@@ -26,13 +26,13 @@ import AutocompleteMapsInput from '@/components/autocompleteMapsInput/Autocomple
 import { updateEventActiveStatus } from '@/service/event/updateEventActiveStatus';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { useAuth } from '@/core/AuthenticationBoundary';
+import { useParams } from 'next/navigation';
 
-const SettingsPage = ({
-  params,
-}: {
-  params: Promise<{ eventId: string; templateId: string }>;
-}) => {
-  const { eventId, templateId } = use(params);
+const SettingsPage = () => {
+  const { eventId, templateId } = useParams<{
+    eventId: string;
+    templateId: string;
+  }>();
   const { eventInstance } = useEventContext();
   const [aditionalQuestionsForm] = Form.useForm();
   const [templateSettings, setTemplateSettings] = useState<
