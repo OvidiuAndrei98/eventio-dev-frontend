@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useRef, useEffect, useState, MutableRefObject } from 'react'
-import { useSpring, animated } from '@react-spring/web'
+import { useRef, useEffect, useState, MutableRefObject } from 'react';
+import { useSpring, animated } from '@react-spring/web';
 
 const AnimatedContent = ({
   children,
@@ -15,42 +15,42 @@ const AnimatedContent = ({
   threshold = 0.1,
   classNamme,
 }: {
-  children: JSX.Element
-  distance: number
-  direction: 'vertical' | 'horizontal'
-  reverse: boolean
-  config: { tension: number; friction: number }
-  initialOpacity: number
-  animateOpacity: boolean
-  scale: number
-  threshold: number
-  classNamme?: string
+  children: React.ReactNode;
+  distance: number;
+  direction: 'vertical' | 'horizontal';
+  reverse: boolean;
+  config: { tension: number; friction: number };
+  initialOpacity: number;
+  animateOpacity: boolean;
+  scale: number;
+  threshold: number;
+  classNamme?: string;
 }) => {
-  const [inView, setInView] = useState(false)
-  const ref = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>
+  const [inView, setInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null) as MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
-    if (!ref.current) return
+    if (!ref.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true)
-          observer.unobserve(ref.current)
+          setInView(true);
+          observer.unobserve(ref.current);
         }
       },
       { threshold }
-    )
+    );
 
-    observer.observe(ref.current)
+    observer.observe(ref.current);
 
-    return () => observer.disconnect()
-  }, [threshold])
+    return () => observer.disconnect();
+  }, [threshold]);
 
   const directions = {
     vertical: 'Y',
     horizontal: 'X',
-  }
+  };
 
   const springProps = useSpring({
     from: {
@@ -63,13 +63,13 @@ const AnimatedContent = ({
       ? { transform: 'translateY(0px) scale(1)', opacity: 1 }
       : undefined,
     config,
-  })
+  });
 
   return (
     <animated.div className={classNamme ?? ''} ref={ref} style={springProps}>
       {children}
     </animated.div>
-  )
-}
+  );
+};
 
-export default AnimatedContent
+export default AnimatedContent;
