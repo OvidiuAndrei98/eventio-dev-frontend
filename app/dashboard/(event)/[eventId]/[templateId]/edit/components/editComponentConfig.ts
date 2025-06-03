@@ -72,7 +72,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.FontFamily,
       min: 0,
       step: 1,
-      responsive: true,
+      responsive: false,
     },
     'style.width': {
       label: 'Latime element (%)',
