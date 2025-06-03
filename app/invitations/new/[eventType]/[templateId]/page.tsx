@@ -34,11 +34,7 @@ const getBase64 = (img: FileType, callback: (url: string) => void) => {
   reader.readAsDataURL(img);
 };
 
-const NewInvitationPage = ({
-  params,
-}: {
-  params: Promise<{ eventType: string; templateId: string }>;
-}) => {
+const NewInvitationPage = () => {
   const router = useRouter();
   const { eventType, templateId } = useParams<{
     eventType: string;

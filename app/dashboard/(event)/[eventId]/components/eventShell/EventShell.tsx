@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { notFound, usePathname, useRouter } from 'next/navigation';
+import { notFound, useParams, usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { queryEventById } from '@/service/event/queryEventById';
 import { LoadingIndicator } from '@/lib/icons';
@@ -38,8 +38,11 @@ interface EventShellProps {
   children: React.ReactNode;
 }
 
-export default function EventShell({ eventId, children }: EventShellProps) {
+export default function EventShell({ children }: EventShellProps) {
   const [routeElements, setRouteElements] = useState<string[]>([]);
+  const { eventId } = useParams<{
+    eventId: string;
+  }>();
   const pathName = usePathname();
   const router = useRouter();
   const authContext = useAuth();
