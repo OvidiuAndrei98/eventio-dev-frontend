@@ -5,7 +5,6 @@ import {
   GoogleAuthProvider,
   UserCredential,
   signInWithEmailAndPassword,
-  signInWithPopup,
 } from 'firebase/auth';
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { LoginForm } from '@/app/login/components/login-form';
