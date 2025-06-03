@@ -78,7 +78,7 @@ a {
 }
 
 * {
-  font-family: 'Comic Neue', serif !important;
+  font-family: 'Comic Neue', serif;
   box-sizing: border-box;
   user-select: none;
   /* padding: 0;

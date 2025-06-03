@@ -10,6 +10,7 @@ import {
   restrictToParentElement,
   restrictToVerticalAxis,
 } from '@dnd-kit/modifiers';
+import { loadFont } from '@/lib/fonts';
 
 const TextElement = ({
   id,
@@ -54,6 +55,10 @@ const TextElement = ({
     responsive,
     activeBreakpoint
   ) as TemplateElement;
+
+  if (finalElementProps.style.fontFamily) {
+    loadFont(finalElementProps.style.fontFamily as string);
+  }
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,

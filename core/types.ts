@@ -147,6 +147,7 @@ export enum EditorWidgetType {
   BorderEditor = 'BorderEditor',
   TextAlignment = 'TextAlignment',
   FontWeight = 'FontWeight',
+  FontFamily = 'FontFamily',
 }
 
 export enum PropertyDataType {

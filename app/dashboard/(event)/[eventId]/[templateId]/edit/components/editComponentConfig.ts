@@ -66,6 +66,14 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.TextArea,
       responsive: false,
     },
+    'style.fontFamily': {
+      label: 'Font text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.FontFamily,
+      min: 0,
+      step: 1,
+      responsive: true,
+    },
     'style.width': {
       label: 'Latime element (%)',
       dataType: PropertyDataType.Number,
