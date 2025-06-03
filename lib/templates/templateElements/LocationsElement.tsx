@@ -196,7 +196,16 @@ function EventLocationCard({
         {eventLocation.formatted_address}
       </p>
       <a
-        // href={mapLink}
+        href={
+          typeof window !== 'undefined' &&
+          /Mobi|Android/i.test(window.navigator.userAgent)
+            ? `geo:0,0?q=${encodeURIComponent(
+                eventLocation.formatted_address || eventLocation.name || ''
+              )}`
+            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                eventLocation.formatted_address || eventLocation.name || ''
+              )}`
+        }
         target="_blank"
         rel="noopener noreferrer"
         className="
