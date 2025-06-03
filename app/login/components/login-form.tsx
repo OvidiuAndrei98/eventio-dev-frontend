@@ -4,6 +4,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormProps, Input } from 'antd';
 import LoginImage from '../../../public/LoginImage.svg';
 import Image from 'next/image';
+import {
+  GoogleAuthProvider,
+  UserCredential,
+  signInWithPopup,
+} from 'firebase/auth';
+import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 
 export interface LoginPageProps {
   /**
@@ -12,7 +18,7 @@ export interface LoginPageProps {
    */
   onLogin(email: string, password: string): void;
   /** Invoked when the login with google button is clicked */
-  onLoginWithGoogle: () => void;
+  onLoginWithGoogle: (userCredential: UserCredential) => void;
   /**
    * When set to `true`, a loading indicator is displayed over the login form.
    */
@@ -36,6 +42,19 @@ export function LoginForm({
     errorInfo
   ) => {
     console.log('Failed:', errorInfo);
+  };
+
+  const loginWithGooglePopUp = async () => {
+    try {
+      const result = await signInWithPopup(
+        firebaseAuth,
+        new GoogleAuthProvider()
+      );
+
+      props.onLoginWithGoogle(result);
+    } catch (error) {
+      console.error('Eroare la autentificarea cu Google:' + error);
+    }
   };
 
   return (
@@ -97,7 +116,20 @@ export function LoginForm({
                     variant="outline"
                     type="button"
                     className="w-full"
-                    onClick={props.onLoginWithGoogle}
+                    onClick={() => {
+                      try {
+                        signInWithPopup(
+                          firebaseAuth,
+                          new GoogleAuthProvider()
+                        ).then((result) => {
+                          props.onLoginWithGoogle(result);
+                        });
+                      } catch (error) {
+                        console.error(
+                          'Eroare la autentificarea cu Google:' + error
+                        );
+                      }
+                    }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 24">
                       <path

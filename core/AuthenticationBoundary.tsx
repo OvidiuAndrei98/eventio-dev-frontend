@@ -3,6 +3,7 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import {
   GoogleAuthProvider,
+  UserCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
@@ -258,31 +259,27 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
   /**
    * Handles user login with Google.
    */
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (userCredential: UserCredential) => {
     setIsAuthenticating(true); // Start login process
     setAuthenticationState(AuthenticationState.Unknown); // Temporarily unknown while logging in
 
     try {
-      const result = await signInWithPopup(
-        firebaseAuth,
-        new GoogleAuthProvider()
-      );
-
-      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const credential =
+        GoogleAuthProvider.credentialFromResult(userCredential);
       if (!credential || !credential.idToken) {
         throw new Error('No ID token found from Google sign-in.');
       }
 
-      const existingUser = await queryUserById(result.user.uid);
+      const existingUser = await queryUserById(userCredential.user.uid);
       let currentUserDetails: User;
 
       if (!existingUser || !existingUser.userId) {
         const newUser: User = {
           accountStatus: 'basic',
-          userId: result.user.uid,
-          email: result.user.email as string,
-          displayName: result.user.displayName || '',
-          photoURL: result.user.photoURL || '',
+          userId: userCredential.user.uid,
+          email: userCredential.user.email as string,
+          displayName: userCredential.user.displayName || '',
+          photoURL: userCredential.user.photoURL || '',
         };
         await addUser(newUser);
         currentUserDetails = newUser;
@@ -291,7 +288,7 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
       }
 
       const decodedFirebaseToken = DecodeJWT(credential.idToken)!;
-      decodedFirebaseToken['user_id'] = result.user.uid;
+      decodedFirebaseToken['user_id'] = userCredential.user.uid;
 
       const mySecret = new TextEncoder().encode(
         'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2'
