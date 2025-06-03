@@ -1,57 +1,57 @@
-'use client'
+'use client';
 
-import { MutableRefObject, useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import './GridMotion.css'
+import { MutableRefObject, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import './GridMotion.css';
 
 const GridMotion = ({
   items = [],
   gradientColor = 'black',
 }: {
-  items: any[] // eslint-disable-line
-  gradientColor: string
+  items: any[]; // eslint-disable-line
+  gradientColor: string;
 }) => {
-  const gridRef = useRef(null)
+  const gridRef = useRef(null);
   const rowRefs = useRef<HTMLDivElement[]>([]) as MutableRefObject<
     HTMLDivElement[]
-  > // Array of refs for each row
+  >; // Array of refs for each row
 
-  const mouseXRef = useRef(1200)
+  const mouseXRef = useRef(1200);
 
   // Ensure the grid has 28 items (4 rows x 7 columns) by default
-  const totalItems = 12
+  const totalItems = 12;
   const defaultItems = Array.from(
     { length: totalItems },
     (_, index) => `Item ${index + 1}`
-  )
+  );
   const combinedItems =
-    items.length > 0 ? items.slice(0, totalItems) : defaultItems
+    items.length > 0 ? items.slice(0, totalItems) : defaultItems;
 
   useEffect(() => {
     if (typeof window == 'undefined') {
-      return
+      return;
     }
 
-    gsap.ticker.lagSmoothing(0)
+    gsap.ticker.lagSmoothing(0);
 
-    mouseXRef.current = window.innerWidth
+    mouseXRef.current = window.innerWidth;
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseXRef.current = e.clientX
-    }
+      mouseXRef.current = e.clientX;
+    };
 
     const updateMotion = () => {
-      const maxMoveAmount = 300
-      const baseDuration = 0.8 // Base duration for inertia
-      const inertiaFactors = [0.6, 0.4, 0.3, 0.2] // Different inertia for each row, outer rows slower
+      const maxMoveAmount = 300;
+      const baseDuration = 0.8; // Base duration for inertia
+      const inertiaFactors = [0.6, 0.4, 0.3, 0.2]; // Different inertia for each row, outer rows slower
 
       rowRefs.current.forEach((row, index) => {
         if (row) {
-          const direction = index % 2 === 0 ? 1 : -1
+          const direction = index % 2 === 0 ? 1 : -1;
           const moveAmount =
             ((mouseXRef.current / window.innerWidth) * maxMoveAmount -
               maxMoveAmount / 2) *
-            direction
+            direction;
 
           // Apply inertia and staggered stop
           gsap.to(row, {
@@ -60,20 +60,20 @@ const GridMotion = ({
               baseDuration + inertiaFactors[index % inertiaFactors.length],
             ease: 'power3.out',
             overwrite: 'auto',
-          })
+          });
         }
-      })
-    }
+      });
+    };
 
-    const removeAnimationLoop = gsap.ticker.add(updateMotion)
+    const removeAnimationLoop = gsap.ticker.add(updateMotion);
 
-    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      removeAnimationLoop() // Properly remove the ticker listener
-    }
-  }, [])
+      window.removeEventListener('mousemove', handleMouseMove);
+      removeAnimationLoop(); // Properly remove the ticker listener
+    };
+  }, []);
 
   return (
     <div className="noscroll loading" ref={gridRef}>
@@ -88,10 +88,11 @@ const GridMotion = ({
             <div
               key={rowIndex}
               className="row"
-              ref={(el: HTMLDivElement) => (rowRefs.current[rowIndex] = el)} // Set each row's ref
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ref={(el: any) => (rowRefs.current[rowIndex] = el)} // Set each row's ref
             >
               {[...Array(6)].map((_, itemIndex) => {
-                const content = combinedItems[rowIndex * 7 + itemIndex]
+                const content = combinedItems[rowIndex * 7 + itemIndex];
                 return (
                   <div key={itemIndex} className="row__item">
                     <div
@@ -111,7 +112,7 @@ const GridMotion = ({
                       )}
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           ))}
@@ -119,7 +120,7 @@ const GridMotion = ({
         <div className="fullview"></div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default GridMotion
+export default GridMotion;
