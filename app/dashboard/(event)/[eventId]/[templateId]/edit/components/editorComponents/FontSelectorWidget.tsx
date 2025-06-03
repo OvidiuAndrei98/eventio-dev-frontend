@@ -4,7 +4,7 @@ import {
   PropertyDataType,
   PropertyEditorConfig,
 } from '@/core/types';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface FontSelectorWidgetWidgetProps {
   config: PropertyEditorConfig;
@@ -18,6 +18,12 @@ const FontSelectorWidget = ({
   onChange,
 }: FontSelectorWidgetWidgetProps) => {
   const [font, setFont] = React.useState<string>(value ?? 'inherit');
+
+  useEffect(() => {
+    if (value != undefined && value !== font) {
+      setFont(value);
+    }
+  }, [value, font]);
 
   if (
     config.widgetType !== EditorWidgetType.FontFamily ||
