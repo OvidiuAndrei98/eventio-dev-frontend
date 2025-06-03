@@ -34,7 +34,6 @@ const routeTitleMapper: { [key: string]: string } = {
 };
 
 interface EventShellProps {
-  eventId: string;
   children: React.ReactNode;
 }
 

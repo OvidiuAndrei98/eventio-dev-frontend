@@ -17,7 +17,7 @@ import { useAuth } from '@/core/AuthenticationBoundary';
 export interface MenuItem {
   title: string;
   url: string;
-  icon?: JSX.Element;
+  icon?: React.ReactNode;
   onClick?: (info: { title: string; url: string }) => void;
   subMenu?: MenuItem[];
 }
