@@ -19,6 +19,8 @@ const MapsAutoComplete = ({ onLocationSelect }: MapsAutoCompleteProps) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '',
     libraries: libs,
+    region: 'ro',
+    language: 'ro',
   });
   const [setMarker, setSetMarker] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);

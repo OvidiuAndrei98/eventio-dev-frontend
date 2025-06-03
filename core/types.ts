@@ -185,6 +185,7 @@ export enum ElementType {
   Container = 'container',
   LocationsSection = 'locations-section',
   locationsElement = 'locations',
+  GifElement = 'gif',
 }
 
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
@@ -234,7 +235,10 @@ export interface BaseTemplateElement {
 export interface TemplateSection extends BaseTemplateElement {
   elements: TemplateElement[];
   id: string;
-  type: ElementType.Section | ElementType.RSVP_SECTION;
+  type:
+    | ElementType.Section
+    | ElementType.RSVP_SECTION
+    | ElementType.locationsElement;
 }
 
 export interface ResponsiveProperties {
@@ -287,6 +291,20 @@ export interface ContainerTemplateElement extends BaseTemplateElement {
     color: string;
     sides: string;
   };
+}
+
+export interface LocationsTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.locationsElement;
+  borderStyles: {
+    size: string;
+    color: string;
+    sides: string;
+  };
+  titleStyle?: Record<string, unknown>;
+  dateTimeStyle?: Record<string, unknown>;
+  addressStyle?: Record<string, unknown>;
+  buttonStyle?: Record<string, unknown>;
 }
 
 export type TemplateElement =

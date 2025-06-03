@@ -37,6 +37,8 @@ const AutocompleteMapsInput = ({
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '',
     libraries: libs,
+    region: 'ro',
+    language: 'ro',
   });
   const [selectedPlace, setSelectedPlace] = useState<EventLocation | null>(
     null
@@ -176,11 +178,10 @@ const AutocompleteMapsInput = ({
                   toast.error('A aparut o eroare la incarcarea imaginii');
                 }
               }
-              imageWasUploaded();
             }
           );
         }
-        // Get this url from response in real world.
+        imageWasUploaded();
       }
       if (values.locationPhoto.file.status === 'removed') {
         if (user) {

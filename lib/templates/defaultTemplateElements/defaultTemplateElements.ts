@@ -245,7 +245,7 @@ export const defaultElements = {
   locations: (elementName: string) => {
     return {
       id: `element-${crypto.randomUUID()}`,
-      name: elementName.toUpperCase(),
+      name: elementName,
       disabled: false,
       type: ElementType.locationsElement,
       position: {
@@ -256,6 +256,28 @@ export const defaultElements = {
           | 'self-end',
       }, // Desktop: sub text link, centrat
       style: { width: 100 },
+      responsive: {},
+      borderStyles: {
+        size: '1',
+        color: '#1677ff',
+        sides: 'none none none none',
+      },
+    };
+  },
+  gifElement: (elementName: string) => {
+    return {
+      id: `element-${crypto.randomUUID()}`,
+      name: elementName,
+      disabled: false,
+      type: ElementType.GifElement,
+      position: {
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
+      style: {},
       responsive: {},
     };
   },

@@ -14,6 +14,7 @@ import ContainerElement from '../templateElements/ContainerElement';
 import DragOverlayGuidelines from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/components/DragOverlayGuidelines';
 import { Guideline } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
 import LocationsElement from '../templateElements/LocationsElement';
+import GifElement from '../templateElements/GifElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -22,6 +23,7 @@ const elementComponentMap = {
   [ElementType.Blob]: BlobsElement,
   [ElementType.Container]: ContainerElement,
   [ElementType.locationsElement]: LocationsElement,
+  [ElementType.GifElement]: GifElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
@@ -64,7 +66,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   const finalSectionStyle = {
     ...sectionStyle.style,
     width: '100%',
-    minHeight: '300px',
+    minHeight: '100px',
     position: 'relative' as const,
     display: 'flex',
     flexDirection: 'column',
@@ -216,6 +218,19 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                   templateData.settings.aditionalLocations
                 }
                 eventDate={templateData.eventDate}
+              />
+            );
+          case ElementType.GifElement:
+            return (
+              <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                onSelect={onSelect}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
               />
             );
           default:

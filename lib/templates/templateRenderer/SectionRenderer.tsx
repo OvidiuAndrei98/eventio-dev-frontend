@@ -51,7 +51,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   const sectionStyle: React.CSSProperties = {
     ...finalElementProps.style,
     width: '100%',
-    minHeight: '300px',
+    minHeight: '100px',
     position: 'relative' as const,
     flexDirection: 'column',
     alignItems: 'center',

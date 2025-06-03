@@ -1,27 +1,124 @@
-import { EventLocation } from '@/core/types';
+import {
+  ElementType,
+  EventLocation,
+  LocationsTemplateElement,
+  TemplateElement,
+} from '@/core/types';
 import Image from 'next/image';
 import React from 'react';
-
-interface LocationsElementProps {
-  id: string;
-  eventLocation: EventLocation;
-  eventAditionalLocations: EventLocation[];
-  eventDate: string;
-}
-//grid grid-cols-1 md:grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 justify-center
+import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 
 const LocationsElement = ({
   id,
-  eventLocation,
+  position,
+  style,
+  name,
+  disabled,
+  responsive,
+  activeBreakpoint,
+  isSelected,
+  selectedElementId,
   eventAditionalLocations,
   eventDate,
-}: LocationsElementProps) => {
+  eventLocation,
+  borderStyles,
+  onSelect,
+  editMode,
+}: LocationsTemplateElement & {
+  activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
+  eventLocation: EventLocation;
+  eventAditionalLocations: EventLocation[];
+  eventDate: string;
+  selectedElementId?: string;
+  isSelected?: boolean;
+  onSelect?: (element: TemplateElement) => void;
+  editMode?: boolean;
+}) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  const finalElementProps = mergeResponsiveProperties<LocationsTemplateElement>(
+    {
+      id: id,
+      type: ElementType.locationsElement,
+      position: position,
+      disabled: disabled,
+      style: style,
+      name: name,
+      borderStyles: borderStyles,
+    },
+    responsive,
+    activeBreakpoint
+  ) as LocationsTemplateElement;
+
+  const containerStyle: React.CSSProperties = {
+    ...finalElementProps.style,
+    width: `${finalElementProps.style?.width}%`,
+    borderStyle: `${finalElementProps.borderStyles?.sides}`,
+    borderWidth: `${finalElementProps.borderStyles?.size}px`,
+    borderColor: `${finalElementProps.borderStyles?.color}`,
+  };
+
   return (
     <div
-      id={`locations-element-${id}`}
-      className="w-full flex flex-wrap items-center justify-center"
+      style={{ ...containerStyle }}
+      className={`w-full flex flex-wrap items-center justify-center ${
+        editMode && isSelected && selectedElementId === id
+          ? 'ring-inset ring-2 ring-[#CB93D9]'
+          : ''
+      } 
+    ${
+      editMode && !isSelected && isHovered
+        ? 'ring-inset ring-1 ring-[#CB93D9]'
+        : ''
+    } z-3 p-2 ${
+        editMode
+          ? disabled
+            ? 'opacity-[0.5]'
+            : 'opacity-[1]'
+          : disabled
+          ? 'hidden'
+          : 'block'
+      }`}
+      id={id}
+      onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
+      onMouseLeave={editMode ? () => handleMouseLeave() : undefined}
+      onClick={
+        editMode
+          ? (e) => {
+              if (id) {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelect && onSelect(finalElementProps);
+              }
+            }
+          : undefined
+      }
     >
-      <EventLocationCard eventLocation={eventLocation} eventDate={eventDate} />
+      {editMode && (
+        <>
+          {isSelected && selectedElementId === id && (
+            <div className="absolute top-[27px] left-[8px] bg-[#CB93D9] text-nowrap text-white p-[3px] rounded-[4px_4px_4px_0] z-10 text-xs">
+              {name}
+            </div>
+          )}
+          {!isSelected && isHovered && (
+            <div className="absolute top-[-13px] left-[-2px] bg-[#CB93D9] text-nowrap text-white p-[3px] rounded-[4px_4px_4px_0] z-10 text-xs">
+              {name}
+            </div>
+          )}
+          {isHovered && (
+            <div className="absolute top-0 left-0 bottom-0 right-0 !bg-purple-100/20 transition-colors duration-200"></div>
+          )}
+        </>
+      )}
+
       {eventAditionalLocations.map((location, idx) => (
         <EventLocationCard
           key={idx}
@@ -29,6 +126,7 @@ const LocationsElement = ({
           eventDate={eventDate}
         />
       ))}
+      <EventLocationCard eventLocation={eventLocation} eventDate={eventDate} />
     </div>
   );
 };
@@ -43,12 +141,7 @@ function EventLocationCard({
   eventDate: string;
 }) {
   return (
-    <div
-      className="
-     rounded-lg  p-8 text-center text-gray-800
-      sm:p-6 md:p-8 lg:p-10
-    "
-    >
+    <div className="rounded-lg p-8 text-center text-gray-800 sm:p-6 md:p-8 lg:p-10 max-w-[380px]">
       {eventLocation.locationImage && (
         <div
           className="
@@ -76,12 +169,28 @@ function EventLocationCard({
       </h2>
       <p className="text-gray-600 mb-5 leading-relaxed text-lg sm:text-base">
         <strong className="text-gray-800">
-          {new Date(eventDate).toLocaleDateString('ro-RO')}
+          {new Date(eventDate)
+            .toLocaleDateString('ro-RO', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+            .charAt(0)
+            .toLocaleUpperCase() +
+            new Date(eventDate)
+              .toLocaleDateString('ro-RO', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })
+              .slice(1)}
         </strong>
         <br />
-        {eventLocation?.locationStartTime}
+        Ora {eventLocation?.locationStartTime}
       </p>
-      <p className="text-gray-600 mb-8 leading-relaxed text-base sm:text-sm">
+      <p className="text-gray-600 mb-8 leading-relaxed text-base sm:text-sm md:min-h-[70px]">
         {eventLocation.name}
         <br />
         {eventLocation.formatted_address}

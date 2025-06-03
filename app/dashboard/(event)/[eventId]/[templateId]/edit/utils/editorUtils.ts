@@ -1,5 +1,5 @@
 import { ElementType } from '@/core/types';
-import { ContainerOutlined } from '@ant-design/icons';
+import { ContainerOutlined, GifOutlined } from '@ant-design/icons';
 import {
   FormInputIcon,
   ImageIcon,
@@ -67,5 +67,11 @@ export const availableElementTypes = [
     name: 'Locatii eveniment',
     icon: MapPlusIcon,
     availableFor: [ElementType.LocationsSection],
+  },
+  {
+    type: ElementType.GifElement,
+    name: 'Imagine animata',
+    icon: GifOutlined,
+    availableFor: [ElementType.Section],
   },
 ];
