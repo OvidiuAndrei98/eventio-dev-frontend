@@ -33,7 +33,18 @@ const FontSelectorWidget = ({
     return <div>Eroare: Widget incompatibil</div>;
   }
   return (
-    <div>
+    <div className="mb-[10px]">
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '5px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          color: '#333',
+        }}
+      >
+        {config.label}:
+      </label>
       <FontPicker
         width={160}
         className="border-[#cccccc]"

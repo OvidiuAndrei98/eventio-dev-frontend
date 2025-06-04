@@ -72,12 +72,31 @@ const TextElement = ({
     },
   });
 
+  let textContentStyle: React.CSSProperties = {};
+
+  // fix this to use the correct textShadow format
+  if (typeof finalElementProps.style.textShadow === 'string') {
+    const [width, color] = finalElementProps.style.textShadow.split(' ');
+    // Only set textShadow if width is not 0
+    if (Number(width) > 0) {
+      textContentStyle = {
+        textShadow: `0px 0px ${width}px ${color || 'transparent'}`,
+      };
+    } else {
+      textContentStyle = {
+        textShadow: '0px 0px 0px transparent',
+      };
+    }
+  }
+
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
     alignSelf: finalElementProps.position.elementAlignment,
-    width: `${finalElementProps.style.width}%`,
+    width: finalElementProps.style.width
+      ? ` ${finalElementProps.style.width}%`
+      : 'auto',
   };
 
   const elementStyle = {
@@ -185,7 +204,7 @@ const TextElement = ({
 
       {content.split('\n').map((line, index) => (
         <React.Fragment key={index}>
-          {line}
+          <span style={{ ...textContentStyle }}>{line}</span>
           {index < content.split('\n').length - 1 && <br />}{' '}
         </React.Fragment>
       ))}

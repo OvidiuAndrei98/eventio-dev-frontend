@@ -106,15 +106,13 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       dataType: PropertyDataType.Color,
       widgetType: EditorWidgetType.ColorPicker,
       responsive: false,
-    },
-    position: {
-      responsive: true,
-      label: 'Poziție Element',
-      dataType: PropertyDataType.Object,
-      widgetType: EditorWidgetType.PositionInput,
       min: 0,
-      max: 9999,
-      step: 1,
+    },
+    'style.textShadow': {
+      label: 'Umbra text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.StrokeEditor,
+      responsive: false,
     },
   },
   image: {

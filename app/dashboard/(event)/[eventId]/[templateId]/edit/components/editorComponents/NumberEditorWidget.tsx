@@ -126,6 +126,7 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
       </label>
       <input // The input type is always 'number' for this widget
         type="number"
+        placeholder={!displayValue ? 'auto' : ''}
         value={displayValue} // Input is controlled by displayValue (string)
         onChange={handleInputChange} // Local handler // Apply specific attributes (min, max, step) from config
         min={config.min}

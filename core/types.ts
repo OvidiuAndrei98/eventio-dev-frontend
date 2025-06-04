@@ -148,6 +148,7 @@ export enum EditorWidgetType {
   TextAlignment = 'TextAlignment',
   FontWeight = 'FontWeight',
   FontFamily = 'FontFamily',
+  StrokeEditor = 'StrokeEditor',
 }
 
 export enum PropertyDataType {

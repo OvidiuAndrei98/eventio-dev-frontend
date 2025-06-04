@@ -13,6 +13,7 @@ import TextareaEditorElement from '../editorComponents/TextareaEditorElement';
 import TextAlignmentWidget from '../editorComponents/TextAlignmentWidget';
 import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 import FontSelectorWidget from '../editorComponents/FontSelectorWidget';
+import StrokeEditorWidget from '../editorComponents/StrokeEditorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -267,6 +268,21 @@ const PropertyPanel = ({
           case EditorWidgetType.FontFamily:
             return (
               <FontSelectorWidget
+                key={propertyPath}
+                config={config}
+                value={currentValue as string}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.StrokeEditor:
+            return (
+              <StrokeEditorWidget
                 key={propertyPath}
                 config={config}
                 value={currentValue as string}
