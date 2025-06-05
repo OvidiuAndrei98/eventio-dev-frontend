@@ -149,6 +149,7 @@ export enum EditorWidgetType {
   FontWeight = 'FontWeight',
   FontFamily = 'FontFamily',
   StrokeEditor = 'StrokeEditor',
+  GifSelector = 'GifSelector',
 }
 
 export enum PropertyDataType {
@@ -295,6 +296,12 @@ export interface ContainerTemplateElement extends BaseTemplateElement {
   };
 }
 
+export interface GifTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.GifElement;
+  gifUrl: string;
+}
+
 export interface LocationsTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.locationsElement;
@@ -315,4 +322,7 @@ export type TemplateElement =
   | ImageTemplateElement
   | BlobTemplateElement
   | ContainerTemplateElement
+  | LocationsTemplateElement
+  | GifTemplateElement
+  | RsvpTemplateElement
   | TemplateSection;

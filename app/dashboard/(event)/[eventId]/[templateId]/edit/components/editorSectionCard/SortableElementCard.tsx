@@ -6,10 +6,15 @@ import {
   EyeIcon,
   EyeOffIcon,
   ImageIcon,
+  MapPlusIcon,
   ShapesIcon,
   TextIcon,
 } from 'lucide-react';
-import { ContainerOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  ContainerOutlined,
+  DeleteOutlined,
+  GifOutlined,
+} from '@ant-design/icons';
 
 interface SortableElementCardProps {
   isSelected: boolean;
@@ -49,6 +54,10 @@ const SortableElementCard = ({
         return <ContainerOutlined size={14} />;
       case 'blob':
         return <ShapesIcon size={14} />;
+      case 'locations':
+        return <MapPlusIcon size={14} />;
+      case 'gif':
+        return <GifOutlined size={14} />;
       default:
         return <TextIcon size={14} />;
     }

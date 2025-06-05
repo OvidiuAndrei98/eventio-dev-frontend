@@ -14,6 +14,7 @@ import TextAlignmentWidget from '../editorComponents/TextAlignmentWidget';
 import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 import FontSelectorWidget from '../editorComponents/FontSelectorWidget';
 import StrokeEditorWidget from '../editorComponents/StrokeEditorWidget';
+import GifSelectorWidget from '../editorComponents/GifSelectorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -283,6 +284,21 @@ const PropertyPanel = ({
           case EditorWidgetType.StrokeEditor:
             return (
               <StrokeEditorWidget
+                key={propertyPath}
+                config={config}
+                value={currentValue as string}
+                onChange={(newValue) =>
+                  handlePropertyChanged(
+                    propertyPath,
+                    newValue,
+                    config.responsive
+                  )
+                }
+              />
+            );
+          case EditorWidgetType.GifSelector:
+            return (
+              <GifSelectorWidget
                 key={propertyPath}
                 config={config}
                 value={currentValue as string}

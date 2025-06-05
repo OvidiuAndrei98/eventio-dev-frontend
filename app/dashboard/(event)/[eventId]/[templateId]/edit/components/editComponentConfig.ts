@@ -114,6 +114,15 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.StrokeEditor,
       responsive: false,
     },
+    position: {
+      responsive: true,
+      label: 'Poziție Element (%)',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.PositionInput,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
   },
   image: {
     name: {
@@ -308,6 +317,38 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       label: 'Configurare margini',
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.BorderEditor,
+    },
+  },
+  gif: {
+    name: {
+      label: 'Nume Element',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    gifUrl: {
+      label: 'Selectare animatie',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.GifSelector,
+      responsive: false,
+    },
+    'style.width': {
+      label: 'Marime element',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      max: 999,
+      responsive: true,
+    },
+    position: {
+      responsive: true,
+      label: 'Poziție Element (%)',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.PositionInput,
+      min: 0,
+      max: 100,
+      step: 1,
     },
   },
 };

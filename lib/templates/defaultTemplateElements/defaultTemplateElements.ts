@@ -235,7 +235,7 @@ export const defaultElements = {
           | 'self-end',
       },
       style: {
-        width: 100,
+        width: 30,
         height: 100,
         backgroundColor: 'rgba(2, 2, 2, 0.44)',
       },
@@ -264,21 +264,30 @@ export const defaultElements = {
       },
     };
   },
-  gifElement: (elementName: string) => {
+  gif: (elementName: string) => {
     return {
       id: `element-${crypto.randomUUID()}`,
       name: elementName,
       disabled: false,
       type: ElementType.GifElement,
+      gifUrl: '/gifs/purple-blue-flower.gif',
       position: {
+        left: 40,
         elementAlignment: 'auto' as
           | 'auto'
           | 'center'
           | 'self-start'
           | 'self-end',
       },
-      style: {},
-      responsive: {},
+      style: { width: 400 },
+      responsive: {
+        mobile: {
+          style: { width: 200 },
+        },
+        tablet: {
+          style: { width: 300 },
+        },
+      },
     };
   },
 };

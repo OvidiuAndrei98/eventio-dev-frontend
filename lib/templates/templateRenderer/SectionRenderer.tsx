@@ -7,6 +7,7 @@ import RsvpElement from '../templateElements/RsvpElement';
 import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
 import LocationsElement from '../templateElements/LocationsElement';
+import GifElement from '../templateElements/GifElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -15,6 +16,7 @@ const elementComponentMap = {
   [ElementType.Blob]: BlobsElement,
   [ElementType.Container]: ContainerElement,
   [ElementType.locationsElement]: LocationsElement,
+  [ElementType.GifElement]: GifElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
@@ -142,6 +144,15 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                   templateData.settings.aditionalLocations
                 }
                 eventDate={templateData.eventDate}
+              />
+            );
+          case ElementType.GifElement:
+            return (
+              <ComponentToRender
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
               />
             );
           default:
