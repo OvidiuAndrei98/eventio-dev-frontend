@@ -72,7 +72,9 @@ const TextElement = ({
     },
   });
 
-  let textContentStyle: React.CSSProperties = {};
+  let textContentStyle: React.CSSProperties = {
+    fontFamily: (finalElementProps.style.fontFamily as string) || 'inherit',
+  };
 
   // fix this to use the correct textShadow format
   if (typeof finalElementProps.style.textShadow === 'string') {
