@@ -178,7 +178,7 @@ const BorderEditorWidget = ({
     return <div>Eroare: Widget incompatibil</div>;
   }
   return (
-    <div>
+    <div className="mb-[10px]">
       <label
         style={{
           display: 'block',

@@ -1,0 +1,58 @@
+import { PricingTier } from '@/core/types';
+
+export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
+  {
+    id: 'basic',
+    name: 'Basic',
+    price: 'Gratuit',
+    description: 'Testeaza functionalitatile gratuit',
+    features: [
+      '5 răspunsuri',
+      'Valabilitate 48h',
+      'Editare invitatie',
+      'Plan locatie - Demo',
+      'Checklist',
+    ],
+    cta: 'Cumpara',
+    order: 1,
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    price: 249,
+    oldPrice: 350,
+    description: 'Acces la functionalitatile de baza',
+    features: [
+      'Raspunsuri nelimitate',
+      'Valabilitate 6 luni',
+      'Editare invitatie',
+      'Plan locatie - Demo',
+      'Checklist',
+    ],
+    cta: 'Cumpara',
+    order: 2,
+    priceId: 'price_1RWm8BIxI3w7eVcKNICZun1Y',
+  },
+  {
+    id: 'ultimate',
+    name: 'Ultimate',
+    price: 349,
+    oldPrice: 450,
+    description: 'Acces la functionalitatile platformei',
+    features: [
+      'Raspunsuri nelimitate',
+      'Valabilitate 12 luni',
+      'Editare invitatie',
+      'Plan locatie',
+      'Asezare la mese',
+      'exportare invitati in excel',
+      'Export plan locatie PDF',
+      'Checklist',
+      'Planificator eveniment avansat',
+    ],
+    cta: 'Cumpara',
+    popular: true,
+    order: 3,
+    priceId: 'price_1RWm8iIxI3w7eVcKm4mbCdoU',
+  },
+];

@@ -53,6 +53,26 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       responsive: false,
     },
   },
+  'rsvp-section': {
+    name: {
+      label: 'Nume Secțiune',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.backgroundColor': {
+      label: 'Culoare Fundal',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    backgroundImage: {
+      label: 'Imagine Fundal',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.ImageUpload,
+      responsive: false,
+    },
+  },
   text: {
     name: {
       label: 'Nume Element',
@@ -122,6 +142,38 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       min: 0,
       max: 100,
       step: 1,
+    },
+  },
+  rsvp: {
+    name: {
+      label: 'Nume Secțiune',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    title: {
+      label: 'Titlu',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.color': {
+      label: 'Culoare text',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'buttonStyle.backgroundColor': {
+      label: 'Culoare fundal buton',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'buttonStyle.color': {
+      label: 'Culoare text buton',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
     },
   },
   image: {
@@ -318,6 +370,48 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.BorderEditor,
     },
+    'titleStyle.fontFamily': {
+      label: 'Font titlu',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.FontFamily,
+      responsive: false,
+    },
+    'titleStyle.color': {
+      label: 'Culoare titlu',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'dateStyle.color': {
+      label: 'Culoare data',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'timeStyle.color': {
+      label: 'Culoare ora',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'addressStyle.color': {
+      label: 'Culoare adresa',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'buttonStyle.backgroundColor': {
+      label: 'Culoare fundal buton',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
+    'buttonStyle.color': {
+      label: 'Culoare text buton',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+    },
   },
   gif: {
     name: {
@@ -340,6 +434,64 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       step: 1,
       max: 999,
       responsive: true,
+    },
+    position: {
+      responsive: true,
+      label: 'Poziție Element (%)',
+      dataType: PropertyDataType.Object,
+      widgetType: EditorWidgetType.PositionInput,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
+  },
+  countdown: {
+    name: {
+      label: 'Nume Element',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.TextInput,
+      responsive: false,
+    },
+    'style.width': {
+      label: 'Marime element (%)',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      min: 0,
+      step: 1,
+      max: 100,
+      responsive: true,
+    },
+    'style.fontFamily': {
+      label: 'Font text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.FontFamily,
+      responsive: false,
+    },
+    'style.fontWeight': {
+      label: 'Grosime text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.FontWeight,
+      responsive: true,
+    },
+    'style.fontSize': {
+      label: 'Dimensiune text',
+      dataType: PropertyDataType.Number,
+      widgetType: EditorWidgetType.NumberInput,
+      responsive: true,
+      min: 1,
+    },
+    'style.color': {
+      label: 'Culoare text',
+      dataType: PropertyDataType.Color,
+      widgetType: EditorWidgetType.ColorPicker,
+      responsive: false,
+      min: 0,
+    },
+    'style.textShadow': {
+      label: 'Umbra text',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.StrokeEditor,
+      responsive: false,
     },
     position: {
       responsive: true,

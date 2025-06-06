@@ -126,14 +126,15 @@ export function AppSidebar({
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
                 <span className="truncate font-semibold">Eventio</span>
-                {user.accountStatus && user.accountStatus !== 'basic' && (
-                  <Badge
-                    variant="default"
-                    className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
-                  >
-                    {user.accountStatus}
-                  </Badge>
-                )}
+                {eventInstance?.eventPlan &&
+                  eventInstance?.eventPlan !== 'basic' && (
+                    <Badge
+                      variant="default"
+                      className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+                    >
+                      {eventInstance?.eventPlan}
+                    </Badge>
+                  )}
               </div>
               <span className="truncate text-xs">dashboard</span>
             </div>

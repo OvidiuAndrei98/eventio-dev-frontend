@@ -290,7 +290,7 @@ const EditPage = () => {
     // Decide daca actualizezi un element sau o sectiune
     if (
       selectedElementType !== ElementType.Section &&
-      selectedElementType !== ElementType.RSVP_ELEMENT &&
+      selectedElementType !== ElementType.RSVP_SECTION &&
       selectedElementType !== ElementType.LocationsSection
     ) {
       // Este un element (Text, Image etc.)

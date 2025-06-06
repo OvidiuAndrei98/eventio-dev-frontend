@@ -8,6 +8,7 @@ import BlobsElement from '../templateElements/BlobsElement';
 import ContainerElement from '../templateElements/ContainerElement';
 import LocationsElement from '../templateElements/LocationsElement';
 import GifElement from '../templateElements/GifElement';
+import CountdownElement from '../templateElements/CountdownElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -17,6 +18,7 @@ const elementComponentMap = {
   [ElementType.Container]: ContainerElement,
   [ElementType.locationsElement]: LocationsElement,
   [ElementType.GifElement]: GifElement,
+  [ElementType.Countdown]: CountdownElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
@@ -106,7 +108,6 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
-                editMode={true}
                 eventId={eventId}
                 userId={userId}
                 eventAditionalQuestions={
@@ -153,6 +154,16 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
+              />
+            );
+          case ElementType.Countdown:
+            return (
+              <ComponentToRender
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                activeBreakpoint={activeBreakpoint}
+                target={templateData.eventDate}
               />
             );
           default:

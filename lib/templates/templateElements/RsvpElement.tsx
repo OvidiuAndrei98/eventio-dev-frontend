@@ -1,8 +1,15 @@
-import { EventQuestions, Guest } from '@/core/types';
+import {
+  ElementType,
+  EventQuestions,
+  Guest,
+  RsvpTemplateElement,
+  TemplateElement,
+} from '@/core/types';
 import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
 import { Button, Form, FormProps, Input, InputNumber, Select } from 'antd';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 
 interface RsvpFormData {
   primaryGuestName: string;
@@ -21,6 +28,11 @@ interface RsvpElementProps {
   eventId: string;
   userId: string;
   eventAditionalQuestions: EventQuestions[];
+  activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
+  selectedElementId?: string;
+  isSelected?: boolean;
+  onSelect?: (element: TemplateElement) => void;
+  editMode?: boolean;
 }
 
 /**
@@ -29,12 +41,48 @@ interface RsvpElementProps {
  * La submit, creează documente separate în Firestore pentru FIECARE persoană.
  * Este concepută pentru a fi randată de componenta TemplateRenderer.
  */
-const RsvpElement: React.FC<RsvpElementProps> = ({
+const RsvpElement = ({
   id,
+  position,
+  style,
+  name,
+  disabled,
+  responsive,
+  activeBreakpoint,
+  buttonStyle,
+  title,
   eventId,
   userId,
   eventAditionalQuestions,
-}) => {
+  isSelected,
+  selectedElementId,
+  onSelect,
+  editMode,
+}: RsvpTemplateElement & RsvpElementProps) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  const finalElementProps = mergeResponsiveProperties<RsvpTemplateElement>(
+    {
+      id: id,
+      type: ElementType.RSVP_ELEMENT,
+      position: position,
+      disabled: disabled,
+      style: style,
+      name: name,
+      title: title,
+      buttonStyle,
+    },
+    responsive,
+    activeBreakpoint
+  ) as RsvpTemplateElement;
+
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RsvpFormData>({
     primaryGuestName: '',
@@ -44,6 +92,15 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
     totalGuests: '',
     additionalGuestsDetails: [],
   });
+
+  const elementStyle: React.CSSProperties = {
+    ...finalElementProps.style,
+  };
+
+  const buttonElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.buttonStyle?.color}`,
+    backgroundColor: `${finalElementProps.buttonStyle?.backgroundColor}`,
+  };
 
   // --- Handler pentru Submitarea Formularului ---
   const handleSubmit: FormProps<RsvpFormData>['onFinish'] = async (
@@ -162,29 +219,80 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
   return (
     // Containerul principal al widget-ului. Folosește prop-ul 'id' pentru un ID HTML unic.
     <div
-      id={`rsvp-element-${id}`} // Utilizează un prefix + id-ul din props pentru un ID HTML unic al div-ului container
-      className="backdrop-blur-sm rounded-sm p-4 bg-[#00000014] max-w-[450px] border-1 border-solid border-[#0000001a] w-full"
+      style={{ ...elementStyle }}
+      className={`backdrop-blur-sm rounded-sm p-4 bg-[#00000014] max-w-[450px] border-1 border-solid border-[#0000001a] w-full ${
+        editMode && isSelected && selectedElementId === id
+          ? 'ring-inset ring-2 ring-[#CB93D9]'
+          : ''
+      } 
+    ${
+      editMode && !isSelected && isHovered
+        ? 'ring-inset ring-1 ring-[#CB93D9]'
+        : ''
+    } z-3 p-2 ${
+        editMode
+          ? disabled
+            ? 'opacity-[0.5]'
+            : 'opacity-[1]'
+          : disabled
+          ? 'hidden'
+          : 'block'
+      }`}
+      id={id}
+      onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
+      onMouseLeave={editMode ? () => handleMouseLeave() : undefined}
+      onClick={
+        editMode
+          ? (e) => {
+              if (id) {
+                e.preventDefault();
+                e.stopPropagation();
+                onSelect && onSelect(finalElementProps);
+              }
+            }
+          : undefined
+      }
     >
+      {editMode && (
+        <>
+          {isSelected && selectedElementId === id && (
+            <div className="absolute top-[1px] right-[1px] bg-[#CB93D9] text-nowrap text-white p-[3px] rounded-[4px_4px_4px_0] z-10 text-xs">
+              {name}
+            </div>
+          )}
+          {!isSelected && isHovered && (
+            <div className="absolute top-[-13px] left-[-2px] bg-[#CB93D9] text-nowrap text-white p-[3px] rounded-[4px_4px_4px_0] z-10 text-xs">
+              {name}
+            </div>
+          )}
+          {isHovered && (
+            <div className="absolute top-0 left-0 bottom-0 right-0 !bg-purple-100/20 transition-colors duration-200"></div>
+          )}
+        </>
+      )}
+
       <h2
         style={{
           textAlign: 'center',
           marginBottom: '20px',
-          color: '#333',
           fontSize: '24px',
         }}
       >
-        Confirmă Prezența (RSVP)
+        {title}
       </h2>
 
       <Form
+        className="rsvp-form"
+        style={{ color: 'inherit' }}
         form={form}
         autoFocus={false}
-        name="table-edit"
+        name="rsvp-form"
         onFinish={handleSubmit}
         autoComplete="off"
         layout="vertical"
       >
         <Form.Item<RsvpFormData>
+          style={{ color: 'inherit' }}
           label="Numele tau:"
           name="primaryGuestName"
           rules={[
@@ -197,6 +305,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
           <Input />
         </Form.Item>
         <Form.Item<RsvpFormData>
+          style={{ color: 'inherit' }}
           label="Numar de telefon:"
           name="primaryContactPhone"
           rules={[
@@ -209,12 +318,14 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
           <Input />
         </Form.Item>
         <Form.Item<RsvpFormData>
+          style={{ color: 'inherit' }}
           label="Restrictii dietetice:"
           name="primaryDietaryRestrictions"
         >
           <Input.TextArea rows={3} />
         </Form.Item>
         <Form.Item<RsvpFormData>
+          style={{ color: 'inherit' }}
           label="Vei participa?"
           name="isAttending"
           rules={[
@@ -239,8 +350,16 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
             <Select.Option value="no">Nu</Select.Option>
           </Select>
         </Form.Item>
+        {/* Randarea întrebărilor adiționale pentru RSVP */}
         {eventAditionalQuestions.map((q, index) => (
           <Form.Item
+            style={{ color: 'inherit' }}
+            rules={[
+              {
+                required: true,
+                message: 'Aceasta intrebare este obligatorie',
+              },
+            ]}
             label={q.qName}
             name={q.qName.replace(/\s+/g, '_')}
             key={q.qName + index}
@@ -256,6 +375,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
         ))}
         {formData.isAttending === 'yes' && (
           <Form.Item<RsvpFormData>
+            style={{ color: 'inherit' }}
             label="Număr total invitați (inclusiv tu):"
             name="totalGuests"
             rules={[
@@ -361,6 +481,7 @@ const RsvpElement: React.FC<RsvpElementProps> = ({
           )}
         <Form.Item label={null}>
           <Button
+            style={buttonElementStyle}
             type="primary"
             htmlType="submit"
             size="large"

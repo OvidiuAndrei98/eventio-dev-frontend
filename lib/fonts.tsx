@@ -59,6 +59,8 @@ export function getFontUrl(font: GoogleFont, variant = 'regular'): string {
   return `https://fonts.googleapis.com/css2?family=${fontFamily}:wght@${fontVariant}&display=swap`;
 }
 
+// add fonts cache on a global variable on the window object
+
 export async function loadFont(
   fontFamily: string,
   variant = 'regular'

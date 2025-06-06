@@ -189,6 +189,7 @@ export enum ElementType {
   LocationsSection = 'locations-section',
   locationsElement = 'locations',
   GifElement = 'gif',
+  Countdown = 'countdown',
 }
 
 export type ElementTypeTypes = 'Text' | 'Image' | 'Section';
@@ -278,6 +279,7 @@ export interface RsvpTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.RSVP_ELEMENT;
   title: string;
+  buttonStyle: Record<string, unknown>;
 }
 
 export interface BlobTemplateElement extends BaseTemplateElement {
@@ -302,6 +304,11 @@ export interface GifTemplateElement extends BaseTemplateElement {
   gifUrl: string;
 }
 
+export interface CountdownTemplateElement extends BaseTemplateElement {
+  id: string;
+  type: ElementType.Countdown;
+}
+
 export interface LocationsTemplateElement extends BaseTemplateElement {
   id: string;
   type: ElementType.locationsElement;
@@ -310,10 +317,11 @@ export interface LocationsTemplateElement extends BaseTemplateElement {
     color: string;
     sides: string;
   };
-  titleStyle?: Record<string, unknown>;
-  dateTimeStyle?: Record<string, unknown>;
-  addressStyle?: Record<string, unknown>;
-  buttonStyle?: Record<string, unknown>;
+  titleStyle: Record<string, unknown>;
+  dateStyle: Record<string, unknown>;
+  timeStyle: Record<string, unknown>;
+  addressStyle: Record<string, unknown>;
+  buttonStyle: Record<string, unknown>;
 }
 
 export type TemplateElement =
@@ -326,3 +334,17 @@ export type TemplateElement =
   | GifTemplateElement
   | RsvpTemplateElement
   | TemplateSection;
+
+export interface PricingTier {
+  name: string;
+  id: string;
+  price: number | string;
+  oldPrice?: number;
+  description: string;
+  features: string[];
+  highlighted?: boolean;
+  cta: string;
+  popular?: boolean;
+  order: number;
+  priceId?: string;
+}

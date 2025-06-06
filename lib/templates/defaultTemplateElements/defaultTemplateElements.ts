@@ -39,13 +39,17 @@ export const defaultElements = {
           name: 'RSVP',
           disabled: false,
           type: ElementType.RSVP_ELEMENT,
-          position: {}, // Desktop: sub text link, centrat
+          position: {},
           style: {
-            fontSize: 16,
-            color: '#ffffff',
+            color: '#393939',
             zIndex: 3,
           },
           responsive: {},
+          title: 'Confirmă Prezența (RSVP)',
+          buttonStyle: {
+            backgroundColor: '#AAAFBF',
+            color: '#1e232c',
+          },
         },
       ],
       position: {
@@ -58,6 +62,7 @@ export const defaultElements = {
       disabled: false,
       responsive: {},
       style: {
+        backgroundColor: '#ffffff',
         height: 'auto',
         justifyContent: 'center',
       },
@@ -178,9 +183,13 @@ export const defaultElements = {
           | 'self-end',
       }, // Desktop: sub text link, centrat
       style: {
-        fontSize: 16,
-        color: '#ffffff',
+        color: '#393939',
         zIndex: 3,
+      },
+      title: 'Confirmă Prezența (RSVP)',
+      buttonStyle: {
+        backgroundColor: '#AAAFBF',
+        color: '#1e232c',
       },
       responsive: {
         mobile: {
@@ -262,6 +271,22 @@ export const defaultElements = {
         color: '#1677ff',
         sides: 'none none none none',
       },
+      titleStyle: {
+        color: '#364153',
+      },
+      dateStyle: {
+        color: '#1e2939',
+      },
+      timeStyle: {
+        color: '#4a5565',
+      },
+      addressStyle: {
+        color: '#4a5565',
+      },
+      buttonStyle: {
+        backgroundColor: '#AAAFBF',
+        color: '#1e232c',
+      },
     };
   },
   gif: (elementName: string) => {
@@ -288,6 +313,25 @@ export const defaultElements = {
           style: { width: 300 },
         },
       },
+    };
+  },
+  countdown: (elementName: string) => {
+    return {
+      id: `element-${crypto.randomUUID()}`,
+      name: elementName,
+      disabled: false,
+      type: ElementType.Countdown,
+      gifUrl: '/gifs/purple-blue-flower.gif',
+      position: {
+        left: 40,
+        elementAlignment: 'auto' as
+          | 'auto'
+          | 'center'
+          | 'self-start'
+          | 'self-end',
+      },
+      style: {},
+      responsive: {},
     };
   },
 };

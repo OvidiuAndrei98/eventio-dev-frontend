@@ -1,9 +1,9 @@
 import {
   ElementType,
   TemplateElement,
-  TextTemplateElement,
+  CountdownTemplateElement,
 } from '@/core/types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import { useDraggable } from '@dnd-kit/core';
 import {
@@ -12,9 +12,8 @@ import {
 } from '@dnd-kit/modifiers';
 import { loadFont } from '@/lib/fonts';
 
-const TextElement = ({
+const CountdownElement = ({
   id,
-  content,
   position,
   style,
   name,
@@ -22,11 +21,13 @@ const TextElement = ({
   responsive,
   activeBreakpoint,
   isSelected,
+  target,
   selectedElementId,
   onSelect,
   editMode,
-}: TextTemplateElement & {
+}: CountdownTemplateElement & {
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
+  target: string;
   selectedElementId?: string;
   isSelected?: boolean;
   onSelect?: (element: TemplateElement) => void;
@@ -34,27 +35,21 @@ const TextElement = ({
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  const finalElementProps = mergeResponsiveProperties<TextTemplateElement>(
+  const finalElementProps = mergeResponsiveProperties<CountdownTemplateElement>(
     {
-      id: id,
-      type: ElementType.Text,
-      content: content,
-      position: position,
-      name: name,
-      disabled: disabled,
-      style: style,
+      id,
+      type: ElementType.Countdown,
+      position,
+      name,
+      disabled,
+      style,
     },
     responsive,
     activeBreakpoint
-  ) as TemplateElement;
+  ) as CountdownTemplateElement;
 
   if (finalElementProps.style.fontFamily) {
     loadFont(finalElementProps.style.fontFamily as string);
@@ -63,14 +58,39 @@ const TextElement = ({
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     data: {
-      name: name,
-      id: id,
+      name,
+      id,
       modifiers:
         finalElementProps.position.elementAlignment !== 'auto'
           ? [restrictToParentElement, restrictToVerticalAxis]
           : [restrictToParentElement],
     },
   });
+
+  // Countdown logic
+  // It takes a target date string and returns an object with days, hours, minutes, seconds, and a finished flag
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  function getTimeLeft(target: string) {
+    const now = new Date();
+    const end = new Date(target);
+    const diff = end.getTime() - now.getTime();
+    if (diff <= 0)
+      return { days: 0, hours: 0, minutes: 0, seconds: 0, finished: true };
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    return { days, hours, minutes, seconds, finished: false };
+  }
+  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target));
+  useEffect(() => {
+    if (timeLeft.finished) return;
+    const interval = setInterval(() => {
+      setTimeLeft(getTimeLeft(target));
+    }, 1000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target, timeLeft.finished]);
 
   let textContentStyle: React.CSSProperties = {
     fontFamily: (finalElementProps.style.fontFamily as string) || 'inherit',
@@ -110,13 +130,12 @@ const TextElement = ({
   if (finalElementProps.position.elementAlignment === 'auto') {
     if (finalElementProps.position.left !== undefined) {
       elementStyle.left = `${finalElementProps.position.left}%`;
-      elementStyle.right = 'auto'; // Asigură-te că nu ai ambele setate
+      elementStyle.right = 'auto';
     } else if (finalElementProps.position.right !== undefined) {
       elementStyle.right = `${finalElementProps.position.right}%`;
       elementStyle.left = 'auto';
     } else {
-      // Fallback dacă nici left, nici right nu sunt definite (ar trebui să ai cel puțin left)
-      elementStyle.left = '0%'; // Sau o poziție default
+      elementStyle.left = '0%';
       elementStyle.right = 'auto';
     }
 
@@ -127,7 +146,6 @@ const TextElement = ({
       elementStyle.bottom = `${finalElementProps.position.bottom}%`;
       elementStyle.top = 'auto';
     } else {
-      // Fallback
       elementStyle.top = '0%';
       elementStyle.bottom = 'auto';
     }
@@ -144,8 +162,6 @@ const TextElement = ({
 
   return (
     <div
-      data-x={50}
-      data-y={80}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
@@ -205,14 +221,38 @@ const TextElement = ({
         </>
       )}
 
-      {content.split('\n').map((line, index) => (
-        <React.Fragment key={index}>
-          <span style={{ ...textContentStyle }}>{line}</span>
-          {index < content.split('\n').length - 1 && <br />}{' '}
-        </React.Fragment>
-      ))}
+      {/* Countdown display */}
+
+      <div className="flex flex-col items-center w-full">
+        <div className="flex gap-2">
+          <span style={{ ...textContentStyle }}>
+            {pad(timeLeft.days)}
+            <span className="ml-1">d</span>
+          </span>
+          <span>:</span>
+          <span style={{ ...textContentStyle }}>
+            {pad(timeLeft.hours)}
+            <span className="ml-1">h</span>
+          </span>
+          <span>:</span>
+          <span style={{ ...textContentStyle }}>
+            {pad(timeLeft.minutes)}
+            <span className="ml-1">m</span>
+          </span>
+          <span>:</span>
+          <span style={{ ...textContentStyle }}>
+            {pad(timeLeft.seconds)}
+            <span className="ml-1">s</span>
+          </span>
+        </div>
+        {timeLeft.finished && (
+          <div className="mt-2 text-red-500 font-semibold">
+            Evenimentul a început!
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default TextElement;
+export default CountdownElement;

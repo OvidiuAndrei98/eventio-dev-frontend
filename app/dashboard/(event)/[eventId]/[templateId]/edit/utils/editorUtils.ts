@@ -1,5 +1,9 @@
 import { ElementType } from '@/core/types';
-import { ContainerOutlined, GifOutlined } from '@ant-design/icons';
+import {
+  ClockCircleOutlined,
+  ContainerOutlined,
+  GifOutlined,
+} from '@ant-design/icons';
 import {
   FormInputIcon,
   ImageIcon,
@@ -72,6 +76,12 @@ export const availableElementTypes = [
     type: ElementType.GifElement,
     name: 'Imagine animata',
     icon: GifOutlined,
+    availableFor: [ElementType.Section],
+  },
+  {
+    type: ElementType.Countdown,
+    name: 'Numaratoare inversa',
+    icon: ClockCircleOutlined,
     availableFor: [ElementType.Section],
   },
 ];

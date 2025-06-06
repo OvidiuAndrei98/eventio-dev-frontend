@@ -5,6 +5,7 @@ import { TemplateElement, TemplateSection } from '@/core/types';
 import {
   EyeIcon,
   EyeOffIcon,
+  FormInputIcon,
   ImageIcon,
   MapPlusIcon,
   ShapesIcon,
@@ -58,6 +59,8 @@ const SortableElementCard = ({
         return <MapPlusIcon size={14} />;
       case 'gif':
         return <GifOutlined size={14} />;
+      case 'rsvp':
+        return <FormInputIcon size={14} />;
       default:
         return <TextIcon size={14} />;
     }

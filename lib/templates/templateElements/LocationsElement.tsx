@@ -20,6 +20,11 @@ const LocationsElement = ({
   selectedElementId,
   eventAditionalLocations,
   eventDate,
+  titleStyle,
+  dateStyle,
+  timeStyle,
+  addressStyle,
+  buttonStyle,
   eventLocation,
   borderStyles,
   onSelect,
@@ -52,6 +57,11 @@ const LocationsElement = ({
       style: style,
       name: name,
       borderStyles: borderStyles,
+      titleStyle: titleStyle,
+      dateStyle: dateStyle,
+      timeStyle: timeStyle,
+      addressStyle: addressStyle,
+      buttonStyle: buttonStyle,
     },
     responsive,
     activeBreakpoint
@@ -63,6 +73,27 @@ const LocationsElement = ({
     borderStyle: `${finalElementProps.borderStyles?.sides}`,
     borderWidth: `${finalElementProps.borderStyles?.size}px`,
     borderColor: `${finalElementProps.borderStyles?.color}`,
+  };
+
+  const titleElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.titleStyle?.color}`,
+  };
+
+  const dateElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.dateStyle?.color}`,
+  };
+
+  const timeElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.timeStyle?.color}`,
+  };
+
+  const addressElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.addressStyle?.color}`,
+  };
+
+  const buttonElementStyle: React.CSSProperties = {
+    color: `${finalElementProps.buttonStyle?.color}`,
+    backgroundColor: `${finalElementProps.buttonStyle?.backgroundColor}`,
   };
 
   return (
@@ -124,9 +155,22 @@ const LocationsElement = ({
           key={idx}
           eventLocation={location}
           eventDate={eventDate}
+          titleStyle={titleElementStyle}
+          dateStyle={dateElementStyle}
+          timeStyle={timeElementStyle}
+          addressStyle={addressElementStyle}
+          buttonStyle={buttonElementStyle}
         />
       ))}
-      <EventLocationCard eventLocation={eventLocation} eventDate={eventDate} />
+      <EventLocationCard
+        eventLocation={eventLocation}
+        eventDate={eventDate}
+        titleStyle={titleElementStyle}
+        dateStyle={dateElementStyle}
+        timeStyle={timeElementStyle}
+        addressStyle={addressElementStyle}
+        buttonStyle={buttonElementStyle}
+      />
     </div>
   );
 };
@@ -136,9 +180,19 @@ export default LocationsElement;
 function EventLocationCard({
   eventLocation,
   eventDate,
+  titleStyle,
+  dateStyle,
+  timeStyle,
+  addressStyle,
+  buttonStyle,
 }: {
   eventLocation: EventLocation;
   eventDate: string;
+  titleStyle: React.CSSProperties;
+  dateStyle: React.CSSProperties;
+  timeStyle: React.CSSProperties;
+  addressStyle: React.CSSProperties;
+  buttonStyle: React.CSSProperties;
 }) {
   return (
     <div className="rounded-lg p-8 text-center text-gray-800 sm:p-6 md:p-8 lg:p-10 max-w-[380px]">
@@ -160,15 +214,16 @@ function EventLocationCard({
       )}
 
       <h2
-        className="
-        font-serif text-3xl font-normal text-gray-700 mb-6 leading-tight
-        sm:text-2xl md:text-3xl lg:text-4xl
-      "
+        style={titleStyle}
+        className="text-3xl font-normal mb-6 leading-tight sm:text-2xl md:text-3xl lg:text-4xl"
       >
         {eventLocation?.title}
       </h2>
-      <p className="text-gray-600 mb-5 leading-relaxed text-lg sm:text-base">
-        <strong className="text-gray-800">
+      <p
+        className="mb-5 leading-relaxed text-lg sm:text-base"
+        style={dateStyle}
+      >
+        <strong>
           {new Date(eventDate)
             .toLocaleDateString('ro-RO', {
               weekday: 'long',
@@ -188,21 +243,25 @@ function EventLocationCard({
               .slice(1)}
         </strong>
         <br />
-        Ora {eventLocation?.locationStartTime}
+        <span style={timeStyle}>Ora {eventLocation?.locationStartTime}</span>
       </p>
-      <p className="text-gray-600 mb-8 leading-relaxed text-base sm:text-sm md:min-h-[70px]">
+      <p
+        style={addressStyle}
+        className="mb-8 leading-relaxed text-base sm:text-sm md:min-h-[70px]"
+      >
         {eventLocation.name}
         <br />
         {eventLocation.formatted_address}
       </p>
       <a
+        style={buttonStyle}
         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
           eventLocation.formatted_address || eventLocation.name || ''
         )}`}
         target="_blank"
         rel="noopener noreferrer"
         className="
-          inline-block bg-gray-400 text-white py-3 px-7 rounded-full
+          inline-block py-3 px-7 rounded-full
           font-bold text-lg transition-colors duration-300 ease-in-out
           hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75
           sm:py-2 sm:px-6 sm:text-base

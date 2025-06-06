@@ -15,6 +15,7 @@ import DragOverlayGuidelines from '@/app/dashboard/(event)/[eventId]/[templateId
 import { Guideline } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
 import LocationsElement from '../templateElements/LocationsElement';
 import GifElement from '../templateElements/GifElement';
+import CountdownElement from '../templateElements/CountdownElement';
 
 const elementComponentMap = {
   [ElementType.Text]: TextElement,
@@ -24,6 +25,7 @@ const elementComponentMap = {
   [ElementType.Container]: ContainerElement,
   [ElementType.locationsElement]: LocationsElement,
   [ElementType.GifElement]: GifElement,
+  [ElementType.Countdown]: CountdownElement,
 
   // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
@@ -53,7 +55,10 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     {
       backgroundImage: sectionData.backgroundImage,
       id: sectionData.id,
-      type: ElementType.Section,
+      type:
+        ElementType.Section ||
+        ElementType.RSVP_SECTION ||
+        ElementType.LocationsSection,
       position: sectionData.position,
       name: sectionData.name,
       disabled: sectionData.disabled,
@@ -164,11 +169,14 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
           case ElementType.RSVP_ELEMENT:
             return (
               <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
                 key={element.id}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(element as any)}
                 activeBreakpoint={activeBreakpoint}
                 eventId={''}
+                onSelect={onSelect}
                 editMode={true}
                 eventAditionalQuestions={
                   templateData.settings.eventAditionalQuestions
@@ -231,6 +239,20 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                 onSelect={onSelect}
                 activeBreakpoint={activeBreakpoint}
                 editMode={true}
+              />
+            );
+          case ElementType.Countdown:
+            return (
+              <ComponentToRender
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === element.id}
+                key={element.id}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(element as any)}
+                onSelect={onSelect}
+                activeBreakpoint={activeBreakpoint}
+                editMode={true}
+                target={templateData.eventDate}
               />
             );
           default:
