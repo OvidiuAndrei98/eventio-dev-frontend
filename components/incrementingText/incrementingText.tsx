@@ -1,7 +1,7 @@
 'use client';
 import { animate, motion, useMotionValue, useTransform } from 'motion/react';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 interface AnimatedCounterProps {
   from?: number;
@@ -18,14 +18,10 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
 }) => {
   const count = useMotionValue(from);
   const rounded = useTransform(count, (latest) => Math.round(latest));
-  const [_isAnimationComplete, setIsAnimationComplete] = useState(false);
 
   useEffect(() => {
     const controls = animate(count, to, {
       duration: duration,
-      onComplete: () => {
-        setIsAnimationComplete(true);
-      },
     });
 
     return controls.stop;

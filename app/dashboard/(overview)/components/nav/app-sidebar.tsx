@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/sidebar';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
-import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/core/AuthenticationBoundary';
 
 export interface MenuItem {

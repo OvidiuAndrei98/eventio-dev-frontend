@@ -12,7 +12,7 @@ import MultiselectDropdown from '../../../../../../../components/multiselectDrop
 import { queryNotAssignedConfirmedGuestsByEventId } from '@/service/guest/queryNotAssignedConfirmedGuestsByEventId';
 import { DropdownOption } from '@/core/types';
 import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
-import { EventContext, useEventContext } from '@/core/context/EventContext';
+import { useEventContext } from '@/core/context/EventContext';
 
 type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 

@@ -24,7 +24,6 @@ export const PricingCard = ({
   const isPopular = tier.popular;
   let isCurrent = false;
   let isBelow = false;
-  let isCurrentOrBelow = false;
 
   if (activePlan && showButton) {
     // Găsește ordinea planului activ
@@ -36,7 +35,6 @@ export const PricingCard = ({
     // Disable dacă planul curent sau inferior
     isCurrent = activePlan === tier.id;
     isBelow = typeof tier.order === 'number' && activePlanOrder > tier.order;
-    isCurrentOrBelow = isCurrent || isBelow;
   }
 
   return (
