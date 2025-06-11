@@ -84,6 +84,7 @@ const SettingsPage = () => {
         // Update questions
         const evQuestions = transformAditionQuestionToEventFormat();
         const evQuestionsCopy = { ...templateSettings };
+        // Add the new questions to the existing event settings
         evQuestionsCopy.eventAditionalQuestions = evQuestions;
 
         deletedLocations.forEach(async (loc) => {
@@ -169,6 +170,14 @@ const SettingsPage = () => {
     setEditLocationModalOpen(false);
   };
 
+  const handleUpdatePrincipalEventLocation = async (
+    location: EventLocation
+  ) => {
+    onSettingsChange('eventLocation', location);
+
+    setEditLocationModalOpen(false);
+  };
+
   const handleDeleteAditionalLocation = async (locationId: string) => {
     const existingEventAdiotionalLocations =
       (templateSettings?.aditionalLocations as EventLocation[]) ?? [];
@@ -188,6 +197,19 @@ const SettingsPage = () => {
         (loc) => loc.locationId !== locationId
       )
     );
+  };
+
+  const handleLocationUpdate = (loc: EventLocation) => {
+    if (!eventInstance) {
+      toast.error('Nu exista un eveniment selectat pentru a actualiza locatia');
+      return;
+    }
+    if (loc.locationId === eventInstance.eventLocation.locationId) {
+      handleUpdatePrincipalEventLocation(loc);
+    } else {
+      handleAddAditionalEventLocation(loc);
+    }
+    setNewEventLocationPopoverOpen(false);
   };
 
   return templateSettingsLoading ? (
@@ -491,10 +513,7 @@ const SettingsPage = () => {
         onCancel={() => setEditLocationModalOpen(false)}
       >
         <AutocompleteMapsInput
-          onLocationSelect={(loc) => {
-            handleAddAditionalEventLocation(loc);
-            setNewEventLocationPopoverOpen(false);
-          }}
+          onLocationSelect={handleLocationUpdate}
           templateId={templateId}
           editingLocation={editingLocation}
         />

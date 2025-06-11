@@ -1,74 +1,73 @@
-'use client'
+'use client';
 
-import { Form, FormProps, Input } from 'antd'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { firebaseAuth } from '@/lib/firebase/firebaseConfig'
-import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth'
-import { User } from '@/core/types'
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import LoginImage from '../../../public/LoginImage.svg'
-import { toast } from 'sonner'
-import { addUser } from '@/service/user/addUser'
+import { Form, FormProps, Input } from 'antd';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
+import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth';
+import { User } from '@/core/types';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import LoginImage from '../../../public/LoginImage.svg';
+import { toast } from 'sonner';
+import { addUser } from '@/service/user/addUser';
 
 const RegisterPageComponent = ({
   className,
   ...props
 }: React.ComponentProps<'div'>) => {
-  const router = useRouter()
-  const auth = firebaseAuth
+  const router = useRouter();
+  const auth = firebaseAuth;
 
   type FieldType = {
-    name: string
-    surname: string
-    email: string
-    password: string
-    repeatPassword: string
-  }
+    name: string;
+    surname: string;
+    email: string;
+    password: string;
+    repeatPassword: string;
+  };
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     createUserWithEmailAndPassword(auth, values.email, values.password)
       .then(async (userCredential) => {
         // Signed up
-        const user = userCredential.user
+        const user = userCredential.user;
         const userDoc: User = {
           userId: user.uid,
           email: user.email as string,
           name: values.name,
           surname: values.surname,
-          accountStatus: 'basic',
           displayName: values.surname + ' ' + values.name,
           photoURL: userCredential.user.photoURL,
-        }
-        await addUser(userDoc)
+        };
+        await addUser(userDoc);
         localStorage.setItem(
           'auth_token',
           JSON.stringify(await user.getIdToken())
-        )
+        );
         if (firebaseAuth.currentUser) {
           await updateProfile(firebaseAuth.currentUser, {
             displayName: values.name + ' ' + values.surname,
-          })
+          });
         }
 
-        router.push('/dashboard')
+        router.push('/dashboard');
       })
       .catch((error) => {
-        const errorMessage = error.message
+        const errorMessage = error.message;
         if (error.code === 'auth/email-already-in-use') {
-          toast.error('Email-ul este deja folosit')
+          toast.error('Email-ul este deja folosit');
         }
-        console.log(errorMessage)
-      })
-  }
+        console.log(errorMessage);
+      });
+  };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
     errorInfo
   ) => {
-    console.log('Failed:', errorInfo)
-  }
+    console.log('Failed:', errorInfo);
+  };
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -163,11 +162,11 @@ const RegisterPageComponent = ({
                       ({ getFieldValue }) => ({
                         validator(_, value) {
                           if (!value || getFieldValue('password') === value) {
-                            return Promise.resolve()
+                            return Promise.resolve();
                           }
                           return Promise.reject(
                             new Error('Noua parolă nu se potrivește!')
-                          )
+                          );
                         },
                       }),
                     ]}
@@ -204,7 +203,7 @@ const RegisterPageComponent = ({
         and <a href="#">Privacy Policy</a>.
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RegisterPageComponent
+export default RegisterPageComponent;

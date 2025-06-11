@@ -20,15 +20,26 @@ const ChosePlanPage: React.FC = () => {
           tine!
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PLANYVITE_EVENT_PLANS.map((plan) => (
-            <PricingCard
-              key={plan.name}
-              tier={plan}
-              activePlan={eventInstance?.eventPlan}
-              showButton={true}
-              userId={eventInstance?.userId}
-            />
-          ))}
+          {PLANYVITE_EVENT_PLANS.map((plan) => {
+            if (
+              (plan.id === 'ultimate' &&
+                eventInstance?.eventPlan === 'premium') ||
+              (plan.id === 'ultimate_upgrade' &&
+                eventInstance?.eventPlan === 'basic')
+            ) {
+              return null; // Skip rendering for this plan if conditions are met
+            }
+            return (
+              <PricingCard
+                key={plan.name}
+                tier={plan}
+                activePlan={eventInstance?.eventPlan}
+                showButton={true}
+                userId={eventInstance?.userId}
+                eventId={eventInstance?.eventId}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

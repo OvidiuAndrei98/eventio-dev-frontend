@@ -11,11 +11,13 @@ export const PricingCard = ({
   activePlan,
   showButton,
   userId,
+  eventId,
 }: {
   tier: PricingTier;
   activePlan?: string;
   showButton?: boolean;
   userId?: string;
+  eventId?: string;
 }) => {
   const price = tier.price;
   const isHighlighted = tier.highlighted;
@@ -112,8 +114,8 @@ export const PricingCard = ({
           )}
           disabled={isCurrent || isBelow}
           onClick={() => {
-            if (!isCurrent && !isBelow && tier?.priceId && userId) {
-              planUpgradeCheckout(userId, tier.priceId);
+            if (!isCurrent && !isBelow && tier?.priceId && userId && eventId) {
+              planUpgradeCheckout(userId, tier.priceId, eventId, tier.type);
             }
           }}
         >

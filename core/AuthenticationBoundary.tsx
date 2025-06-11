@@ -216,7 +216,6 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
 
       if (!existingUser || !existingUser.userId) {
         const newUser: User = {
-          accountStatus: 'basic',
           userId: user.uid,
           email: user.email as string,
           displayName: user.displayName || '',
@@ -274,7 +273,6 @@ export function AuthenticationBoundary(props: { children?: ReactNode }) {
 
       if (!existingUser || !existingUser.userId) {
         const newUser: User = {
-          accountStatus: 'basic',
           userId: userCredential.user.uid,
           email: userCredential.user.email as string,
           displayName: userCredential.user.displayName || '',

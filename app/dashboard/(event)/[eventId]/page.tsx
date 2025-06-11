@@ -3,9 +3,8 @@
 import '@/styles/globals.css';
 import {
   ExclamationCircleOutlined,
-  FileExcelFilled,
   SendOutlined,
-  UnorderedListOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
 import { useEffect, useState } from 'react';
@@ -13,20 +12,22 @@ import { useRouter } from 'next/navigation';
 import ConfirmationCard from './components/confirmationCard/ConfirmationCard';
 import ActivityChart from './components/activityChart/ActivityChart';
 import Image from 'next/image';
-import TodoModal from '@/components/todoList/TodoModal';
 import { useEventContext } from '@/core/context/EventContext';
 import { Guest } from '@/core/types';
 import { queryLastGuestsByEventId } from '@/service/guest/queryLastGuestsByEventId';
 import { toast } from 'sonner';
+import { demoChartData } from '@/lib/demoStatsData';
 
 // Varianta abonomant
 
 const DashboardEventPage = () => {
   const router = useRouter();
-  const [todoOpen, setTodoOpen] = useState(false);
   const [shrinkElement, setShrinkElement] = useState(false);
   const [guestList, setGuestList] = useState<Guest[]>([]);
   const { eventInstance } = useEventContext();
+  const isPremiumOrAbove =
+    eventInstance?.eventPlan === 'premium' ||
+    eventInstance?.eventPlan === 'ultimate';
 
   useEffect(() => {
     const element = document.querySelector('.dashboard-content-container');
@@ -58,14 +59,6 @@ const DashboardEventPage = () => {
   const queryGuestList = async (eventId: string) => {
     const guests = await queryLastGuestsByEventId(eventId, 5);
     setGuestList(guests);
-  };
-
-  const onModalOk = () => {
-    setTodoOpen(false);
-  };
-
-  const onModalClose = () => {
-    setTodoOpen(false);
   };
 
   return (
@@ -169,26 +162,38 @@ const DashboardEventPage = () => {
             <ConfirmationCard guest={guest} key={guest.guestId} />
           ))}
         </div>
-        <ActivityChart showActionButton />
+        <ActivityChart
+          showActionButton
+          data={!isPremiumOrAbove ? demoChartData : undefined}
+          isBasicPlan={!isPremiumOrAbove}
+        />
         <div className="dashboard-card quick-actions pb-[6px]">
           <h3 className="font-semibold">Actiuni rapide</h3>
           <div className="quick-actions-container">
-            <div className="dotted-card quick-card">
+            <div className="dotted-card quick-card relative">
               <span>Planificator Excel</span>
-              <Button icon={<FileExcelFilled />} />
-            </div>
-            <div className="dotted-card quick-card">
-              <span>Todo list</span>
               <Button
-                icon={<UnorderedListOutlined />}
-                onClick={() => setTodoOpen(true)}
-              />
+                disabled={eventInstance?.eventPlan !== 'ultimate'}
+                icon={
+                  eventInstance?.eventPlan !== 'ultimate' ? (
+                    <span
+                      style={{
+                        color: '#FFB347',
+                        fontSize: '16px',
+                      }}
+                    >
+                      <StarOutlined />
+                    </span>
+                  ) : null
+                }
+              >
+                Descarca
+              </Button>
             </div>
           </div>
         </div>
         <div className="pb-[1px]"></div>
       </div>
-      <TodoModal onClose={onModalClose} onOk={onModalOk} open={todoOpen} />
     </div>
   );
 };

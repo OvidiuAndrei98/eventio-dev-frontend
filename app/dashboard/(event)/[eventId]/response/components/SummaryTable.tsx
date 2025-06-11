@@ -7,6 +7,7 @@ import {
   MobileOutlined,
   SearchOutlined,
   SmileOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 import {
   Button,
@@ -20,10 +21,11 @@ import {
 import './SummaryTable.css';
 import SadFaceIcon from '@/public/sad-face.svg';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Guest } from '@/core/types';
+import { EventContext } from '@/core/context/EventContext';
 
 type DataIndex = keyof Guest;
 
@@ -33,6 +35,10 @@ interface SummaryTableProps {
 
 const SummaryTable = ({ guests }: SummaryTableProps) => {
   const searchInput = useRef<InputRef>(null);
+  const { eventInstance } = useContext(EventContext);
+
+  const isBasicPlan =
+    !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
 
   const handleSearch = (confirm: FilterDropdownProps['confirm']) => {
     confirm();
@@ -170,9 +176,25 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
   return (
     <div className="summary-container">
       <div className="table-container">
+        {isBasicPlan && (
+          <div className="text-[var(--primary-color)] text-center font-medium response-alert">
+            Pentru a vedea toate răspunsurile, ai nevoie de planul{' '}
+            <span className="font-bold text-[var(--premium-color)]">
+              Premium
+            </span>{' '}
+            sau <span className="font-bold">Ultimate</span>.
+          </div>
+        )}
         <div className="table-header">
           <div className="info-container">
-            <span className="secondary-title">Sumar raspunsuri</span>
+            <span className="secondary-title">
+              Sumar raspunsuri
+              {isBasicPlan && (
+                <span style={{ color: '#FFB347', marginLeft: 6 }}>
+                  <StarOutlined />
+                </span>
+              )}
+            </span>
             <span className="secondary-text-color-light ">
               Invitatii si statusul lor
             </span>

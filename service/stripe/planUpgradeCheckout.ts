@@ -1,7 +1,12 @@
 import db from '@/lib/firebase/fireStore';
 import { addDoc, collection, onSnapshot } from 'firebase/firestore';
 
-export const planUpgradeCheckout = async (userId: string, priceId: string) => {
+export const planUpgradeCheckout = async (
+  userId: string,
+  priceId: string,
+  eventId: string,
+  plan: string
+) => {
   // Reference to the user's checkout_sessions subcollection
   const checkoutSessionsRef = collection(
     db,
@@ -16,6 +21,20 @@ export const planUpgradeCheckout = async (userId: string, priceId: string) => {
     price: priceId, // One-time price created in Stripe
     success_url: window.location.origin,
     cancel_url: window.location.origin,
+    customer_update: {
+      name: 'auto',
+    },
+    metadata: {
+      eventId: eventId,
+      newPlan: plan,
+    },
+    payment_intent_data: {
+      metadata: {
+        eventId: eventId,
+        newPlan: plan,
+      },
+    },
+    billing_address_collection: 'required',
   });
 
   // Listen for changes on the newly created checkout session document

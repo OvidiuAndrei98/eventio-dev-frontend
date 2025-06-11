@@ -2,6 +2,7 @@ import { doc, writeBatch } from 'firebase/firestore';
 import db from '../../lib/firebase/fireStore';
 import { Guest } from '@/core/types';
 import { queryEventById } from '../event/queryEventById';
+import { updateEventStatsForGuest } from '../event/updateEventStatsForGuest';
 
 /**
  * Adds a guest to an event by saving the guest information in the database.
@@ -33,6 +34,16 @@ export const addGuestsToEventBatch = async (
     });
 
     await batch.commit();
+
+    for (const guest of guests) {
+      if (guest.isAttending) {
+        // Update event statistics for each guest who is attending
+        await updateEventStatsForGuest(eventId, guest.date, 1, 1, 0);
+      } else {
+        // Update event statistics for each guest who is not attending
+        await updateEventStatsForGuest(eventId, guest.date, 1, 0, 1);
+      }
+    }
   } catch (error) {
     console.error('Error creating the guest', error);
     throw error;

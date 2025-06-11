@@ -11,6 +11,10 @@ import { Button } from 'antd';
 import MultiselectDropdown from '../../../../../../../components/multiselectDropdown/MultiselectDropdown';
 import { queryNotAssignedConfirmedGuestsByEventId } from '@/service/guest/queryNotAssignedConfirmedGuestsByEventId';
 import { DropdownOption } from '@/core/types';
+import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
+import { EventContext, useEventContext } from '@/core/context/EventContext';
+
+type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 
 interface ModalProps {
   eventId: string;
@@ -26,6 +30,13 @@ const Modal: React.FC<ModalProps> = ({
   updateGuestList,
 }) => {
   const [value, setValue] = useState<{ label: string; value: string }[]>([]);
+  const { eventInstance } = useEventContext();
+  const eventPlanKey: EventPlanKey =
+    (eventInstance?.eventPlan as EventPlanKey) || 'basic';
+  // Get the maximum number of guests available in the table plan based on the event plan
+  // This is used to limit the number of guests that can be added to the table plan
+  const maxGuestsAvailableInTablePlan =
+    PLANYVITE_EVENT_PLAN_FEATURES[eventPlanKey].nrOfGuestsAvailableInTablePlan;
 
   useEffect(() => {
     setValue([]);
@@ -34,7 +45,11 @@ const Modal: React.FC<ModalProps> = ({
   async function fetchGuestList(
     eventId: string
   ): Promise<{ label: string; value: string }[]> {
-    const guests = await queryNotAssignedConfirmedGuestsByEventId(eventId);
+    const guests = await queryNotAssignedConfirmedGuestsByEventId(
+      eventId,
+      maxGuestsAvailableInTablePlan,
+      eventInstance?.eventPlan || 'basic'
+    );
     return guests.map((guest) => {
       return {
         label: guest.name,

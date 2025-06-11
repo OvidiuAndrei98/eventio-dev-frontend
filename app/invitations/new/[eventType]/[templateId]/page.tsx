@@ -111,39 +111,44 @@ const NewInvitationPage = () => {
     const newTemplateId = crypto.randomUUID();
     const newEventLocationCopy = { ...newEventLocation };
 
-    if (values.locationPhoto.file.status === 'error') {
-      imageWasUploaded();
-      return;
-    }
-    if (values.locationPhoto.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(
-        values.locationPhoto.file.originFileObj as FileType,
-        async (url) => {
-          if (user.userDetails) {
-            try {
-              const storageUrl = await uploadImageForTemplate(
-                url,
-                user.userDetails,
-                templateId,
-                values.locationPhoto.file.name
-              );
-              if (storageUrl) {
-                newEventLocationCopy.locationImage = {
-                  name: values.locationPhoto.file.name,
-                  url: storageUrl,
-                };
+    if (values.locationPhoto?.file) {
+      if (values.locationPhoto.file.status === 'error') {
+        imageWasUploaded();
+        return;
+      }
+      if (values.locationPhoto.file.status === 'done') {
+        // Get this url from response in real world.
+        getBase64(
+          values.locationPhoto.file.originFileObj as FileType,
+          async (url) => {
+            if (user.userDetails) {
+              try {
+                const storageUrl = await uploadImageForTemplate(
+                  url,
+                  user.userDetails,
+                  templateId,
+                  values.locationPhoto.file.name
+                );
+                if (storageUrl) {
+                  newEventLocationCopy.locationImage = {
+                    name: values.locationPhoto.file.name,
+                    url: storageUrl,
+                  };
+                }
+              } catch (error) {
+                toast.error('A aparut o eroare la incarcarea imaginii');
               }
-            } catch (error) {
-              toast.error('A aparut o eroare la incarcarea imaginii');
             }
+            imageWasUploaded();
           }
-          imageWasUploaded();
-        }
-      );
-    }
+        );
+      }
 
-    if (values.locationPhoto.file.status === 'removed') {
+      if (values.locationPhoto.file.status === 'removed') {
+        imageWasUploaded();
+      }
+    } else {
+      // If no image is uploaded, we resolve the promise immediately
       imageWasUploaded();
     }
 
@@ -162,7 +167,7 @@ const NewInvitationPage = () => {
 
     const eventData: EventInstance = {
       eventGuestCount: parseInt(newEventDate.guestsCount, 10),
-      eventLocation: newEventLocation,
+      eventLocation: newEventLocationCopy,
       eventName: eventName,
       eventDate: eventDateString,
       eventType: selectedEventType,
@@ -176,6 +181,7 @@ const NewInvitationPage = () => {
       eventTableOrganization: {
         elements: [],
       },
+      // TODO Not used in the new invitation flow, to be removed in feature releases
       adiotionalLocations: [],
       eventAditionalQuestions: [],
     };

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   BadgeCheck,
@@ -6,9 +6,9 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from 'lucide-react'
+} from 'lucide-react';
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,24 +17,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar'
-import NoProfile from '@/public/no-photo.svg'
-import Image from 'next/image'
-import { useContext } from 'react'
-import { AuthenticationContext } from '@/core/AuthenticationBoundary'
-import { useRouter } from 'next/navigation'
-import { User } from '@/core/types'
+} from '@/components/ui/sidebar';
+import NoProfile from '@/public/no-photo.svg';
+import Image from 'next/image';
+import { useContext } from 'react';
+import { AuthenticationContext } from '@/core/AuthenticationBoundary';
+import { useRouter } from 'next/navigation';
+import { User } from '@/core/types';
+import { EventContext } from '@/core/context/EventContext';
 
 export function NavUser({ user }: { user: User | null }) {
-  const { isMobile } = useSidebar()
-  const authContext = useContext(AuthenticationContext)
-  const router = useRouter()
+  const { isMobile } = useSidebar();
+  const authContext = useContext(AuthenticationContext);
+  const router = useRouter();
+  const { eventInstance } = useContext(EventContext);
 
   return (
     <SidebarMenu>
@@ -103,18 +105,20 @@ export function NavUser({ user }: { user: User | null }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            {user?.accountStatus !== 'ultra' && <DropdownMenuSeparator />}
+            {eventInstance?.eventPlan !== 'ultimate' && (
+              <DropdownMenuSeparator />
+            )}
             <DropdownMenuGroup>
-              {user?.accountStatus === 'basic' && (
+              {eventInstance?.eventPlan === 'basic' && (
                 <DropdownMenuItem className="hover:!bg-sidebar-accent">
                   <Sparkles />
                   Upgradeaza la Premium
                 </DropdownMenuItem>
               )}
-              {user?.accountStatus === 'premium' && (
+              {eventInstance?.eventPlan === 'premium' && (
                 <DropdownMenuItem className="hover:!bg-sidebar-accent">
                   <Sparkles />
-                  Upgradeaza la Ultra
+                  Upgradeaza la Ultimate
                 </DropdownMenuItem>
               )}
             </DropdownMenuGroup>
@@ -123,7 +127,7 @@ export function NavUser({ user }: { user: User | null }) {
               <DropdownMenuItem
                 className="hover:!bg-sidebar-accent"
                 onClick={() => {
-                  router.push('/dashboard/account')
+                  router.push('/dashboard/account');
                 }}
               >
                 <BadgeCheck />
@@ -146,5 +150,5 @@ export function NavUser({ user }: { user: User | null }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

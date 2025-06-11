@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import NoDataIllustration from '@/public/no-data-illustration.svg';
 import { Guest } from '@/core/types';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import SadFaceIcon from '@/public/sad-face.svg';
 import {
   Button,
@@ -15,7 +15,8 @@ import {
   TableProps,
 } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, StarOutlined } from '@ant-design/icons';
+import { EventContext } from '@/core/context/EventContext';
 
 type DataIndex = keyof Guest;
 
@@ -27,6 +28,10 @@ const RefusalsTable = ({ guests }: RefusalsTableProps) => {
   const [declinedGuests, setDeclinedGuests] = useState<Guest[]>([]);
   const searchInput = useRef<InputRef>(null);
   const [windowSize, setWindowSize] = useState<number>(0);
+  const { eventInstance } = useContext(EventContext);
+
+  const isBasicPlan =
+    !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
 
   useEffect(() => {
     if (typeof window != 'undefined') {
@@ -177,9 +182,23 @@ const RefusalsTable = ({ guests }: RefusalsTableProps) => {
   return (
     <div className="summary-container">
       <div className="table-container">
+        {isBasicPlan && (
+          <div className="text-[var(--primary-color)] text-center font-medium response-alert">
+            Pentru a vedea toate răspunsurile, ai nevoie de planul{' '}
+            <span className="font-bold text-[var(--premium-color)]">
+              Premium
+            </span>{' '}
+            sau <span className="font-bold">Ultimate</span>.
+          </div>
+        )}
         <div className="flex justify-between mb-2 items-center">
           <span className="secondary-title !text-lg md:!text-2xl">
             Raspunsuri refuzate
+            {isBasicPlan && (
+              <span style={{ color: '#FFB347', marginLeft: 6 }}>
+                <StarOutlined />
+              </span>
+            )}
           </span>
           <div className="bg-[#FFEBEB] p-2 md:py-3 md:px-3 flex gap-2 items-center rounded-md border-1 border-dotted border-[#FF001B]">
             <Image

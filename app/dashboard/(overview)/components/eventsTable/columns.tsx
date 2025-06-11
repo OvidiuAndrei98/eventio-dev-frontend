@@ -73,6 +73,44 @@ export const getColumns = ({
       },
     },
     {
+      accessorKey: 'eventPlan',
+      header: 'Plan',
+      cell: ({ row }) => {
+        const event = row.original;
+        return (
+          <span>
+            {event.eventPlan === 'premium' && (
+              <Badge
+                variant="default"
+                className="text-[#1E88E5] bg-[#E3F2FD] rounded-md text-xs font-medium"
+              >
+                {event.eventPlan.charAt(0).toUpperCase() +
+                  event.eventPlan.slice(1)}
+              </Badge>
+            )}
+            {event.eventPlan === 'ultimate' && (
+              <Badge
+                variant="default"
+                className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+              >
+                {event.eventPlan.charAt(0).toUpperCase() +
+                  event.eventPlan.slice(1)}
+              </Badge>
+            )}
+            {event.eventPlan === 'basic' && (
+              <Badge
+                variant="default"
+                className="text-[grey] bg-[#F5F8FA] rounded-md text-xs font-medium"
+              >
+                {event.eventPlan.charAt(0).toUpperCase() +
+                  event.eventPlan.slice(1)}
+              </Badge>
+            )}
+          </span>
+        );
+      },
+    },
+    {
       accessorKey: 'eventType',
       header: 'Eveniment',
     },

@@ -26,7 +26,10 @@ const ResponsePage = () => {
   }, [eventInstance]);
 
   const queryGuestList = async (eventId: string) => {
-    const guestsList = await queryGuestsByEvent(eventId);
+    const guestsList = await queryGuestsByEvent(
+      eventId,
+      eventInstance?.eventPlan || 'basic'
+    );
     setGuests(guestsList);
   };
 

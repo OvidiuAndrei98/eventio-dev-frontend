@@ -40,6 +40,8 @@ import { isMobile } from 'react-device-detect';
 import LaptopIllustration from '@/public/use-laptop-illustration.svg';
 import Image from 'next/image';
 import { useEventContext } from '@/core/context/EventContext';
+import { StarOutlined } from '@ant-design/icons';
+import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 
 export interface CanvasListElementDefinition {
   type: string;
@@ -225,7 +227,19 @@ const TablesPage = () => {
     positions: { x: number; y: number };
     type: string;
     typeId: string;
+    fromSideBar?: boolean;
   } | null>(null);
+
+  type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
+
+  const isBasicPlan =
+    !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
+  const isPremiumPlan = eventInstance?.eventPlan === 'premium';
+
+  const planKey: EventPlanKey =
+    (eventInstance?.eventPlan as EventPlanKey) || 'basic';
+  const maxElements =
+    PLANYVITE_EVENT_PLAN_FEATURES[planKey].maxTablePlanElements ?? 2;
 
   useEffect(() => {
     if (eventInstance) {
@@ -272,6 +286,7 @@ const TablesPage = () => {
         positions: { x: 0, y: 0 },
         type: type,
         typeId: typeId,
+        fromSideBar: true,
       };
       return;
     }
@@ -298,6 +313,20 @@ const TablesPage = () => {
     }
 
     const nextField = currentDragFieldRef.current;
+
+    // Limit the number of elements based on the plan type.
+    if (
+      (isBasicPlan || isPremiumPlan) &&
+      canvasElements.length >= maxElements &&
+      nextField &&
+      nextField.fromSideBar
+    ) {
+      toast.error(
+        `Poți adăuga maxim ${maxElements} elemente pe canvas la acest plan.`
+      );
+      cleanUp();
+      return;
+    }
 
     if (nextField && canvasElement) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -617,6 +646,33 @@ const TablesPage = () => {
                   typeId={element.typeId}
                 />
               )
+            )}
+            {isBasicPlan && (
+              <div className="mt-auto mb-4 rounded-lg bg-[#f5edf7] border border-[var(--primary-color)] p-4 shadow flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-[var(--primary-color)] font-semibold text-base">
+                  <span>
+                    <StarOutlined />
+                  </span>
+                  <span>Funcționalitate Ultimate</span>
+                </div>
+                <div className="text-[var(--primary-color)] mt-1 mb-2 text-sm">
+                  Această funcționalitate este disponibilă doar cu planul
+                  Ultimate.
+                </div>
+                <span className="text-[var(--primary-color)] text-sm font-light">
+                  Poti testa aceasta functionalitate cu un numar limitat de
+                  elemente si invitati asezati la masa.
+                </span>
+                <button
+                  className="cursor-pointer flex items-center gap-2 border border-[var(--primary-color)] text-[var(--primary-color)] px-3 py-1 rounded-md font-medium hover:bg-[var(--primary-color)]/10 transition"
+                  type="button"
+                >
+                  <span>
+                    <StarOutlined />
+                  </span>
+                  Vezi Detalii
+                </button>
+              </div>
             )}
           </div>
           <DragOverlay>

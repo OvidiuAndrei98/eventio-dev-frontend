@@ -3,6 +3,7 @@ import { PricingTier } from '@/core/types';
 export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
   {
     id: 'basic',
+    type: 'basic',
     name: 'Basic',
     price: 'Gratuit',
     description: 'Testeaza functionalitatile gratuit',
@@ -18,6 +19,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
   },
   {
     id: 'premium',
+    type: 'premium',
     name: 'Premium',
     price: 249,
     oldPrice: 350,
@@ -35,6 +37,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
   },
   {
     id: 'ultimate',
+    type: 'ultimate',
     name: 'Ultimate',
     price: 349,
     oldPrice: 450,
@@ -55,4 +58,54 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     order: 3,
     priceId: 'price_1RWm8iIxI3w7eVcKm4mbCdoU',
   },
+  {
+    id: 'ultimate_upgrade',
+    type: 'ultimate',
+    name: 'Ultimate',
+    price: 100,
+    oldPrice: 450,
+    description: 'Acces la functionalitatile platformei',
+    features: [
+      'Raspunsuri nelimitate',
+      'Valabilitate 12 luni',
+      'Editare invitatie',
+      'Plan locatie',
+      'Asezare la mese',
+      'exportare invitati in excel',
+      'Export plan locatie PDF',
+      'Checklist',
+      'Planificator eveniment avansat',
+    ],
+    cta: 'Cumpara',
+    popular: true,
+    order: 4,
+    priceId: 'price_1RY9ZaIxI3w7eVcKEq5qwfvN',
+  },
 ];
+
+export const PLANYVITE_EVENT_PLAN_FEATURES = {
+  basic: {
+    maxGuests: 5,
+    maxTablePlanElements: 2,
+    nrOfGuestsAvailableInTablePlan: 5,
+    allowGifs: false,
+    allowCountdown: false,
+    // ...other features
+  },
+  premium: {
+    maxGuests: 99999,
+    maxTablePlanElements: 2,
+    nrOfGuestsAvailableInTablePlan: 5,
+    allowGifs: true,
+    allowCountdown: true,
+    // ...other features
+  },
+  ultimate: {
+    maxGuests: 99999,
+    maxTablePlanElements: Infinity,
+    nrOfGuestsAvailableInTablePlan: Infinity,
+    allowGifs: true,
+    allowCountdown: true,
+    // ...other features
+  },
+};

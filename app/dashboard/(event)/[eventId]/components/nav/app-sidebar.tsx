@@ -4,9 +4,9 @@ import {
   LayoutTemplate,
   LucideCheckCircle,
   LucideHouse,
-  PieChart,
   ReceiptText,
   Settings2,
+  ShipWheelIcon,
   TrendingUp,
 } from 'lucide-react';
 
@@ -24,7 +24,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { useEventContext } from '@/core/context/EventContext';
-import { ControlOutlined } from '@ant-design/icons';
+import { ControlOutlined, StarOutlined } from '@ant-design/icons';
 
 export interface MenuItem {
   title: string;
@@ -93,17 +93,12 @@ export function AppSidebar({
       {
         title: 'Actiuni rapide',
         url: '#',
-        icon: <PieChart />,
+        icon: <ShipWheelIcon />,
         subMenu: [
           {
             title: 'Planificator excel',
             url: '#',
-            icon: <PieChart />,
-          },
-          {
-            title: 'Todo list',
-            url: '#',
-            icon: <PieChart />,
+            icon: <StarOutlined />,
           },
         ],
       },
@@ -126,15 +121,33 @@ export function AppSidebar({
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
                 <span className="truncate font-semibold">Eventio</span>
-                {eventInstance?.eventPlan &&
-                  eventInstance?.eventPlan !== 'basic' && (
-                    <Badge
-                      variant="default"
-                      className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
-                    >
-                      {eventInstance?.eventPlan}
-                    </Badge>
-                  )}
+                {eventInstance?.eventPlan === 'premium' && (
+                  <Badge
+                    variant="default"
+                    className="text-[#1E88E5] bg-[#E3F2FD] rounded-md text-xs font-medium"
+                  >
+                    {eventInstance?.eventPlan.charAt(0).toUpperCase() +
+                      eventInstance?.eventPlan.slice(1)}
+                  </Badge>
+                )}
+                {eventInstance?.eventPlan === 'ultimate' && (
+                  <Badge
+                    variant="default"
+                    className="text-[#B46ACB] bg-[#F8E5FD] rounded-md text-xs font-medium"
+                  >
+                    {eventInstance?.eventPlan.charAt(0).toUpperCase() +
+                      eventInstance?.eventPlan.slice(1)}
+                  </Badge>
+                )}
+                {eventInstance?.eventPlan === 'basic' && (
+                  <Badge
+                    variant="default"
+                    className="text-[grey] bg-[#F5F8FA] rounded-md text-xs font-medium"
+                  >
+                    {eventInstance?.eventPlan.charAt(0).toUpperCase() +
+                      eventInstance?.eventPlan.slice(1)}
+                  </Badge>
+                )}
               </div>
               <span className="truncate text-xs">dashboard</span>
             </div>

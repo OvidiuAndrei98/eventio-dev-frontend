@@ -147,56 +147,59 @@ const AutocompleteMapsInput = ({
 
       // Create a copy because we can not edit the stat directly
       const eventLocationCopy = { ...selectedPlace };
-
-      if (values.locationPhoto.file.status === 'done') {
-        if (values.locationPhoto.file.originFileObj) {
-          getBase64(
-            values.locationPhoto.file.originFileObj as FileType,
-            async (url) => {
-              if (user) {
-                try {
-                  const storageUrl = await uploadImageForTemplate(
-                    url,
-                    user,
-                    templateId,
-                    values.locationPhoto.file.name
-                  );
-                  if (storageUrl) {
-                    eventLocationCopy.locationImage = {
-                      url: storageUrl,
-                      name: values.locationPhoto.file.name,
-                    };
-                  }
-                  if (editingLocation?.locationImage?.name) {
-                    await removeImageForTemplate(
+      if (values.locationPhoto?.file) {
+        if (values.locationPhoto.file?.status === 'done') {
+          if (values.locationPhoto.file.originFileObj) {
+            getBase64(
+              values.locationPhoto.file.originFileObj as FileType,
+              async (url) => {
+                if (user) {
+                  try {
+                    const storageUrl = await uploadImageForTemplate(
+                      url,
                       user,
                       templateId,
-                      editingLocation.locationImage.name
+                      values.locationPhoto.file.name
                     );
+                    if (storageUrl) {
+                      eventLocationCopy.locationImage = {
+                        url: storageUrl,
+                        name: values.locationPhoto.file.name,
+                      };
+                    }
+                    if (editingLocation?.locationImage?.name) {
+                      await removeImageForTemplate(
+                        user,
+                        templateId,
+                        editingLocation.locationImage.name
+                      );
+                    }
+                  } catch (error) {
+                    toast.error('A aparut o eroare la incarcarea imaginii');
                   }
-                } catch (error) {
-                  toast.error('A aparut o eroare la incarcarea imaginii');
                 }
               }
-            }
-          );
-        }
-        imageWasUploaded();
-      }
-      if (values.locationPhoto.file.status === 'removed') {
-        if (user) {
-          try {
-            await removeImageForTemplate(
-              user,
-              templateId,
-              values.locationPhoto.file.name
             );
-            eventLocationCopy.locationImage = undefined;
-            imageWasUploaded();
-          } catch (error) {
-            toast.error('A aparut o eroare la stergerea imaginii');
+          }
+          imageWasUploaded();
+        }
+        if (values.locationPhoto.file?.status === 'removed') {
+          if (user) {
+            try {
+              await removeImageForTemplate(
+                user,
+                templateId,
+                values.locationPhoto.file.name
+              );
+              eventLocationCopy.locationImage = undefined;
+              imageWasUploaded();
+            } catch (error) {
+              toast.error('A aparut o eroare la stergerea imaginii');
+            }
           }
         }
+      } else {
+        imageWasUploaded();
       }
 
       await afterImageUploaded;

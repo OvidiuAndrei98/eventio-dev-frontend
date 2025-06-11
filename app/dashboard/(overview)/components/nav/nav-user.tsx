@@ -93,21 +93,6 @@ export function NavUser({ user }: { user: User | null }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            {user?.accountStatus !== 'ultra' && <DropdownMenuSeparator />}
-            <DropdownMenuGroup>
-              {user?.accountStatus === 'basic' && (
-                <DropdownMenuItem className="hover:!bg-sidebar-accent">
-                  <Sparkles />
-                  Upgradeaza la Premium
-                </DropdownMenuItem>
-              )}
-              {user?.accountStatus === 'premium' && (
-                <DropdownMenuItem className="hover:!bg-sidebar-accent">
-                  <Sparkles />
-                  Upgradeaza la Ultra
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem

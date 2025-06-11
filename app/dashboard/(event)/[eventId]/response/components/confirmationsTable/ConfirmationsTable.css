@@ -1,6 +1,7 @@
 .confirmations-container {
   height: 100%;
   padding: var(--padding-large);
+  padding-top: 0;
   overflow: hidden;
 }
 
@@ -9,6 +10,7 @@
   border-radius: 8px;
   height: 100%;
   overflow: hidden;
+  padding: 10px var(--padding-xl);
 }
 
 .confirmations-container .statistics-container {
@@ -41,13 +43,12 @@
   .confirmations-table-header {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
-  padding: var(--padding-large) var(--padding-xxl);
+  padding: var(--padding-medium) var(--padding-medium);
   z-index: 1;
 }
 
 .confirmations-container .confirmations-table-container .collapsible-table {
   overflow-y: auto;
-  padding: var(--padding-large);
   height: calc(100% - 100px);
 }
 

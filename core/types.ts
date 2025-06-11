@@ -1,7 +1,6 @@
 export interface User {
   userId: string;
   email: string;
-  accountStatus: 'basic' | 'premium' | 'ultra';
   photoURL: string | null | undefined;
   displayName: string | null | undefined;
   name?: string;
@@ -338,6 +337,7 @@ export type TemplateElement =
 export interface PricingTier {
   name: string;
   id: string;
+  type: string;
   price: number | string;
   oldPrice?: number;
   description: string;
@@ -347,4 +347,12 @@ export interface PricingTier {
   popular?: boolean;
   order: number;
   priceId?: string;
+}
+
+export interface EventStats {
+  id: string; // document id (e.g. daily_2024-06-01)
+  responses: number;
+  confirmations?: number;
+  refusals?: number;
+  date: string;
 }
