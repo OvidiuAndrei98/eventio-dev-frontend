@@ -253,7 +253,8 @@ const NewInvitationPage = () => {
               />
             </Form.Item>
             <Form.Item label="Fotografie" name="locationPhoto">
-              <ImgCrop>
+              s
+              <ImgCrop rotationSlider aspectSlider={true}>
                 <Upload
                   name="locationPhoto"
                   listType="picture"

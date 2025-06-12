@@ -210,7 +210,7 @@ const AutocompleteMapsInput = ({
           />
         </Form.Item>
         <Form.Item label="Fotografie" name="locationPhoto">
-          <ImgCrop rotationSlider>
+          <ImgCrop rotationSlider aspectSlider={true}>
             <Upload
               name="locationPhoto"
               listType="picture"
