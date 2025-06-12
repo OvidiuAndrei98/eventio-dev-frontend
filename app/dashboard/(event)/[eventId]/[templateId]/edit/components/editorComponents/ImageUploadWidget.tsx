@@ -21,6 +21,7 @@ import { uploadImageForTemplate } from '@/service/templates/uploadImageForTempla
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { UploadFileStatus } from 'antd/es/upload/interface';
+import ImgCrop from 'antd-img-crop';
 
 interface backgroundImageProps {
   name: string;
@@ -188,17 +189,23 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
       >
         {config.label}: {/* Afișează eticheta proprietății din config */}
       </label>
-      <Upload
-        maxCount={1}
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-        listType="picture"
-        fileList={uploadObject ? [uploadObject] : []}
-      >
-        <Button type="primary" icon={<UploadOutlined />} className="!w-[100%]">
-          Upload
-        </Button>
-      </Upload>
+      <ImgCrop rotationSlider>
+        <Upload
+          maxCount={1}
+          beforeUpload={beforeUpload}
+          onChange={handleChange}
+          listType="picture"
+          fileList={uploadObject ? [uploadObject] : []}
+        >
+          <Button
+            type="primary"
+            icon={<UploadOutlined />}
+            className="!w-[100%]"
+          >
+            Upload
+          </Button>
+        </Upload>
+      </ImgCrop>
       {uploadObject && uploadObject.status == 'done' ? (
         <ColorPicker
           format="rgb"

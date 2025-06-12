@@ -45,7 +45,7 @@ export default function InvoicesPage() {
       align: 'center',
       fixed: 'right',
       width: useIsMobile() ? 20 : 'atuo',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: PlanyviteInvoice) => (
         <Button
           className="!bg-gray-100 hover:!bg-[#f8e5fd]"
@@ -55,6 +55,7 @@ export default function InvoicesPage() {
             if (record.invoiceLink) {
               window.open(record.invoiceLink, '_blank');
             } else {
+              // eslint-disable-next-line no-console
               console.error('Invoice link is not available');
             }
           }}

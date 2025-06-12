@@ -9,6 +9,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { toast } from 'sonner';
 import { UploadFile, UploadFileStatus } from 'antd/es/upload/interface';
+import ImgCrop from 'antd-img-crop';
 
 interface AutocompleteMapsInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,15 +210,17 @@ const AutocompleteMapsInput = ({
           />
         </Form.Item>
         <Form.Item label="Fotografie" name="locationPhoto">
-          <Upload
-            name="locationPhoto"
-            listType="picture"
-            onChange={handleChange}
-            beforeUpload={beforeUpload}
-            fileList={imageObject ? [imageObject] : []}
-          >
-            <Button icon={<UploadOutlined />}>Adauga imagine</Button>
-          </Upload>
+          <ImgCrop rotationSlider>
+            <Upload
+              name="locationPhoto"
+              listType="picture"
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              fileList={imageObject ? [imageObject] : []}
+            >
+              <Button icon={<UploadOutlined />}>Adauga imagine</Button>
+            </Upload>
+          </ImgCrop>
         </Form.Item>
       </Form>
       <Button type="primary" onClick={onSaveLocation} className="self-end">

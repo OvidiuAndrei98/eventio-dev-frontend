@@ -21,6 +21,7 @@ import {
   Upload,
   UploadProps,
 } from 'antd';
+import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -252,13 +253,15 @@ const NewInvitationPage = () => {
               />
             </Form.Item>
             <Form.Item label="Fotografie" name="locationPhoto">
-              <Upload
-                name="locationPhoto"
-                listType="picture"
-                beforeUpload={beforeUpload}
-              >
-                <Button icon={<UploadOutlined />}>Adauga imagine</Button>
-              </Upload>
+              <ImgCrop>
+                <Upload
+                  name="locationPhoto"
+                  listType="picture"
+                  beforeUpload={beforeUpload}
+                >
+                  <Button icon={<UploadOutlined />}>Adauga imagine</Button>
+                </Upload>
+              </ImgCrop>
             </Form.Item>
           </Form>
         </div>

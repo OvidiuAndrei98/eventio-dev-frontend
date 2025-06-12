@@ -2,7 +2,6 @@
 
 import './LoginPageComponent.css';
 import { Button, Divider, Form, FormProps, Input } from 'antd';
-import GoogleLogo from '../../../../public/Google.svg';
 import LoginBackgorund from '../../../../public/login-backgorund.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
