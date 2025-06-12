@@ -8,28 +8,17 @@ import { Input as AntInput } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useForm } from 'antd/es/form/Form';
 import { toast } from 'sonner';
-import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
-import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { UploadFile, UploadFileStatus } from 'antd/es/upload/interface';
 
 interface AutocompleteMapsInputProps {
-  onLocationSelect: (location: EventLocation) => void;
-  templateId: string;
+  onLocationSelect: (location: EventLocation, file: any) => void;
   editingLocation?: EventLocation;
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const getBase64 = (img: FileType, callback: (url: string) => void) => {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-};
-
 const AutocompleteMapsInput = ({
   onLocationSelect,
-  templateId,
   editingLocation,
 }: AutocompleteMapsInputProps) => {
   const [autocomplete, setAutocomplete] =
@@ -49,11 +38,7 @@ const AutocompleteMapsInput = ({
 
   const autocompleteRef = React.useRef<HTMLInputElement>(null);
 
-  let afterImageUploaded: Promise<void>;
-
   const [form] = useForm();
-
-  const user = useAuth().userDetails;
 
   useEffect(() => {
     if (isLoaded) {
@@ -141,68 +126,7 @@ const AutocompleteMapsInput = ({
   const handleFormSubmit = async (values: any) => {
     setSaveTriggeredFlag(true);
     if (selectedPlace) {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      let imageWasUploaded: () => void = () => {};
-      afterImageUploaded = new Promise((r) => (imageWasUploaded = r));
-
-      // Create a copy because we can not edit the stat directly
       const eventLocationCopy = { ...selectedPlace };
-      if (values.locationPhoto?.file) {
-        if (values.locationPhoto.file?.status === 'done') {
-          if (values.locationPhoto.file.originFileObj) {
-            getBase64(
-              values.locationPhoto.file.originFileObj as FileType,
-              async (url) => {
-                if (user) {
-                  try {
-                    const storageUrl = await uploadImageForTemplate(
-                      url,
-                      user,
-                      templateId,
-                      values.locationPhoto.file.name
-                    );
-                    if (storageUrl) {
-                      eventLocationCopy.locationImage = {
-                        url: storageUrl,
-                        name: values.locationPhoto.file.name,
-                      };
-                    }
-                    if (editingLocation?.locationImage?.name) {
-                      await removeImageForTemplate(
-                        user,
-                        templateId,
-                        editingLocation.locationImage.name
-                      );
-                    }
-                  } catch (error) {
-                    toast.error('A aparut o eroare la incarcarea imaginii');
-                  }
-                }
-              }
-            );
-          }
-          imageWasUploaded();
-        }
-        if (values.locationPhoto.file?.status === 'removed') {
-          if (user) {
-            try {
-              await removeImageForTemplate(
-                user,
-                templateId,
-                values.locationPhoto.file.name
-              );
-              eventLocationCopy.locationImage = undefined;
-              imageWasUploaded();
-            } catch (error) {
-              toast.error('A aparut o eroare la stergerea imaginii');
-            }
-          }
-        }
-      } else {
-        imageWasUploaded();
-      }
-
-      await afterImageUploaded;
 
       eventLocationCopy.title = values.locationTitle;
       eventLocationCopy.locationStartTime = values.locationStartTime;
@@ -211,9 +135,7 @@ const AutocompleteMapsInput = ({
         eventLocationCopy.locationId = crypto.randomUUID();
       }
 
-      onLocationSelect({
-        ...eventLocationCopy,
-      });
+      onLocationSelect(eventLocationCopy, values.locationPhoto.file);
       setSaveTriggeredFlag(false);
     }
   };

@@ -87,20 +87,9 @@ export function AppSidebar({
     projects: [
       {
         title: 'Plati si facturi',
-        url: '#',
+        url: '/dashboard/invoices',
         icon: <ReceiptText />,
-      },
-      {
-        title: 'Actiuni rapide',
-        url: '#',
-        icon: <ShipWheelIcon />,
-        subMenu: [
-          {
-            title: 'Planificator excel',
-            url: '#',
-            icon: <StarOutlined />,
-          },
-        ],
+        onClick: onClickNav,
       },
     ],
   };

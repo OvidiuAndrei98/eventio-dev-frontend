@@ -38,7 +38,7 @@ export interface EventInstance {
   userId: string;
   eventName: string;
   eventType: string;
-  eventPlan: string;
+  eventPlan: EventPlan;
   eventActive: boolean;
   eventTableOrganization: eventTableOrganization;
   templateId: string;
@@ -349,10 +349,28 @@ export interface PricingTier {
   priceId?: string;
 }
 
+export enum EventPlan {
+  basic = 'basic',
+  premium = 'premium',
+  ultimate = 'ultimate',
+}
+
 export interface EventStats {
   id: string; // document id (e.g. daily_2024-06-01)
   responses: number;
   confirmations?: number;
   refusals?: number;
   date: string;
+}
+
+export interface PlanyviteInvoice {
+  id: string;
+  customerName: string;
+  issueDate: string;
+  invoiceLink: string;
+  amount: number;
+  invoiceNumber: string;
+  colected: string;
+  cancelled: string;
+  storned: string;
 }

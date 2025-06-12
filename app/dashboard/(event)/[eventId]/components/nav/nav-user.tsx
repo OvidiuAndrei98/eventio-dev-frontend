@@ -110,13 +110,27 @@ export function NavUser({ user }: { user: User | null }) {
             )}
             <DropdownMenuGroup>
               {eventInstance?.eventPlan === 'basic' && (
-                <DropdownMenuItem className="hover:!bg-sidebar-accent">
+                <DropdownMenuItem
+                  className="hover:!bg-sidebar-accent cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/dashboard/${eventInstance.eventId}/choose-plan`
+                    );
+                  }}
+                >
                   <Sparkles />
                   Upgradeaza la Premium
                 </DropdownMenuItem>
               )}
               {eventInstance?.eventPlan === 'premium' && (
-                <DropdownMenuItem className="hover:!bg-sidebar-accent">
+                <DropdownMenuItem
+                  className="hover:!bg-sidebar-accent cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/dashboard/${eventInstance.eventId}/choose-plan`
+                    );
+                  }}
+                >
                   <Sparkles />
                   Upgradeaza la Ultimate
                 </DropdownMenuItem>
@@ -125,7 +139,7 @@ export function NavUser({ user }: { user: User | null }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
-                className="hover:!bg-sidebar-accent"
+                className="hover:!bg-sidebar-accent cursor-pointer"
                 onClick={() => {
                   router.push('/dashboard/account');
                 }}
@@ -133,14 +147,19 @@ export function NavUser({ user }: { user: User | null }) {
                 <BadgeCheck />
                 Cont
               </DropdownMenuItem>
-              <DropdownMenuItem className="hover:!bg-sidebar-accent">
+              <DropdownMenuItem
+                className="hover:!bg-sidebar-accent cursor-pointer"
+                onClick={() => {
+                  router.push(`/dashboard/invoices`);
+                }}
+              >
                 <CreditCard />
                 Facturare
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="hover:!bg-sidebar-accent"
+              className="hover:!bg-sidebar-accent cursor-pointer"
               onClick={() => authContext.logout()}
             >
               <LogOut />

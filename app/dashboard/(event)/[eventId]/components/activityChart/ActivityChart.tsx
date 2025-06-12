@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from 'antd';
-import { EventStats } from '@/core/types';
+import { EventPlan, EventStats } from '@/core/types';
 import { useEffect, useState } from 'react';
 import { useEventContext } from '@/core/context/EventContext';
 import { queryEventsStatisticsPerWeek } from '@/service/event/queryEventsStatistics';
@@ -48,8 +48,8 @@ const ActivityChart = ({
   const { eventInstance } = useEventContext();
 
   const isPremiumOrAbove =
-    eventInstance?.eventPlan === 'premium' ||
-    eventInstance?.eventPlan === 'pro';
+    eventInstance?.eventPlan === EventPlan.premium ||
+    eventInstance?.eventPlan === EventPlan.ultimate;
 
   const queryEventStats = async () => {
     if (!eventInstance?.eventId) {

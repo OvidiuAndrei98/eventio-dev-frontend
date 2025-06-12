@@ -221,6 +221,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
           </div>
         </div>
         <Table<Guest>
+          scroll={{ x: 'max-content', y: 'calc(84vh - 300px)' }}
           columns={
             useIsMobile()
               ? columns

@@ -58,8 +58,17 @@ export function NavProjects({ projects }: { projects: MenuItem[] }) {
               </SidebarMenuItem>
             </Collapsible>
           ) : (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton>
+            <SidebarMenuItem
+              key={item.title}
+              onClick={() =>
+                item.onClick &&
+                item.onClick({ title: item.title, url: item.url })
+              }
+            >
+              <SidebarMenuButton
+                className="!cursor-pointer"
+                tooltip={item.title}
+              >
                 {item.icon && item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>

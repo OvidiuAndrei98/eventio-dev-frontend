@@ -10,7 +10,18 @@ import {
   Template,
 } from '@/core/types';
 import { getTemplateSettings } from '@/service/templates/getTemplateSettings';
-import { Button, Card, Form, Input, Modal, Popover, Switch, Tag } from 'antd';
+import {
+  Button,
+  Card,
+  Form,
+  GetProp,
+  Input,
+  Modal,
+  Popover,
+  Switch,
+  Tag,
+  UploadProps,
+} from 'antd';
 import { updateTemplateSettings } from '@/service/templates/updateTemplateSettings';
 import { toast } from 'sonner';
 import {
@@ -27,6 +38,18 @@ import { updateEventActiveStatus } from '@/service/event/updateEventActiveStatus
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { useParams } from 'next/navigation';
+import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
+const getBase64 = (img: FileType): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(img);
+  });
+};
 
 const SettingsPage = () => {
   const { eventId, templateId } = useParams<{
@@ -35,6 +58,7 @@ const SettingsPage = () => {
   }>();
   const { eventInstance } = useEventContext();
   const [aditionalQuestionsForm] = Form.useForm();
+  const [teplateSaveLoading, setTemplateSaveLoading] = useState(false);
   const [templateSettings, setTemplateSettings] = useState<
     Template['settings']
   >({} as Template['settings']);
@@ -48,6 +72,19 @@ const SettingsPage = () => {
   );
 
   const [deletedLocations, setDeletedLocations] = useState<EventLocation[]>([]);
+
+  const [editedEvemtLocation, setEditedEventLocation] = useState<{
+    location: EventLocation;
+    file: any;
+  } | null>(null);
+
+  const [editedAditionalLocations, setEditedAditionalLocations] = useState<
+    | {
+        location: EventLocation;
+        file: any;
+      }[]
+    | null
+  >(null);
 
   const user = useAuth().userDetails;
 
@@ -69,10 +106,58 @@ const SettingsPage = () => {
     });
   };
 
+  const uploadLocationImage = async (
+    file: any,
+    location: EventLocation
+  ): Promise<{ url: string; name: string } | undefined> => {
+    if (!file) return undefined;
+
+    if (file?.status === 'done') {
+      if (file.originFileObj && user) {
+        try {
+          const url = await getBase64(file.originFileObj as FileType);
+          const storageUrl = await uploadImageForTemplate(
+            url,
+            user,
+            templateId,
+            file.name
+          );
+          if (location?.locationImage?.name) {
+            await removeImageForTemplate(
+              user,
+              templateId,
+              location.locationImage.name
+            );
+          }
+          if (storageUrl) {
+            return {
+              url: storageUrl,
+              name: file.name,
+            };
+          }
+        } catch (error) {
+          toast.error('A aparut o eroare la incarcarea imaginii');
+        }
+      }
+    }
+    if (file?.status === 'removed') {
+      if (user) {
+        try {
+          await removeImageForTemplate(user, templateId, file.name);
+        } catch (error) {
+          toast.error('A aparut o eroare la stergerea imaginii');
+        }
+      }
+      return undefined;
+    }
+    return undefined;
+  };
+
   // Used to update template settings after the use press the save button
   const handleUpdateTemplateSettings = async () => {
     try {
       if (eventInstance) {
+        setTemplateSaveLoading(true);
         // Update event status
         if (eventInstance?.eventActive !== templateSettings.eventActive) {
           await updateEventActiveStatus(
@@ -103,12 +188,64 @@ const SettingsPage = () => {
           }
         });
 
+        // Update the main event location image if it was edited
+        if (editedEvemtLocation?.file) {
+          // If the edited location is the main event location, update it
+          if (
+            editedEvemtLocation.location.locationId ===
+            templateSettings.eventLocation?.locationId
+          ) {
+            evQuestionsCopy.eventLocation.locationImage =
+              await uploadLocationImage(
+                editedEvemtLocation.file,
+                editedEvemtLocation.location
+              );
+          }
+        }
+
+        // Update the aditional locations images if they were edited
+        if (editedAditionalLocations) {
+          const aditionalLocations: EventLocation[] =
+            templateSettings.aditionalLocations ?? [];
+          await Promise.all(
+            editedAditionalLocations.map(async (editedLocation) => {
+              const existingLocationIndex = aditionalLocations.findIndex(
+                (loc) => loc.locationId === editedLocation.location.locationId
+              );
+              const locationImage = await uploadLocationImage(
+                editedLocation.file,
+                editedLocation.location
+              );
+              if (existingLocationIndex !== -1) {
+                // Update existing location
+                aditionalLocations[existingLocationIndex] = {
+                  ...aditionalLocations[existingLocationIndex],
+                  ...editedLocation.location,
+                  locationImage,
+                };
+              } else {
+                // Add new location
+                aditionalLocations.push({
+                  ...editedLocation.location,
+                  locationImage,
+                });
+              }
+            })
+          );
+          evQuestionsCopy.aditionalLocations = aditionalLocations;
+        }
+
+        // Clear edited locations after saving
+        setEditedEventLocation(null);
+        setEditedAditionalLocations([]);
+
         // Update template settings
         await updateTemplateSettings(templateId, evQuestionsCopy);
       }
-
+      setTemplateSaveLoading(false);
       toast.success('Setari actualizate cu succes');
     } catch (error) {
+      setTemplateSaveLoading(false);
       console.log(error);
       if (error instanceof Error) {
         toast.error(error.message);
@@ -146,7 +283,10 @@ const SettingsPage = () => {
     return eventQuestions;
   };
 
-  const handleAddAditionalEventLocation = async (location: EventLocation) => {
+  const handleAddAditionalEventLocation = async (
+    location: EventLocation,
+    file: any
+  ) => {
     const existingEventAdiotionalLocations =
       (templateSettings?.aditionalLocations as EventLocation[]) ?? [];
 
@@ -165,14 +305,42 @@ const SettingsPage = () => {
       updatedLocations = [...existingEventAdiotionalLocations, location];
     }
 
+    setEditedAditionalLocations((prevData) => {
+      const newEntry = {
+        location: location,
+        file: file.originFileObj ? file : undefined,
+      };
+      if (prevData) {
+        // Replace if locationId exists, else add new
+        const index = prevData.findIndex(
+          (item) => item.location.locationId === location.locationId
+        );
+        if (index !== -1) {
+          const updated = [...prevData];
+          updated[index] = newEntry;
+          return updated;
+        } else {
+          return [...prevData, newEntry];
+        }
+      }
+      return [newEntry];
+    });
+
     onSettingsChange('aditionalLocations', updatedLocations);
 
     setEditLocationModalOpen(false);
   };
 
   const handleUpdatePrincipalEventLocation = async (
-    location: EventLocation
+    location: EventLocation,
+    file: any
   ) => {
+    // Check if the image was already uploaded, if it has the FileObject it means it was uploaded
+    // and the file will remain the same, so we send undefined to the update function
+    setEditedEventLocation({
+      location,
+      file: file.originFileObj ? file : undefined,
+    });
     onSettingsChange('eventLocation', location);
 
     setEditLocationModalOpen(false);
@@ -199,15 +367,15 @@ const SettingsPage = () => {
     );
   };
 
-  const handleLocationUpdate = (loc: EventLocation) => {
+  const handleLocationUpdate = (loc: EventLocation, file: any) => {
     if (!eventInstance) {
       toast.error('Nu exista un eveniment selectat pentru a actualiza locatia');
       return;
     }
     if (loc.locationId === eventInstance.eventLocation.locationId) {
-      handleUpdatePrincipalEventLocation(loc);
+      handleUpdatePrincipalEventLocation(loc, file);
     } else {
-      handleAddAditionalEventLocation(loc);
+      handleAddAditionalEventLocation(loc, file);
     }
     setNewEventLocationPopoverOpen(false);
   };
@@ -217,7 +385,11 @@ const SettingsPage = () => {
   ) : (
     <div className="bg-[#F6F6F6] h-full p-4 flex flex-col overflow-y-auto">
       <div className="w-full flex items-center justify-end mb-4 col-span-full row-start-1">
-        <Button type="primary" onClick={() => handleUpdateTemplateSettings()}>
+        <Button
+          loading={teplateSaveLoading}
+          type="primary"
+          onClick={() => handleUpdateTemplateSettings()}
+        >
           Salveaza
         </Button>
       </div>
@@ -384,11 +556,10 @@ const SettingsPage = () => {
                       Adauga o locatie pentru eveniment
                     </span>
                     <AutocompleteMapsInput
-                      onLocationSelect={(loc) => {
-                        handleAddAditionalEventLocation(loc);
+                      onLocationSelect={(loc, file) => {
+                        handleAddAditionalEventLocation(loc, file);
                         setNewEventLocationPopoverOpen(false);
                       }}
-                      templateId={templateId}
                     />
                     <Button
                       onClick={() => setNewEventLocationPopoverOpen(false)}
@@ -514,7 +685,6 @@ const SettingsPage = () => {
       >
         <AutocompleteMapsInput
           onLocationSelect={handleLocationUpdate}
-          templateId={templateId}
           editingLocation={editingLocation}
         />
       </Modal>

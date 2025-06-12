@@ -3,6 +3,11 @@
   height: 100%;
   overflow: hidden;
   background-color: #f6f6f6;
+  .ant-tabs-top > .ant-tabs-nav {
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+  }
 }
 
 .response-container .ant-tabs-nav-wrap {

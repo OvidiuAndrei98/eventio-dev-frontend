@@ -83,9 +83,30 @@ export const defaultElements = {
           name: 'Locatii Eveniment',
           disabled: false,
           type: ElementType.locationsElement,
-          position: {}, // Desktop: sub text link, centrat
-          style: {},
+          position: {},
+          style: { width: 100 },
           responsive: {},
+          borderStyles: {
+            size: '1',
+            color: '#1677ff',
+            sides: 'none none none none',
+          },
+          titleStyle: {
+            color: '#364153',
+          },
+          dateStyle: {
+            color: '#1e2939',
+          },
+          timeStyle: {
+            color: '#4a5565',
+          },
+          addressStyle: {
+            color: '#4a5565',
+          },
+          buttonStyle: {
+            backgroundColor: '#AAAFBF',
+            color: '#1e232c',
+          },
         },
       ],
       position: {

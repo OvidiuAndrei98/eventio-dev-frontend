@@ -22,8 +22,9 @@ import {
 } from '@/components/ui/sidebar';
 
 import { useEventContext } from '@/core/context/EventContext';
-import { ConfigProvider } from 'antd';
+import { Button, ConfigProvider } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { StarOutlined } from '@ant-design/icons';
 
 const routeTitleMapper: { [key: string]: string } = {
   dashboard: 'Panou de control',
@@ -52,6 +53,10 @@ export default function EventShell({ children }: EventShellProps) {
     queryEventLoading,
     setQueryEventLoading,
   } = useEventContext();
+
+  const isUltimatePlan = eventInstance
+    ? eventInstance.eventPlan === 'ultimate'
+    : false;
 
   useEffect(() => {
     if (!pathName || !eventId) {
@@ -140,7 +145,7 @@ export default function EventShell({ children }: EventShellProps) {
           />
           <SidebarInset>
             <header className="flex h-[58px] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-              <div className="flex items-center gap-2 px-4">
+              <div className="flex items-center gap-2 px-4 w-full">
                 <SidebarTrigger className="-ml-1" />
                 <Separator
                   orientation="vertical"
@@ -174,6 +179,24 @@ export default function EventShell({ children }: EventShellProps) {
                     })}
                   </BreadcrumbList>
                 </Breadcrumb>
+                {!isUltimatePlan && (
+                  <div className="ml-auto">
+                    <Button
+                      size="middle"
+                      type="dashed"
+                      icon={
+                        <span className="text-[#FFB347]">
+                          <StarOutlined />
+                        </span>
+                      }
+                      onClick={() => {
+                        router.push(`/dashboard/${eventId}/choose-plan`);
+                      }}
+                    >
+                      Upgrade
+                    </Button>
+                  </div>
+                )}
               </div>
             </header>
             {children}

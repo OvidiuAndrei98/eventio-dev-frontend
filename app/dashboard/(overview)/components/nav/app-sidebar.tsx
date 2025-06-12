@@ -41,7 +41,7 @@ export function AppSidebar({
       },
       {
         title: 'Plăți și facturi',
-        url: '/dashboard/billing',
+        url: '/dashboard/invoices',
         icon: <ReceiptText />,
         onClick: onClickNav,
       },

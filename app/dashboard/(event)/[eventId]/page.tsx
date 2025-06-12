@@ -2,6 +2,7 @@
 
 import '@/styles/globals.css';
 import {
+  DownloadOutlined,
   ExclamationCircleOutlined,
   SendOutlined,
   StarOutlined,
@@ -184,10 +185,22 @@ const DashboardEventPage = () => {
                     >
                       <StarOutlined />
                     </span>
-                  ) : null
+                  ) : (
+                    <DownloadOutlined />
+                  )
                 }
               >
-                Descarca
+                {eventInstance?.eventPlan === 'ultimate' ? (
+                  <a
+                    className="no-underline text-inherit hover:!text-[var(--primary-color)]"
+                    href="/planner/Planyvite_Planificator.xlsm"
+                    download="Planyvite_Planificator"
+                  >
+                    Descarca
+                  </a>
+                ) : (
+                  'Descarca'
+                )}
               </Button>
             </div>
           </div>

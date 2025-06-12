@@ -2,7 +2,7 @@
 
 import MapsAutoComplete from '@/components/mapsAutoComplete/MapsAutoComplete';
 import { useAuth } from '@/core/AuthenticationBoundary';
-import { EventInstance, EventLocation } from '@/core/types';
+import { EventInstance, EventLocation, EventPlan } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { createEvent } from '@/service/event/createEvent';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
@@ -173,7 +173,7 @@ const NewInvitationPage = () => {
       eventType: selectedEventType,
       templateId: newTemplateId,
       eventActive: false,
-      eventPlan: 'basic',
+      eventPlan: EventPlan.basic,
       eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
       eventId: eventId,
       userId: user.userDetails.userId,

@@ -23,9 +23,14 @@ export const queryEventsStatisticsPerWeek = async (
   for (let i = 0; i < 7; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
-    const yyyy = d.getUTCFullYear();
-    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const dd = String(d.getUTCDate()).padStart(2, '0');
+    // Set the time to 00:00:00 for Romania's timezone (EET/EEST)
+    d.setHours(0, 0, 0, 0);
+    // Romania offset: UTC+2 or UTC+3 (with DST)
+    const offset = -d.getTimezoneOffset() / 60;
+    d.setHours(d.getHours() + (3 - offset));
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
     last7Days.push(`${yyyy}-${mm}-${dd}`);
   }
 
@@ -33,9 +38,6 @@ export const queryEventsStatisticsPerWeek = async (
   const q = query(statsColRef, where('date', 'in', last7Days));
   const snapshot = await getDocs(q);
   if (snapshot.empty) {
-    console.warn(
-      `No statistics found for event ${eventId} in the last 7 days.`
-    );
     return [];
   }
   return snapshot.docs.map((doc) => ({
