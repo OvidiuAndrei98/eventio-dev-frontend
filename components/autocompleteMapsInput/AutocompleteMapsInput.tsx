@@ -133,6 +133,11 @@ const AutocompleteMapsInput = ({
       eventLocationCopy.title = values.locationTitle;
       eventLocationCopy.locationStartTime = values.locationStartTime;
 
+      eventLocationCopy.locationImage = {
+        name: values.locationPhoto.file.name,
+        url: values.locationPhoto.file.thumbUrl,
+      };
+
       if (!editingLocation) {
         eventLocationCopy.locationId = crypto.randomUUID();
       }
@@ -143,6 +148,9 @@ const AutocompleteMapsInput = ({
   };
 
   const handleChange: UploadProps['onChange'] = async (info) => {
+    form.setFieldValue('locationPhoto', {
+      file: info.file,
+    });
     if (info.file.status === 'uploading') {
       setImageObject(info.file);
       return;

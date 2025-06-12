@@ -259,6 +259,13 @@ const NewInvitationPage = () => {
                   name="locationPhoto"
                   listType="picture"
                   beforeUpload={beforeUpload}
+                  onChange={(info) => {
+                    form.setFieldsValue({
+                      locationPhoto: {
+                        file: info.file,
+                      },
+                    });
+                  }}
                 >
                   <Button icon={<UploadOutlined />}>Adauga imagine</Button>
                 </Upload>
