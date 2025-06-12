@@ -6,7 +6,6 @@ import {
   LucideHouse,
   ReceiptText,
   Settings2,
-  ShipWheelIcon,
   TrendingUp,
 } from 'lucide-react';
 
@@ -24,7 +23,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { useEventContext } from '@/core/context/EventContext';
-import { ControlOutlined, StarOutlined } from '@ant-design/icons';
+import { ControlOutlined } from '@ant-design/icons';
 
 export interface MenuItem {
   title: string;

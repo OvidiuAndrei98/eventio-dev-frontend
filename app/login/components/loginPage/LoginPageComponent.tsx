@@ -6,6 +6,7 @@ import GoogleLogo from '../../../../public/Google.svg';
 import LoginBackgorund from '../../../../public/login-backgorund.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { GoogleOutlined } from '@ant-design/icons';
 
 const LoginPageComponent = () => {
   const router = useRouter();
@@ -73,10 +74,9 @@ const LoginPageComponent = () => {
           </Form.Item>
         </Form>
         <Divider plain>Or</Divider>
-        <div className="google-login">
-          <Image className="google" src={GoogleLogo} alt={'google'} />
-          Autentificare cu Google
-        </div>
+        <Button type="default" icon={<GoogleOutlined />}>
+          Autentifica-te cu google
+        </Button>
       </div>
       <div className="login-footer">
         <div className="secondary-text-color-light">Copyright © Eventio.ro</div>

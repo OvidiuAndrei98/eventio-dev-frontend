@@ -3,11 +3,10 @@
 import axios, { AxiosInstance } from 'axios';
 
 class OblioApi {
-  _cif: string = '';
-  _email: string = '';
-  _secret: string = '';
-  _accessTokenHandler: any = null;
-  _baseURL: string = 'https://www.oblio.eu';
+  _cif = '';
+  _email = '';
+  _secret = '';
+  _baseURL = 'https://www.oblio.eu';
 
   constructor(email: string, secret: string) {
     this._email = email;
@@ -15,7 +14,7 @@ class OblioApi {
   }
 
   async list(type: string, filters: Map = {}): Promise<Map> {
-    let request = await this.buildRequest();
+    const request = await this.buildRequest();
     let response;
     try {
       if (!('cif' in filters)) {
@@ -26,6 +25,7 @@ class OblioApi {
       });
     } catch (err) {
       if (err && typeof err === 'object' && 'response' in err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         response = (err as any).response;
       } else {
         throw err;
@@ -44,7 +44,7 @@ class OblioApi {
   }
 
   async buildRequest(): Promise<AxiosInstance> {
-    let accessToken: AccessToken = await this._generateAccessToken();
+    const accessToken: AccessToken = await this._generateAccessToken();
     const request = axios.create({
       baseURL: this._baseURL,
       headers: {
@@ -60,7 +60,7 @@ class OblioApi {
     if (!this._email || !this._secret) {
       throw new OblioApiException('Email or secret are empty!');
     }
-    let response = await axios.request({
+    const response = await axios.request({
       method: 'post',
       url: `${this._baseURL}/api/authorize/token`,
       data: {
@@ -101,13 +101,14 @@ class OblioApi {
 }
 
 interface Map {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
 class OblioApiException {
-  message: string = '';
-  code: number = 0;
-  constructor(message: string = '', code: number = 0) {
+  message = '';
+  code = 0;
+  constructor(message = '', code = 0) {
     this.message = message;
     this.code = code;
   }

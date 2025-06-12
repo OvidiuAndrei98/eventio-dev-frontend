@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { UploadFile, UploadFileStatus } from 'antd/es/upload/interface';
 
 interface AutocompleteMapsInputProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLocationSelect: (location: EventLocation, file: any) => void;
   editingLocation?: EventLocation;
 }

@@ -45,6 +45,7 @@ export default function InvoicesPage() {
       align: 'center',
       fixed: 'right',
       width: useIsMobile() ? 20 : 'atuo',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars @typescript-eslint/no-explicit-any
       render: (_: any, record: PlanyviteInvoice) => (
         <Button
           className="!bg-gray-100 hover:!bg-[#f8e5fd]"
@@ -80,6 +81,7 @@ export default function InvoicesPage() {
   };
 
   const mapInvoicesToInternalFormat = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     invoices: Record<string, any>[]
   ): PlanyviteInvoice[] => {
     return invoices.map((invoice) => ({

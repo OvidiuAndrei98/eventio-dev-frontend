@@ -75,12 +75,14 @@ const SettingsPage = () => {
 
   const [editedEvemtLocation, setEditedEventLocation] = useState<{
     location: EventLocation;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any;
   } | null>(null);
 
   const [editedAditionalLocations, setEditedAditionalLocations] = useState<
     | {
         location: EventLocation;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         file: any;
       }[]
     | null
@@ -107,6 +109,7 @@ const SettingsPage = () => {
   };
 
   const uploadLocationImage = async (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any,
     location: EventLocation
   ): Promise<{ url: string; name: string } | undefined> => {
@@ -285,6 +288,7 @@ const SettingsPage = () => {
 
   const handleAddAditionalEventLocation = async (
     location: EventLocation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any
   ) => {
     const existingEventAdiotionalLocations =
@@ -333,6 +337,7 @@ const SettingsPage = () => {
 
   const handleUpdatePrincipalEventLocation = async (
     location: EventLocation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any
   ) => {
     // Check if the image was already uploaded, if it has the FileObject it means it was uploaded
@@ -367,6 +372,7 @@ const SettingsPage = () => {
     );
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleLocationUpdate = (loc: EventLocation, file: any) => {
     if (!eventInstance) {
       toast.error('Nu exista un eveniment selectat pentru a actualiza locatia');
