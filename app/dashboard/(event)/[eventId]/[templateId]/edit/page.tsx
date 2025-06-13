@@ -496,8 +496,10 @@ const EditPage = () => {
       }
 
       await updateTemplate(templateId, updatedTemplate.elements);
-      setTemplate(updatedTemplate); // updatezi și în state la final
-      await fetchTemplate();
+      setTemplate(updatedTemplate);
+      // Reset the updatedBackgroundImages after successful update
+      setUpdatedBackgroundImages([]);
+      // await fetchTemplate();
       setTemplateUpdateLoading(false);
       toast.success('Template-ul a fost actualizat');
     } catch (error) {
