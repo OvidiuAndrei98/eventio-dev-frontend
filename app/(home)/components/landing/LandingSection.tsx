@@ -7,7 +7,7 @@ import HeroImage from '../../../../public/hero-image.svg';
 
 const LandingSection = () => {
   return (
-    <div className="landing-section min-h-[100svh] relative w-full flex flex-col items-center justify-center">
+    <div className="landing-section min-h-screen relative w-full flex flex-col items-center justify-center">
       <div className="absolute inset-0 hero-section" />
       <AnimatedContent
         distance={150}
