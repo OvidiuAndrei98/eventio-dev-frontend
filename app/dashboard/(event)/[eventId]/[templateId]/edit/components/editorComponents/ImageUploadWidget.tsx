@@ -175,7 +175,7 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
       >
         {config.label}: {/* Afișează eticheta proprietății din config */}
       </label>
-      <ImgCrop rotationSlider aspectSlider={true}>
+      <ImgCrop rotationSlider aspectSlider={true} fillColor="transparent">
         <Upload
           maxCount={1}
           beforeUpload={beforeUpload}
