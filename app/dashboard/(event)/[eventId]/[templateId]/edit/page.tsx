@@ -462,15 +462,34 @@ const EditPage = () => {
               templateId,
               initialImagesRef.current[itemId]!.name
             );
-            updatedTemplate = updateElementPropertyInTemplate(
-              updatedTemplate,
-              itemId,
-              'backgroundImage',
-              null,
-              false,
-              editViewMode
-            );
+            const selectedElementType = selectedItemData.type;
+
+            // Decide daca actualizezi un element sau o sectiune
+            if (
+              selectedElementType !== ElementType.Section &&
+              selectedElementType !== ElementType.RSVP_SECTION &&
+              selectedElementType !== ElementType.LocationsSection
+            ) {
+              updatedTemplate = updateElementPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                null,
+                false,
+                editViewMode
+              );
+            } else {
+              updatedTemplate = updateSectionPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                null,
+                false,
+                editViewMode
+              );
+            }
           }
+
           if (update.newValue) {
             const storageUrl = await uploadImageForTemplate(
               update.newValue.url,
@@ -478,19 +497,40 @@ const EditPage = () => {
               templateId,
               update.newValue.name
             );
-            // Update local copy, nu state-ul React!
-            updatedTemplate = updateElementPropertyInTemplate(
-              updatedTemplate,
-              itemId,
-              'backgroundImage',
-              {
-                url: storageUrl,
-                name: update.newValue?.name,
-                opacity: update.newValue?.opacity,
-              },
-              false,
-              editViewMode
-            );
+            const selectedElementType = selectedItemData.type;
+            // Decide daca actualizezi un element sau o sectiune
+            if (
+              selectedElementType !== ElementType.Section &&
+              selectedElementType !== ElementType.RSVP_SECTION &&
+              selectedElementType !== ElementType.LocationsSection
+            ) {
+              // Update local copy, nu state-ul React!
+              updatedTemplate = updateElementPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                {
+                  url: storageUrl,
+                  name: update.newValue?.name,
+                  opacity: update.newValue?.opacity,
+                },
+                false,
+                editViewMode
+              );
+            } else {
+              updatedTemplate = updateSectionPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                {
+                  url: storageUrl,
+                  name: update.newValue?.name,
+                  opacity: update.newValue?.opacity,
+                },
+                false,
+                editViewMode
+              );
+            }
           }
         }
       }
