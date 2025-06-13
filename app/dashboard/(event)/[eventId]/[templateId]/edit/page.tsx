@@ -10,7 +10,13 @@ import {
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
 import { Button, Radio, RadioChangeEvent } from 'antd';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import '../styles.css';
 import EditorSectionCard from './components/editorSectionCard/EditorSectionCard';
 import PropertyPanel from './components/propertyPanel/PropertyPanel';
@@ -28,11 +34,15 @@ import Link from 'next/link';
 import { useEventContext } from '@/core/context/EventContext';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
 import { useParams } from 'next/navigation';
+import { useAuth } from '@/core/AuthenticationBoundary';
+import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
+import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 
 const EditPage = () => {
   const { templateId } = useParams<{
     templateId: string;
   }>();
+  const user = useAuth().userDetails;
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
   const [selectedItemId, setSelectedItemId] = useState<string>('');
@@ -42,6 +52,26 @@ const EditPage = () => {
   const [editViewMode, setEditViewMode] = useState<
     'mobile' | 'desktop' | 'tablet'
   >('mobile');
+
+  // Reference to store initial images from the template
+  const initialImagesRef = useRef<
+    Record<string, { name: string; url: string; opacity: string } | undefined>
+  >({});
+
+  const [updatedBackgroundImages, setUpdatedBackgroundImages] = useState<
+    Record<
+      string,
+      {
+        newValue?: {
+          name: string;
+          opacity: string;
+          url: string;
+        };
+      }
+    >[]
+  >([]); // To store updated background images for sections
+
+  // Context to access the event instance
   const { eventInstance } = useEventContext();
 
   const selectedItemData: TemplateElement = useMemo(() => {
@@ -61,6 +91,35 @@ const EditPage = () => {
       const response = await queryTemplateById(templateId);
       setTemplate(response);
       setSelectedItemId(response.elements[0].id);
+
+      // saves the initial images from the template to a ref
+      const imagesMap: Record<
+        string,
+        { name: string; url: string; opacity: string } | undefined
+      > = {};
+      response.elements.forEach((el: TemplateSection) => {
+        if (el.backgroundImage) {
+          imagesMap[el.id] = {
+            name: el.backgroundImage.name,
+            url: el.backgroundImage.url,
+            opacity: el.backgroundImage.opacity,
+          };
+        }
+        // Dacă ai și secțiuni cu imagini, iterează și prin ele aici
+        // Parcurge elementele din fiecare secțiune și adaugă imaginile de tip "image"
+        if (el.elements && Array.isArray(el.elements)) {
+          el.elements.forEach((childEl: TemplateElement) => {
+            if (childEl.type === ElementType.Image && childEl.backgroundImage) {
+              imagesMap[childEl.id] = {
+                name: childEl.backgroundImage.name,
+                url: childEl.backgroundImage.url,
+                opacity: childEl.backgroundImage.opacity,
+              };
+            }
+          });
+        }
+      });
+      initialImagesRef.current = imagesMap;
     } catch (error) {
       console.error('Error fetching template:', error);
     } finally {
@@ -293,12 +352,38 @@ const EditPage = () => {
       selectedElementType !== ElementType.RSVP_SECTION &&
       selectedElementType !== ElementType.LocationsSection
     ) {
-      // Este un element (Text, Image etc.)
       setTemplate((prevTemplate) => {
-        // Apelam helper-ul pentru actualizarea imutabila a elementului
-        // Trecem ID-ul elementului selectat, calea proprietatii, noua valoare
-        // si breakpoint-ul activ (daca nu e 'default')
+        // Do this only for the background image property
+        if (propertyPath === 'backgroundImage') {
+          // Set reference to the updated element id and bg image value
+          // Avoid duplicate ids in updatedBackgroundImages
+          setUpdatedBackgroundImages((prev) => {
+            // Remove any previous entry for this id
+            const filtered = prev.filter(
+              (obj) =>
+                !Object.prototype.hasOwnProperty.call(
+                  obj,
+                  selectedElementOrSectionId
+                )
+            );
+            return [
+              ...filtered,
+              {
+                [selectedElementOrSectionId]: {
+                  newValue: newValue as {
+                    name: string;
+                    opacity: string;
+                    url: string;
+                  },
+                },
+              },
+            ];
+          });
+        }
 
+        // Call the helper for immutably updating the element
+        // Pass the selected element's ID, the property path, the new value,
+        // and the active breakpoint (if not 'default')
         const updatedTemplate = updateElementPropertyInTemplate(
           prevTemplate,
           selectedElementOrSectionId,
@@ -312,6 +397,37 @@ const EditPage = () => {
       });
     } else {
       setTemplate((prevTemplate) => {
+        // Do this only for the background image property
+        if (propertyPath === 'backgroundImage') {
+          // Set reference to the updated element id and bg image value
+          // Avoid duplicate ids in updatedBackgroundImages
+          setUpdatedBackgroundImages((prev) => {
+            // Remove any previous entry for this id
+            const filtered = prev.filter(
+              (obj) =>
+                !Object.prototype.hasOwnProperty.call(
+                  obj,
+                  selectedElementOrSectionId
+                )
+            );
+            return [
+              ...filtered,
+              {
+                [selectedElementOrSectionId]: {
+                  newValue: newValue as {
+                    name: string;
+                    opacity: string;
+                    url: string;
+                  },
+                },
+              },
+            ];
+          });
+        }
+
+        // Call the helper for immutably updating the element
+        // Pass the selected element's ID, the property path, the new value,
+        // and the active breakpoint (if not 'default')
         const updatedTemplate = updateSectionPropertyInTemplate(
           prevTemplate,
           selectedElementOrSectionId,
@@ -330,14 +446,63 @@ const EditPage = () => {
   };
 
   const handleTemplateUpdate = async () => {
+    setTemplateUpdateLoading(true);
     try {
-      setTemplateUpdateLoading(true);
-      await updateTemplate(templateId, template.elements);
+      let updatedTemplate = { ...template };
+
+      for (const imageUpdateObj of updatedBackgroundImages) {
+        for (const [itemId, update] of Object.entries(imageUpdateObj)) {
+          if (
+            initialImagesRef.current &&
+            initialImagesRef.current[itemId] &&
+            typeof initialImagesRef.current[itemId]?.name === 'string'
+          ) {
+            await removeImageForTemplate(
+              user,
+              templateId,
+              initialImagesRef.current[itemId]!.name
+            );
+            updatedTemplate = updateElementPropertyInTemplate(
+              updatedTemplate,
+              itemId,
+              'backgroundImage',
+              null,
+              false,
+              editViewMode
+            );
+          }
+          if (update.newValue) {
+            const storageUrl = await uploadImageForTemplate(
+              update.newValue.url,
+              user,
+              templateId,
+              update.newValue.name
+            );
+            // Update local copy, nu state-ul React!
+            updatedTemplate = updateElementPropertyInTemplate(
+              updatedTemplate,
+              itemId,
+              'backgroundImage',
+              {
+                url: storageUrl,
+                name: update.newValue?.name,
+                opacity: update.newValue?.opacity,
+              },
+              false,
+              editViewMode
+            );
+          }
+        }
+      }
+
+      await updateTemplate(templateId, updatedTemplate.elements);
+      setTemplate(updatedTemplate); // updatezi și în state la final
+      await fetchTemplate();
       setTemplateUpdateLoading(false);
       toast.success('Template-ul a fost actualizat');
     } catch (error) {
       setTemplateUpdateLoading(false);
-      toast.success('Eroare la actualizarea template-ului');
+      toast.error('Eroare la actualizarea template-ului');
     }
   };
 
@@ -517,7 +682,6 @@ const EditPage = () => {
               activeBreakpoint={editViewMode}
               selectedElement={selectedItemData}
               handlePropertyChanged={handlePropertyChanged}
-              templateId={templateId}
             />
           </div>
         </div>

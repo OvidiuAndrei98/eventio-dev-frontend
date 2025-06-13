@@ -17,8 +17,6 @@ import {
 import { UploadOutlined } from '@ant-design/icons';
 import { toast } from 'sonner';
 import { Color } from 'antd/es/color-picker';
-import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
-import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 import ImgCrop from 'antd-img-crop';
@@ -34,8 +32,6 @@ interface ImageUploadWidgetProps {
   config: PropertyEditorConfig;
   /** Valoarea curentă a proprietății (string). Poate fi undefined sau null dacă nu este setată. */
   value: backgroundImageProps;
-  /** Current template id */
-  templateId: string;
   /** Callback apelat când valoarea se schimbă. Noul text este pasat ca string. */
   onChange: (newValue: backgroundImageProps | null) => void;
 }
@@ -71,7 +67,6 @@ const beforeUpload = (file: FileType) => {
 const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
   config,
   value,
-  templateId,
   onChange,
 }) => {
   const user = useAuth().userDetails;
@@ -115,26 +110,19 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
       getBase64(info.file.originFileObj as FileType, async (url) => {
         if (user) {
           try {
-            const storageUrl = await uploadImageForTemplate(
-              url,
-              user,
-              templateId,
-              info.file.name
-            );
-            if (storageUrl) {
-              setBackgroundImageFields((prevData) => {
-                // De verificat
-                onChange({
-                  ...prevData,
-                  url: storageUrl,
-                  name: info.file.name,
-                });
-                return { ...prevData, url: storageUrl, name: info.file.name };
+            setBackgroundImageFields((prevData) => {
+              const now = new Date();
+              const uniqueName = `${now.getMinutes()}_${now.getSeconds()}.${
+                info.file.name
+              }`;
+              // De schimbat in image selector
+              onChange({
+                ...prevData,
+                url: url,
+                name: uniqueName,
               });
-              if (value.name) {
-                await removeImageForTemplate(user, templateId, value.name);
-              }
-            }
+              return { ...prevData, url: url, name: uniqueName };
+            });
           } catch (error) {
             toast.error('A aparut o eroare la incarcarea imaginii');
           }
@@ -145,8 +133,6 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
     if (info.file.status === 'removed') {
       if (user) {
         try {
-          await removeImageForTemplate(user, templateId, info.file.name);
-
           setBackgroundImageFields({ opacity: '', url: '', name: '' });
           setUploadObject(undefined);
           onChange(null);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Input } from '../ui/input';
 import { libs } from '@/lib/utils';
 import { useJsApiLoader } from '@react-google-maps/api';
-import { EventLocation } from '@/core/types';
+import { EventLocation, User } from '@/core/types';
 import { Button, Form, GetProp, Upload, UploadProps } from 'antd';
 import { Input as AntInput } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -13,8 +13,14 @@ import ImgCrop from 'antd-img-crop';
 
 interface AutocompleteMapsInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onLocationSelect: (location: EventLocation, file: any) => void;
+  onLocationSelect: (
+    location: EventLocation,
+    file: any,
+    oldFileName?: string
+  ) => void;
   editingLocation?: EventLocation;
+  user?: User;
+  templateId?: string;
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -133,8 +139,15 @@ const AutocompleteMapsInput = ({
       eventLocationCopy.title = values.locationTitle;
       eventLocationCopy.locationStartTime = values.locationStartTime;
 
+      const now = new Date();
+      const hour = now.getHours().toString().padStart(2, '0');
+      const min = now.getMinutes().toString().padStart(2, '0');
+      const fileName = `${values.locationPhoto.file.name}_${hour}${min}`;
+
+      const oldFileName = eventLocationCopy?.locationImage?.name;
+
       eventLocationCopy.locationImage = {
-        name: values.locationPhoto.file.name,
+        name: fileName,
         url: values.locationPhoto.file.thumbUrl,
       };
 
@@ -142,7 +155,11 @@ const AutocompleteMapsInput = ({
         eventLocationCopy.locationId = crypto.randomUUID();
       }
 
-      onLocationSelect(eventLocationCopy, values.locationPhoto.file);
+      onLocationSelect(
+        eventLocationCopy,
+        values.locationPhoto.file,
+        oldFileName
+      );
       setSaveTriggeredFlag(false);
     }
   };

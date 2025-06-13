@@ -18,7 +18,6 @@ import GifSelectorWidget from '../editorComponents/GifSelectorWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
-  templateId: string;
   activeBreakpoint: 'desktop' | 'tablet' | 'mobile';
   handlePropertyChanged: (
     propertyPath: string,
@@ -28,7 +27,6 @@ export interface PropertyPanelProps {
 }
 
 const PropertyPanel = ({
-  templateId,
   selectedElement,
   activeBreakpoint,
   handlePropertyChanged,
@@ -220,7 +218,6 @@ const PropertyPanel = ({
                     url: string;
                   }
                 }
-                templateId={templateId}
                 onChange={(newValue) =>
                   handlePropertyChanged(
                     propertyPath,

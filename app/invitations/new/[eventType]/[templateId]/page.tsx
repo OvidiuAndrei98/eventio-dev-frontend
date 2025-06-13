@@ -127,7 +127,7 @@ const NewInvitationPage = () => {
                 const storageUrl = await uploadImageForTemplate(
                   url,
                   user.userDetails,
-                  templateId,
+                  newTemplateId,
                   values.locationPhoto.file.name
                 );
                 if (storageUrl) {

@@ -77,6 +77,7 @@ const SettingsPage = () => {
     location: EventLocation;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any;
+    oldFileName?: string;
   } | null>(null);
 
   const [editedAditionalLocations, setEditedAditionalLocations] = useState<
@@ -84,6 +85,7 @@ const SettingsPage = () => {
         location: EventLocation;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         file: any;
+        oldFileName?: string;
       }[]
     | null
   >(null);
@@ -111,33 +113,38 @@ const SettingsPage = () => {
   const uploadLocationImage = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any,
-    location: EventLocation
+    oldFilename?: string
   ): Promise<{ url: string; name: string } | undefined> => {
     if (!file) return undefined;
 
     if (file?.status === 'done') {
       if (file.originFileObj && user) {
         try {
+          let newImageOject: { url: string; name: string } | undefined;
           const url = await getBase64(file.originFileObj as FileType);
+
+          // Generate a unique file name based on the current time
+          const now = new Date();
+          const min = now.getMinutes().toString().padStart(2, '0');
+          const sec = now.getSeconds().toString().padStart(2, '0');
+          const fileName = `${min}${sec}_${file.name}`;
+
           const storageUrl = await uploadImageForTemplate(
             url,
             user,
             templateId,
-            file.name
+            fileName
           );
-          if (location?.locationImage?.name) {
-            await removeImageForTemplate(
-              user,
-              templateId,
-              location.locationImage.name
-            );
-          }
           if (storageUrl) {
-            return {
+            newImageOject = {
               url: storageUrl,
-              name: file.name,
+              name: fileName,
             };
           }
+          if (oldFilename) {
+            await removeImageForTemplate(user, templateId, oldFilename);
+          }
+          return newImageOject;
         } catch (error) {
           toast.error('A aparut o eroare la incarcarea imaginii');
         }
@@ -146,7 +153,10 @@ const SettingsPage = () => {
     if (file?.status === 'removed') {
       if (user) {
         try {
-          await removeImageForTemplate(user, templateId, file.name);
+          if (oldFilename) {
+            // If the file was removed, we need to delete the old image
+            await removeImageForTemplate(user, templateId, oldFilename);
+          }
         } catch (error) {
           toast.error('A aparut o eroare la stergerea imaginii');
         }
@@ -201,7 +211,7 @@ const SettingsPage = () => {
             evQuestionsCopy.eventLocation.locationImage =
               await uploadLocationImage(
                 editedEvemtLocation.file,
-                editedEvemtLocation.location
+                editedEvemtLocation.oldFileName
               );
           }
         }
@@ -217,7 +227,7 @@ const SettingsPage = () => {
               );
               const locationImage = await uploadLocationImage(
                 editedLocation.file,
-                editedLocation.location
+                editedLocation.oldFileName
               );
               if (existingLocationIndex !== -1) {
                 // Update existing location
@@ -289,7 +299,8 @@ const SettingsPage = () => {
   const handleAddAditionalEventLocation = async (
     location: EventLocation,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    file: any
+    file: any,
+    oldFilename?: string
   ) => {
     const existingEventAdiotionalLocations =
       (templateSettings?.aditionalLocations as EventLocation[]) ?? [];
@@ -313,6 +324,7 @@ const SettingsPage = () => {
       const newEntry = {
         location: location,
         file: file.originFileObj ? file : undefined,
+        oldFileName: oldFilename,
       };
       if (prevData) {
         // Replace if locationId exists, else add new
@@ -338,13 +350,15 @@ const SettingsPage = () => {
   const handleUpdatePrincipalEventLocation = async (
     location: EventLocation,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    file: any
+    file: any,
+    oldFilename?: string
   ) => {
     // Check if the image was already uploaded, if it has the FileObject it means it was uploaded
     // and the file will remain the same, so we send undefined to the update function
     setEditedEventLocation({
       location,
       file: file.originFileObj ? file : undefined,
+      oldFileName: oldFilename,
     });
     onSettingsChange('eventLocation', location);
 
@@ -373,15 +387,19 @@ const SettingsPage = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleLocationUpdate = (loc: EventLocation, file: any) => {
+  const handleLocationUpdate = (
+    loc: EventLocation,
+    file: any,
+    oldFileName?: string
+  ) => {
     if (!eventInstance) {
       toast.error('Nu exista un eveniment selectat pentru a actualiza locatia');
       return;
     }
     if (loc.locationId === eventInstance.eventLocation.locationId) {
-      handleUpdatePrincipalEventLocation(loc, file);
+      handleUpdatePrincipalEventLocation(loc, file, oldFileName);
     } else {
-      handleAddAditionalEventLocation(loc, file);
+      handleAddAditionalEventLocation(loc, file, oldFileName);
     }
     setNewEventLocationPopoverOpen(false);
   };
@@ -692,6 +710,8 @@ const SettingsPage = () => {
         <AutocompleteMapsInput
           onLocationSelect={handleLocationUpdate}
           editingLocation={editingLocation}
+          templateId={templateId}
+          user={user}
         />
       </Modal>
     </div>
