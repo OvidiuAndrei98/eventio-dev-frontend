@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import { Button } from 'antd'
-import './HomeNavBar.css'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Button } from 'antd';
+import './HomeNavBar.css';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const HomeNavBar = () => {
-  const [scroll, setScroll] = useState(false)
-  const router = useRouter()
+  const [scroll, setScroll] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
-      setScroll(window.scrollY > 50)
-    })
-  }, [])
+      setScroll(window.scrollY > 50);
+    });
+  }, []);
 
   return (
     <div className={`home-page-navigation ${scroll ? 'fixed' : ''}`}>
-      <div className="logo">EVENTIO</div>
+      <div className="logo">PLANYVITE</div>
       <ul className="homepage-nav-menu">
         <li className="nav-item">
           <Link href="#first-section">Acasa</Link>
@@ -46,7 +46,7 @@ const HomeNavBar = () => {
         </li>
       </ul>
       <Button
-        className="login-button"
+        className="login-button !p-5 !text-md !font-bold !rounded-full !text-white"
         size="large"
         type="primary"
         onClick={() => router.push('/login')}
@@ -54,7 +54,7 @@ const HomeNavBar = () => {
         Intra in cont
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default HomeNavBar
+export default HomeNavBar;

@@ -1,38 +1,38 @@
-'use client'
-import { Button } from 'antd'
-import './MobileNav.css'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+'use client';
+import { Button } from 'antd';
+import './MobileNav.css';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const MobileNav = () => {
-  const [scroll, setScroll] = useState(false)
-  const router = useRouter()
+  const [scroll, setScroll] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window == 'undefined') {
-      return
+      return;
     }
 
     window.addEventListener('scroll', () => {
-      setScroll(window.scrollY > 50)
-    })
+      setScroll(window.scrollY > 50);
+    });
 
     document.body.addEventListener('click', (event) => {
       if (
         !['hamburger-menu ', 'bar', 'logo'].includes(event.target.className) &&
         !event.target.closest('.nav-item')
       ) {
-        document.querySelector('.bar').classList.remove('animate')
-        document.querySelector('.mobile-menu').classList.remove('active')
+        document.querySelector('.bar').classList.remove('animate');
+        document.querySelector('.mobile-menu').classList.remove('active');
       }
-    })
-  }, [])
+    });
+  }, []);
 
   const toggleMenu = () => {
-    document.querySelector('.bar').classList.toggle('animate')
-    document.querySelector('.mobile-menu').classList.toggle('active')
-  }
+    document.querySelector('.bar').classList.toggle('animate');
+    document.querySelector('.mobile-menu').classList.toggle('active');
+  };
 
   return (
     <>
@@ -42,7 +42,7 @@ const MobileNav = () => {
         onClick={toggleMenu}
       >
         <div className="bar"></div>
-        <div className="logo">EVENTIO</div>
+        <div className="logo">PLANYVITE</div>
       </div>
 
       <nav className="mobile-menu">
@@ -81,7 +81,7 @@ const MobileNav = () => {
         </Button>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default MobileNav
+export default MobileNav;

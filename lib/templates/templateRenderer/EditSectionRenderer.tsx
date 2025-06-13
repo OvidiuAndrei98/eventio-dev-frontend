@@ -78,6 +78,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     alignItems: 'center',
     padding: '8px',
     zIndex: 2,
+    backgroundPosition: 'center',
     backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
     backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
     backgroundImage: sectionData.backgroundImage
