@@ -12,9 +12,9 @@ import { UploadFile, UploadFileStatus } from 'antd/es/upload/interface';
 import ImgCrop from 'antd-img-crop';
 
 interface AutocompleteMapsInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onLocationSelect: (
     location: EventLocation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any,
     oldFileName?: string
   ) => void;

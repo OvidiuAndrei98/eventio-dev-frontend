@@ -386,9 +386,9 @@ const SettingsPage = () => {
     );
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleLocationUpdate = (
     loc: EventLocation,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     file: any,
     oldFileName?: string
   ) => {
