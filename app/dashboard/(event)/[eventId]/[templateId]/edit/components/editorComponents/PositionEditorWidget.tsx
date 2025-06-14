@@ -479,6 +479,7 @@ const PositionEditorWidget: React.FC<PositionEditorWidgetProps> = ({
         {config.label}:
       </label>
       <Radio.Group
+        disabled={config.disabled}
         size="middle"
         buttonStyle="solid"
         className="button-group-period-filter"

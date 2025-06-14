@@ -58,6 +58,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     width: '100%',
     maxWidth: '1200px',
     minHeight: '100px',
+    position: 'relative' as const,
     flexDirection: 'column',
     alignItems: 'center',
     padding: '8px 8px 8px 8px',
@@ -66,6 +67,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 
   const sectionWrapperStyle: React.CSSProperties = {
     display: 'flex',
+    overflowX: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',

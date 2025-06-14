@@ -171,6 +171,7 @@ export interface PropertyEditorConfig {
   min?: number;
   max?: number;
   step?: number;
+  disabled?: boolean;
 }
 
 export interface EditorConfigSet {

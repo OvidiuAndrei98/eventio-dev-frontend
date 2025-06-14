@@ -235,7 +235,7 @@ export const defaultElements = {
       blobName: 'blob_1',
       type: ElementType.Blob,
       position: {
-        elementAlignment: 'auto' as
+        elementAlignment: 'center' as
           | 'auto'
           | 'center'
           | 'self-start'

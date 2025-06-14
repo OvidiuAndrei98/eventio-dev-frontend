@@ -260,6 +260,7 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       min: 0,
       max: 100,
       step: 1,
+      disabled: true, // Alignment is disabled for blobs
     },
     blobName: {
       responsive: false,
