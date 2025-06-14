@@ -40,7 +40,7 @@ const InvitationPage = () => {
     </div>
   ) : (
     <div
-      className={`w-full h-auto ${template.settings.backgroundColor} max-w-[1200px] mx-auto`}
+      className={`w-full h-auto ${template.settings.backgroundColor} mx-auto`}
     >
       <TemplateRenderer invitationData={template} editMode={false} />
     </div>

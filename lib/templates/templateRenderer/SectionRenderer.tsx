@@ -54,13 +54,23 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 
   const sectionStyle: React.CSSProperties = {
     ...finalElementProps.style,
+    backgroundColor: 'transparent',
     width: '100%',
+    maxWidth: '1200px',
     minHeight: '100px',
-    position: 'relative' as const,
     flexDirection: 'column',
     alignItems: 'center',
     padding: '8px 8px 8px 8px',
     zIndex: 2,
+  };
+
+  const sectionWrapperStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    position: 'relative' as const,
+    backgroundColor: finalElementProps.style.backgroundColor as string,
     backgroundPosition: 'center',
     backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
     backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
@@ -74,107 +84,111 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   );
 
   return (
-    <div
-      id={sectionData.id}
-      style={sectionStyle}
-      className={`${sectionData.disabled ? '!hidden' : '!flex'}`}
-    >
-      {validElements.map((element) => {
-        const ComponentToRender =
-          elementComponentMap[element.type as keyof typeof elementComponentMap];
+    <div style={sectionWrapperStyle} className="w-full mx-auto">
+      <div
+        id={sectionData.id}
+        style={sectionStyle}
+        className={`${sectionData.disabled ? '!hidden' : '!flex'}`}
+      >
+        {validElements.map((element) => {
+          const ComponentToRender =
+            elementComponentMap[
+              element.type as keyof typeof elementComponentMap
+            ];
 
-        switch (element.type) {
-          case ElementType.Text:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-              />
-            );
-          case ElementType.Image:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-              />
-            );
-          case ElementType.RSVP_ELEMENT:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-                eventId={eventId}
-                userId={userId}
-                eventAditionalQuestions={
-                  templateData.settings.eventAditionalQuestions
-                }
-              />
-            );
-          case ElementType.Blob:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-              />
-            );
-          case ElementType.Container:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-              />
-            );
-          case ElementType.locationsElement:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-                eventLocation={templateData.settings.eventLocation}
-                eventAditionalLocations={
-                  templateData.settings.aditionalLocations
-                }
-                eventDate={templateData.eventDate}
-              />
-            );
-          case ElementType.GifElement:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-              />
-            );
-          case ElementType.Countdown:
-            return (
-              <ComponentToRender
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-                target={templateData.eventDate}
-              />
-            );
-          default:
-            console.warn(
-              `Unsupported element type inside section: ${element.type}`,
-              element
-            );
-            return null;
-        }
-      })}
+          switch (element.type) {
+            case ElementType.Text:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                />
+              );
+            case ElementType.Image:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                />
+              );
+            case ElementType.RSVP_ELEMENT:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                  eventId={eventId}
+                  userId={userId}
+                  eventAditionalQuestions={
+                    templateData.settings.eventAditionalQuestions
+                  }
+                />
+              );
+            case ElementType.Blob:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                />
+              );
+            case ElementType.Container:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                />
+              );
+            case ElementType.locationsElement:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                  eventLocation={templateData.settings.eventLocation}
+                  eventAditionalLocations={
+                    templateData.settings.aditionalLocations
+                  }
+                  eventDate={templateData.eventDate}
+                />
+              );
+            case ElementType.GifElement:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                />
+              );
+            case ElementType.Countdown:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                  target={templateData.eventDate}
+                />
+              );
+            default:
+              console.warn(
+                `Unsupported element type inside section: ${element.type}`,
+                element
+              );
+              return null;
+          }
+        })}
+      </div>
     </div>
   );
 };

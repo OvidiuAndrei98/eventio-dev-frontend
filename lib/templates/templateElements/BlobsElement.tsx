@@ -71,7 +71,7 @@ const BlobsElement = ({
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
     alignSelf: finalElementProps.position.elementAlignment,
-    width: `${finalElementProps.style.width}%`,
+    width: `${finalElementProps.style.width}${editMode ? '%' : 'vw'}`,
     padding: 0,
   };
 
