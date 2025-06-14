@@ -95,6 +95,7 @@ const RsvpElement = ({
 
   const elementStyle: React.CSSProperties = {
     ...finalElementProps.style,
+    margin: '48px auto',
   };
 
   const buttonElementStyle: React.CSSProperties = {

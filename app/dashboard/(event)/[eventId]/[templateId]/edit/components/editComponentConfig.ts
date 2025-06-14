@@ -32,6 +32,12 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ImageUpload,
       responsive: false,
     },
+    'style.backgroundAttachment': {
+      label: 'Background animat',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.ScrollableBackground,
+      responsive: false,
+    },
   },
   'locations-section': {
     name: {
@@ -52,6 +58,12 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ImageUpload,
       responsive: false,
     },
+    'style.backgroundAttachment': {
+      label: 'Background animat',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.ScrollableBackground,
+      responsive: false,
+    },
   },
   'rsvp-section': {
     name: {
@@ -70,6 +82,12 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       label: 'Imagine Fundal',
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.ImageUpload,
+      responsive: false,
+    },
+    'style.backgroundAttachment': {
+      label: 'Background animat',
+      dataType: PropertyDataType.String,
+      widgetType: EditorWidgetType.ScrollableBackground,
       responsive: false,
     },
   },

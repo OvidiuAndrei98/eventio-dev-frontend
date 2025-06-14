@@ -54,6 +54,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 
   const sectionStyle: React.CSSProperties = {
     ...finalElementProps.style,
+    backgroundAttachment: 'unset',
     backgroundColor: 'transparent',
     width: '100%',
     maxWidth: '1200px',
@@ -79,6 +80,8 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     backgroundImage: sectionData.backgroundImage
       ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
       : 'unset',
+    backgroundAttachment: finalElementProps.style
+      .backgroundAttachment as string,
   };
 
   const validElements = sectionData.elements.filter(

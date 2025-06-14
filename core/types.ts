@@ -149,6 +149,7 @@ export enum EditorWidgetType {
   FontFamily = 'FontFamily',
   StrokeEditor = 'StrokeEditor',
   GifSelector = 'GifSelector',
+  ScrollableBackground = 'ScrollableBackground',
 }
 
 export enum PropertyDataType {

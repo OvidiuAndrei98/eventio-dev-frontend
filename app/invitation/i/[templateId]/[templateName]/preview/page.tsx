@@ -38,7 +38,7 @@ const PreviewPage = () => {
     </div>
   ) : (
     <div
-      className={`w-full h-[calc(100svh-80px)] overflow-y-[auto] ${template.settings.backgroundColor} max-w-[1200px] mx-auto`}
+      className={`w-full h-[calc(100svh-80px)] overflow-y-[auto] ${template.settings.backgroundColor} w-full mx-auto`}
     >
       <TemplateRenderer invitationData={template} editMode={false} />
       <div className="bg-black h-[80px] text-white p-4 absolute bottom-0 left-0 right-0 flex justify-center items-center z-2">
