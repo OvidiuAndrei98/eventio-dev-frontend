@@ -1,6 +1,6 @@
-import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
-import SpotlightCard from '../../../../components/spotlightCard/SpotlightCard'
-import './HowItWorksSection.css'
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';
+import SpotlightCard from '../../../../components/spotlightCard/SpotlightCard';
+import './HowItWorksSection.css';
 
 const HowItWorksSection = () => {
   return (
@@ -81,7 +81,7 @@ const HowItWorksSection = () => {
         </div>
       </AnimatedContent>
     </div>
-  )
-}
+  );
+};
 
-export default HowItWorksSection
+export default HowItWorksSection;
