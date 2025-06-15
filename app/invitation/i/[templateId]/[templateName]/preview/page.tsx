@@ -55,9 +55,9 @@ const PreviewPage = () => {
           value={editViewMode}
           onChange={onEditViewChange}
         >
-          <Radio.Button value="desktop">Desktop</Radio.Button>
-          <Radio.Button value="tablet">Tableta</Radio.Button>
           <Radio.Button value="mobile">Telefon</Radio.Button>
+          <Radio.Button value="tablet">Tableta</Radio.Button>
+          <Radio.Button value="desktop">Desktop</Radio.Button>
         </Radio.Group>
       </div>
       <div

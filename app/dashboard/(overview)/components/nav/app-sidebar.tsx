@@ -63,7 +63,7 @@ export function AppSidebar({
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
-                <span className="truncate font-semibold">Eventio</span>
+                <span className="truncate font-semibold">Planyvite</span>
               </div>
               <span className="truncate text-xs">Contul meu</span>
             </div>
