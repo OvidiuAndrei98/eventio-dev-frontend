@@ -32,12 +32,6 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ImageUpload,
       responsive: false,
     },
-    'style.backgroundAttachment': {
-      label: 'Background animat',
-      dataType: PropertyDataType.String,
-      widgetType: EditorWidgetType.ScrollableBackground,
-      responsive: false,
-    },
   },
   'locations-section': {
     name: {
@@ -58,12 +52,6 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.ImageUpload,
       responsive: false,
     },
-    'style.backgroundAttachment': {
-      label: 'Background animat',
-      dataType: PropertyDataType.String,
-      widgetType: EditorWidgetType.ScrollableBackground,
-      responsive: false,
-    },
   },
   'rsvp-section': {
     name: {
@@ -82,12 +70,6 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       label: 'Imagine Fundal',
       dataType: PropertyDataType.Object,
       widgetType: EditorWidgetType.ImageUpload,
-      responsive: false,
-    },
-    'style.backgroundAttachment': {
-      label: 'Background animat',
-      dataType: PropertyDataType.String,
-      widgetType: EditorWidgetType.ScrollableBackground,
       responsive: false,
     },
   },
@@ -254,15 +236,6 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       dataType: PropertyDataType.String,
       widgetType: EditorWidgetType.TextInput,
       responsive: false,
-    },
-    'style.width': {
-      label: 'Latime Secțiune (%)',
-      dataType: PropertyDataType.Number,
-      widgetType: EditorWidgetType.NumberInput,
-      min: 0,
-      step: 1,
-      max: 100,
-      responsive: true,
     },
     'style.color': {
       label: 'Culoare',

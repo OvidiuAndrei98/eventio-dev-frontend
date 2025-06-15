@@ -29,6 +29,7 @@ interface SectionRendererProps {
   sectionData: TemplateSection;
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
   templateData: Template;
+  previewMode?: boolean;
 }
 
 const SectionRenderer: React.FC<SectionRendererProps> = ({
@@ -37,6 +38,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   sectionData,
   activeBreakpoint,
   templateData,
+  previewMode,
 }) => {
   const finalElementProps = mergeResponsiveProperties<TemplateSection>(
     {
@@ -80,8 +82,6 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     backgroundImage: sectionData.backgroundImage
       ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
       : 'unset',
-    backgroundAttachment: finalElementProps.style
-      .backgroundAttachment as string,
   };
 
   const validElements = sectionData.elements.filter(
@@ -141,6 +141,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   {...(element as any)}
                   activeBreakpoint={activeBreakpoint}
+                  previewMode={previewMode}
                 />
               );
             case ElementType.Container:

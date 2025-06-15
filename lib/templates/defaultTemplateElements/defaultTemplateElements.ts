@@ -20,8 +20,11 @@ export const defaultElements = {
           | 'self-end',
       },
       disabled: false,
-      responsive: {},
-      style: { height: 300 },
+      responsive: {
+        mobile: { style: { height: 700 } },
+        tablet: { style: { height: 850 } },
+      },
+      style: { height: 1200 },
     };
   },
   'rsvp-section': (elementName: string) => {

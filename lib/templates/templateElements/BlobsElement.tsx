@@ -25,12 +25,14 @@ const BlobsElement = ({
   selectedElementId,
   onSelect,
   editMode,
+  previewMode,
 }: BlobTemplateElement & {
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
   selectedElementId?: string;
   isSelected?: boolean;
   onSelect?: (element: TemplateElement) => void;
   editMode?: boolean;
+  previewMode?: boolean;
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
@@ -71,7 +73,13 @@ const BlobsElement = ({
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
     alignSelf: finalElementProps.position.elementAlignment,
-    width: `${finalElementProps.style.width}${editMode ? '%' : 'vw'}`,
+    width: `100${
+      previewMode && activeBreakpoint !== 'desktop'
+        ? '%'
+        : editMode
+        ? '%'
+        : 'vw'
+    }`,
     padding: 0,
   };
 

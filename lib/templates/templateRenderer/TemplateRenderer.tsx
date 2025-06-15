@@ -31,6 +31,7 @@ interface TemplateRendererProps {
   editMode?: boolean;
   onSelect?: (section: TemplateElement) => void;
   activeBreakpointValue?: string;
+  previewMode?: boolean;
   handleTemplateDragAndDrop?: (
     elementId: string,
     position: FlexiblePosition
@@ -43,6 +44,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   editMode = false,
   onSelect,
   activeBreakpointValue,
+  previewMode,
   handleTemplateDragAndDrop,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -334,6 +336,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
             activeBreakpoint={activeBreakpoint}
             eventId={invitationData.eventId}
             userId={invitationData.userId}
+            previewMode={previewMode}
             //de adaugat isActive pt ferificare in link daca e activa
           />
         );

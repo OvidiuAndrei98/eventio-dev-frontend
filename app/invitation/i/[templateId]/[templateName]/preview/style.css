@@ -1,0 +1,54 @@
+.ant-radio-group.ant-radio-group-solid.ant-radio-group-middle.button-group-period-filter {
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  border: 1px solid #dcdfe533 !important;
+  border-radius: 4px;
+  padding: 4px;
+  background-color: rgba(25, 59, 103, 0.05);
+  display: inline-flex;
+  gap: 3px;
+}
+
+.button-group-period-filter .ant-radio-button-wrapper {
+  background-color: transparent !important;
+  color: #1b2b41b0 !important;
+  border: none !important;
+  border-radius: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  height: 24px;
+  padding: 8px;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-group-period-filter
+  .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-disabled):hover {
+  background-color: #fafbfc !important;
+}
+.ant-radio-group-solid.button-group-period-filter
+  .ant-radio-button-wrapper-checked,
+.ant-radio-group-solid.button-group-period-filter
+  .ant-radio-button-wrapper-checked:hover,
+.ant-radio-group-solid.button-group-period-filter
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.button-group-period-filter .ant-radio-button-wrapper-checked,
+.button-group-period-filter .ant-radio-button-wrapper-checked:hover,
+.button-group-period-filter
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  color: #192739f0 !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0px 1px 3px 0px rgba(26, 56, 96, 0.1) !important;
+  font-weight: 600;
+}
+
+.button-group-period-filter .ant-radio-button-wrapper::before {
+  display: none !important;
+  content: none !important;
+}
+
+.button-group-period-filter .ant-radio-button-wrapper:last-child {
+  border-right: none !important;
+}

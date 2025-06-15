@@ -15,7 +15,6 @@ import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 import FontSelectorWidget from '../editorComponents/FontSelectorWidget';
 import StrokeEditorWidget from '../editorComponents/StrokeEditorWidget';
 import GifSelectorWidget from '../editorComponents/GifSelectorWidget';
-import ScrollableBackgroundWidget from '../editorComponents/ScrollableBackgroundWidget';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -297,21 +296,6 @@ const PropertyPanel = ({
           case EditorWidgetType.GifSelector:
             return (
               <GifSelectorWidget
-                key={propertyPath}
-                config={config}
-                value={currentValue as string}
-                onChange={(newValue) =>
-                  handlePropertyChanged(
-                    propertyPath,
-                    newValue,
-                    config.responsive
-                  )
-                }
-              />
-            );
-          case EditorWidgetType.ScrollableBackground:
-            return (
-              <ScrollableBackgroundWidget
                 key={propertyPath}
                 config={config}
                 value={currentValue as string}
