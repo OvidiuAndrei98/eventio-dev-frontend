@@ -7,7 +7,6 @@ import InvitationCard from '@/components/invitationsModal/components/invitationC
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Template } from '@/core/types';
 import { useRouter } from 'next/navigation';
-import { map } from 'lodash';
 import { mapTemplateTypeToLabel } from '@/core/utils';
 
 type MenuItem = Required<MenuProps>['items'][number];

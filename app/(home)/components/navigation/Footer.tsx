@@ -101,6 +101,31 @@ const Footer = () => {
         className="w-full"
         style={{ borderColor: 'rgba(255,255,255,0.3)' }}
       />
+      <div className="flex flex-row items-center mt-4 text-sm">
+        <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="nofollow">
+          <Image
+            src="/anpc-sal.png"
+            alt="Solutionarea Alternativa a Litigiilor"
+            className="w-[100px] h-[30px] md:w-[200px] md:h-[50px]"
+            width={200}
+            height={50}
+          />
+        </a>
+        <br />
+        <a
+          href="https://ec.europa.eu/consumers/odr"
+          target="_blank"
+          rel="nofollow"
+        >
+          <Image
+            className="w-[100px] h-[30px] md:w-[200px] md:h-[50px]"
+            src="/anpc-sol.png"
+            alt="Solutionarea Online a Litigiilor"
+            width={200}
+            height={50}
+          />
+        </a>
+      </div>
       <div
         className="flex flex-col items-center mt-2 text-sm"
         style={{ color: 'white' }}
