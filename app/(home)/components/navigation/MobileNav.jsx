@@ -75,24 +75,19 @@ const MobileNav = () => {
             <Link href="#first-section">Acasa</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#concept-section">
-              Concept
-            </Link>
+            <Link href="#features-section">Functionalitati</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#how-it-works-section">
-              Cum functioneaza
-            </Link>
+            <Link href="#how-it-works-section-id">Cum functioneaza</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#prices-section">
-              Preturi
-            </Link>
+            <Link href="#concept-section">Concept</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#models-section">
-              Modele
-            </Link>
+            <Link href="#prices-section">Preturi</Link>
+          </li>
+          <li className="nav-item">
+            <Link href="#models-section">Modele</Link>
           </li>
         </ul>
         <Button

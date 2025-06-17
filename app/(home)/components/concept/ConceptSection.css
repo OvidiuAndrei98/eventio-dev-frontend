@@ -7,6 +7,7 @@
   overflow: hidden;
   margin-top: var(--spacing-xl);
   overflow: visible;
+  padding-top: 20px;
 }
 
 .concept-section .description-section {

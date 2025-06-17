@@ -46,7 +46,7 @@ export function Features() {
 
   return (
     <div
-      className="max-w-[1200px] mx-auto px-4 py-16 flex flex-col items-center justify-center"
+      className="max-w-[1200px] mx-auto px-4 py-19 flex flex-col items-center justify-center"
       id="features-section"
     >
       <AnimatedContent

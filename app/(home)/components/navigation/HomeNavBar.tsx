@@ -25,30 +25,22 @@ const HomeNavBar = () => {
       </div>
       <ul className="homepage-nav-menu">
         <li className="nav-item">
-          <Link href="#features-section">Acasa</Link>
+          <Link href="#first-section">Acasa</Link>
         </li>
         <li className="nav-item">
-          <Link href="#first-section">Functionalitati</Link>
+          <Link href="#features-section">Functionalitati</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#concept-section">
-            Cum functioneaza
-          </Link>
+          <Link href="#how-it-works-section-id">Cum functioneaza</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#how-it-works-section">
-            Concept
-          </Link>
+          <Link href="#concept-section">Concept</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#prices-section">
-            Preturi
-          </Link>
+          <Link href="#prices-section">Preturi</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#models-section">
-            Modele
-          </Link>
+          <Link href="#models-section">Modele</Link>
         </li>
       </ul>
       <Button

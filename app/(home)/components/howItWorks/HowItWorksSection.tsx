@@ -6,7 +6,7 @@ const HowItWorksSection = () => {
   return (
     <div
       className="how-it-works-section !p-2 lg:!p-4"
-      id="how-it-works-section"
+      id="how-it-works-section-id"
     >
       <AnimatedContent
         distance={150}
