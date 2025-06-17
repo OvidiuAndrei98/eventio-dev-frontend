@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import { ConfigProvider, FloatButton } from 'antd'
-import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { useEffect, useState } from 'react'
-import HomeNavBar from './components/navigation/HomeNavBar'
-import MobileNav from './components/navigation/MobileNav'
+import { ConfigProvider, FloatButton } from 'antd';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { useEffect, useState } from 'react';
+import HomeNavBar from './components/navigation/HomeNavBar';
+import MobileNav from './components/navigation/MobileNav';
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  const [windowSize, setWindowSize] = useState<number>(0)
+  const [windowSize, setWindowSize] = useState<number>(0);
 
   useEffect(() => {
     if (typeof window != 'undefined') {
       // Set initial value of window witth
-      setWindowSize(window.innerWidth)
+      setWindowSize(window.innerWidth);
 
       window.addEventListener('resize', () => {
-        setWindowSize(window.innerWidth)
-      })
+        setWindowSize(window.innerWidth);
+      });
     }
-  }, [])
+  }, []);
 
   return (
     <html lang="en" style={{ scrollBehavior: 'smooth' }}>
@@ -36,14 +36,21 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            {windowSize > 780 ? <HomeNavBar /> : <MobileNav />}
-            {children}
+            {!windowSize ? (
+              <div className="loader"></div>
+            ) : (
+              <>
+                {windowSize > 1024 ? <HomeNavBar /> : <MobileNav />}
+                {children}
+              </>
+            )}
+
             <FloatButton.BackTop />
           </ConfigProvider>
         </AntdRegistry>
       </body>
     </html>
-  )
-}
+  );
+};
 
-export default HomeLayout
+export default HomeLayout;

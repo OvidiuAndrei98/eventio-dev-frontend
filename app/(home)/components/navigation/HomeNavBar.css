@@ -32,7 +32,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  flex: 0.5;
+  gap: 2rem;
 }
 
 .home-page-navigation .homepage-nav-menu .nav-item {
@@ -62,6 +62,12 @@
   color: black;
   font-weight: 500;
   background-color: var(--primary-color);
+}
+
+@media screen and (max-width: 1268px) {
+  .home-page-navigation .homepage-nav-menu .nav-item {
+    font-size: 16px;
+  }
 }
 
 @-webkit-keyframes stickySlideDown {

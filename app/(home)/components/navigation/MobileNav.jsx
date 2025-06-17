@@ -59,7 +59,7 @@ const MobileNav = () => {
         id="hamburger-menu-container"
         onClick={toggleMenu}
       >
-        <div className="bar z-[1103]"></div>
+        <div className="bar z-[1103] ml-[20px]"></div>
         <Image
           src={PlanyviteLogo}
           alt="Planyvite Logo"

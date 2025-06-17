@@ -3,7 +3,6 @@
   ----------------------*/
 
 .hamburger-menu {
-  left: 10px;
   position: absolute;
   width: 100%;
   display: flex;
@@ -15,8 +14,8 @@
 
 .hamburger-menu.fixed {
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   position: fixed;
   z-index: 999999;
   -webkit-box-shadow: 0px 10px 20px 0px rgba(79, 35, 35, 0.08);

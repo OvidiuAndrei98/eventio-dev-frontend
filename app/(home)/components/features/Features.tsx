@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-
-//TODO : Improve mobile version to display the image down the corresponding text instead of at the full bottom
+import AnimatedContent from '@/components/animatedContainer/AnimatedContent';
 
 const data = [
   {
@@ -46,72 +45,100 @@ export function Features() {
   }, []);
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-16 flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center mb-8 space-y-2">
-        <span className="small-header">FUNCTIONALITATI</span>
-        <span className="primary-title text-center md:!text-4xl">
-          Principalele funcționalități ale aplicației
-        </span>
-      </div>
-      <div className=" grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="space-y-6 ">
-          {data.map((item, index) => (
-            <button
-              className="w-full"
-              key={item.title}
-              onClick={() => {
-                setFeatureOpen(index);
-              }}
-              type="button"
-            >
-              <TextComponent
-                content={item.content}
-                isOpen={featureOpen === index}
-                number={index + 1}
-                title={item.title}
-              />
-            </button>
-          ))}
+    <div
+      className="max-w-[1200px] mx-auto px-4 py-16 flex flex-col items-center justify-center"
+      id="features-section"
+    >
+      <AnimatedContent
+        distance={150}
+        direction="horizontal"
+        reverse={false}
+        config={{ tension: 80, friction: 20 }}
+        initialOpacity={0.2}
+        animateOpacity
+        scale={1.1}
+        threshold={0.2}
+        classNamme="center-text"
+      >
+        <div className="flex flex-col items-center justify-center mb-8 space-y-2">
+          <span className="small-header">FUNCTIONALITATI</span>
+          <span className="primary-title text-center md:!text-4xl">
+            Principalele funcționalități ale aplicației
+          </span>
         </div>
-        <div className="h-full flex items-center justify-center">
-          <div
-            className={cn(
-              // Increase max-w and minHeight on larger screens
-              'relative w-full max-w-2xl overflow-hidden rounded-2xl aspect-video md:aspect-[16/9] lg:aspect-[16/7] xl:aspect-[16/8]',
-              'lg:max-w-4xl xl:max-w-5xl' // Add larger max widths for lg/xl
-            )}
-            style={{
-              minHeight: minHeight,
-              minWidth: '100%',
-              height: '100%',
-            }}
-          >
+      </AnimatedContent>
+
+      <AnimatedContent
+        distance={150}
+        direction="horizontal"
+        reverse={false}
+        config={{ tension: 80, friction: 20 }}
+        initialOpacity={0.2}
+        animateOpacity
+        scale={1.1}
+        threshold={0.2}
+        classNamme="center-text"
+      >
+        <div className=" grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="space-y-6 ">
             {data.map((item, index) => (
-              <div
-                className={cn(
-                  'absolute inset-0 w-full h-full transform-gpu rounded-2xl transition-all duration-300 bg-[#f7eff9] p-2',
-                  featureOpen === index ? 'scale-100' : 'scale-70',
-                  featureOpen > index ? 'translate-y-full' : ''
-                )}
+              <button
+                className="w-full"
                 key={item.title}
-                style={{ zIndex: data.length - index }}
+                onClick={() => {
+                  setFeatureOpen(index);
+                }}
+                type="button"
               >
-                <video
-                  className="w-full h-full object-contain rounded-2xl"
-                  controls={false}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                >
-                  <source src={item.srcImage} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
+                <TextComponent
+                  content={item.content}
+                  isOpen={featureOpen === index}
+                  number={index + 1}
+                  title={item.title}
+                />
+              </button>
             ))}
           </div>
+          <div className="h-full flex items-center justify-center">
+            <div
+              className={cn(
+                // Increase max-w and minHeight on larger screens
+                'relative w-full max-w-2xl overflow-hidden rounded-2xl aspect-video md:aspect-[16/9] lg:aspect-[16/7] xl:aspect-[16/8]',
+                'lg:max-w-4xl xl:max-w-5xl' // Add larger max widths for lg/xl
+              )}
+              style={{
+                minHeight: minHeight,
+                minWidth: '100%',
+                height: '100%',
+              }}
+            >
+              {data.map((item, index) => (
+                <div
+                  className={cn(
+                    'absolute inset-0 w-full h-full transform-gpu rounded-2xl transition-all duration-300 bg-[#f7eff9] p-2',
+                    featureOpen === index ? 'scale-100' : 'scale-70',
+                    featureOpen > index ? 'translate-y-full' : ''
+                  )}
+                  key={item.title}
+                  style={{ zIndex: data.length - index }}
+                >
+                  <video
+                    className="w-full h-full object-contain rounded-2xl"
+                    controls={false}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  >
+                    <source src={item.srcImage} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </AnimatedContent>
     </div>
   );
 }
