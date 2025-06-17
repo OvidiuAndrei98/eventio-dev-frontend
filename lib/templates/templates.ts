@@ -3,7 +3,7 @@ import { ElementType, Template } from '@/core/types';
 export const defaultTemplates: Template[] = [
   {
     eventId: 'template-wedding-1',
-    eventDate: 'template-wedding-1',
+    eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     settings: {
       aditionalLocations: [
         {
@@ -1526,7 +1526,7 @@ export const defaultTemplates: Template[] = [
         responsive: {},
       },
     ],
-    eventDate: 'template-wedding-2',
+    eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     type: 'wedding',
     name: 'Amurgul Iubirii Eterne',
   },
@@ -1569,7 +1569,7 @@ export const defaultTemplates: Template[] = [
         },
       ],
     },
-    eventDate: 'template-bapthism-1',
+    eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     eventId: 'template-bapthism-1',
     thumbnailUrl:
       '/templates_images/bapthism/bapthism_t_1/template_1_thumbnail.svg',
@@ -2433,7 +2433,7 @@ export const defaultTemplates: Template[] = [
   {
     name: 'Prima Poveste Dulce',
     templateId: 'template-bapthism-2',
-    eventDate: 'template-bapthism-2',
+    eventDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     type: 'bapthism',
     userId: 'template-bapthism-2',
     description:
