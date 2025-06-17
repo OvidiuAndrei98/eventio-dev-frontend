@@ -40,7 +40,7 @@ export const PricingCard = ({
   return (
     <div
       className={cn(
-        'relative flex flex-col gap-8 overflow-hidden rounded-2xl border p-6 shadow',
+        'relative flex flex-1 flex-col gap-4 lg:gap-8 overflow-hidden rounded-2xl border p-6 shadow',
         isHighlighted
           ? 'bg-[#fdf6fe99] text-[var(--secondary-color)]'
           : 'bg-[#fdf6fe99] text-[var(--secondary-color)]',
@@ -48,12 +48,17 @@ export const PricingCard = ({
       )}
     >
       {/* Card Header */}
-      <h2 className="flex items-center gap-3 text-xl font-medium capitalize">
+      <h2 className="flex items-center gap-3 text-lg sm:text-xl font-medium capitalize">
         {tier.name}
         {isPopular && (
-          <Badge className="mt-1 bg-[#b46acb] px-1 py-0 text-white hover:bg-[#b46acb]">
-            🔥 Most Popular
-          </Badge>
+          <>
+            <Badge className="mt-1 bg-[#b46acb] px-1 py-0 text-white hover:bg-[#b46acb]">
+              🔥 Most Popular
+            </Badge>
+            <Badge className="mt-1 bg-[#ff7875] text-[9px] px-1 py-0 text-white hover:bg-[#b46acb]">
+              Planificator gratuit
+            </Badge>
+          </>
         )}
       </h2>
 
@@ -61,15 +66,14 @@ export const PricingCard = ({
       <div className="relative h-12">
         {typeof price === 'number' ? (
           <>
-            <span className="text-4xl font-medium">
-              {}
+            <span className="text-xl sm:text-2xl lg:text-2xl xl:text-4xl font-medium">
               {new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'RON',
               }).format(price)}
             </span>
             {tier.oldPrice && (
-              <span className="text-lg font-medium text-gray-400 line-through">
+              <span className="ml-2 text-sm sm:text-base lg:text-md xl:text-lg font-medium text-gray-400 line-through">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'RON',
@@ -78,7 +82,9 @@ export const PricingCard = ({
             )}
           </>
         ) : (
-          <h1 className="text-4xl font-medium">{price}</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-2xl xl:text-4xl font-medium">
+            {price}
+          </h1>
         )}
       </div>
 

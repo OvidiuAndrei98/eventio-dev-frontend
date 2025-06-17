@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  Command,
   LayoutTemplate,
   LucideCheckCircle,
   LucideHouse,
@@ -8,7 +7,7 @@ import {
   Settings2,
   TrendingUp,
 } from 'lucide-react';
-
+import PlanyviteLogoSmall from '@/public/planyvite_logo_sm.svg';
 import { NavMain } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-main';
 import { NavProjects } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-projects';
 import { NavUser } from '@/app/dashboard/(event)/[eventId]/components/nav/nav-user';
@@ -24,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { useEventContext } from '@/core/context/EventContext';
 import { ControlOutlined } from '@ant-design/icons';
+import Image from 'next/image';
 
 export interface MenuItem {
   title: string;
@@ -103,8 +103,13 @@ export function AppSidebar({
       <SidebarHeader>
         <SidebarMenuButton size="lg" asChild>
           <a href="/dashboard">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Command className="size-4" />
+            <div className="flex aspect-square size-8 items-center justify-center bg-[#FAFAFA] rounded-lg text-sidebar-primary-foreground">
+              <Image
+                src={PlanyviteLogoSmall}
+                alt="logo"
+                width={24}
+                height={24}
+              />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">

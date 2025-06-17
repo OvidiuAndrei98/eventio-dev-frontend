@@ -78,10 +78,10 @@ const PreviewPage = () => {
             activeBreakpointValue={editViewMode}
             previewMode={true}
           />
-          <div className="bg-black h-[80px] text-white p-4 absolute bottom-0 left-0 right-0 flex justify-center items-center z-2">
+          {/* <div className="bg-black h-[80px] text-white p-4 absolute bottom-0 left-0 right-0 flex justify-center items-center z-2">
             Atentie! Aceasta este o previzualizare a invitatiei vizibila doar
             pentru tine.
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import InvitationCard from './components/invitationCard/InvitationCard';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Template } from '@/core/types';
 import { useRouter } from 'next/navigation';
+import { mapTemplateTypeToLabel } from '@/core/utils';
 
 const InvitationModal = ({
   open,
@@ -60,7 +61,7 @@ const InvitationModal = ({
   return (
     <Modal
       className="invitations-modal"
-      title={`Invitații pentru ${templateType}`}
+      title={`Invitații pentru ${mapTemplateTypeToLabel(templateType)}`}
       centered
       open={open}
       onOk={onOk}

@@ -3,6 +3,7 @@
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import './GridMotion.css';
+import Image from 'next/image';
 
 const GridMotion = ({
   items = [],
@@ -92,24 +93,32 @@ const GridMotion = ({
               ref={(el: any) => (rowRefs.current[rowIndex] = el)} // Set each row's ref
             >
               {[...Array(6)].map((_, itemIndex) => {
-                const content = combinedItems[rowIndex * 7 + itemIndex];
+                const content = combinedItems[rowIndex * 3 + itemIndex];
                 return (
                   <div key={itemIndex} className="row__item">
                     <div
                       className="row__item-inner"
-                      style={{ backgroundColor: '#111' }}
+                      style={{ position: 'relative', backgroundColor: '#111' }}
                     >
-                      {typeof content === 'string' &&
-                      content.startsWith('https') ? (
-                        <div
-                          className="row__item-img"
-                          style={{
-                            backgroundImage: `url(${content})`,
-                          }}
-                        ></div>
-                      ) : (
-                        <div className="row__item-content">{content}</div>
-                      )}
+                      <Image
+                        src={content}
+                        alt={`Item ${itemIndex + 1}`}
+                        className="object-cover w-full h-full"
+                        fill
+                        style={{ zIndex: 1 }}
+                      />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: 'rgba(0,0,0,0.2)',
+                          zIndex: 2,
+                          pointerEvents: 'none',
+                        }}
+                      />
                     </div>
                   </div>
                 );

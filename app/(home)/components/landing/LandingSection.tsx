@@ -20,7 +20,7 @@ const LandingSection = () => {
         threshold={0.2}
       >
         <div className="w-full h-[100%] flex flex-col items-start justify-center text-center text-white lg:max-w-3xl px-4">
-          <h1 className="text-2xl md:text-5xl lg:text-5xl lg:mt-[200px] font-bold mb-4 text-[var(--secondary-color)]">
+          <h1 className="text-3xl mt-[100px] md:text-4xl lg:text-5xl md:mt-[200px] lg:mt-[200px] font-bold mb-4 text-[var(--secondary-color)]">
             Planifică Evenimente Fără Stres. Invită cu Stil. Cu
             <GradientText
               colors={['#b46acb', '#c283d4', '#cf9cdd', '#e8cdee', '#c283d4']}

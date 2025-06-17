@@ -65,7 +65,7 @@ const InvitationPreviewPage = () => {
         </Radio.Group>
       </div>
       <div
-        className={`w-full h-[calc(100svh-80px)] overflow-y-[auto] ${selectedTemplate.settings.backgroundColor} w-full mx-auto mt-[60px]`}
+        className={`w-full h-[calc(100svh-130px)] overflow-y-[auto] ${selectedTemplate.settings.backgroundColor}  mx-auto mt-[60px]`}
       >
         <div
           className={`overflow-y-auto h-full ${
@@ -82,7 +82,7 @@ const InvitationPreviewPage = () => {
             activeBreakpointValue={editViewMode}
             previewMode={true}
           />
-          <div className="bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
+          <div className="z-2 bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
             {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
             <div className="flex justify-between w-full items-center md:items-end md:w-auto md:gap-4">
               <button className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center gap-2 cursor-pointer">
