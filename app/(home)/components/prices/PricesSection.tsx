@@ -153,9 +153,9 @@ const PricesSection = () => {
           threshold={0.2}
         >
           <div className="prices-section-description">
-            <span className="small-header">PRETURI</span>
+            <span className="small-header">PREȚURI</span>
             <span className="primary-title text-center mb-4 md:!text-4xl">
-              Cat costa o invitatie digitala
+              Cât costă o invitație digitală
             </span>
           </div>
         </AnimatedContent>
