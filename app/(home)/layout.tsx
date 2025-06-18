@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   applicationName: 'Planyvite - Planifică Evenimente Fără Stres',
   referrer: 'origin-when-cross-origin',
   publisher: 'planyvite.ro',
-  title: 'Planyvite',
+  title: { absolute: 'Planyvite - Planifică Evenimente Fără Stres' },
   description: `Economisește timp, reduce risipa și impresionează-ți oaspeții cu
             invitații digitale personalizate. Urmărește RSVP-urile în timp real
             și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.`,
