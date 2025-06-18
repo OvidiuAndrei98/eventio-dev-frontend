@@ -12,7 +12,9 @@ export const metadata: Metadata = {
     siteName: 'Planyvite - Planifică Evenimente Fără Stres',
     title: 'Planyvite',
   },
-  title: { absolute: 'Planyvite' },
+  title: {
+    absolute: 'Invitații Digitale Personalizate și Creative | Planyvite',
+  },
   description: `Economisește timp, reduce risipa și impresionează-ți oaspeții cu
             invitații digitale personalizate. Urmărește RSVP-urile în timp real
             și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.`,
