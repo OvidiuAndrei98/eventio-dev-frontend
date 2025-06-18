@@ -1,100 +1,120 @@
-import { Divider, Table } from 'antd'
-import './PricesSection.css'
-import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
+'use client';
+
+import { Table } from 'antd';
+import './PricesSection.css';
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';
+import { PLANYVITE_EVENT_PLANS } from '@/lib/planyviteEventPlanTiers';
+import { PricingCard } from '@/components/pricingCard/PricingCard';
 
 const PricesSection = () => {
+  const checkmark = (
+    <span style={{ color: '#a259ff', fontWeight: 'bold' }}>{'\u2713'}</span>
+  );
+
+  const redX = (
+    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>{'\u2717'}</span>
+  );
+
   const dataSource = [
     {
       key: '1',
       functionalitati: 'Personalizare "self-service" a invitației',
-      individuala: '\u2713',
-      premium: '\u2713',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '2',
-      functionalitati: 'Hărțile evenimentului',
-      individuala: '\u2713',
-      premium: '\u2713',
+      functionalitati: 'Planul locației',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
     },
     {
       key: '3',
       functionalitati: 'Countdown invitație',
-      individuala: '\u2713',
-      premium: '\u2713',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '4',
-      functionalitati: 'Restricționare invitație cu parolă',
-      individuala: '-',
-      premium: '\u2713',
+      functionalitati: 'Asezarea invitaților la masă',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
     },
     {
       key: '5',
       functionalitati: 'Formular RSVP',
-      individuala: '\u2713',
-      premium: '\u2713',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '6',
-      functionalitati: 'Editare invitație după plată',
-      individuala: '\u2713',
-      premium: '\u2713',
+      functionalitati: 'Plată unică',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '7',
-      functionalitati: 'Plată per invitat',
-      individuala: '\u2713',
-      premium: '-',
+      functionalitati: 'Statistici (confirmări și refuzuri)',
+      basic: redX,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '8',
-      functionalitati: 'Plată unică',
-      individuala: '-',
-      premium: '\u2713',
+      functionalitati: 'Distribuire pe canale de socializare',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '9',
-      functionalitati: 'Afișare nume invitat în invitație',
-      individuala: '\u2713',
-      premium: '-',
+      functionalitati: 'Vizualizare raspunsuri în timp real',
+      basic: redX,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '10',
-      functionalitati: 'Link individual per invitat',
-      individuala: '\u2713',
-      premium: '-',
+      functionalitati: 'Export confirmări în format Excel',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
     },
     {
       key: '11',
-      functionalitati: 'Link invitație personalizat cu denumirea evenimentului',
-      individuala: '-',
-      premium: '\u2713',
+      functionalitati: 'Export plan sala în format PDF',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
     },
     {
       key: '12',
-      functionalitati: 'Statistici (confirmări și refuzuri) per invitat',
-      individuala: '\u2713',
-      premium: '\u2713',
+      functionalitati: 'Checklist (in curand)',
+      basic: checkmark,
+      premium: checkmark,
+      ultimate: checkmark,
     },
     {
       key: '13',
-      functionalitati: 'Distribuire pe canale de socializare',
-      individuala: '\u2713',
-      premium: '\u2713',
+      functionalitati: 'Planificator eveniment avansat',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
     },
     {
       key: '14',
-      functionalitati: 'Primire confirmări în platformă și pe email',
-      individuala: '\u2713',
-      premium: '\u2713',
+      functionalitati: 'Suport tehnic prioritar',
+      basic: redX,
+      premium: checkmark,
+      ultimate: checkmark,
     },
-    {
-      key: '15',
-      functionalitati: 'Export confirmări în format Excel',
-      individuala: '\u2713',
-      premium: '\u2713',
-    },
-  ]
+  ];
 
   const columns = [
     {
@@ -103,20 +123,25 @@ const PricesSection = () => {
       key: 'functionalitati',
     },
     {
-      title: 'Individuală',
-      dataIndex: 'individuala',
-      key: 'individuala',
+      title: 'Basic',
+      dataIndex: 'basic',
+      key: 'basic',
     },
     {
       title: 'Premium',
       dataIndex: 'premium',
       key: 'premium',
     },
-  ]
+    {
+      title: 'Ultimate',
+      dataIndex: 'ultimate',
+      key: 'ultimate',
+    },
+  ];
 
   return (
-    <div className="prices-section-container" id="prices-section">
-      <div className="prices-section">
+    <div className="prices-section-container p-4" id="prices-section">
+      <div className="prices-section !px-4 lg:px-4 py-8">
         <AnimatedContent
           distance={150}
           direction="vertical"
@@ -129,7 +154,7 @@ const PricesSection = () => {
         >
           <div className="prices-section-description">
             <span className="small-header">PRETURI</span>
-            <span className="primary-title">
+            <span className="primary-title text-center mb-4 md:!text-4xl">
               Cat costa o invitatie digitala
             </span>
           </div>
@@ -145,47 +170,12 @@ const PricesSection = () => {
           threshold={0.2}
           classNamme="cars-container-animated-container"
         >
-          <div className="cards-container">
-            <div className="price-card">
-              <span className="price">4.99 RON</span>
-              <span className="primary-title">INVITATIE INDIVIDUALA</span>
-              <span className=".secondary-text-color-light">
-                Pret per invitat
-              </span>
-              <div className="features-section">
-                <span className=".secondary-text-color-light">
-                  Un link per invitat
-                </span>
-                <Divider style={{ width: '100%' }} />
-                <span className=".secondary-text-color-light">
-                  Invitație cu numele invitatului
-                </span>
-                <Divider />
-                <span className=".secondary-text-color-light">
-                  Fără număr minim de invitați
-                </span>
-              </div>
-            </div>
-            <div className="price-card">
-              <span className="price">399 RON</span>
-              <span className="primary-title">INVITATIE PREMIUM</span>
-              <span className=".secondary-text-color-light">
-                preț unic, invitați nelimitați
-              </span>
-              <div className="features-section">
-                <span className=".secondary-text-color-light">
-                  Număr nelimitat de invitați
-                </span>
-                <Divider style={{ width: '100%' }} />
-                <span className=".secondary-text-color-light">
-                  Un singur link al invitației
-                </span>
-                <Divider />
-                <span className=".secondary-text-color-light">
-                  Acces la toate functionalitatile
-                </span>
-              </div>
-            </div>
+          <div className="flex flex-col lg:flex-row md:flex-wrap md:justify-center lg:flex-row gap-4">
+            {PLANYVITE_EVENT_PLANS.filter(
+              (p) => p.id !== 'ultimate_upgrade'
+            ).map((plan) => {
+              return <PricingCard key={plan.name} tier={plan} />;
+            })}
           </div>
         </AnimatedContent>
       </div>
@@ -202,13 +192,25 @@ const PricesSection = () => {
         <Table
           size="middle"
           dataSource={dataSource}
-          columns={columns}
           pagination={false}
           bordered={false}
+          className="prices-section-table"
+          rowClassName={() => 'text-center'}
+          columns={columns.map((col) =>
+            col.dataIndex === 'functionalitati'
+              ? { ...col, className: 'text-left' }
+              : {
+                  ...col,
+                  className: 'text-center',
+                  onHeaderCell: () => ({
+                    style: { textAlign: 'center' },
+                  }),
+                }
+          )}
         />
       </AnimatedContent>
     </div>
-  )
-}
+  );
+};
 
-export default PricesSection
+export default PricesSection;

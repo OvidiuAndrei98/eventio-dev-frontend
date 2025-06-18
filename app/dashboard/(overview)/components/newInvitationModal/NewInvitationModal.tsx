@@ -7,6 +7,7 @@ import InvitationCard from '@/components/invitationsModal/components/invitationC
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Template } from '@/core/types';
 import { useRouter } from 'next/navigation';
+import { mapTemplateTypeToLabel } from '@/core/utils';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -68,7 +69,7 @@ const NewInvitationModal = ({
   return (
     <Modal
       className="invitations-modal"
-      title={`Invitații pentru ${templateType}`}
+      title={`Invitații pentru ${mapTemplateTypeToLabel(templateType)}`}
       centered
       open={open}
       onOk={onOk}

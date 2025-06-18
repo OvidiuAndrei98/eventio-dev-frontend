@@ -11,6 +11,9 @@ import {
 } from 'firebase/auth';
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { GoogleOutlined } from '@ant-design/icons';
+import Link from 'next/link';
+import PlanyviteLogo from '@/public/planyvite_logo.svg';
+import { useRouter } from 'next/navigation';
 
 export interface LoginPageProps {
   /**
@@ -26,14 +29,16 @@ export interface LoginPageProps {
   loggingIn?: boolean;
 }
 
+type FieldType = {
+  email: string;
+  password: string;
+};
+
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'> & LoginPageProps) {
-  type FieldType = {
-    email: string;
-    password: string;
-  };
+  const router = useRouter();
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     props.onLogin(values.email, values.password);
@@ -46,7 +51,17 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-4 md:gap-6', className)} {...props}>
+      <div className="flex justify-center mb-4">
+        <Image
+          className="cursor-pointer"
+          onClick={() => router.push('/')}
+          src={PlanyviteLogo}
+          alt="planyvite-logo"
+          width={200}
+          height={50}
+        />
+      </div>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="p-6 md:p-8">
@@ -145,8 +160,24 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-slate-500 *:[a]:hover:text-slate-900 text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 dark:text-slate-400 dark:*:[a]:hover:text-slate-50">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>
-        and <a href="#">Privacy Policy</a>.
+        Continuând, ești de acord cu{' '}
+        <a className="font-semibold" href="#">
+          Termenii și condițiile
+        </a>{' '}
+        și{' '}
+        <a className="font-semibold" href="#">
+          Politica de confidențialitate
+        </a>
+        .
+      </div>
+      <div className="text-slate-500 *:[a]:hover:text-slate-900 text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 dark:text-slate-400 dark:*:[a]:hover:text-slate-50">
+        <ul className="flex flex-row items-center justify-center gap-2">
+          <li className="font-semibold">
+            <Link href={'/'}>Acasa</Link>
+          </li>
+          <li>contact@planyvite.ro</li>
+          <li>+40741448739</li>
+        </ul>
       </div>
     </div>
   );

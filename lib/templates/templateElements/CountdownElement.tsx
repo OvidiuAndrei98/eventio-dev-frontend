@@ -224,26 +224,98 @@ const CountdownElement = ({
       {/* Countdown display */}
 
       <div className="flex flex-col items-center w-full">
-        <div className="flex gap-2">
-          <span style={{ ...textContentStyle }}>
-            {pad(timeLeft.days)}
-            <span className="ml-1">d</span>
-          </span>
-          <span>:</span>
-          <span style={{ ...textContentStyle }}>
-            {pad(timeLeft.hours)}
-            <span className="ml-1">h</span>
-          </span>
-          <span>:</span>
-          <span style={{ ...textContentStyle }}>
-            {pad(timeLeft.minutes)}
-            <span className="ml-1">m</span>
-          </span>
-          <span>:</span>
-          <span style={{ ...textContentStyle }}>
-            {pad(timeLeft.seconds)}
-            <span className="ml-1">s</span>
-          </span>
+        <div className="flex gap-4">
+          {/* Numbers row */}
+          <div className="flex gap-4">
+            <span className="flex flex-col items-center">
+              <span
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                }}
+              >
+                {pad(timeLeft.days)}
+              </span>
+              <span
+                className="text-center"
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                  fontSize: textContentStyle.fontSize
+                    ? `calc(${textContentStyle.fontSize} / 2)`
+                    : '0.5em',
+                }}
+              >
+                zile
+              </span>
+            </span>
+            <span className="flex flex-col items-center">
+              <span
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                }}
+              >
+                {pad(timeLeft.hours)}
+              </span>
+              <span
+                className="text-center"
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                  fontSize: textContentStyle.fontSize
+                    ? `calc(${textContentStyle.fontSize} / 2)`
+                    : '0.5em',
+                }}
+              >
+                ore
+              </span>
+            </span>
+            <span className="flex flex-col items-center">
+              <span
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                }}
+              >
+                {pad(timeLeft.minutes)}
+              </span>
+              <span
+                className="text-center"
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                  fontSize: textContentStyle.fontSize
+                    ? `calc(${textContentStyle.fontSize} / 2)`
+                    : '0.5em',
+                }}
+              >
+                minute
+              </span>
+            </span>
+            <span className="flex flex-col items-center">
+              <span
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                }}
+              >
+                {pad(timeLeft.seconds)}
+              </span>
+              <span
+                className="text-center"
+                style={{
+                  ...textContentStyle,
+                  textAlign: 'center',
+                  fontSize: textContentStyle.fontSize
+                    ? `calc(${textContentStyle.fontSize} / 2)`
+                    : '0.5em',
+                }}
+              >
+                secunde
+              </span>
+            </span>
+          </div>
         </div>
         {timeLeft.finished && (
           <div className="mt-2 text-red-500 font-semibold">

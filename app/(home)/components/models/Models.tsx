@@ -21,29 +21,28 @@ const Models = () => {
   const data = [
     {
       id: 1,
-      image: 'https://picsum.photos/id/10/200/300',
+      image: '/thumbnails/wedding-cat-cover.jpg',
       height: 800,
       text: 'NUNTA',
       type: 'wedding',
     },
     {
       id: 2,
-      image: 'https://picsum.photos/id/14/200/300',
+      image: '/thumbnails/bapthism_cat_cover.jpg',
       height: 800,
       text: 'BOTEZ',
-      type: 'baptism',
+      type: 'bapthism',
     },
     {
       id: 3,
-      image: 'https://picsum.photos/id/15/200/300',
+      image: '/thumbnails/aniversary_cat_cov.jpg',
       height: 800,
       text: 'ANIVERSARE',
       type: 'aniversary',
     },
     {
       id: 4,
-      image:
-        'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
+      image: '/thumbnails/corporate_cat_cover.jpg',
       height: 800,
       text: 'CORPORATE',
       type: 'corporate',
@@ -64,7 +63,7 @@ const Models = () => {
       >
         <div className="models-section-description">
           <span className="small-header">MODELE DE INVITATII DIGITALE</span>
-          <span className="primary-title">Modelele noastre</span>
+          <span className="primary-title md:!text-4xl">Modelele noastre</span>
         </div>
       </AnimatedContent>
       <Masonry

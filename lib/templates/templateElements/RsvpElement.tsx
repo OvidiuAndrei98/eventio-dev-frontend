@@ -427,7 +427,7 @@ const RsvpElement = ({
                 style={{
                   marginBottom: '15px',
                   fontSize: '18px',
-                  color: '#555',
+                  color: 'inherit',
                 }}
               >
                 Detalii Invitați Suplimentari (Persoana #{1 + 1} până la #
@@ -457,6 +457,7 @@ const RsvpElement = ({
                         Invitat #{index + 2}{' '}
                       </h4>
                       <Form.Item
+                        style={{ color: 'inherit' }}
                         label="Nume:"
                         name={[field.name, 'name']}
                         rules={[
@@ -469,6 +470,7 @@ const RsvpElement = ({
                         <Input />
                       </Form.Item>
                       <Form.Item
+                        style={{ color: 'inherit' }}
                         label="Restricții Dietetice (opțional):"
                         name={[field.name, 'dietaryRestrictions']}
                       >

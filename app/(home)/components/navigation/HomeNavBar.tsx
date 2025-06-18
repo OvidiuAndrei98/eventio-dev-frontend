@@ -5,6 +5,8 @@ import './HomeNavBar.css';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import PlanyviteLogo from '@/public/planyvite_logo.svg';
+import Image from 'next/image';
 
 const HomeNavBar = () => {
   const [scroll, setScroll] = useState(false);
@@ -18,31 +20,27 @@ const HomeNavBar = () => {
 
   return (
     <div className={`home-page-navigation ${scroll ? 'fixed' : ''}`}>
-      <div className="logo">PLANYVITE</div>
+      <div className="logo">
+        <Image src={PlanyviteLogo} alt="logo" width={140} height={140} />
+      </div>
       <ul className="homepage-nav-menu">
         <li className="nav-item">
           <Link href="#first-section">Acasa</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#concept-section">
-            Concept
-          </Link>
+          <Link href="#features-section">Functionalitati</Link>
         </li>
         <li className="nav-item">
-          {' '}
-          <Link scroll={false} href="#how-it-works-section">
-            Cum functioneaza
-          </Link>
+          <Link href="#how-it-works-section-id">Cum functioneaza</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#prices-section">
-            Preturi
-          </Link>
+          <Link href="#concept-section">Concept</Link>
         </li>
         <li className="nav-item">
-          <Link scroll={false} href="#models-section">
-            Modele
-          </Link>
+          <Link href="#prices-section">Preturi</Link>
+        </li>
+        <li className="nav-item">
+          <Link href="#models-section">Modele</Link>
         </li>
       </ul>
       <Button

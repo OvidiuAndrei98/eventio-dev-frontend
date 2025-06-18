@@ -243,7 +243,7 @@ export interface TemplateSection extends BaseTemplateElement {
   type:
     | ElementType.Section
     | ElementType.RSVP_SECTION
-    | ElementType.locationsElement;
+    | ElementType.LocationsSection;
 }
 
 export interface ResponsiveProperties {

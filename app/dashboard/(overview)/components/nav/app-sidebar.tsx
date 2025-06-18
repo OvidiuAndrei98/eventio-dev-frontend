@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Command, Mails, ReceiptText } from 'lucide-react';
+import { Mails, ReceiptText } from 'lucide-react';
 
 import {
   Sidebar,
@@ -12,6 +12,8 @@ import {
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
 import { useAuth } from '@/core/AuthenticationBoundary';
+import PlanyviteLogoSmall from '@/public/planyvite_logo_sm.svg';
+import Image from 'next/image';
 
 export interface MenuItem {
   title: string;
@@ -58,12 +60,17 @@ export function AppSidebar({
       <SidebarHeader>
         <SidebarMenuButton size="lg" asChild>
           <a href="/dashboard">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Command className="size-4" />
+            <div className="flex aspect-square size-8 items-center justify-center bg-[#FAFAFA] rounded-lg text-sidebar-primary-foreground">
+              <Image
+                src={PlanyviteLogoSmall}
+                alt="logo"
+                width={24}
+                height={24}
+              />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <div className="flex flex-row items-center gap-2">
-                <span className="truncate font-semibold">Eventio</span>
+                <span className="truncate font-semibold">Planyvite</span>
               </div>
               <span className="truncate text-xs">Contul meu</span>
             </div>

@@ -4,32 +4,48 @@ import './MobileNav.css';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import PlanyviteLogo from '@/public/planyvite_logo.svg';
+import Image from 'next/image';
 
 const MobileNav = () => {
   const [scroll, setScroll] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window == 'undefined') {
+    if (typeof window === 'undefined') {
       return;
     }
 
-    window.addEventListener('scroll', () => {
+    const handleScroll = () => {
       setScroll(window.scrollY > 50);
-    });
+    };
 
-    document.body.addEventListener('click', (event) => {
+    const handleBodyClick = (event) => {
+      const menuContainer = document.getElementById('hamburger-menu-container');
+      const bar = document.querySelector('.bar');
+      const mobileMenu = document.querySelector('.mobile-menu');
+
+      // If click is outside the hamburger menu and nav items, close menu
       if (
-        !['hamburger-menu ', 'bar', 'logo'].includes(event.target.className) &&
+        !menuContainer.contains(event.target) &&
         !event.target.closest('.nav-item')
       ) {
-        document.querySelector('.bar').classList.remove('animate');
-        document.querySelector('.mobile-menu').classList.remove('active');
+        bar?.classList.remove('animate');
+        mobileMenu?.classList.remove('active');
       }
-    });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    document.body.addEventListener('click', handleBodyClick);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.body.removeEventListener('click', handleBodyClick);
+    };
   }, []);
 
-  const toggleMenu = () => {
+  const toggleMenu = (e) => {
+    e.stopPropagation(); // Prevent body click from firing
     document.querySelector('.bar').classList.toggle('animate');
     document.querySelector('.mobile-menu').classList.toggle('active');
   };
@@ -37,38 +53,41 @@ const MobileNav = () => {
   return (
     <>
       <div
-        className={`hamburger-menu ${scroll ? 'fixed' : ''}`}
+        className={`hamburger-menu ${
+          scroll ? 'fixed' : ''
+        } flex items-center gap-2`}
         id="hamburger-menu-container"
         onClick={toggleMenu}
       >
-        <div className="bar"></div>
-        <div className="logo">PLANYVITE</div>
+        <div className="bar z-[1103] ml-[20px]"></div>
+        <Image
+          src={PlanyviteLogo}
+          alt="Planyvite Logo"
+          className="logo"
+          width={120}
+          height={50}
+        />
       </div>
 
-      <nav className="mobile-menu">
+      <nav className="mobile-menu z-[1001]">
         <ul className="homepage-nav-menu">
           <li className="nav-item">
             <Link href="#first-section">Acasa</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#concept-section">
-              Concept
-            </Link>
+            <Link href="#features-section">Functionalitati</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#how-it-works-section">
-              Cum functioneaza
-            </Link>
+            <Link href="#how-it-works-section-id">Cum functioneaza</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#prices-section">
-              Preturi
-            </Link>
+            <Link href="#concept-section">Concept</Link>
           </li>
           <li className="nav-item">
-            <Link scroll={false} href="#models-section">
-              Modele
-            </Link>
+            <Link href="#prices-section">Preturi</Link>
+          </li>
+          <li className="nav-item">
+            <Link href="#models-section">Modele</Link>
           </li>
         </ul>
         <Button

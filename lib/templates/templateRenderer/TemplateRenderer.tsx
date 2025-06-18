@@ -92,7 +92,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
   const invitationAreaStyle: React.CSSProperties = {
     maxWidth: `100%`,
-    height: `calc(100% - 72px);%`,
+    // height: `calc(100% - 72px);`,
     backgroundColor: backgroundColor,
     margin: '0 auto',
     position: 'relative',

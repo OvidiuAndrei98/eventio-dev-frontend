@@ -3,119 +3,128 @@ import GridMotion from '../../../../components/animatedWall/GridMotion';
 import BlobV2 from '../../../../public/blobv2.svg';
 import './ConceptSection.css';
 import Image from 'next/image';
+import LandingBuilder1 from '../../../../public/landing_images/landing_builder_1.png';
+import LandingDemo1 from '../../../../public/landing_images/landing_demo_1.png';
+import LandingDemo2 from '../../../../public/landing_images/landing_demo_2.png';
+import LandingDemo3 from '../../../../public/landing_images/landing_demo_3.png';
 
 const ConceptSection = () => {
   const items = [
-    'https://plus.unsplash.com/premium_photo-1732736768092-43a010784507?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8',
-    'https://image.api.playstation.com/vulcan/img/rnd/202011/0204/jvMomz0n9Be5mRKU8VP9Jl2A.png',
-    'https://images.unsplash.com/photo-1735596365888-ad6d151533f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8',
-    'https://plus.unsplash.com/premium_photo-1732736768092-43a010784507?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8',
-    'https://image.api.playstation.com/vulcan/img/rnd/202011/0204/jvMomz0n9Be5mRKU8VP9Jl2A.png',
-    'https://images.unsplash.com/photo-1735596365888-ad6d151533f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8',
-    'https://plus.unsplash.com/premium_photo-1732736768092-43a010784507?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8',
-    'https://image.api.playstation.com/vulcan/img/rnd/202011/0204/jvMomz0n9Be5mRKU8VP9Jl2A.png',
-    'https://images.unsplash.com/photo-1735596365888-ad6d151533f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8',
-    'https://plus.unsplash.com/premium_photo-1732736768092-43a010784507?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8',
-    'https://image.api.playstation.com/vulcan/img/rnd/202011/0204/jvMomz0n9Be5mRKU8VP9Jl2A.png',
-    'https://images.unsplash.com/photo-1735596365888-ad6d151533f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwyfHx8ZW58MHx8fHx8',
-    'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
-    'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
-    'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
-    'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
+    LandingDemo1,
+    LandingDemo3,
+    LandingBuilder1,
+    LandingDemo2,
+    LandingDemo3,
+    LandingDemo1,
+    LandingDemo3,
+    LandingBuilder1,
+    LandingDemo2,
+    LandingDemo3,
+    LandingDemo1,
+    LandingDemo3,
+    LandingBuilder1,
+    LandingDemo2,
+    LandingDemo3,
   ];
 
   return (
-    <div className="concept-section" id="concept-section">
-      <div className="description-section">
-        <AnimatedContent
-          distance={150}
-          direction="horizontal"
-          reverse={false}
-          config={{ tension: 80, friction: 20 }}
-          initialOpacity={0.2}
-          animateOpacity
-          scale={1.1}
-          threshold={0.2}
-          classNamme="center-text"
-        >
-          <span className="section-title">
-            Conceptul <span className="primary-color-text">Eventio</span> despre
-            invitațiile digitale
-          </span>
-        </AnimatedContent>
+    <>
+      <div className="h-[40px] w-full" id="concept-section"></div>
+      <div className="concept-section flex flex-col lg:flex-row items-center justify-center gap-8 p-4 lg:p-8">
+        <div className="description-section">
+          <AnimatedContent
+            distance={150}
+            direction="horizontal"
+            reverse={false}
+            config={{ tension: 80, friction: 20 }}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+            classNamme="center-text"
+          >
+            <span className="section-title">
+              Conceptul{' '}
+              <span className="primary-color-text styled-title">Planyvite</span>{' '}
+              despre invitațiile digitale
+            </span>
+          </AnimatedContent>
 
-        <AnimatedContent
-          distance={150}
-          direction="horizontal"
-          reverse={false}
-          config={{ tension: 80, friction: 20 }}
-          initialOpacity={0.2}
-          animateOpacity
-          scale={1.1}
-          threshold={0.2}
-        >
-          <div className="your-experience section">
-            <span className="title">Creează și gestionează cu ușurință</span>
-            <span>
-              Planyvite îți oferă toate instrumentele necesare pentru a crea o
-              invitație digitală unică, potrivită evenimentului tău. De la
-              personalizare la distribuire, platforma noastră face întregul
-              proces simplu, rapid și elegant.
-            </span>
-          </div>
-        </AnimatedContent>
+          <AnimatedContent
+            distance={150}
+            direction="horizontal"
+            reverse={false}
+            config={{ tension: 80, friction: 20 }}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+          >
+            <div className="your-experience section text-center lg:text-left">
+              <span className="title">Creează și gestionează cu ușurință</span>
+              <span className="section-description">
+                Planyvite îți oferă toate instrumentele necesare pentru a crea o
+                invitație digitală unică, potrivită evenimentului tău. De la
+                personalizare la distribuire, platforma noastră face întregul
+                proces simplu, rapid și elegant.
+              </span>
+            </div>
+          </AnimatedContent>
 
-        <AnimatedContent
-          distance={150}
-          direction="horizontal"
-          reverse={false}
-          config={{ tension: 80, friction: 20 }}
-          initialOpacity={0.2}
-          animateOpacity
-          scale={1.1}
-          threshold={0.2}
-        >
-          <div className="your-experience section">
-            <span className="title">Distribuire rapidă și interactivitate</span>
-            <span>
-              Odată creată, invitația poate fi distribuită instantaneu prin
-              WhatsApp, e-mail sau rețele sociale. Nu mai este nevoie de
-              tipărire sau livrare manuală! În plus, poți adăuga elemente
-              interactive, precum locația evenimentului pe hartă, poze, elemente
-              animate si multe altele, pentru a face invitația cu adevărat
-              specială.
-            </span>
-          </div>
-        </AnimatedContent>
-        <AnimatedContent
-          distance={150}
-          direction="horizontal"
-          reverse={false}
-          config={{ tension: 80, friction: 20 }}
-          initialOpacity={0.2}
-          animateOpacity
-          scale={1.1}
-          threshold={0.2}
-        >
-          <div className="guest-experience section">
-            <span className="title">
-              O experiență modernă pentru invitații tăi
-            </span>
-            <span>
-              Invitațiile tale vor fi mereu la îndemâna celor dragi, accesibile
-              de pe orice dispozitiv. Cu funcția RSVP integrată, vei primi
-              răspunsurile invitaților în timp real, astfel încât organizarea
-              evenimentului să fie fără stres.
-            </span>
-          </div>
-        </AnimatedContent>
+          <AnimatedContent
+            distance={150}
+            direction="horizontal"
+            reverse={false}
+            config={{ tension: 80, friction: 20 }}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+          >
+            <div className="your-experience section text-center lg:text-left">
+              <span className="title">
+                Distribuire rapidă și interactivitate
+              </span>
+              <span className="section-description">
+                Odată creată, invitația poate fi distribuită instantaneu prin
+                WhatsApp, e-mail sau rețele sociale. Nu mai este nevoie de
+                tipărire sau livrare manuală! În plus, poți adăuga elemente
+                interactive, precum locația evenimentului pe hartă, poze,
+                elemente animate si multe altele, pentru a face invitația cu
+                adevărat specială.
+              </span>
+            </div>
+          </AnimatedContent>
+          <AnimatedContent
+            distance={150}
+            direction="horizontal"
+            reverse={false}
+            config={{ tension: 80, friction: 20 }}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+          >
+            <div className="guest-experience section text-center lg:text-left">
+              <span className="title">
+                O experiență modernă pentru invitații tăi
+              </span>
+              <span className="section-description">
+                Invitațiile tale vor fi mereu la îndemâna celor dragi,
+                accesibile de pe orice dispozitiv. Cu funcția RSVP integrată,
+                vei primi răspunsurile invitaților în timp real, astfel încât
+                organizarea evenimentului să fie fără stres.
+              </span>
+            </div>
+          </AnimatedContent>
 
-        <Image className="concept-blob" src={BlobV2} alt={'concept-blob'} />
+          <Image className="concept-blob" src={BlobV2} alt={'concept-blob'} />
+        </div>
+        <div className="showcase-section">
+          <GridMotion items={items} gradientColor={'white'} />
+        </div>
       </div>
-      <div className="showcase-section">
-        <GridMotion items={items} gradientColor={'white'} />
-      </div>
-    </div>
+    </>
   );
 };
 

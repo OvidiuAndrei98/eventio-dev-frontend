@@ -25,7 +25,8 @@ const ChosePlanPage: React.FC = () => {
               (plan.id === 'ultimate' &&
                 eventInstance?.eventPlan === 'premium') ||
               (plan.id === 'ultimate_upgrade' &&
-                eventInstance?.eventPlan === 'basic')
+                (eventInstance?.eventPlan === 'basic' ||
+                  eventInstance?.eventPlan === 'ultimate'))
             ) {
               return null; // Skip rendering for this plan if conditions are met
             }

@@ -33,7 +33,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     ],
     cta: 'Cumpara',
     order: 2,
-    priceId: 'price_1RWm8BIxI3w7eVcKNICZun1Y',
+    priceId: 'price_1RanVvIYmtfnTY0fzQ0a5e5p',
   },
   {
     id: 'ultimate',
@@ -41,7 +41,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     name: 'Ultimate',
     price: 349,
     oldPrice: 450,
-    description: 'Acces la functionalitatile platformei',
+    description: 'Acces la toate functionalitatile platformei',
     features: [
       'Raspunsuri nelimitate',
       'Valabilitate 12 luni',
@@ -56,7 +56,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     cta: 'Cumpara',
     popular: true,
     order: 3,
-    priceId: 'price_1RWm8iIxI3w7eVcKm4mbCdoU',
+    priceId: 'price_1RanWvIYmtfnTY0fY32J21QY',
   },
   {
     id: 'ultimate_upgrade',
@@ -64,7 +64,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     name: 'Ultimate',
     price: 100,
     oldPrice: 450,
-    description: 'Acces la functionalitatile platformei',
+    description: 'Acces la toate functionalitatile platformei',
     features: [
       'Raspunsuri nelimitate',
       'Valabilitate 12 luni',
@@ -79,7 +79,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     cta: 'Cumpara',
     popular: true,
     order: 4,
-    priceId: 'price_1RY9ZaIxI3w7eVcKEq5qwfvN',
+    priceId: 'price_1RanY8IYmtfnTY0fvDG9pzfI',
   },
 ];
 

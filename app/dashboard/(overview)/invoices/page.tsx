@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/core/AuthenticationBoundary';
 import { PlanyviteInvoice } from '@/core/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { listDocuments } from '@/lib/oblioApi/oblioApi';
@@ -11,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<PlanyviteInvoice[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const user = useAuth().userDetails;
 
   const columns: TableProps<PlanyviteInvoice>['columns'] = [
     {
@@ -68,7 +70,7 @@ export default function InvoicesPage() {
     setLoading(true);
     try {
       const response = listDocuments('invoice', {
-        'client[email]': 'andrei.penica@gmail.com',
+        'client[email]': user?.email || '',
       });
       const data = await response;
       const mapedInvoices = mapInvoicesToInternalFormat(data.data);
@@ -99,6 +101,10 @@ export default function InvoicesPage() {
   };
 
   useEffect(() => {
+    if (!user?.email) {
+      console.error('User not found or email is missing');
+      return;
+    }
     getInvoices();
   }, []);
 

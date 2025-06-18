@@ -4,7 +4,10 @@ import './HowItWorksSection.css';
 
 const HowItWorksSection = () => {
   return (
-    <div className="how-it-works-section" id="how-it-works-section">
+    <div
+      className="how-it-works-section !p-2 lg:!p-4"
+      id="how-it-works-section-id"
+    >
       <AnimatedContent
         distance={150}
         direction="vertical"
@@ -17,7 +20,7 @@ const HowItWorksSection = () => {
       >
         <div className="title-section">
           <span className="small-header">CUM FUNCTIONEAZA</span>
-          <span className="primary-title">
+          <span className="primary-title text-center md:!text-4xl">
             Invitații digitale, create ușor, trimise rapid!
           </span>
         </div>
@@ -32,7 +35,7 @@ const HowItWorksSection = () => {
         scale={1.1}
         threshold={0.2}
       >
-        <div className="cards-section">
+        <div className="cards-section flex flex-col lg:flex-row gap-4 px-2 lg:px-4">
           <SpotlightCard
             spotlightColor="rgba(180, 106, 203, 0.3)"
             className="custom-card"
@@ -58,8 +61,8 @@ const HowItWorksSection = () => {
               </span>
               <span className="card-title">Personalizează invitația</span>
               <span className="card-description">
-                Adaugă detalii precum numele evenimentului, data, locația și
-                mesajul dorit.
+                Personalizare completa a invitatiei cu ajutorul builderului
+                nostru intuitiv. Adaugă detalii, imagini și stiluri unice.
               </span>
             </div>
           </SpotlightCard>
@@ -73,8 +76,8 @@ const HowItWorksSection = () => {
               </span>
               <span className="card-title"> Gestionează invitațiile</span>
               <span className="card-description">
-                Vezi cine a confirmat prezența și ține totul sub control
-                dintr-un singur loc.
+                Vezi cine a confirmat prezența, aranjeaza Invitații la masa și
+                ține totul sub control dintr-un singur loc.
               </span>
             </div>
           </SpotlightCard>
