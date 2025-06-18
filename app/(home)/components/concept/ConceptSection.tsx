@@ -1,8 +1,8 @@
-import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent'
-import GridMotion from '../../../../components/animatedWall/GridMotion'
-import BlobV2 from '../../../../public/blobv2.svg'
-import './ConceptSection.css'
-import Image from 'next/image'
+import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';
+import GridMotion from '../../../../components/animatedWall/GridMotion';
+import BlobV2 from '../../../../public/blobv2.svg';
+import './ConceptSection.css';
+import Image from 'next/image';
 
 const ConceptSection = () => {
   const items = [
@@ -22,7 +22,7 @@ const ConceptSection = () => {
     'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
     'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
     'https://images.unsplash.com/photo-1683512611593-59aa784f5f16?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8',
-  ]
+  ];
 
   return (
     <div className="concept-section" id="concept-section">
@@ -57,7 +57,7 @@ const ConceptSection = () => {
           <div className="your-experience section">
             <span className="title">Creează și gestionează cu ușurință</span>
             <span>
-              Eventio îți oferă toate instrumentele necesare pentru a crea o
+              Planyvite îți oferă toate instrumentele necesare pentru a crea o
               invitație digitală unică, potrivită evenimentului tău. De la
               personalizare la distribuire, platforma noastră face întregul
               proces simplu, rapid și elegant.
@@ -81,8 +81,9 @@ const ConceptSection = () => {
               Odată creată, invitația poate fi distribuită instantaneu prin
               WhatsApp, e-mail sau rețele sociale. Nu mai este nevoie de
               tipărire sau livrare manuală! În plus, poți adăuga elemente
-              interactive, precum locația evenimentului pe hartă, mesaje
-              personalizate și chiar un playlist pentru atmosferă.
+              interactive, precum locația evenimentului pe hartă, poze, elemente
+              animate si multe altele, pentru a face invitația cu adevărat
+              specială.
             </span>
           </div>
         </AnimatedContent>
@@ -115,7 +116,7 @@ const ConceptSection = () => {
         <GridMotion items={items} gradientColor={'white'} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ConceptSection
+export default ConceptSection;
