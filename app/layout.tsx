@@ -1,5 +1,7 @@
+import { ConfigProvider } from 'antd';
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+
 import { Metadata } from 'next';
-import LayoutContent from './components/layoutContent/LayoutContent';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -17,7 +19,28 @@ export const metadata: Metadata = {
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  return <LayoutContent>{children}</LayoutContent>;
+  return (
+    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
+      <body>
+        <AntdRegistry>
+          <ConfigProvider
+            theme={{
+              token: { colorPrimary: '#b46acb' },
+              components: {
+                Button: {
+                  colorPrimary: '#b46acb',
+                  colorPrimaryBorderHover: '#b46acb',
+                  colorTextLightSolid: 'white',
+                },
+              },
+            }}
+          >
+            {children}
+          </ConfigProvider>
+        </AntdRegistry>
+      </body>
+    </html>
+  );
 };
 
 export default HomeLayout;
