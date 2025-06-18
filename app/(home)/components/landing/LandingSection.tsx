@@ -30,7 +30,7 @@ const LandingSection = () => {
             </GradientText>
           </h1>
           <span className="text-lg md:text-xl lg:text-2xl mb-6 text-gray-500">
-            Economisește timp, reduce risipa și impresionează-ți invitații cu
+            Economisește timp, reduce risipa și impresionează-ți oaspeții cu
             invitații digitale personalizate. Urmărește RSVP-urile în timp real
             și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.
           </span>
