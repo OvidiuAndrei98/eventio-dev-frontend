@@ -20,7 +20,7 @@ const HomeNavBar = () => {
 
   return (
     <div className={`home-page-navigation ${scroll ? 'fixed' : ''}`}>
-      <div className="logo">
+      <div>
         <Image src={PlanyviteLogo} alt="logo" width={140} height={140} />
       </div>
       <ul className="homepage-nav-menu">

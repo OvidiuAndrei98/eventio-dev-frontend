@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect } from 'react';
 import '../../styles/globals.css';
 import ConceptSection from './components/concept/ConceptSection';
 import { Features } from './components/features/Features';
@@ -6,8 +9,18 @@ import LandingSection from './components/landing/LandingSection';
 import Models from './components/models/Models';
 import Footer from './components/navigation/Footer';
 import PricesSection from './components/prices/PricesSection';
+import { addWebVisitLog } from '@/service/logs/addWebVisitLog';
 
 const Home = () => {
+  useEffect(() => {
+    addWebVisitLog(crypto.randomUUID(), {
+      source: 'homepage',
+      referrer: document.referrer,
+    }).catch((error) => {
+      console.error('Error logging visit:', error);
+    });
+  }, []);
+
   return (
     <>
       <LandingSection />

@@ -55,7 +55,7 @@ const LandingSection = () => {
         scale={1.1}
         threshold={0.2}
       >
-        <Image className="z-1 my-4" src={HeroImage} alt="hero" />
+        <Image className="z-1 my-4" src={HeroImage} alt="hero" priority />
       </AnimatedContent>
     </div>
   );

@@ -21,11 +21,6 @@
   background: #fff;
 }
 
-.home-page-navigation .logo {
-  color: var(--primary-color);
-  font-size: 42px;
-}
-
 .home-page-navigation .homepage-nav-menu {
   list-style: none;
   display: flex;
