@@ -1,11 +1,8 @@
-'use client';
-
-import { ConfigProvider, FloatButton } from 'antd';
+import { ConfigProvider } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { useEffect, useState } from 'react';
-import HomeNavBar from './components/navigation/HomeNavBar';
-import MobileNav from './components/navigation/MobileNav';
+
 import { Metadata } from 'next';
+import LayoutContent from './components/layoutContent/LayoutContent';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -19,19 +16,6 @@ export const metadata: Metadata = {
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  const [windowSize, setWindowSize] = useState<number>(0);
-
-  useEffect(() => {
-    if (typeof window != 'undefined') {
-      // Set initial value of window witth
-      setWindowSize(window.innerWidth);
-
-      window.addEventListener('resize', () => {
-        setWindowSize(window.innerWidth);
-      });
-    }
-  }, []);
-
   return (
     <html lang="en" style={{ scrollBehavior: 'smooth' }}>
       <body>
@@ -48,16 +32,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            {!windowSize ? (
-              <div className="loader"></div>
-            ) : (
-              <>
-                {windowSize > 1024 ? <HomeNavBar /> : <MobileNav />}
-                {children}
-              </>
-            )}
-
-            <FloatButton.BackTop />
+            <LayoutContent>{children}</LayoutContent>
           </ConfigProvider>
         </AntdRegistry>
       </body>
