@@ -97,13 +97,16 @@ const DashboardEventPage = () => {
               )}
             </span>
           </div>
-          <Image
-            className="object-cover w-[100px] h-[100px] rounded-lg shadow-md"
-            alt="Event Thumbnail"
-            src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
-            width={100}
-            height={100}
-          />
+          <div className="rounded-lg shadow-md overflow-hidden flex justify-center items-center w-[150px]">
+            <Image
+              className="object-cover w-[140px] h-[78px] "
+              alt="Event Thumbnail"
+              src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
+              width={100}
+              height={100}
+            />
+          </div>
+
           <Button
             icon={<SendOutlined />}
             onClick={async () => {

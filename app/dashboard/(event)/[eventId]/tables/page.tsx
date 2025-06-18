@@ -549,9 +549,9 @@ const TablesPage = () => {
           height={200}
         />
         <h1 className="text-xl font-normal text-center text-[#22133C]">
-          Aceasta pagina nu este disponibila pe mobil, te rugam sa accesezi
-          aplicatia de pe un desktop sau laptop pentru a putea edita organizarea
-          meselor.
+          Aceasta pagina nu este disponibila pe mobil momentan, te rugam sa
+          accesezi aplicatia de pe un desktop sau laptop pentru a putea edita
+          organizarea meselor.
         </h1>
       </div>
     </div>

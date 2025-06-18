@@ -14,10 +14,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { EventInstance } from '@/core/types';
+import { mapTemplateTypeToLabel } from '@/core/utils';
 import { deleteEventById } from '@/service/event/deleteEventById';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { toast } from 'sonner';
 
 export const getColumns = ({
@@ -31,7 +33,7 @@ export const getColumns = ({
       header: ({ column }) => {
         return (
           <Button
-            className="hover:bg-purple-50 cursor-pointer"
+            className="hover:bg-purple-50 cursor-pointer w-[200px]"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
@@ -52,7 +54,7 @@ export const getColumns = ({
             <Image
               src={event.eventTemplateThumbnailUrl}
               alt="Event Thumbnail"
-              width={40}
+              width={70}
               height={40}
               className="rounded-md"
             />
@@ -113,6 +115,10 @@ export const getColumns = ({
     {
       accessorKey: 'eventType',
       header: 'Eveniment',
+      cell: ({ row }) => {
+        const event = row.original;
+        return <span>{mapTemplateTypeToLabel(event.eventType)}</span>;
+      },
     },
     {
       accessorKey: 'eventDate',
@@ -173,13 +179,21 @@ export const getColumns = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actiuni</DropdownMenuLabel>
+              <DropdownMenuLabel>Acțiuni</DropdownMenuLabel>
               <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-                Administreaza invitatia
+                <Link href={`/dashboard/${event?.eventId}`}>
+                  Administrează invitația
+                </Link>
                 <span className="hidden">{event.eventName}</span>
               </DropdownMenuItem>
               <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-                Previzualizeaza invitația
+                <Link
+                  href={`${event?.eventInvitationLink}/preview`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Previzualizează invitația
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]"
@@ -197,7 +211,7 @@ export const getColumns = ({
                   }
                 }}
               >
-                Sterge invitația
+                Șterge invitația
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

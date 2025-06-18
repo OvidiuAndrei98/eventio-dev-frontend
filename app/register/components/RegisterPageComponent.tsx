@@ -12,6 +12,16 @@ import { Button } from '@/components/ui/button';
 import LoginImage from '../../../public/LoginImage.svg';
 import { toast } from 'sonner';
 import { addUser } from '@/service/user/addUser';
+import Link from 'next/link';
+import PlanyviteLogo from '@/public/planyvite_logo.svg';
+
+type FieldType = {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+};
 
 const RegisterPageComponent = ({
   className,
@@ -19,14 +29,6 @@ const RegisterPageComponent = ({
 }: React.ComponentProps<'div'>) => {
   const router = useRouter();
   const auth = firebaseAuth;
-
-  type FieldType = {
-    name: string;
-    surname: string;
-    email: string;
-    password: string;
-    repeatPassword: string;
-  };
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     createUserWithEmailAndPassword(auth, values.email, values.password)
@@ -71,6 +73,16 @@ const RegisterPageComponent = ({
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <div className="flex justify-center mb-4">
+        <Image
+          className="cursor-pointer"
+          onClick={() => router.push('/')}
+          src={PlanyviteLogo}
+          alt="planyvite-logo"
+          width={200}
+          height={50}
+        />
+      </div>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="p-6 md:p-8">
@@ -78,7 +90,7 @@ const RegisterPageComponent = ({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Înregistrare</h1>
                 <p className="text-slate-500 text-balance dark:text-slate-400">
-                  Crează-ți cont pentru a continua
+                  Creează-ți cont pentru a continua
                 </p>
               </div>
               <div className="grid gap-3">
@@ -136,7 +148,7 @@ const RegisterPageComponent = ({
                       {
                         type: 'string',
                         min: 6,
-                        message: 'Parola trebuie sa contina minim 6 caractere.',
+                        message: 'Parola trebuie să conțină minim 6 caractere.',
                       },
                       {
                         pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
@@ -151,7 +163,7 @@ const RegisterPageComponent = ({
 
                   <Form.Item
                     name="confirm"
-                    label="Confirm Password"
+                    label="Confirmă parola"
                     dependencies={['password']}
                     hasFeedback
                     rules={[
@@ -165,7 +177,7 @@ const RegisterPageComponent = ({
                             return Promise.resolve();
                           }
                           return Promise.reject(
-                            new Error('Noua parolă nu se potrivește!')
+                            new Error('Parolele nu se potrivesc!')
                           );
                         },
                       }),
@@ -175,8 +187,11 @@ const RegisterPageComponent = ({
                   </Form.Item>
 
                   <Form.Item label={null}>
-                    <Button type="submit" className="w-full">
-                      Înregistrare
+                    <Button
+                      type="submit"
+                      className="w-full bg-[var(--primary-color)] hover:bg-[#a235c6] text-white"
+                    >
+                      Înregistrează-te
                     </Button>
                   </Form.Item>
                 </Form>
@@ -199,8 +214,24 @@ const RegisterPageComponent = ({
         </CardContent>
       </Card>
       <div className="text-slate-500 *:[a]:hover:text-slate-900 text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 dark:text-slate-400 dark:*:[a]:hover:text-slate-50">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>
-        and <a href="#">Privacy Policy</a>.
+        Continuând, ești de acord cu{' '}
+        <a className="font-semibold" href="#">
+          Termenii și condițiile
+        </a>{' '}
+        și{' '}
+        <a className="font-semibold" href="#">
+          Politica de confidențialitate
+        </a>
+        .
+      </div>
+      <div className="text-slate-500 *:[a]:hover:text-slate-900 text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 dark:text-slate-400 dark:*:[a]:hover:text-slate-50">
+        <ul className="flex flex-row items-center justify-center gap-2">
+          <li className="font-semibold">
+            <Link href={'/'}>Acasă</Link>
+          </li>
+          <li>contact@planyvite.ro</li>
+          <li>+40741448739</li>
+        </ul>
       </div>
     </div>
   );

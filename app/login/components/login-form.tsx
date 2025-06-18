@@ -94,7 +94,7 @@ export function LoginForm({
                   </Form.Item>
 
                   <Form.Item<FieldType>
-                    label="Parola"
+                    label="Parolă"
                     name="password"
                     rules={[
                       { required: true, message: 'Parola este obligatorie.' },
@@ -138,14 +138,14 @@ export function LoginForm({
                     }}
                   >
                     <GoogleOutlined />
-                    <span>Conecteză-te cu Google</span>
+                    <span>Conectează-te cu Google</span>
                   </Button>
                 </div>
               </div>
               <div className="text-center text-sm">
                 Nu ai cont?{' '}
                 <a href="/register" className="underline underline-offset-4">
-                  Inregistrează-te
+                  Înregistrează-te
                 </a>
               </div>
             </div>
@@ -173,7 +173,7 @@ export function LoginForm({
       <div className="text-slate-500 *:[a]:hover:text-slate-900 text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 dark:text-slate-400 dark:*:[a]:hover:text-slate-50">
         <ul className="flex flex-row items-center justify-center gap-2">
           <li className="font-semibold">
-            <Link href={'/'}>Acasa</Link>
+            <Link href={'/'}>Acasă</Link>
           </li>
           <li>contact@planyvite.ro</li>
           <li>+40741448739</li>

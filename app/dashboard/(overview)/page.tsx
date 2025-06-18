@@ -57,9 +57,9 @@ const DashboardPage = () => {
           <>
             <div className="flex flex-row items-start justify-between">
               <div>
-                <h1 className="font-semibold">Invitatiile mele</h1>
+                <h1 className="font-semibold">Invitațiile mele</h1>
                 <span className="text-sm text-slate-500">
-                  {events.length} invitatii
+                  {events.length} invitații
                 </span>
               </div>
               <Button
@@ -67,7 +67,7 @@ const DashboardPage = () => {
                 type="default"
                 onClick={() => setOpen(true)}
               >
-                <PlusIcon size={16} /> Invitatie noua
+                <PlusIcon size={16} /> Invitație nouă
               </Button>
             </div>
             <EventsTable columns={columns} data={events} />
@@ -77,22 +77,22 @@ const DashboardPage = () => {
       <div className="container mx-auto py-10 bg-white rounded-md shadow-sm p-4 flex flex-col items-center justify-center">
         {events.length === 0 ? (
           <h1 className="text-center text-black text-2xl font-bold">
-            Nu ai evenimente adaugate
+            Nu ai evenimente adăugate
           </h1>
         ) : (
           <h1 className="text-center text-black text-2xl font-bold">
-            Vrei sa incerci si alt model?
+            Vrei să încerci și alt model?
           </h1>
         )}
         <span className="text-center text-slate-500">
-          Ai la dispozitie un numar nelimitat de invitatii.
+          Ai la dispoziție un număr nelimitat de invitații.
         </span>
         <Button
           className="mt-4 p-4"
           type="primary"
           onClick={() => setOpen(true)}
         >
-          Creaza invitatie
+          Creează invitație
         </Button>
       </div>
       <NewInvitationModal open={open} onOk={onModalOk} onClose={onModalClose} />

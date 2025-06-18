@@ -37,6 +37,9 @@ import { useParams } from 'next/navigation';
 import { useAuth } from '@/core/AuthenticationBoundary';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
+import { isMobile } from 'react-device-detect';
+import Image from 'next/image';
+import LaptopIllustration from '@/public/use-laptop-illustration.svg';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -584,7 +587,23 @@ const EditPage = () => {
     });
   };
 
-  return loading || !template ? (
+  return isMobile ? (
+    <div>
+      <div className="bg-[#F6F6F6] h-[calc(100dvh-48px)] w-full flex flex-col items-center justify-center p-4">
+        <Image
+          src={LaptopIllustration}
+          alt="Laptop illustration"
+          height={200}
+          width={200}
+        />
+        <h1 className="text-xl font-normal text-center text-[#22133C]">
+          Această pagină nu este disponibilă pe mobil momentan, te rugăm să
+          accesezi aplicația de pe un desktop sau laptop pentru a putea edita
+          invitația.
+        </h1>
+      </div>
+    </div>
+  ) : loading || !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
       <span className="loader"></span>
     </div>
