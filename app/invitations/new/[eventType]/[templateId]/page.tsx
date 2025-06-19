@@ -165,6 +165,7 @@ const NewInvitationPage = () => {
 
     selectedTemplate.settings.eventLocation = newEventLocationCopy;
     selectedTemplate.eventDate = eventDateString;
+    selectedTemplate.settings.eventActive = false;
 
     const eventData: EventInstance = {
       eventGuestCount: parseInt(newEventDate.guestsCount, 10),
