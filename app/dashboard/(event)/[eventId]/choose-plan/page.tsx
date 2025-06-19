@@ -3,13 +3,32 @@
 import { PricingCard } from '@/components/pricingCard/PricingCard';
 import { EventContext } from '@/core/context/EventContext';
 import { PLANYVITE_EVENT_PLANS } from '@/lib/planyviteEventPlanTiers';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 const ChosePlanPage: React.FC = () => {
+  const [shrinkElement, setShrinkElement] = useState(false);
   const { eventInstance } = useContext(EventContext);
+
+  useEffect(() => {
+    const element = document.querySelector('.pricing-container');
+    if (element) {
+      const observer = new ResizeObserver((entries) => {
+        const e = entries[0]; // should be only one
+        if (e.contentRect.width < 1048) {
+          setShrinkElement(true);
+        } else {
+          setShrinkElement(false);
+        }
+      });
+
+      // start listening for size changes
+      observer.observe(element);
+    }
+  }, []);
+
   return (
-    <div className="flex flex-col w-full h-screen bg-[#F6F6F6]">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="pricing-container w-full h-screen bg-[#F6F6F6] overflow-y-auto">
+      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col shrink">
         <h1 className="text-4xl text-[var(--secondary-color)] font-bold mb-4 text-center">
           Alege planul potrivit pentru evenimentul tău
         </h1>
@@ -19,7 +38,9 @@ const ChosePlanPage: React.FC = () => {
           un eveniment mic sau unul de amploare, avem o opțiune potrivită pentru
           tine!
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={`flex ${shrinkElement ? 'flex-col' : 'flex-row'} gap-6`}
+        >
           {PLANYVITE_EVENT_PLANS.map((plan) => {
             if (
               (plan.id === 'ultimate' &&

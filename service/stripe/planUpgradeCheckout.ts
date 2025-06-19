@@ -23,7 +23,11 @@ export const planUpgradeCheckout = async (
     cancel_url: window.location.origin,
     customer_update: {
       name: 'auto',
+      address: 'auto',
     },
+    // consent_collection: {
+    //   terms_of_service: 'required',
+    // },
     metadata: {
       eventId: eventId,
       newPlan: plan,
@@ -34,6 +38,7 @@ export const planUpgradeCheckout = async (
         newPlan: plan,
       },
     },
+    locale: 'ro',
     billing_address_collection: 'required',
   });
 
