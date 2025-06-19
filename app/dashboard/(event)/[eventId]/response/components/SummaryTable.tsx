@@ -5,6 +5,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   MobileOutlined,
+  QuestionCircleOutlined,
   SearchOutlined,
   SmileOutlined,
   StarOutlined,
@@ -13,6 +14,7 @@ import {
   Button,
   Input,
   InputRef,
+  Popconfirm,
   Space,
   Table,
   TableColumnType,
@@ -21,11 +23,12 @@ import {
 import './SummaryTable.css';
 import SadFaceIcon from '@/public/sad-face.svg';
 import Image from 'next/image';
-import { useContext, useRef } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Guest } from '@/core/types';
 import { EventContext } from '@/core/context/EventContext';
+import { deleteGuestById } from '@/service/guest/deleteGuestById';
 
 type DataIndex = keyof Guest;
 
@@ -34,6 +37,8 @@ interface SummaryTableProps {
 }
 
 const SummaryTable = ({ guests }: SummaryTableProps) => {
+  const [guestsState, setGuestsState] = useState<Guest[]>(guests);
+
   const searchInput = useRef<InputRef>(null);
   const { eventInstance } = useContext(EventContext);
 
@@ -50,6 +55,18 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
   ) => {
     clearFilters();
     confirm({ closeDropdown: false });
+  };
+
+  const deleteGuest = async (
+    guestId: string,
+    eventId: string,
+    guestSubmissionsTime: number,
+    attending: boolean
+  ) => {
+    await deleteGuestById(guestId, eventId, guestSubmissionsTime, attending);
+    setGuestsState((prevGuests) =>
+      prevGuests.filter((guest) => guest.guestId !== guestId)
+    );
   };
 
   const getColumnSearchProps = (
@@ -167,11 +184,29 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
       width: useIsMobile() ? 100 : 'auto',
       key: 'action',
       align: 'center',
-      render: (_: any, record: Guest) => <Button>Sterge</Button>, // eslint-disable-line
+      render: (_: any, record: Guest) => (
+        <Popconfirm
+          title="Șterge invitatul"
+          description="Ești sigur că vrei să ștergi acest invitat?"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          cancelText="Anulează"
+          okText="Șterge"
+          onConfirm={() =>
+            deleteGuest(
+              record.guestId,
+              record.eventId,
+              record.date,
+              record.isAttending
+            )
+          }
+        >
+          <Button>Șterge</Button>
+        </Popconfirm>
+      ), // eslint-disable-line
     },
   ];
 
-  const data: Guest[] = guests;
+  const data: Guest[] = guestsState;
 
   return (
     <div className="summary-container">
@@ -205,7 +240,9 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                 style={{ color: 'green', fontSize: useIsMobile() ? 12 : 20 }}
               />
               Confirmate
-              <span>{guests.filter((guest) => guest.isAttending).length}</span>
+              <span>
+                {guestsState.filter((guest) => guest.isAttending).length}
+              </span>
             </div>
             <div className="statistic-card">
               <Image
@@ -216,7 +253,9 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                 style={{ color: 'rebeccapurple' }}
               />
               Refuzate
-              <span>{guests.filter((guest) => !guest.isAttending).length}</span>
+              <span>
+                {guestsState.filter((guest) => !guest.isAttending).length}
+              </span>
             </div>
           </div>
         </div>
