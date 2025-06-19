@@ -37,7 +37,12 @@ const ResponsePage = () => {
     {
       key: '1',
       label: 'Sumar',
-      children: <SummaryTable guests={guests} />,
+      children: (
+        <SummaryTable
+          guests={guests}
+          updateGuests={(guests) => setGuests(guests)}
+        />
+      ),
     },
     {
       key: '2',

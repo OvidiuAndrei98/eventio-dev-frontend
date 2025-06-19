@@ -34,11 +34,10 @@ type DataIndex = keyof Guest;
 
 interface SummaryTableProps {
   guests: Guest[];
+  updateGuests?: (guests: Guest[]) => void;
 }
 
-const SummaryTable = ({ guests }: SummaryTableProps) => {
-  const [guestsState, setGuestsState] = useState<Guest[]>(guests);
-
+const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
   const searchInput = useRef<InputRef>(null);
   const { eventInstance } = useContext(EventContext);
 
@@ -64,9 +63,10 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
     attending: boolean
   ) => {
     await deleteGuestById(guestId, eventId, guestSubmissionsTime, attending);
-    setGuestsState((prevGuests) =>
-      prevGuests.filter((guest) => guest.guestId !== guestId)
-    );
+    if (typeof guests !== 'undefined' && updateGuests) {
+      const updatedGuests = guests.filter((guest) => guest.guestId !== guestId);
+      updateGuests(updatedGuests);
+    }
   };
 
   const getColumnSearchProps = (
@@ -209,8 +209,6 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
     },
   ];
 
-  const data: Guest[] = guestsState;
-
   return (
     <div className="summary-container">
       <div className="table-container">
@@ -243,9 +241,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                 style={{ color: 'green', fontSize: useIsMobile() ? 12 : 20 }}
               />
               Confirmate
-              <span>
-                {guestsState.filter((guest) => guest.isAttending).length}
-              </span>
+              <span>{guests.filter((guest) => guest.isAttending).length}</span>
             </div>
             <div className="statistic-card">
               <Image
@@ -256,9 +252,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                 style={{ color: 'rebeccapurple' }}
               />
               Refuzate
-              <span>
-                {guestsState.filter((guest) => !guest.isAttending).length}
-              </span>
+              <span>{guests.filter((guest) => !guest.isAttending).length}</span>
             </div>
           </div>
         </div>
@@ -292,7 +286,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                   ...columns.slice(2),
                 ]
           }
-          dataSource={data}
+          dataSource={guests}
         />
       </div>
     </div>
