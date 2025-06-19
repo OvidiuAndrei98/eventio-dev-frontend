@@ -160,7 +160,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
       dataIndex: 'primaryContactPhone',
       key: 'primaryContactPhone',
       render: (
-        // eslint-disable-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         _: any,
         record: Guest
       ) => (record.primaryContactPhone ? record.primaryContactPhone : '-'),
@@ -172,7 +172,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
       dataIndex: 'confirmed',
       key: 'confirmed',
       render: (
-        // eslint-disable-line
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         _: any,
         record: Guest
       ) =>
@@ -186,7 +186,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
       width: useIsMobile() ? 100 : 'auto',
       key: 'action',
       align: 'center',
-      // eslint-disable-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: Guest) => (
         <Popconfirm
           title="Șterge invitatul"
@@ -205,7 +205,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
         >
           <Button>Șterge</Button>
         </Popconfirm>
-      ), // eslint-disable-line
+      ),
     },
   ];
 
@@ -276,7 +276,7 @@ const SummaryTable = ({ guests }: SummaryTableProps) => {
                     dataIndex: 'date',
                     key: 'date',
                     render: (
-                      // eslint-disable-line
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       _: any,
                       record: Guest
                     ) => (
