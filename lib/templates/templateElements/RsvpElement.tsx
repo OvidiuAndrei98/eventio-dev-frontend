@@ -6,10 +6,11 @@ import {
   TemplateElement,
 } from '@/core/types';
 import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
-import { Button, Form, FormProps, Input, InputNumber, Select } from 'antd';
+import { Button, Form, FormProps, Input, InputNumber, Select, Tag } from 'antd';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
+import { InfoCircleOutlined, InfoOutlined } from '@ant-design/icons';
 
 interface RsvpFormData {
   primaryGuestName: string;
@@ -221,7 +222,7 @@ const RsvpElement = ({
     // Containerul principal al widget-ului. Folosește prop-ul 'id' pentru un ID HTML unic.
     <div
       style={{ ...elementStyle }}
-      className={`backdrop-blur-sm rounded-sm p-4 bg-[#00000014] max-w-[450px] border-1 border-solid border-[#0000001a] w-full ${
+      className={`backdrop-blur-md rounded-sm p-4 bg-[#00000014] max-w-[450px] border-1 border-solid border-[#0000001a] w-full ${
         editMode && isSelected && selectedElementId === id
           ? 'ring-inset ring-2 ring-[#CB93D9]'
           : ''
@@ -421,6 +422,7 @@ const RsvpElement = ({
                 borderTop: '1px dashed #ccc',
                 paddingTop: '15px',
                 marginTop: '15px',
+                color: 'inherit',
               }}
             >
               <h3
@@ -451,7 +453,7 @@ const RsvpElement = ({
                         style={{
                           marginBottom: '10px',
                           fontSize: '16px',
-                          color: '#333',
+                          color: 'inherit',
                         }}
                       >
                         Invitat #{index + 2}{' '}
@@ -490,10 +492,20 @@ const RsvpElement = ({
             size="large"
             className="w-full"
           >
-            Trimite raspuns
+            Trimite răspuns
           </Button>
         </Form.Item>
       </Form>
+      <div
+        className="flex flex-row items-start gap-2 text-gray-500 text-xs mt-4"
+        style={{ color: 'inherit', fontSize: '12px' }}
+      >
+        <InfoCircleOutlined />
+        <span>
+          Pentru a actualiza un răspuns anterior, vă rugăm să folosiți același
+          număr de telefon
+        </span>
+      </div>
     </div>
   );
 };

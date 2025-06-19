@@ -1,4 +1,12 @@
-import { doc, writeBatch } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+  writeBatch,
+} from 'firebase/firestore';
 import db from '../../lib/firebase/fireStore';
 import { Guest } from '@/core/types';
 import { queryEventById } from '../event/queryEventById';
@@ -26,22 +34,105 @@ export const addGuestsToEventBatch = async (
     if (!foundEvent) {
       throw new Error(`Event not found, user can't be added`);
     }
+    // Normalizează telefonul
+    const normalizedPhone = guests.filter((g) => g.primaryContactPhone)[0]
+      .primaryContactPhone;
 
-    const batch = writeBatch(db);
-    guests.forEach((guest) => {
-      const guestRef = doc(db, 'guest_registry', guest.guestId);
-      batch.set(guestRef, guest);
-    });
+    // 1. Găsește guest-ul cu acest phone
+    const guestsRef = collection(db, 'guest_registry');
+    const phoneQuery = query(
+      guestsRef,
+      where('primaryContactPhone', '==', normalizedPhone)
+    );
+    const phoneSnap = await getDocs(phoneQuery);
 
-    await batch.commit();
+    if (!phoneSnap.empty) {
+      // 2. Ia submissionId
+      const guestDoc = phoneSnap.docs[0];
+      const submissionId = guestDoc.get('submissionId');
 
-    for (const guest of guests) {
-      if (guest.isAttending) {
-        // Update event statistics for each guest who is attending
-        await updateEventStatsForGuest(eventId, guest.date, 1, 1, 0);
-      } else {
-        // Update event statistics for each guest who is not attending
-        await updateEventStatsForGuest(eventId, guest.date, 1, 0, 1);
+      // 3. Ia toți invitații cu același submissionId
+      const submissionQuery = query(
+        guestsRef,
+        where('submissionId', '==', submissionId)
+      );
+      const submissionSnap = await getDocs(submissionQuery);
+
+      // 4. Actualizează răspunsurile și calculează statistici
+      let oldConfirmations = 0;
+      let oldRefusals = 0;
+      let oldResponses = 0;
+
+      submissionSnap.docs.forEach((docSnap) => {
+        const resp = docSnap.get('isAttending');
+        if (resp === true) oldConfirmations++;
+        if (resp === false) oldRefusals++;
+        if (resp !== undefined || resp !== null) oldResponses++;
+      });
+
+      // Calculează noile răspunsuri pe baza fiecărui guest din guests
+      let newConfirmations = 0;
+      let newRefusals = 0;
+      let newResponses = 0;
+
+      guests.forEach((guest) => {
+        if (guest.isAttending === true) newConfirmations++;
+        if (guest.isAttending === false) newRefusals++;
+        if (guest.isAttending !== undefined) newResponses++;
+      });
+
+      // Diferența pentru statistici
+      const deltaConfirmations = newConfirmations - oldConfirmations;
+      const deltaRefusals = newRefusals - oldRefusals;
+      const deltaResponses = newResponses - oldResponses;
+
+      // 5. Șterge toți invitații cu același submissionId și adaugă-i din nou
+      const batch = writeBatch(db);
+
+      // Șterge toți invitații existenți cu submissionId
+      submissionSnap.docs.forEach((docSnap) => {
+        batch.delete(doc(db, 'guest_registry', docSnap.id));
+      });
+
+      // Adaugă toți invitații noi
+      guests.forEach((guest) => {
+        const guestRef = doc(db, 'guest_registry', guest.guestId);
+        batch.set(guestRef, guest);
+      });
+
+      await batch.commit();
+
+      // Update statistici doar dacă s-a schimbat ceva
+      if (
+        deltaResponses !== 0 ||
+        deltaConfirmations !== 0 ||
+        deltaRefusals !== 0
+      ) {
+        await updateEventStatsForGuest(
+          eventId,
+          Date.now(),
+          deltaResponses,
+          deltaConfirmations,
+          deltaRefusals
+        );
+      }
+    } else {
+      const batch = writeBatch(db);
+      guests.forEach((guest) => {
+        const guestRef = doc(db, 'guest_registry', guest.guestId);
+        batch.set(guestRef, guest);
+      });
+
+      await batch.commit();
+
+      for (const guest of guests) {
+        if (guest.isAttending) {
+          // Update event statistics for each guest who is attending
+          await updateEventStatsForGuest(eventId, guest.date, 1, 1, 0);
+        } else {
+          // Update event statistics for each guest who is not attending
+          await updateEventStatsForGuest(eventId, guest.date, 1, 0, 1);
+        }
       }
     }
   } catch (error) {
