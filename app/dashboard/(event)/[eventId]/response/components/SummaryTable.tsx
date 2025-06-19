@@ -23,7 +23,7 @@ import {
 import './SummaryTable.css';
 import SadFaceIcon from '@/public/sad-face.svg';
 import Image from 'next/image';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Guest } from '@/core/types';
