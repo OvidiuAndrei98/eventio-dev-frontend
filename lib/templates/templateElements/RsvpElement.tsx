@@ -6,11 +6,11 @@ import {
   TemplateElement,
 } from '@/core/types';
 import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
-import { Button, Form, FormProps, Input, InputNumber, Select, Tag } from 'antd';
+import { Button, Form, FormProps, Input, InputNumber, Select } from 'antd';
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
-import { InfoCircleOutlined, InfoOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 interface RsvpFormData {
   primaryGuestName: string;
