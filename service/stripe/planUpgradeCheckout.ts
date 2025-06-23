@@ -32,12 +32,14 @@ export const planUpgradeCheckout = async (
       eventId: eventId,
       newPlan: plan,
     },
+    collect_billing_address: 'required',
     payment_intent_data: {
       metadata: {
         eventId: eventId,
         newPlan: plan,
       },
     },
+    allow_promotion_codes: true,
     locale: 'ro',
     billing_address_collection: 'required',
   });
