@@ -78,6 +78,7 @@ export default function Planner() {
             scale={1.1}
             threshold={0.2}
             classNamme="center-text min-h-full"
+            key={feature.title}
           >
             <div
               key={feature.title}
