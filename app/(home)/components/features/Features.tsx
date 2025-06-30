@@ -13,6 +13,7 @@ import {
   UserSwitchOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons';
+import { DotsPattern } from '@/components/ui/dots-pattern';
 
 const data = [
   {
@@ -126,7 +127,7 @@ export function Features() {
               {data.map((item, index) => (
                 <div
                   className={cn(
-                    'absolute inset-0 w-full h-full transform-gpu rounded-2xl transition-all duration-300 bg-[#f7eff9] p-2',
+                    'absolute w-full aspect-video w-full h-full top-0 left-0 transition-transform duration-500 ease-in-out rounded-2xl overflow-hidden',
                     featureOpen === index ? 'scale-100' : 'scale-70',
                     featureOpen > index ? 'translate-y-full' : ''
                   )}
@@ -134,7 +135,7 @@ export function Features() {
                   style={{ zIndex: data.length - index }}
                 >
                   <video
-                    className="w-full h-full object-contain rounded-2xl"
+                    className="absolute inset-0 w-full h-full object-fill border border-neutral-200 dark:border-neutral-800 rounded-2xl"
                     controls={false}
                     autoPlay
                     loop
@@ -190,12 +191,17 @@ export function Features() {
           ].map(({ label, icon }) => (
             <div
               key={label}
-              className="rounded-xl bg-white dark:bg-neutral-900 p-5 shadow-[0_8px_48px_0_rgba(186,116,206,0.12)] border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center text-center text-base font-medium text-neutral-700 dark:text-neutral-200 w-full min-h-[180px]"
+              className="relative rounded-xl bg-[#fafafa] dark:bg-neutral-900 p-5 shadow-[0_8px_48px_0_rgba(186,116,206,0.12)] border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center text-center text-base font-medium text-neutral-700 dark:text-neutral-200 w-full min-h-[180px]"
               style={{
                 boxShadow:
                   '0 8px 48px 0 rgba(186,116,206,0.12), 0 0 0 2px rgba(186,116,206,0.06)',
               }}
             >
+              <DotsPattern
+                className={cn(
+                  '[mask-image:radial-gradient(150px_circle_at_center,white,transparent)]'
+                )}
+              />
               <span className="mb-2 flex items-center justify-center text-4xl">
                 {icon}
               </span>
