@@ -75,13 +75,13 @@ const MobileNav = () => {
             <Link href="#first-section">Acasa</Link>
           </li>
           <li className="nav-item">
+            <Link href="#planner-section">Planificator</Link>
+          </li>
+          <li className="nav-item">
             <Link href="#features-section">Functionalitati</Link>
           </li>
           <li className="nav-item">
             <Link href="#how-it-works-section-id">Cum functioneaza</Link>
-          </li>
-          <li className="nav-item">
-            <Link href="#concept-section">Concept</Link>
           </li>
           <li className="nav-item">
             <Link href="#prices-section">Preturi</Link>

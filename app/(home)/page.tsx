@@ -10,6 +10,7 @@ import Models from './components/models/Models';
 import Footer from './components/navigation/Footer';
 import PricesSection from './components/prices/PricesSection';
 import { addWebVisitLog } from '@/service/logs/addWebVisitLog';
+import Planner from './components/planner/Planner';
 
 const Home = () => {
   useEffect(() => {
@@ -26,6 +27,7 @@ const Home = () => {
       <LandingSection />
       <div className="relative bottom-0 left-auto right-auto w-screen h-[100px] bg-gradient-to-t from-[white] to-[#f5f3f5]"></div>
       <Features />
+      <Planner />
       <HowItWorksSection />
       <ConceptSection />
       <PricesSection />
