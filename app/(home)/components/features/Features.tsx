@@ -87,7 +87,7 @@ export function Features() {
         initialOpacity={0.2}
         animateOpacity
         scale={1.1}
-        threshold={0.2}
+        threshold={0}
         classNamme="center-text"
       >
         <div className=" grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -149,75 +149,61 @@ export function Features() {
             </div>
           </div>
         </div>
+        <div className="mt-10 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {[
+            {
+              label: 'Exportă datele participanților rapid',
+              icon: <ExportOutlined />,
+            },
+            {
+              label: 'Personalizare completă a invitației',
+              icon: <EditOutlined />,
+            },
+            {
+              label: 'Planificatator excel gratuit',
+              icon: <TableOutlined />,
+            },
+            {
+              label: 'Adauga intrebări personalizate',
+              icon: <QuestionCircleOutlined />,
+            },
+            {
+              label: 'Gestioneaza locatiile evenimentului',
+              icon: <EnvironmentOutlined />,
+            },
+            {
+              label: 'Adauga si gestioneaza invitatții',
+              icon: <UserSwitchOutlined />,
+            },
+            {
+              label: 'Descoperă statistici detaliate ale evenimentului',
+              icon: <LineChartOutlined />,
+            },
+            {
+              label: 'Gestionare RSVP avansată',
+              icon: <CheckOutlined />,
+            },
+            {
+              label: 'Acces de pe orice dispozitiv',
+              icon: <MobileOutlined />,
+            },
+          ].map(({ label, icon }) => (
+            <div
+              key={label}
+              className="rounded-xl bg-white dark:bg-neutral-900 p-5 shadow-[0_8px_48px_0_rgba(186,116,206,0.12)] border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center text-center text-base font-medium text-neutral-700 dark:text-neutral-200 w-full min-h-[180px]"
+              style={{
+                boxShadow:
+                  '0 8px 48px 0 rgba(186,116,206,0.12), 0 0 0 2px rgba(186,116,206,0.06)',
+              }}
+            >
+              <span className="mb-2 flex items-center justify-center text-4xl">
+                {icon}
+              </span>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
       </AnimatedContent>
-      <div>
-        <AnimatedContent
-          distance={150}
-          direction="horizontal"
-          reverse={false}
-          config={{ tension: 80, friction: 20 }}
-          initialOpacity={0.2}
-          animateOpacity
-          scale={1.1}
-          threshold={0.2}
-          classNamme="center-text mt-12"
-        >
-          <div className="mt-10 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {[
-              {
-                label: 'Exportă datele participanților rapid',
-                icon: <ExportOutlined />,
-              },
-              {
-                label: 'Personalizare completă a invitației',
-                icon: <EditOutlined />,
-              },
-              {
-                label: 'Planificatator excel gratuit',
-                icon: <TableOutlined />,
-              },
-              {
-                label: 'Adauga intrebări personalizate',
-                icon: <QuestionCircleOutlined />,
-              },
-              {
-                label: 'Gestioneaza locatiile evenimentului',
-                icon: <EnvironmentOutlined />,
-              },
-              {
-                label: 'Adauga si gestioneaza invitatții',
-                icon: <UserSwitchOutlined />,
-              },
-              {
-                label: 'Descoperă statistici detaliate ale evenimentului',
-                icon: <LineChartOutlined />,
-              },
-              {
-                label: 'Gestionare RSVP avansată',
-                icon: <CheckOutlined />,
-              },
-              {
-                label: 'Acces de pe orice dispozitiv',
-                icon: <MobileOutlined />,
-              },
-            ].map(({ label, icon }) => (
-              <div
-                key={label}
-                className="rounded-xl bg-white dark:bg-neutral-900 p-5 shadow-[0_8px_48px_0_rgba(186,116,206,0.12)] border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center text-center text-base font-medium text-neutral-700 dark:text-neutral-200 w-full min-h-[180px]"
-                style={{
-                  boxShadow:
-                    '0 8px 48px 0 rgba(186,116,206,0.12), 0 0 0 2px rgba(186,116,206,0.06)',
-                }}
-              >
-                <span className="mb-2 flex items-center justify-center text-4xl">
-                  {icon}
-                </span>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-        </AnimatedContent>
-      </div>
     </div>
   );
 }
