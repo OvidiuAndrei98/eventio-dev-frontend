@@ -127,7 +127,7 @@ export function Features() {
               {data.map((item, index) => (
                 <div
                   className={cn(
-                    'absolute w-full aspect-video w-full h-full top-0 left-0 transition-transform duration-500 ease-in-out rounded-2xl overflow-hidden',
+                    'absolute w-full aspect-video h-full top-0 left-0 transition-transform duration-500 ease-in-out rounded-2xl overflow-hidden flex items-center justify-center',
                     featureOpen === index ? 'scale-100' : 'scale-70',
                     featureOpen > index ? 'translate-y-full' : ''
                   )}
@@ -135,7 +135,7 @@ export function Features() {
                   style={{ zIndex: data.length - index }}
                 >
                   <video
-                    className="absolute inset-0 w-full h-full object-fill border border-neutral-200 dark:border-neutral-800 rounded-2xl"
+                    className="absolute inset-0 w-full h-full md:w-3/4 md:h-3/4 mx-auto lg:w-full lg:h-full object-fill border border-neutral-200 dark:border-neutral-800 rounded-2xl"
                     controls={false}
                     autoPlay
                     loop
