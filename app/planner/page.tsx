@@ -145,9 +145,10 @@ export default function PlannerPage() {
               animateOpacity
               scale={1.1}
               threshold={0.2}
+              key={idx}
               classNamme={`planner-feat-card rounded-2xl p-6 flex flex-col items-start shadow-sm border border-[#ede0f3] bg-white ${extraClasses}`}
             >
-              <div key={idx}>
+              <div>
                 <div className="mb-3">{feature.icon}</div>
                 <h3 className="text-lg font-semibold mb-1 text-[var(--primary-color)]">
                   {feature.title}
