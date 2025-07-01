@@ -136,16 +136,27 @@ export default function PlannerPage() {
           if (idx === 3) extraClasses = 'md:row-span-2'; // Asistent WhatsApp - taller
           if (idx === 6) extraClasses = 'md:col-span-2'; // Zeci de șabloane - wider
           return (
-            <div
-              key={idx}
-              className={`planner-feat-card rounded-2xl p-6 flex flex-col items-start shadow-sm border border-[#ede0f3] bg-white ${extraClasses}`}
+            <AnimatedContent
+              distance={150}
+              direction="horizontal"
+              reverse={false}
+              config={{ tension: 80, friction: 20 }}
+              initialOpacity={0.2}
+              animateOpacity
+              scale={1.1}
+              threshold={0.2}
+              classNamme={`planner-feat-card rounded-2xl p-6 flex flex-col items-start shadow-sm border border-[#ede0f3] bg-white ${extraClasses}`}
             >
-              <div className="mb-3">{feature.icon}</div>
-              <h3 className="text-lg font-semibold mb-1 text-[var(--primary-color)]">
-                {feature.title}
-              </h3>
-              <p className="text-gray-700 text-[15px]">{feature.description}</p>
-            </div>
+              <div key={idx}>
+                <div className="mb-3">{feature.icon}</div>
+                <h3 className="text-lg font-semibold mb-1 text-[var(--primary-color)]">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-700 text-[15px]">
+                  {feature.description}
+                </p>
+              </div>
+            </AnimatedContent>
           );
         })}
       </section>
@@ -172,68 +183,48 @@ export default function PlannerPage() {
             </span>
           </div>
         </AnimatedContent>
-        <div className="flex flex-col md:flex-row items-stretch gap-8 max-w-[1200px] w-full">
-          <div
-            className="flex-1 rounded-2xl p-8 flex flex-col items-center shadow-sm border border-[#ede0f3] bg-white justify-center"
-            style={{
-              background:
-                'linear-gradient(90deg, var(--secondary-color-light, #f2e3f7) 0%, #fff 100%)',
-            }}
-          >
-            <span className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-full text-xs font-semibold mb-3">
-              OFERTĂ SPECIALĂ
-            </span>
-            <h2 className="text-2xl font-bold mb-2 text-[var(--primary-color)] text-center">
-              Planificator Digital
-            </h2>
-            <div className="flex flex-row-reverse items-center mb-2 gap-2">
-              <span className="text-xl font-semibold text-gray-400 line-through">
-                199 RON
-              </span>
-              <span className="text-4xl font-extrabold text-[var(--primary-color)]">
-                99 RON
-              </span>
-            </div>
-            <ul className="mb-6 space-y-2 text-gray-700 text-center">
-              <li>Acces complet la Planificatorul Digital</li>
-            </ul>
-            <button className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg">
-              Cumpără
-            </button>
-          </div>
-          {/* 
-          <div className="flex flex-col justify-center items-center mx-2">
-            <div className="bg-[var(--primary-color)] text-white rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold shadow mb-2">
-              sau
-            </div>
-          </div>
-
-          <div
-            className="flex-1 rounded-2xl p-8 flex flex-col items-center shadow-sm border border-[#ede0f3] bg-white justify-center"
-            style={{
-              background:
-                'linear-gradient(90deg, var(--secondary-color-light, #f2e3f7) 0%, #fff 100%)',
-            }}
-          >
-            <div className="flex-1 flex flex-col items-start">
+        <AnimatedContent
+          distance={150}
+          direction="horizontal"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+          classNamme="w-full"
+        >
+          <div className="flex flex-col md:flex-row items-stretch gap-8 max-w-[1200px] w-full">
+            <div
+              className="flex-1 rounded-2xl p-8 flex flex-col items-center shadow-sm border border-[#ede0f3] bg-white justify-center"
+              style={{
+                background:
+                  'linear-gradient(90deg, var(--secondary-color-light, #f2e3f7) 0%, #fff 100%)',
+              }}
+            >
               <span className="bg-[var(--primary-color)] text-white px-4 py-1 rounded-full text-xs font-semibold mb-3">
-                PLAN ULTIMATE
+                OFERTĂ SPECIALĂ
               </span>
-              <h3 className="text-2xl font-bold mb-2 text-[var(--primary-color)]">
-                Invitație Digitală + Planificator Digital
-              </h3>
-              <div className="text-4xl font-extrabold mb-2 text-[var(--primary-color)]">
-                349 RON
+              <h2 className="text-2xl font-bold mb-2 text-[var(--primary-color)] text-center">
+                Planificator Digital
+              </h2>
+              <div className="flex flex-row-reverse items-center mb-2 gap-2">
+                <span className="text-xl font-semibold text-gray-400 line-through">
+                  199 RON
+                </span>
+                <span className="text-4xl font-extrabold text-[var(--primary-color)]">
+                  99 RON
+                </span>
               </div>
-              <a
-                href="#"
-                className="inline-block px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg"
-              >
-                Vezi detalii
-              </a>
+              <ul className="mb-6 space-y-2 text-gray-700 text-center">
+                <li>Acces complet la Planificatorul Digital</li>
+              </ul>
+              <button className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg">
+                Cumpără
+              </button>
             </div>
-          </div> */}
-        </div>
+          </div>
+        </AnimatedContent>
       </section>
     </main>
   );

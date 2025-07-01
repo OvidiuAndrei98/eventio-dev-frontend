@@ -152,7 +152,8 @@ export default function Planner() {
                 să planifici orice eveniment fără stres.
               </p>
               <a
-                href="#"
+                target="_blank"
+                href="/planner"
                 className="inline-block px-8 py-3 bg-[var(--primary-color)] !text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color)]/80 transition"
               >
                 Descoperă
