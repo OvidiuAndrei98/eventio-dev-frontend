@@ -15,19 +15,17 @@ const features = [
   {
     title: 'Calendar de Planificare',
     description:
-      'Acest modul îți explică etapele organizării unei nunți, ordinea acestora, aspectele pe care trebuie să le iei în calcul și, de asemenea, cu cât timp înainte ar trebui să începi planificarea.',
+      'Vezi pașii esențiali și ordinea lor pentru organizarea nunții.',
     icon: <CalendarOutlined />,
   },
   {
     title: 'Ghidul Mirilor',
-    description:
-      'Conține sfaturi practice (tips and tricks) pentru ziua nunții, dar și indicații despre cum să-ți organizezi evenimentul de la un capăt la altul, cât mai eficient.',
+    description: 'Sfaturi utile și indicații pentru o organizare eficientă.',
     icon: <ReadOutlined />,
   },
   {
     title: 'Cheltuieli',
-    description:
-      'Acest modul detaliază tipurile de cheltuieli implicate într-o nuntă și aspectele de care trebuie să ții cont.',
+    description: 'Află ce cheltuieli implică nunta și cum să le gestionezi.',
     icon: <DollarOutlined />,
   },
 ];

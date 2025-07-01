@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import HomeNavBar from '../navigation/HomeNavBar';
-import MobileNav from '../navigation/MobileNav';
-import { FloatButton } from 'antd';
-import Footer from '../navigation/Footer';
+import HeaderNav from './HeaderNav';
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -30,10 +27,8 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
         <div className="loader"></div>
       ) : (
         <>
-          {windowSize > 1024 ? <HomeNavBar /> : <MobileNav />}
+          <HeaderNav />
           {children}
-          <Footer />
-          <FloatButton.BackTop />
         </>
       )}
     </>

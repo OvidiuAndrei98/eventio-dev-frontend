@@ -25,19 +25,19 @@ const HomeNavBar = () => {
       </div>
       <ul className="homepage-nav-menu">
         <li className="nav-item">
-          <Link href="#first-section">Acasa</Link>
+          <Link href="#first-section">Acasă</Link>
         </li>
         <li className="nav-item">
           <Link href="#planner-section">Planificator</Link>
         </li>
         <li className="nav-item">
-          <Link href="#features-section">Functionalitati</Link>
+          <Link href="#features-section">Funcționalități</Link>
         </li>
         <li className="nav-item">
-          <Link href="#how-it-works-section-id">Cum functioneaza</Link>
+          <Link href="#how-it-works-section-id">Cum funcționează</Link>
         </li>
         <li className="nav-item">
-          <Link href="#prices-section">Preturi</Link>
+          <Link href="#prices-section">Prețuri</Link>
         </li>
         <li className="nav-item">
           <Link href="#models-section">Modele</Link>
@@ -49,7 +49,7 @@ const HomeNavBar = () => {
         type="primary"
         onClick={() => router.push('/login')}
       >
-        Intra in cont
+        Intră în cont
       </Button>
     </div>
   );

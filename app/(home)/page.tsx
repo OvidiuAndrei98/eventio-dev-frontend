@@ -7,7 +7,6 @@ import { Features } from './components/features/Features';
 import HowItWorksSection from './components/howItWorks/HowItWorksSection';
 import LandingSection from './components/landing/LandingSection';
 import Models from './components/models/Models';
-import Footer from './components/navigation/Footer';
 import PricesSection from './components/prices/PricesSection';
 import { addWebVisitLog } from '@/service/logs/addWebVisitLog';
 import Planner from './components/planner/Planner';
@@ -32,7 +31,6 @@ const Home = () => {
       <ConceptSection />
       <PricesSection />
       <Models />
-      <Footer />
     </>
   );
 };

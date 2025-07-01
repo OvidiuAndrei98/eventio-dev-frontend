@@ -41,7 +41,7 @@ const LandingSection = () => {
               className="try-button my-4 !p-6 !text-lg !font-bold !rounded-full !text-white"
               onClick={() => (window.location.href = '/login')}
             >
-              Incearca gratuit
+              Încearcă gratuit
             </Button>
           </div>
         </div>

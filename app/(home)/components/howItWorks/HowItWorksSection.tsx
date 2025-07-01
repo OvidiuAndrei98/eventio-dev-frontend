@@ -19,7 +19,7 @@ const HowItWorksSection = () => {
         threshold={0.2}
       >
         <div className="title-section">
-          <span className="small-header">CUM FUNCTIONEAZA</span>
+          <span className="small-header">CUM FUNCȚIONEAZĂ</span>
           <span className="primary-title text-center md:!text-4xl">
             Invitații digitale, create ușor, trimise rapid!
           </span>
@@ -61,7 +61,7 @@ const HowItWorksSection = () => {
               </span>
               <span className="card-title">Personalizează invitația</span>
               <span className="card-description">
-                Personalizare completa a invitatiei cu ajutorul builderului
+                Personalizare completă a invitației cu ajutorul builderului
                 nostru intuitiv. Adaugă detalii, imagini și stiluri unice.
               </span>
             </div>

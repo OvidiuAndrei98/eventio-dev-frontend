@@ -25,7 +25,7 @@ const MobileNav = () => {
       const bar = document.querySelector('.bar');
       const mobileMenu = document.querySelector('.mobile-menu');
 
-      // If click is outside the hamburger menu and nav items, close menu
+      // Dacă click-ul este în afara meniului hamburger și a elementelor de navigație, închide meniul
       if (
         !menuContainer.contains(event.target) &&
         !event.target.closest('.nav-item')
@@ -45,7 +45,7 @@ const MobileNav = () => {
   }, []);
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Prevent body click from firing
+    e.stopPropagation(); // Previne declanșarea click-ului pe body
     document.querySelector('.bar').classList.toggle('animate');
     document.querySelector('.mobile-menu').classList.toggle('active');
   };
@@ -62,7 +62,7 @@ const MobileNav = () => {
         <div className="bar z-[1103] ml-[20px]"></div>
         <Image
           src={PlanyviteLogo}
-          alt="Planyvite Logo"
+          alt="Sigla Planyvite"
           className="logo"
           width={120}
           height={50}
@@ -72,19 +72,19 @@ const MobileNav = () => {
       <nav className="mobile-menu z-[1001]">
         <ul className="homepage-nav-menu">
           <li className="nav-item">
-            <Link href="#first-section">Acasa</Link>
+            <Link href="#first-section">Acasă</Link>
           </li>
           <li className="nav-item">
             <Link href="#planner-section">Planificator</Link>
           </li>
           <li className="nav-item">
-            <Link href="#features-section">Functionalitati</Link>
+            <Link href="#features-section">Funcționalități</Link>
           </li>
           <li className="nav-item">
-            <Link href="#how-it-works-section-id">Cum functioneaza</Link>
+            <Link href="#how-it-works-section-id">Cum funcționează</Link>
           </li>
           <li className="nav-item">
-            <Link href="#prices-section">Preturi</Link>
+            <Link href="#prices-section">Prețuri</Link>
           </li>
           <li className="nav-item">
             <Link href="#models-section">Modele</Link>
@@ -96,7 +96,7 @@ const MobileNav = () => {
           type="primary"
           onClick={() => router.push('/login')}
         >
-          Intra in cont
+          Intră în cont
         </Button>
       </nav>
     </>

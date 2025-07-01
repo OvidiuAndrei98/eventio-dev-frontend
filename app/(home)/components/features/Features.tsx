@@ -73,7 +73,7 @@ export function Features() {
         classNamme="center-text"
       >
         <div className="flex flex-col items-center justify-center mb-8 space-y-2">
-          <span className="small-header">FUNCTIONALITATI</span>
+          <span className="small-header">FUNCȚIONALITĂȚI</span>
           <span className="primary-title text-center md:!text-4xl">
             Principalele funcționalități ale aplicației
           </span>
