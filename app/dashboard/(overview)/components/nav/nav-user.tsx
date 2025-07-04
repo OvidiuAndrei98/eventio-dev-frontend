@@ -21,8 +21,8 @@ import {
 import NoProfile from '@/public/no-photo.svg';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { User } from '@/core/types';
+import { useAuth } from '@/core/context/authContext';
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar();

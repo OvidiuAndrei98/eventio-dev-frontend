@@ -8,8 +8,8 @@ import EventsTable from './components/eventsTable/EventsTable';
 import { getColumns } from './components/eventsTable/columns';
 import { Button } from 'antd';
 import { PlusIcon } from 'lucide-react';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import NewInvitationModal from './components/newInvitationModal/NewInvitationModal';
+import { useAuth } from '@/core/context/authContext';
 
 const DashboardPage = () => {
   const [queryEventLoading, setQueryEventLoading] = useState(true);

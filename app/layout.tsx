@@ -1,7 +1,9 @@
 import { ConfigProvider } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-
+import '@/lib/firebase/firebaseConfig'; // Ensure Firebase is initialized
 import { Metadata } from 'next';
+import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -22,7 +24,10 @@ export const metadata: Metadata = {
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
+    <html
+      lang="en"
+      style={{ scrollBehavior: 'smooth', backgroundColor: 'white' }}
+    >
       <body>
         <AntdRegistry>
           <ConfigProvider
@@ -37,7 +42,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
               },
             }}
           >
-            {children}
+            <AuthenticationBoundary>{children}</AuthenticationBoundary>
           </ConfigProvider>
         </AntdRegistry>
       </body>

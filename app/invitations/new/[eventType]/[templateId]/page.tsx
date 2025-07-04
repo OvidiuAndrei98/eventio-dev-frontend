@@ -1,7 +1,7 @@
 'use client';
 
 import MapsAutoComplete from '@/components/mapsAutoComplete/MapsAutoComplete';
-import { useAuth } from '@/core/AuthenticationBoundary';
+import { useAuth } from '@/core/context/authContext';
 import { EventInstance, EventLocation, EventPlan } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { createEvent } from '@/service/event/createEvent';
@@ -104,6 +104,12 @@ const NewInvitationPage = () => {
       return;
     }
 
+    if (!user.userDetails) {
+      console.error('User details not found');
+      toast.error('A aparut o eroare la crearea invitatiei');
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     let imageWasUploaded: () => void = () => {};
     afterImageUploaded = new Promise((r) => (imageWasUploaded = r));
@@ -178,7 +184,7 @@ const NewInvitationPage = () => {
       eventPlan: EventPlan.basic,
       eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
       eventId: eventId,
-      userId: user.userDetails.userId,
+      userId: user.userDetails?.userId,
       eventTemplateThumbnailUrl: selectedTemplate.thumbnailUrl,
       eventTableOrganization: {
         elements: [],

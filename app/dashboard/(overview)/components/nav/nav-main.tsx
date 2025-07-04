@@ -8,7 +8,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { MenuItem } from './app-sidebar';
-import { useAuth } from '@/core/AuthenticationBoundary';
+import { useAuth } from '@/core/context/authContext';
 
 export function NavMain({ items }: { items: MenuItem[] }) {
   const user = useAuth().userDetails;

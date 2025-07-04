@@ -20,10 +20,10 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { useEventContext } from '@/core/context/EventContext';
 import { ControlOutlined } from '@ant-design/icons';
 import Image from 'next/image';
+import { useAuth } from '@/core/context/authContext';
 
 export interface MenuItem {
   title: string;

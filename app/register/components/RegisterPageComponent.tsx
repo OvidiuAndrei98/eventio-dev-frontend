@@ -5,15 +5,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth';
-import { User } from '@/core/types';
+import { User } from '@/core/types'; // Asigură-te că interfața User este definită aici sau importată corect
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import LoginImage from '../../../public/LoginImage.svg';
+import LoginImage from '../../../public/LoginImage.svg'; // Ajustează calea dacă e necesar
 import { toast } from 'sonner';
 import { addUser } from '@/service/user/addUser';
 import Link from 'next/link';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
+import { EmailAuthProvider, linkWithCredential } from 'firebase/auth'; // Importă direct
 
 type FieldType = {
   name: string;
@@ -28,41 +29,73 @@ const RegisterPageComponent = ({
   ...props
 }: React.ComponentProps<'div'>) => {
   const router = useRouter();
-  const auth = firebaseAuth;
+  const auth = firebaseAuth; // Folosește direct firebaseAuth din config
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then(async (userCredential) => {
-        // Signed up
-        const user = userCredential.user;
-        const userDoc: User = {
-          userId: user.uid,
-          email: user.email as string,
-          name: values.name,
-          surname: values.surname,
-          displayName: values.surname + ' ' + values.name,
-          photoURL: userCredential.user.photoURL,
-        };
-        await addUser(userDoc);
-        localStorage.setItem(
-          'auth_token',
-          JSON.stringify(await user.getIdToken())
+  const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+    try {
+      let userCredential;
+
+      if (auth.currentUser && auth.currentUser.isAnonymous) {
+        console.log(
+          'RegisterPage: Linking anonymous user with email/password.'
         );
-        if (firebaseAuth.currentUser) {
-          await updateProfile(firebaseAuth.currentUser, {
-            displayName: values.name + ' ' + values.surname,
-          });
-        }
+        const credential = EmailAuthProvider.credential(
+          values.email,
+          values.password
+        );
+        userCredential = await linkWithCredential(auth.currentUser, credential);
+      } else {
+        console.log('RegisterPage: Creating new user with email/password.');
+        userCredential = await createUserWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+      }
 
-        router.push('/dashboard');
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        if (error.code === 'auth/email-already-in-use') {
-          toast.error('Email-ul este deja folosit');
-        }
-        console.log(errorMessage);
+      const user = userCredential.user;
+      console.log(
+        `RegisterPage: Firebase user created/linked with UID: ${user.uid}.`
+      );
+
+      // Actualizează profilul Firebase cu numele afișat
+      await updateProfile(user, {
+        displayName: `${values.name} ${values.surname}`,
       });
+      console.log('RegisterPage: Firebase user profile updated.');
+
+      // Creează/Actualizează utilizatorul în Firestore
+      const userDoc: User = {
+        userId: user.uid,
+        email: user.email as string,
+        name: values.name,
+        surname: values.surname,
+        displayName: `${values.name} ${values.surname}`, // Nume afișat consistent
+        photoURL: user.photoURL || null,
+      };
+      await addUser(userDoc);
+      console.log('RegisterPage: User data added/updated in Firestore.');
+
+      // *** IMPORTANT: NU MAI SETA MANUAL auth_token AICI ***
+      // Lasă AuthenticationBoundary să se ocupe de setarea tokenului IQNECT în localStorage.
+      // Ascultătorul onAuthStateChanged din AuthenticationBoundary va detecta acest nou utilizator,
+      // va genera tokenul IQNECT, îl va salva în localStorage și apoi va redirecționa la /dashboard.
+      toast.success('Contul a fost creat cu succes! Te redirecționăm...');
+      window.location.href = '/dashboard';
+    } catch (error: any) {
+      console.error('RegisterPage: Registration error:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        toast.error('Email-ul este deja folosit. Te rugăm să te autentifici.');
+      } else if (error.code === 'auth/weak-password') {
+        toast.error('Parola este prea slabă. Alege o parolă mai puternică.');
+      } else if (error.code === 'auth/invalid-email') {
+        toast.error('Adresă de email invalidă.');
+      } else {
+        toast.error(
+          'A apărut o eroare la înregistrare. Te rugăm să încerci din nou.'
+        );
+      }
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
@@ -95,7 +128,7 @@ const RegisterPageComponent = ({
               </div>
               <div className="grid gap-3">
                 <Form
-                  name="login-form"
+                  name="register-form" // Schimbat din login-form pentru claritate
                   onFinish={onFinish}
                   onFinishFailed={onFinishFailed}
                   autoComplete="off"
@@ -135,6 +168,10 @@ const RegisterPageComponent = ({
                         required: true,
                         message: 'Adresa de email este obligatorie.',
                       },
+                      {
+                        type: 'email', // Adaugă validare pentru tipul email
+                        message: 'Adresa de email nu este validă.',
+                      },
                     ]}
                   >
                     <Input />
@@ -146,7 +183,6 @@ const RegisterPageComponent = ({
                     rules={[
                       { required: true, message: 'Parola este obligatorie.' },
                       {
-                        type: 'string',
                         min: 6,
                         message: 'Parola trebuie să conțină minim 6 caractere.',
                       },
@@ -162,7 +198,7 @@ const RegisterPageComponent = ({
                   </Form.Item>
 
                   <Form.Item
-                    name="confirm"
+                    name="repeatPassword" // Redenumit din 'confirm' pentru claritate și potrivire cu FieldType
                     label="Confirmă parola"
                     dependencies={['password']}
                     hasFeedback
@@ -197,9 +233,9 @@ const RegisterPageComponent = ({
                 </Form>
                 <div className="text-center text-sm">
                   Ai deja cont?{' '}
-                  <a href="/login" className="underline underline-offset-4">
+                  <Link href="/login" className="underline underline-offset-4">
                     Autentifică-te
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

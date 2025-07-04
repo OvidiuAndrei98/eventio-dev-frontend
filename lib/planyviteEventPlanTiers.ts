@@ -109,3 +109,10 @@ export const PLANYVITE_EVENT_PLAN_FEATURES = {
     // ...other features
   },
 };
+
+export const PLANYVITE_DIGITAL_PLANNER = {
+  id: 'planyvite_digital_planner',
+  type: 'digital_planner',
+  order: 5,
+  priceId: 'price_1RgAqeIYmtfnTY0f4fkyDg9g',
+};

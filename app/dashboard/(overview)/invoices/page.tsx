@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/core/AuthenticationBoundary';
+import { useAuth } from '@/core/context/authContext';
 import { PlanyviteInvoice } from '@/core/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { listDocuments } from '@/lib/oblioApi/oblioApi';

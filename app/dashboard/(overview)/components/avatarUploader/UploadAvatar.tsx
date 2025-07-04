@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import NoProfile from '@/public/no-photo.svg';
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
 import { uploadProfilePicture } from '@/service/user/uploadProfilePicture';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { updateProfile } from 'firebase/auth';
 import { toast } from 'sonner';
+import { useAuth } from '@/core/context/authContext';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 

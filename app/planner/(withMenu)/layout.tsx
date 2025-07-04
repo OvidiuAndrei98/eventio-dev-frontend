@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import LayoutContent from './components/LayoutContent';
-import '../../styles/globals.css';
+import LayoutContent from '../components/LayoutContent';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   generator: 'Next.js',

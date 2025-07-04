@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
   WhatsAppOutlined,
@@ -13,6 +15,8 @@ import './styles.css';
 import AnimatedContent from '@/components/animatedContainer/AnimatedContent';
 import { Button } from 'antd';
 import Link from 'next/link';
+import { plannerCheckout } from '@/service/stripe/plannerCheckout';
+import { PLANYVITE_DIGITAL_PLANNER } from '@/lib/planyviteEventPlanTiers';
 
 const features = [
   {
@@ -63,23 +67,36 @@ export default function PlannerPage() {
       >
         {/* Overlay for darkening the image */}
         <div className="relative z-10 py-10 px-4 md:max-w-[600px] lg:max-w-[800px] mx-auto">
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-[var(--secondary-color)] mb-4 drop-shadow">
-            Gata cu stresul și haosul!
-          </h1>
-          <p className="text-lg mb-6 drop-shadow text-white/90">
-            Organizează ACUM! Preia controlul total al organizării și
-            transformă-ți nunta în realitate!
-          </p>
-          <Link href="#price-section">
-            <Button
-              type="primary"
-              size="large"
-              className="!p-6 !text-lg !font-bold !rounded-lg !text-white mt-8 md:mt-4 !bg-[var(--secondary-color)] hover:!bg-[var(--secondary-color)]/90 transition"
-            >
-              Ofertă Specială
-            </Button>
-          </Link>
+          <AnimatedContent
+            distance={150}
+            direction="vertical"
+            reverse={false}
+            config={{ tension: 80, friction: 20 }}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+            classNamme="center-text"
+          >
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-[var(--secondary-color)] mb-4 drop-shadow">
+              GATA CU STRESUL ȘI HAOSUL!
+            </h1>
+            <p className="text-md md:text-lg mb-6 drop-shadow text-white/90">
+              Organizează ACUM! Preia controlul total al organizării și
+              transformă-ți nunta în realitate!
+            </p>
+            <Link href="#price-section">
+              <Button
+                type="primary"
+                size="large"
+                className="!p-6 !text-lg !font-bold !rounded-lg !text-white mt-8 md:mt-4 !bg-[var(--secondary-color)] hover:!bg-[var(--secondary-color)]/90 transition"
+              >
+                Ofertă Specială
+              </Button>
+            </Link>
+          </AnimatedContent>
         </div>
+
         <div
           className="absolute left-0 right-0 bottom-0 w-full h-[220px] z-0 pointer-events-none"
           aria-hidden="true"
@@ -94,7 +111,17 @@ export default function PlannerPage() {
             <path d="M0,220 Q720,0 1440,220 L1440,220 L0,220 Z" fill="#fff" />
           </svg>
         </div>
-        <div className="absolute inset-0 flex items-end justify-center z-20 pointer-events-none px-2 md:px-0 mb-3 md:mb-0">
+        <AnimatedContent
+          distance={150}
+          direction="vertical"
+          reverse={false}
+          config={{ tension: 80, friction: 20 }}
+          initialOpacity={0.2}
+          animateOpacity
+          scale={1.1}
+          threshold={0.2}
+          classNamme="absolute inset-0 flex items-end justify-center z-20 pointer-events-none px-2 md:px-0 mb-3 md:mb-0"
+        >
           <div className="bg-white/80 rounded-2xl shadow-lg p-6 border border-[#ede0f3] mb-8 scale-100 md:scale-105 transition-transform duration-300 max-w-lg">
             <Image
               src={PlannerThumnbnail.src}
@@ -105,7 +132,7 @@ export default function PlannerPage() {
               priority
             />
           </div>
-        </div>
+        </AnimatedContent>
       </section>
 
       {/* Features */}
@@ -220,7 +247,12 @@ export default function PlannerPage() {
               <ul className="mb-6 space-y-2 text-gray-700 text-center">
                 <li>Acces complet la Planificatorul Digital</li>
               </ul>
-              <button className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg">
+              <button
+                className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg"
+                onClick={async () => {
+                  await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
+                }}
+              >
                 Cumpără
               </button>
             </div>

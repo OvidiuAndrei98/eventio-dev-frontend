@@ -36,9 +36,9 @@ import { useEventContext } from '@/core/context/EventContext';
 import AutocompleteMapsInput from '@/components/autocompleteMapsInput/AutocompleteMapsInput';
 import { updateEventActiveStatus } from '@/service/event/updateEventActiveStatus';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
-import { useAuth } from '@/core/AuthenticationBoundary';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
+import { useAuth } from '@/core/context/authContext';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -89,6 +89,8 @@ const SettingsPage = () => {
       }[]
     | null
   >(null);
+
+  const router = useRouter();
 
   const user = useAuth().userDetails;
 
@@ -187,7 +189,7 @@ const SettingsPage = () => {
 
         deletedLocations.forEach(async (loc) => {
           try {
-            if (loc.locationImage) {
+            if (loc.locationImage && user) {
               await removeImageForTemplate(
                 user,
                 templateId,
@@ -403,6 +405,11 @@ const SettingsPage = () => {
     }
     setNewEventLocationPopoverOpen(false);
   };
+
+  if (!user) {
+    router.push('/login?callbackUrl=/dashboard/' + eventId + '/' + templateId);
+    return;
+  }
 
   return templateSettingsLoading ? (
     <span className="loader"></span>

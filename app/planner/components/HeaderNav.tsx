@@ -15,7 +15,7 @@ const HeaderNav: React.FC = () => {
     };
   }, []);
   return (
-    <nav
+    <div
       className={`absolute top-0 z-20 w-full flex items-center h-16 px-6 transition-all duration-300 ${
         scroll
           ? 'fixed top-0 left-0 w-full shadow-lg z-50 bg-white/30 backdrop-blur-md'
@@ -27,7 +27,7 @@ const HeaderNav: React.FC = () => {
           <Image src={Logo} alt="Planyvite Logo" width={140} height={40} />
         </div>
       </div>
-    </nav>
+    </div>
   );
 };
 

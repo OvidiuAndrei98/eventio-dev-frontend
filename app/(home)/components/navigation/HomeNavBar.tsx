@@ -47,7 +47,9 @@ const HomeNavBar = () => {
         className="login-button !p-5 !text-md !font-bold !rounded-full !text-white"
         size="large"
         type="primary"
-        onClick={() => router.push('/login')}
+        onClick={() => {
+          window.location.href = '/login';
+        }}
       >
         Intră în cont
       </Button>

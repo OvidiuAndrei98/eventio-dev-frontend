@@ -34,12 +34,12 @@ import Link from 'next/link';
 import { useEventContext } from '@/core/context/EventContext';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
 import { useParams } from 'next/navigation';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { isMobile } from 'react-device-detect';
 import Image from 'next/image';
 import LaptopIllustration from '@/public/use-laptop-illustration.svg';
+import { useAuth } from '@/core/context/authContext';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -449,6 +449,11 @@ const EditPage = () => {
   };
 
   const handleTemplateUpdate = async () => {
+    if (!user || !templateId) {
+      toast.error('Nu esti autentificat sau nu este un template valid');
+      return;
+    }
+
     setTemplateUpdateLoading(true);
     try {
       let updatedTemplate = { ...template };

@@ -17,9 +17,9 @@ import {
 import { UploadOutlined } from '@ant-design/icons';
 import { toast } from 'sonner';
 import { Color } from 'antd/es/color-picker';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { UploadFileStatus } from 'antd/es/upload/interface';
 import ImgCrop from 'antd-img-crop';
+import { useAuth } from '@/core/context/authContext';
 
 interface backgroundImageProps {
   name: string;

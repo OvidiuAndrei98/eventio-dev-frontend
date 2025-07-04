@@ -11,9 +11,9 @@ import {
 } from '@/components/ui/sidebar';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import PlanyviteLogoSmall from '@/public/planyvite_logo_sm.svg';
 import Image from 'next/image';
+import { useAuth } from '@/core/context/authContext';
 
 export interface MenuItem {
   title: string;

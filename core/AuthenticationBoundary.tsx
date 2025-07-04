@@ -1,369 +1,279 @@
 'use client';
 
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
+  EmailAuthProvider,
+  User as FirebaseUser,
   GoogleAuthProvider,
-  UserCredential,
+  linkWithCredential,
+  linkWithPopup,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
 } from 'firebase/auth';
 import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
-import { LoginForm } from '@/app/login/components/login-form';
-import { useRouter, usePathname } from 'next/navigation'; // Import usePathname from next/navigation directly
+import { useRouter, usePathname } from 'next/navigation';
 import { addUser } from '@/service/user/addUser';
-import { User } from './types';
 import { queryUserById } from '@/service/user/queryUserById';
-import * as jose from 'jose';
+import { User } from './types';
 import { LoadingIndicator } from '@/lib/icons';
 import { toast } from 'sonner';
+import {
+  AuthenticationContext,
+  AuthenticationState,
+} from './context/authContext';
 
-/**
- * Contains constants which describe the authentication state of the current session.
- */
-enum AuthenticationState {
-  /**
-   * Indicates that the authentication state has not been determined yet.
-   */
-  Unknown, // Initial state, while checking local storage/token
+// List of pages accessible to anonymous users
+// Allow anonymous access to '/', '/login', '/register', '/planner' and all its subroutes, '/invitation' and all its subroutes
+const ANONYMOUS_PAGE_REGEX =
+  /^\/($|login$|register$|planner(\/.*)?$|invitation(\/.*)?$)/;
 
-  /**
-   * Indicates that the current session is not authenticated.
-   */
-  Unauthenticated,
-
-  /**
-   * Indicates that the current session is authenticated.
-   */
-  Authenticated,
+function isAnonymousPage(path: string) {
+  return ANONYMOUS_PAGE_REGEX.test(path);
 }
 
 /**
- * A context that contains information about the currently authenticated user.
+ * A component that manages user authentication state and protects routes.
  */
-export const AuthenticationContext = React.createContext({
-  authenticationState: AuthenticationState.Unknown,
-  userDetails: {} as User,
-  isLoggingIn: true, // Renamed from isLoggingIn to isAuthenticating to be more precise
-  logout: () => {
-    /* not impl*/
-  },
-});
+export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
-/**
- * The local storage key under which the authentication token is stored.
- */
-const AuthenticationTokenKey = 'auth_token';
-
-/**
- * Describes the values of the decoded IQNECT token.
- */
-interface TokenValues {
-  exp: number; // Expiration timestamp in seconds
-  iat: number; // Issued at timestamp in seconds
-  email: string;
-  user_id: string;
-  tenant_id: string; // Assuming this is always present
-}
-
-/**
- * Decodes the specified JWT token into a JSON object.
- */
-function DecodeJWT(token: string): TokenValues | undefined {
-  try {
-    const base64URL = token.split('.')[1];
-    const base64Content = base64URL.replace(/-/g, '+').replace(/_/g, '/');
-    const JSONPayload = decodeURIComponent(
-      atob(base64Content)
-        .split('')
-        .map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join('')
-    );
-    return JSON.parse(JSONPayload) as TokenValues;
-  } catch (e) {
-    console.error(`Could not decode token.`, e);
-    return undefined;
-  }
-}
-
-/**
- * A component that validates that there is an active session before rendering
- * its child elements.
- */
-export function AuthenticationBoundary(props: { children?: ReactNode }) {
   const [authenticationState, setAuthenticationState] =
     useState<AuthenticationState>(AuthenticationState.Unknown);
-  // Using undefined for token initial state to clearly differentiate "not yet checked" from "no token"
-  const [token, setToken] = useState<string | undefined>(undefined);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tokenValues, setTokenValues] = useState<TokenValues | undefined>(
-    undefined
-  );
-  const [loggedInUser, setLoggedInUser] = useState<User>({} as User);
-  // `isAuthenticating` will be true when we are actively trying to determine auth state (e.g., checking token, logging in)
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
+
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+
+  const [userDetails, setUserDetails] = useState<User | null>(null);
+
+  const [isProcessingLogin, setIsProcessingLogin] = useState(false);
 
   const router = useRouter();
+
   const pathname = usePathname();
 
-  // Effect 1: Read token from localStorage on initial mount
   useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem(AuthenticationTokenKey);
-      if (storedToken) {
-        setToken(storedToken); // This will trigger Effect 2
-      } else {
-        // No token in localStorage, so definitely unauthenticated
-        setAuthenticationState(AuthenticationState.Unauthenticated);
-        firebaseAuth.signOut(); // Ensure Firebase state is also logged out
-        setIsAuthenticating(false); // Finished checking
-      }
-    } catch (e) {
-      console.error(`Could not read the token from local storage. `, e);
-      setAuthenticationState(AuthenticationState.Unauthenticated);
-      setIsAuthenticating(false); // Finished checking due to error
-    }
-  }, []); // Runs only once on mount
-
-  // Effect 2: Validate token and fetch user data when `token` state changes
-  useEffect(() => {
-    if (token) {
-      setIsAuthenticating(true); // Start authenticating process
-      const decodedTokenValues = DecodeJWT(token);
-
-      if (decodedTokenValues) {
-        setTokenValues(decodedTokenValues); // Store decoded values
-        if (decodedTokenValues.exp * 1000 > Date.now()) {
-          // Token is valid and not expired
-          getLoggedInUserData(
-            decodedTokenValues.user_id || decodedTokenValues.email
-          );
-          try {
-            localStorage.setItem(AuthenticationTokenKey, token); // Persist valid token
-            if (pathname === '/login') {
-              router.push('/dashboard'); // Redirect if on login page
-            }
-          } catch (e) {
-            console.error('Could not persist authorization token.', e);
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+      const currentPath =
+        typeof window !== 'undefined' ? window.location.pathname : pathname;
+      if (user) {
+        setFirebaseUser(user);
+        if (user.isAnonymous) {
+          setAuthenticationState(AuthenticationState.Anonymous);
+          setUserDetails(null);
+          // If anonymous and not on allowed page, redirect
+          if (!isAnonymousPage(currentPath)) {
+            router.push('/login');
           }
         } else {
-          handleLogoutCleanup(); // Use dedicated cleanup function
+          setAuthenticationState(AuthenticationState.Authenticated);
+          const appUser = await queryUserById(user.uid);
+          setUserDetails(appUser);
+          if (currentPath === '/login' || currentPath === '/register') {
+            router.push('/dashboard');
+          }
         }
       } else {
-        handleLogoutCleanup(); // Use dedicated cleanup function
+        setFirebaseUser(null);
+        setUserDetails(null);
+        setAuthenticationState(AuthenticationState.Unauthenticated);
       }
-    } else if (token === undefined) {
-      // If token is explicitly undefined (e.g., initial state or after logout)
-      // Do nothing here, as Effect 1 already handled the `else` case of no storedToken
-      // or subsequent logout will call handleLogoutCleanup.
-    } else {
-      // This else is for token being null, meaning it was cleared manually
-      handleLogoutCleanup(); // Just in case, ensure logout state
+      setIsAuthReady(true);
+    });
+
+    // Cleanup: anulează listener-ul când componenta se re-randează din cauza
+    // schimbării `pathname`-ului, pentru a evita acumularea de listeneri.
+    return () => unsubscribe();
+  }, []);
+
+  async function updateMissingUserProperties(user: FirebaseUser) {
+    if (!user.photoURL && user.providerData[0]?.photoURL) {
+      await updateProfile(user, { photoURL: user.providerData[0].photoURL });
     }
-  }, [token, pathname]); // Re-run if token or pathname changes
+    if (!user.displayName && user.providerData[0]?.displayName) {
+      await updateProfile(user, {
+        displayName: user.providerData[0].displayName,
+      });
+    }
+  }
 
-  // Helper for common logout cleanup logic
-  const handleLogoutCleanup = () => {
-    setAuthenticationState(AuthenticationState.Unauthenticated);
-    localStorage.removeItem(AuthenticationTokenKey);
-    firebaseAuth.signOut();
-    setLoggedInUser({} as User); // Clear user details
-    setToken(undefined); // Clear token state
-    setTokenValues(undefined); // Clear decoded token values
-    setIsAuthenticating(false); // Finished authenticating
-  };
-
-  const getLoggedInUserData = async (identifier: string) => {
+  /**
+   * Handles user login with Google, including linking anonymous accounts.
+   */
+  const loginWithGoogle = async () => {
+    setIsProcessingLogin(true);
+    const provider = new GoogleAuthProvider();
     try {
-      const user = await queryUserById(identifier);
-      if (user && user.userId) {
-        setLoggedInUser(user);
-        setAuthenticationState(AuthenticationState.Authenticated);
+      let userCredential;
+
+      // Check the reliable state for an anonymous user
+      if (firebaseUser && firebaseUser.isAnonymous) {
+        // If anonymous, link the existing user with the Google account via a popup
+        userCredential = await linkWithPopup(firebaseUser, provider);
       } else {
-        // This case indicates a token exists but user data is missing in Firestore.
-        // It implies a potential sync issue or deletion from Firestore.
-        console.warn(
-          'User not found in Firestore despite valid token. Logging out.'
-        );
-        handleLogoutCleanup(); // Force logout if user data is inconsistent
+        // If not anonymous, perform a standard sign-in
+        userCredential = await signInWithPopup(firebaseAuth, provider);
       }
-    } catch (error) {
-      console.error('Error fetching user by ID:', error);
-      handleLogoutCleanup(); // Force logout on fetch error
+
+      const user = userCredential.user;
+
+      await updateMissingUserProperties(user);
+
+      // After linking/signing in, create their record in your database if it doesn't exist
+      const existingUser = await queryUserById(user.uid);
+      if (!existingUser.userId) {
+        const newUser: User = {
+          userId: user.uid,
+          email: user.email!,
+          displayName: user.displayName || null,
+          photoURL: user.photoURL || null,
+        };
+        await addUser(newUser);
+      }
+      window.location.href = '/dashboard';
+      // `onAuthStateChanged` will handle state updates and redirects
+    } catch (error: any) {
+      console.error('Google login/linking error:', error);
+      // Avoid linking a credential that already exists
+      if (error.code === 'auth/credential-already-in-use') {
+        toast.error('This Google account is already linked to another user.');
+      } else {
+        toast.error(
+          error.message || 'An error occurred during Google sign-in.'
+        );
+      }
     } finally {
-      setIsAuthenticating(false); // Always set to false after fetching attempt
+      setIsProcessingLogin(false);
     }
   };
 
   /**
    * Handles user login with email and password.
+   * This now correctly handles account linking.
    */
-  async function login(email: string, password: string) {
-    setIsAuthenticating(true); // Start login process
-    setAuthenticationState(AuthenticationState.Unknown); // Temporarily unknown while logging in
-
+  const login = async (email: string, password: string) => {
+    setIsProcessingLogin(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        firebaseAuth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const firebaseToken = await user.getIdToken();
+      let userCredential;
 
-      const existingUser = await queryUserById(user.uid);
-      let currentUserDetails: User;
-
-      if (!existingUser || !existingUser.userId) {
-        const newUser: User = {
-          userId: user.uid,
-          email: user.email as string,
-          displayName: user.displayName || '',
-          photoURL: user.photoURL || '',
-        };
-        await addUser(newUser);
-
-        currentUserDetails = newUser;
+      // Use the reliable state `firebaseUser` to check for anonymous status
+      if (firebaseUser && firebaseUser.isAnonymous) {
+        // Create the credential for the new (permanent) account
+        const credential = EmailAuthProvider.credential(email, password);
+        // Link the anonymous user to the new credential
+        userCredential = await linkWithCredential(firebaseUser, credential);
       } else {
-        currentUserDetails = existingUser;
-      }
-
-      setLoggedInUser(currentUserDetails); // Set user details from either new or existing user
-      setToken(firebaseToken); // Set token. This will trigger Effect 2 to finalize auth state.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error('Email/password login error:', error);
-      if (
-        error.code === 'auth/user-not-found' ||
-        error.code === 'auth/wrong-password' ||
-        error.code === 'auth/invalid-credential'
-      ) {
-        toast.error('Email sau parolă incorectă.');
-      } else if (error.code === 'auth/invalid-email') {
-        toast.error('Adresă de email invalidă.');
-      } else if (error.code === 'auth/network-request-failed') {
-        toast.error('Eroare de rețea. Verifică-ți conexiunea la internet.');
-      } else {
-        toast.error(
-          'A apărut o eroare la autentificare. Te rugăm să încerci din nou.'
+        // If not anonymous, or no user exists, perform a normal sign-in
+        userCredential = await signInWithEmailAndPassword(
+          firebaseAuth,
+          email,
+          password
         );
       }
-      handleLogoutCleanup(); // Ensure a clean unauthenticated state on error
-    } finally {
-      // setIsAuthenticating(false); // Will be set by handleLogoutCleanup or getLoggedInUserData
-    }
-  }
 
-  /**
-   * Handles user login with Google.
-   */
-  const loginWithGoogle = async (userCredential: UserCredential) => {
-    setIsAuthenticating(true); // Start login process
-    setAuthenticationState(AuthenticationState.Unknown); // Temporarily unknown while logging in
+      const user = userCredential.user;
 
-    try {
-      const credential =
-        GoogleAuthProvider.credentialFromResult(userCredential);
-      if (!credential || !credential.idToken) {
-        throw new Error('No ID token found from Google sign-in.');
-      }
-
-      const existingUser = await queryUserById(userCredential.user.uid);
-      let currentUserDetails: User;
-
-      if (!existingUser || !existingUser.userId) {
+      // After linking/signing in, create their record in your database
+      const existingUser = await queryUserById(user.uid);
+      if (!existingUser) {
         const newUser: User = {
-          userId: userCredential.user.uid,
-          email: userCredential.user.email as string,
-          displayName: userCredential.user.displayName || '',
-          photoURL: userCredential.user.photoURL || '',
+          userId: user.uid,
+          email: user.email!,
+          displayName: user.displayName || '',
+          photoURL: user.photoURL || null,
         };
         await addUser(newUser);
-        currentUserDetails = newUser;
-      } else {
-        currentUserDetails = existingUser;
       }
-
-      const decodedFirebaseToken = DecodeJWT(credential.idToken)!;
-      decodedFirebaseToken['user_id'] = userCredential.user.uid;
-
-      const mySecret = new TextEncoder().encode(
-        'cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2'
-      );
-      const newSignedToken = await new jose.SignJWT(
-        decodedFirebaseToken as unknown as jose.JWTPayload
-      )
-        .setProtectedHeader({ alg: 'HS256' })
-        .sign(mySecret);
-
-      setLoggedInUser(currentUserDetails); // Set user details from either new or existing user
-      setToken(newSignedToken); // Set token. This will trigger Effect 2 to finalize auth state.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      window.location.href = '/dashboard';
+      // The onAuthStateChanged listener will automatically handle the redirect
+      // and update the state to Authenticated.
     } catch (error: any) {
-      console.error('Google login error:', error);
-      if (error instanceof Error) {
-        alert(`Eroare la autentificarea cu Google: ${error.message}`);
-      } else {
-        alert('A apărut o eroare necunoscută la autentificarea cu Google.');
-      }
-      handleLogoutCleanup(); // Ensure a clean unauthenticated state on error
+      // ... (your existing error handling logic) ...
+      console.error('Login/linking error:', error);
+      toast.error(error.message || 'A apărut o eroare.');
     } finally {
-      // setIsAuthenticating(false); // Will be set by handleLogoutCleanup or getLoggedInUserData
+      setIsProcessingLogin(false);
     }
   };
 
-  const logout = () => {
+  const handleLogout = async () => {
     try {
-      localStorage.removeItem(AuthenticationTokenKey);
-      firebaseAuth.signOut();
-      window.location.reload();
+      await signOut(firebaseAuth);
+      router.push('/login');
     } catch (error) {
       console.error('Error signing out:', error);
+      toast.error('Logout failed. Please try again.');
     }
   };
 
-  // Render logic based on authentication and loading state
-  if (isAuthenticating) {
-    return <LoadingIndicator />;
-  }
+  // --- Rendering Logic ---
 
-  // If not authenticating, proceed with auth state
-  switch (authenticationState) {
-    case AuthenticationState.Unauthenticated:
-      return (
-        <div className="bg-slate-100 flex min-h-svh flex-col items-center justify-center p-6 md:p-10 dark:bg-slate-800">
-          <div className="w-full max-w-sm md:max-w-3xl">
-            <LoginForm
-              onLogin={login}
-              loggingIn={isAuthenticating} // Pass isAuthenticating for button disable
-              onLoginWithGoogle={loginWithGoogle}
-            />
-          </div>
-        </div>
-      );
-    case AuthenticationState.Authenticated:
-      return (
-        <AuthenticationContext.Provider
-          value={{
-            authenticationState,
-            userDetails: loggedInUser,
-            isLoggingIn: isAuthenticating, // Reflect the actual loading state
-            logout: logout,
-          }}
-        >
-          {props.children ?? null}
-        </AuthenticationContext.Provider>
-      );
-    // AuthenticationState.Unknown should ideally be covered by isAuthenticating condition
-    default:
-      return null; // Should not reach here
-  }
+  console.log('9. Trecut de definirea funcțiilor de login/logout.');
+
+  console.log('--- Verificam valorile pentru context:');
+  console.log('authenticationState:', authenticationState);
+  console.log('userDetails:', userDetails);
+  console.log('firebaseUser:', firebaseUser);
+  console.log('isProcessingLogin:', isProcessingLogin);
+  console.log('typeof handleLogout:', typeof handleLogout);
+  console.log('typeof login:', typeof login);
+  console.log('typeof loginWithGoogle:', typeof loginWithGoogle);
+  console.log('--- Sfarsit verificare. Urmeaza crearea obiectului.');
+
+  // 1. Definește valoarea contextului. Va fi disponibilă indiferent de starea de auth.
+  const contextValue = {
+    authenticationState,
+    userDetails,
+    firebaseUser,
+    logout: handleLogout,
+    login,
+    loginWithGoogle,
+    isProcessingLogin,
+    isAuthReady,
+  };
+
+  // 2. Returnează ÎNTOTDEAUNA Provider-ul.
+  return (
+    <AuthenticationContext.Provider value={contextValue}>
+      {(() => {
+        // Loader cât timp auth e necunoscut
+        if (authenticationState === AuthenticationState.Unknown) {
+          return <LoadingIndicator />;
+        }
+
+        // Dacă ești autentificat și pe /login sau /register, nu arăta children (login form), doar loader și lasă useEffect-ul să redirecționeze
+        if (
+          authenticationState === AuthenticationState.Authenticated &&
+          (pathname === '/login' || pathname === '/register')
+        ) {
+          return <LoadingIndicator />;
+        }
+
+        // Utilizator autentificat, afișează conținutul protejat
+        if (authenticationState === AuthenticationState.Authenticated) {
+          return <>{children}</>;
+        }
+
+        // Utilizator anonim, afișează conținutul permis
+        if (
+          authenticationState === AuthenticationState.Anonymous &&
+          isAnonymousPage(pathname)
+        ) {
+          return <>{children}</>;
+        }
+
+        // Utilizator neautentificat, redirecționează dacă nu e pagină anonimă
+        if (authenticationState === AuthenticationState.Unauthenticated) {
+          if (!isAnonymousPage(pathname)) {
+            router.push('/login');
+            return <LoadingIndicator />;
+          }
+          return <>{children}</>;
+        }
+
+        return null;
+      })()}
+    </AuthenticationContext.Provider>
+  );
 }
-
-export const useAuth = () => {
-  const context = useContext(AuthenticationContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

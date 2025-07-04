@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { notFound, useParams, usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/core/AuthenticationBoundary';
 import { queryEventById } from '@/service/event/queryEventById';
 import { LoadingIndicator } from '@/lib/icons';
 import { AppSidebar } from '../nav/app-sidebar';
@@ -25,6 +24,7 @@ import { useEventContext } from '@/core/context/EventContext';
 import { Button, ConfigProvider } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { StarOutlined } from '@ant-design/icons';
+import { useAuth } from '@/core/context/authContext';
 
 const routeTitleMapper: { [key: string]: string } = {
   dashboard: 'Panou de control',
@@ -47,7 +47,11 @@ export default function EventShell({ children }: EventShellProps) {
   }>();
   const pathName = usePathname();
   const router = useRouter();
-  const authContext = useAuth();
+  const {
+    userDetails: authContext,
+    isProcessingLogin,
+    firebaseUser,
+  } = useAuth();
 
   const {
     eventInstance,
@@ -83,14 +87,14 @@ export default function EventShell({ children }: EventShellProps) {
       return;
     }
 
-    if (!authContext.userDetails.userId) {
-      router.push('/login?callbackUrl=' + pathName);
+    if (!firebaseUser?.uid) {
+      router.push('/login?callbackUrl=muie' + pathName);
       return;
     }
 
     setQueryEventLoading(true);
 
-    queryEventById(eventId, authContext.userDetails.userId)
+    queryEventById(eventId, firebaseUser.uid)
       .then((event) => {
         if (!event || !event.eventId) {
           notFound();
@@ -106,8 +110,8 @@ export default function EventShell({ children }: EventShellProps) {
         notFound();
       });
   }, [
-    authContext.isLoggingIn,
-    authContext?.userDetails?.userId,
+    isProcessingLogin,
+    authContext?.userId,
     eventId,
     eventInstance?.eventId,
     setEventInstance,

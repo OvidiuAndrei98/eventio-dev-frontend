@@ -1,47 +1,28 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormProps, Input } from 'antd';
 import LoginImage from '../../../public/LoginImage.svg';
 import Image from 'next/image';
-import {
-  GoogleAuthProvider,
-  UserCredential,
-  signInWithPopup,
-} from 'firebase/auth';
-import { firebaseAuth } from '@/lib/firebase/firebaseConfig';
-import { GoogleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import { useRouter } from 'next/navigation';
-
-export interface LoginPageProps {
-  /**
-   * Invoked when the sign in button is pressed. Must start the authentication
-   * flow.
-   */
-  onLogin(email: string, password: string): void;
-  /** Invoked when the login with google button is clicked */
-  onLoginWithGoogle: (userCredential: UserCredential) => void;
-  /**
-   * When set to `true`, a loading indicator is displayed over the login form.
-   */
-  loggingIn?: boolean;
-}
+import { GoogleOutlined } from '@ant-design/icons';
+import { useAuth } from '@/core/context/authContext';
 
 type FieldType = {
   email: string;
   password: string;
 };
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<'div'> & LoginPageProps) {
+export function LoginForm() {
   const router = useRouter();
+  const { login, loginWithGoogle, isProcessingLogin, isAuthReady } = useAuth();
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    props.onLogin(values.email, values.password);
+    login(values.email, values.password);
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
@@ -51,7 +32,7 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn('flex flex-col gap-4 md:gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-4 md:gap-6')}>
       <div className="flex justify-center mb-4">
         <Image
           className="cursor-pointer"
@@ -107,6 +88,7 @@ export function LoginForm({
                     <Button
                       type="submit"
                       className="w-full bg-[var(--primary-color)] hover:bg-[#a235c6] text-white"
+                      disabled={!isAuthReady || isProcessingLogin}
                     >
                       Autentificare
                     </Button>
@@ -122,20 +104,8 @@ export function LoginForm({
                     variant="outline"
                     type="button"
                     className="w-full"
-                    onClick={() => {
-                      try {
-                        signInWithPopup(
-                          firebaseAuth,
-                          new GoogleAuthProvider()
-                        ).then((result) => {
-                          props.onLoginWithGoogle(result);
-                        });
-                      } catch (error) {
-                        console.error(
-                          'Eroare la autentificarea cu Google:' + error
-                        );
-                      }
-                    }}
+                    disabled={!isAuthReady || isProcessingLogin}
+                    onClick={() => loginWithGoogle()}
                   >
                     <GoogleOutlined />
                     <span>Conectează-te cu Google</span>
