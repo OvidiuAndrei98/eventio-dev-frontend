@@ -3,13 +3,11 @@ import { Button } from 'antd';
 import './MobileNav.css';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import Image from 'next/image';
 
 const MobileNav = () => {
   const [scroll, setScroll] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -94,7 +92,9 @@ const MobileNav = () => {
           className="login-button"
           size="large"
           type="primary"
-          onClick={() => router.push('/login')}
+          onClick={() => {
+            window.location.href = '/login';
+          }}
         >
           Intră în cont
         </Button>

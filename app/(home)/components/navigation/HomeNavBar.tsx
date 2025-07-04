@@ -4,13 +4,11 @@ import { Button } from 'antd';
 import './HomeNavBar.css';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import Image from 'next/image';
 
 const HomeNavBar = () => {
   const [scroll, setScroll] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
