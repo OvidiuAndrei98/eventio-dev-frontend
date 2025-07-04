@@ -82,6 +82,7 @@ const RegisterPageComponent = ({
       // va genera tokenul IQNECT, îl va salva în localStorage și apoi va redirecționa la /dashboard.
       toast.success('Contul a fost creat cu succes! Te redirecționăm...');
       window.location.href = '/dashboard';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('RegisterPage: Registration error:', error);
       if (error.code === 'auth/email-already-in-use') {
