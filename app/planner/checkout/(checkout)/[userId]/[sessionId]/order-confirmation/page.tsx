@@ -4,7 +4,6 @@ import {
   identifyTikTokUser,
   trackTikTokEvent,
 } from '@/lib/tik-tok/tiktok-events';
-import { getSessionUserEmail } from '@/service/stripe/getSessionUserEmail';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';
 
