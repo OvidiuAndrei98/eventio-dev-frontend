@@ -1,14 +1,12 @@
-import { Toaster } from 'sonner'
-import '../../styles/globals.css'
-import RegisterPageComponent from './components/RegisterPageComponent'
+import '../../styles/globals.css';
+import RegisterPageComponent from './components/RegisterPageComponent';
 
 const RegisterPage = () => {
   return (
     <>
       <RegisterPageComponent />
-      <Toaster />
     </>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

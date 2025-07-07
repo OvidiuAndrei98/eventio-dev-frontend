@@ -158,7 +158,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       let userCredential;
 
       // Use the reliable state `firebaseUser` to check for anonymous status
-      if (firebaseUser && firebaseUser.isAnonymous) {
+      if (firebaseUser && firebaseUser.isAnonymous && userDetails?.userId) {
         // Create the credential for the new (permanent) account
         const credential = EmailAuthProvider.credential(email, password);
         // Link the anonymous user to the new credential
@@ -189,9 +189,18 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       // The onAuthStateChanged listener will automatically handle the redirect
       // and update the state to Authenticated.
     } catch (error: any) {
-      // ... (your existing error handling logic) ...
-      console.error('Login/linking error:', error);
-      toast.error(error.message || 'A apărut o eroare.');
+      // Handle specific error cases
+      if (error.code === 'auth/credential-already-in-use') {
+        toast.error('Acest email este deja asociat cu un alt cont.');
+      } else if (error.code === 'auth/user-not-found') {
+        toast.error('Nu există niciun cont cu acest email.');
+      } else if (error.code === 'auth/wrong-password') {
+        toast.error('Parolă incorectă. Vă rugăm să încercați din nou.');
+      } else if (error.code === 'auth/invalid-credential') {
+        toast.error(
+          'Credentiale invalide. Vă rugăm să verificați datele introduse.'
+        );
+      }
     } finally {
       setIsProcessingLogin(false);
     }
@@ -209,19 +218,6 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
 
   // --- Rendering Logic ---
 
-  console.log('9. Trecut de definirea funcțiilor de login/logout.');
-
-  console.log('--- Verificam valorile pentru context:');
-  console.log('authenticationState:', authenticationState);
-  console.log('userDetails:', userDetails);
-  console.log('firebaseUser:', firebaseUser);
-  console.log('isProcessingLogin:', isProcessingLogin);
-  console.log('typeof handleLogout:', typeof handleLogout);
-  console.log('typeof login:', typeof login);
-  console.log('typeof loginWithGoogle:', typeof loginWithGoogle);
-  console.log('--- Sfarsit verificare. Urmeaza crearea obiectului.');
-
-  // 1. Definește valoarea contextului. Va fi disponibilă indiferent de starea de auth.
   const contextValue = {
     authenticationState,
     userDetails,

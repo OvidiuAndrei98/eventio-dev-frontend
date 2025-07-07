@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import '@/styles/globals.css';
 import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -49,6 +50,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
             <AuthenticationBoundary>{children}</AuthenticationBoundary>
           </ConfigProvider>
         </AntdRegistry>
+        <Toaster />
       </body>
     </html>
   );
