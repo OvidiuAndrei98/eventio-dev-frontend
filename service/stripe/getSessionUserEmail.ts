@@ -32,10 +32,6 @@ async function getSessionIdFromFirestore(
   return data?.sessionId ?? null;
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-06-30.basil',
-});
-
 /**
  * Retrieves the customer email from Stripe using Firestore session data.
  *
@@ -47,6 +43,9 @@ export async function getSessionUserEmail(
   customerId: string,
   sessionDocId: string
 ): Promise<string | null> {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: '2025-06-30.basil',
+  });
   const sessionId = await getSessionIdFromFirestore(customerId, sessionDocId);
   if (!sessionId) {
     return null;
