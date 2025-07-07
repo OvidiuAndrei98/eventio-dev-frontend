@@ -57,9 +57,6 @@ export async function GET(request) {
     return NextResponse.json({ email: customerEmail });
   } catch (error) {
     console.error('Eroare în API Route:', error.message);
-    return NextResponse.json(
-      { error: 'Eroare internă de server.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
