@@ -251,13 +251,21 @@ export default function PlannerPage() {
               <button
                 className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg"
                 onClick={async () => {
-                  await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
                   trackTikTokEvent('InitiateCheckout', {
                     content_type: 'product',
                     content_id: 'planner-digital-2025',
                     quantity: 1,
-                    price: 49.99,
-                    value: 49.99,
+                    price: 99.0,
+                    value: 99.0,
+                    currency: 'RON',
+                  });
+                  await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
+                  trackTikTokEvent('CompletePayment', {
+                    content_type: 'product',
+                    content_id: 'planner-digital-2025',
+                    quantity: 1,
+                    price: 99.0,
+                    value: 99.0,
                     currency: 'RON',
                   });
                 }}
