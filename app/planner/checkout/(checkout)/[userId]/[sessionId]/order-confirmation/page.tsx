@@ -84,6 +84,10 @@ export default function OrderConfirmationPage() {
               istoricul facturilor, platforma Planyvite pentru organizarea
               evenimentelor și multe altele!
             </p>
+            <span className="text-sm text-gray-500">
+              (Pentru a putea vedea aceasta factura in contul tău, trebuie să te
+              loghezi cu același email pe care l-ai folosit la achiziție.)
+            </span>
           </div>
           <a href="/login">
             <button className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg cursor-pointer mt-6">

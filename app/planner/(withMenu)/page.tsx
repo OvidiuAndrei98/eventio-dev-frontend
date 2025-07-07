@@ -57,6 +57,7 @@ const features = [
 ];
 
 export default function PlannerPage() {
+  const [loading, setLoading] = React.useState(false);
   return (
     <main className="min-h-screen bg-white mt-[64px]">
       {/* Header */}
@@ -249,20 +250,26 @@ export default function PlannerPage() {
                 <li>Acces complet la Planificatorul Digital</li>
               </ul>
               <button
-                className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg"
+                className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={async () => {
-                  trackTikTokEvent('InitiateCheckout', {
-                    content_type: 'product',
-                    content_id: 'planner-digital-2025',
-                    quantity: 1,
-                    price: 99.0,
-                    value: 99.0,
-                    currency: 'RON',
-                  });
-                  await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
+                  setLoading(true);
+                  try {
+                    trackTikTokEvent('InitiateCheckout', {
+                      content_type: 'product',
+                      content_id: 'planner-digital-2025',
+                      quantity: 1,
+                      price: 99.0,
+                      value: 99.0,
+                      currency: 'RON',
+                    });
+                    await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
+                disabled={loading}
               >
-                Cumpără
+                {loading ? 'Se încarcă...' : 'Cumpără'}
               </button>
             </div>
           </div>

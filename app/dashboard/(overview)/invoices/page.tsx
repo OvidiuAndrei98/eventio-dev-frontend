@@ -102,11 +102,10 @@ export default function InvoicesPage() {
 
   useEffect(() => {
     if (!user?.email) {
-      console.error('User not found or email is missing');
       return;
     }
     getInvoices();
-  }, []);
+  }, [user]);
 
   return (
     <div className="bg-[#F6F6F6] min-h-screen p-6">

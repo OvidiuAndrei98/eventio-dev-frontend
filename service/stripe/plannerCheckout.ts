@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   User as FirebaseAuthUser,
 } from 'firebase/auth';
-import { addDoc, collection, doc, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot } from 'firebase/firestore';
 
 // O funcție helper pentru a obține utilizatorul Firebase curent, așteptând încărcarea persistenței.
 // Aceasta este crucială pentru a evita currentUser === null la prima încărcare/navigare.
@@ -94,20 +94,23 @@ export const plannerCheckout = async (priceId: string) => {
     });
 
     const sessionDocRef = docRef;
-    const unsubscribe = onSnapshot(sessionDocRef, (snap) => {
-      const data = snap.data();
-      const error = data?.error;
-      const url = data?.url;
-      if (error) {
-        console.error(`A apărut o eroare: ${error.message}`);
-        alert(`A apărut o eroare la procesarea plății: ${error.message}`);
-      }
-      if (url) {
-        window.location.assign(url);
-      }
-    });
 
-    return unsubscribe;
+    return new Promise<void>((resolve, reject) => {
+      const unsubscribe = onSnapshot(sessionDocRef, (snap) => {
+        const data = snap.data();
+        const error = data?.error;
+        const url = data?.url;
+        if (error) {
+          unsubscribe();
+          reject(error);
+        }
+        if (url) {
+          unsubscribe();
+          resolve();
+          window.location.assign(url);
+        }
+      });
+    });
   } catch (error) {
     console.error('Eroare generală la procesul de cumpărare:', error);
     alert(
