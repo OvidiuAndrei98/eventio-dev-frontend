@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import db from '@/lib/firebase/fireStore';
 
 // Inițializează Stripe AICI, pe server, unde cheia este disponibilă
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
