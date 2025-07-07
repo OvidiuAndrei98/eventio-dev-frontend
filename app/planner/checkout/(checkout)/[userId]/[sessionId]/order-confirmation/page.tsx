@@ -23,9 +23,11 @@ export default function OrderConfirmationPage() {
   }>();
 
   const trackPurchase = async () => {
-    const userEmail = await fetch(
+    const res = await fetch(
       `/api/get-session-email?session_id=${sessionId}&user_id=${userId}`
     );
+    const data = await res.json();
+    const userEmail = data.email;
 
     if (userEmail) {
       identifyTikTokUser({ email: userEmail });
