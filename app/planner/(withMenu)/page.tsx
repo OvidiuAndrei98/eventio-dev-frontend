@@ -260,14 +260,6 @@ export default function PlannerPage() {
                     currency: 'RON',
                   });
                   await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
-                  trackTikTokEvent('CompletePayment', {
-                    content_type: 'product',
-                    content_id: 'planner-digital-2025',
-                    quantity: 1,
-                    price: 99.0,
-                    value: 99.0,
-                    currency: 'RON',
-                  });
                 }}
               >
                 Cumpără
