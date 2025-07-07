@@ -17,6 +17,7 @@ import { Button } from 'antd';
 import Link from 'next/link';
 import { plannerCheckout } from '@/service/stripe/plannerCheckout';
 import { PLANYVITE_DIGITAL_PLANNER } from '@/lib/planyviteEventPlanTiers';
+import { trackTikTokEvent } from '@/lib/tik-tok/tiktok-events';
 
 const features = [
   {
@@ -251,6 +252,14 @@ export default function PlannerPage() {
                 className="px-8 py-3 bg-[var(--primary-color)] text-white rounded-lg font-medium shadow hover:bg-[var(--primary-color-hover,#A80050)]/90 transition text-lg"
                 onClick={async () => {
                   await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
+                  trackTikTokEvent('InitiateCheckout', {
+                    content_type: 'product',
+                    content_id: 'planner-digital-2025',
+                    quantity: 1,
+                    price: 49.99,
+                    value: 49.99,
+                    currency: 'RON',
+                  });
                 }}
               >
                 Cumpără

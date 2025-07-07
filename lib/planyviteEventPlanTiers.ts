@@ -114,5 +114,6 @@ export const PLANYVITE_DIGITAL_PLANNER = {
   id: 'planyvite_digital_planner',
   type: 'digital_planner',
   order: 5,
-  priceId: 'price_1RgAqeIYmtfnTY0f4fkyDg9g',
+  priceId: 'price_1RY9ZaIxI3w7eVcKEq5qwfvN',
+  // priceId: 'price_1RgAqeIYmtfnTY0f4fkyDg9g',
 };

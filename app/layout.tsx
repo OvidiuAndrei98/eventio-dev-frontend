@@ -4,6 +4,7 @@ import '@/lib/firebase/firebaseConfig'; // Ensure Firebase is initialized
 import { Metadata } from 'next';
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import '@/styles/globals.css';
+import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -28,6 +29,9 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
       lang="en"
       style={{ scrollBehavior: 'smooth', backgroundColor: 'white' }}
     >
+      <head>
+        <TikTokPixel />
+      </head>
       <body>
         <AntdRegistry>
           <ConfigProvider
