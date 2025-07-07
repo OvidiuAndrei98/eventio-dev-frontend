@@ -67,7 +67,8 @@ export const plannerCheckout = async (priceId: string) => {
       mode: 'payment',
       price: priceId,
       success_url:
-        window.location.origin + '/planner/checkout/1/order-confirmation',
+        window.location.origin +
+        `/planner/checkout/%${userId}/order-confirmation`,
       cancel_url: window.location.origin,
       customer_update: {
         name: 'auto',
