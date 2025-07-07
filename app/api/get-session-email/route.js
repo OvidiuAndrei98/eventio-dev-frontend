@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 // Inițializează Stripe AICI, pe server, unde cheia este disponibilă
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -18,20 +20,37 @@ export async function GET(request) {
   }
 
   try {
-    const sessionId = await getSessionIdFromFirestore(customerId, sessionDocId);
+    const customerId = userId;
+    const sessionDocId = sessionId;
 
-    console.log('ID-ul sesiunii Stripe:', sessionId);
+    const sessionRef = doc(
+      db,
+      'customers',
+      customerId,
+      'checkout_sessions',
+      sessionDocId
+    );
 
-    if (!sessionId) {
+    const sessionSnap = await getDoc(sessionRef);
+
+    if (!sessionSnap.exists()) {
       return NextResponse.json(
-        { error: 'ID-ul sesiunii Stripe lipsește.' },
+        { error: 'Sesiunea nu a fost găsită în Firestore.' },
+        { status: 404 }
+      );
+    }
+
+    const data = sessionSnap.data();
+    const stripeSessionId = data?.sessionId ?? null;
+
+    if (!stripeSessionId) {
+      return NextResponse.json(
+        { error: 'sessionId lipsă în documentul Firestore.' },
         { status: 500 }
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-
-    console.log('Detalii sesiune Stripe:', session);
+    const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
 
     const customerEmail = session.customer_details?.email ?? null;
 
