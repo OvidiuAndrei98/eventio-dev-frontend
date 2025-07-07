@@ -24,7 +24,7 @@ export default function OrderConfirmationPage() {
 
   const trackPurchase = async () => {
     const userEmail = await fetch(
-      `/api/get-session-info?session_id=${sessionId}&user_id=${userId}`
+      `/api/get-session-email?session_id=${sessionId}&user_id=${userId}`
     );
 
     if (userEmail) {
