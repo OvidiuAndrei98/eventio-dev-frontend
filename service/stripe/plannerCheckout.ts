@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   User as FirebaseAuthUser,
 } from 'firebase/auth';
-import { addDoc, collection, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot } from 'firebase/firestore';
 
 // O funcție helper pentru a obține utilizatorul Firebase curent, așteptând încărcarea persistenței.
 // Aceasta este crucială pentru a evita currentUser === null la prima încărcare/navigare.
@@ -63,12 +63,14 @@ export const plannerCheckout = async (priceId: string) => {
       'checkout_sessions'
     );
 
+    const docId = checkoutSessionsRef.id; // Acesta este ID-ul unic pe care îl vom folosi!
+
     const docRef = await addDoc(checkoutSessionsRef, {
       mode: 'payment',
       price: priceId,
       success_url:
         window.location.origin +
-        `/planner/checkout/${userId}/order-confirmation`,
+        `/planner/checkout/${userId}/${docId}/order-confirmation`,
       cancel_url: window.location.origin,
       customer_update: {
         name: 'auto',

@@ -1,4 +1,46 @@
+'use client';
+
+import {
+  identifyTikTokUser,
+  trackTikTokEvent,
+} from '@/lib/tik-tok/tiktok-events';
+import { getSessionUserEmail } from '@/service/stripe/getSessionUserEmail';
+import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+
+/**
+ *
+ * @returns A page that displays a thank you message after an order is confirmed.
+ * It includes a button to log in or create an account.
+ */
 export default function OrderConfirmationPage() {
+  /**
+   * useParams hook is used to extract the userId from the URL parameters.
+   * This userId can be used to fetch user-specific data or perform actions related to the user.
+   */
+  const { userId, sessionId } = useParams<{
+    userId: string;
+    sessionId: string;
+  }>();
+
+  useEffect(() => {
+    if (!sessionId || !userId) return;
+
+    const userEmail = getSessionUserEmail(userId, sessionId);
+
+    if (userEmail) {
+      identifyTikTokUser({ email: userEmail });
+      trackTikTokEvent('CompletePayment', {
+        content_type: 'product',
+        content_id: 'planner-digital-2025',
+        quantity: 1,
+        price: 99.0,
+        value: 99.0,
+        currency: 'RON',
+      });
+    }
+  }, [userId, sessionId]);
+
   return (
     <>
       <div className="min-h-screen flex items-center justify-center bg-gray-50">

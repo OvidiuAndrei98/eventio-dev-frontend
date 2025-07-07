@@ -12,21 +12,10 @@ import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import {initializeApp} from "firebase-admin/app";
 import {onRequest} from "firebase-functions/v2/https";
-import Stripe from "stripe";
 import {Resend} from "resend";
+import Stripe from "stripe";
 
 initializeApp();
-
-const stripe = new Stripe(
-  "sk_test_51RWm0xIxI3w7eVcKoblONk8IDNGc0HY3EPvIxzhjM" +
-    "sTJLlb0GD4WaEhRdAtsHIpe0rq1RysHsMzxKBPGi" +
-    "zeQPlCM00DjwdO4Y7",
-  {
-    apiVersion: "2025-06-30.basil",
-  }
-);
-
-const resend = new Resend("re_eBmwo7jr_7Qbh6CwE1y6rwtNTJAgqwQyV");
 
 export const updateUserAfterSuccesfulPayment = onDocumentCreated(
   "customers/{userId}/payments/{paymentId}",
@@ -73,8 +62,13 @@ export const updateUserAfterSuccesfulPayment = onDocumentCreated(
     }
   }
 );
-
 export const handleStripeWebhook = onRequest(async (req, res) => {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+    apiVersion: "2025-06-30.basil",
+  });
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   const sig = req.headers["stripe-signature"];
   let event;
 
@@ -82,7 +76,7 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.rawBody,
       sig as string,
-      "whsec_7byhhZtuprxZyejrHEVawVMxDbkB5jOj"
+      process.env.STRIPE_WEBHOOK_SECRET ?? ""
     );
   } catch (err: unknown) {
     const error = err as Error;
@@ -93,7 +87,7 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
 
   // Handle the checkout.session.completed event
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
+    const session = event.data.object;
     if (session.client_reference_id === "planner") {
       try {
         const customerEmail = session.customer_details?.email;
@@ -230,7 +224,8 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
 `;
 
         const finalEmailHtml = emailHtml.replace(
-          "[!!! ÎNLOCUIEȘTE CU LINK-UL TĂU DE DESCĂRCARE !!!]", downloadUrl
+          "[!!! ÎNLOCUIEȘTE CU LINK-UL TĂU DE DESCĂRCARE !!!]",
+          downloadUrl
         );
 
         logger.info(`Sending product email to: ${customerEmail}`);
@@ -250,6 +245,20 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
         }
 
         res.status(200).send(data);
+        // Query the customers collection by stripeId and update the email
+        const customersRef = admin.firestore().collection("customers");
+        const querySnapshot = await customersRef.where(
+          "stripeId", "==", session.customer as string
+        ).get();
+
+        if (!querySnapshot.empty) {
+          const batch = admin.firestore().batch();
+          querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, {email: customerEmail});
+          });
+          await batch.commit();
+        }
+
         return;
       } catch (err: unknown) {
         const error = err as Error;
