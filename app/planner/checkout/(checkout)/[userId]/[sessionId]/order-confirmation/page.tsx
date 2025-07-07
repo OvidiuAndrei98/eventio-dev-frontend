@@ -23,10 +23,10 @@ export default function OrderConfirmationPage() {
     sessionId: string;
   }>();
 
-  useEffect(() => {
-    if (!sessionId || !userId) return;
-
-    const userEmail = getSessionUserEmail(userId, sessionId);
+  const trackPurchase = async () => {
+    const userEmail = await fetch(
+      `/api/get-session-info?session_id=${sessionId}&user_id=${userId}`
+    );
 
     if (userEmail) {
       identifyTikTokUser({ email: userEmail });
@@ -39,6 +39,11 @@ export default function OrderConfirmationPage() {
         currency: 'RON',
       });
     }
+  };
+
+  useEffect(() => {
+    if (!sessionId || !userId) return;
+    trackPurchase();
   }, [userId, sessionId]);
 
   return (
