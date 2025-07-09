@@ -58,9 +58,6 @@ const RegisterPageComponent = ({
       }
 
       const user = userCredential.user;
-      console.log(
-        `RegisterPage: Firebase user created/linked with UID: ${user.uid}.`
-      );
 
       // Actualizează profilul Firebase cu numele afișat
       await updateProfile(user, {

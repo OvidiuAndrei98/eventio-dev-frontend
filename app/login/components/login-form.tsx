@@ -20,13 +20,7 @@ type FieldType = {
 
 export function LoginForm() {
   const router = useRouter();
-  const {
-    login,
-    loginWithGoogle,
-    isProcessingLogin,
-    isAuthReady,
-    userDetails,
-  } = useAuth();
+  const { login, loginWithGoogle, isProcessingLogin, isAuthReady } = useAuth();
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     login(values.email, values.password);
