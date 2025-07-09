@@ -11,10 +11,7 @@ import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import { useRouter } from 'next/navigation';
 import { GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '@/core/context/authContext';
-import {
-  identifyTikTokUser,
-  trackTikTokEvent,
-} from '@/lib/tik-tok/tiktok-events';
+import { trackTikTokEvent } from '@/lib/tik-tok/tiktok-events';
 
 type FieldType = {
   email: string;
