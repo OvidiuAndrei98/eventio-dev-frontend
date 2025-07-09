@@ -11,6 +11,10 @@ import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import { useRouter } from 'next/navigation';
 import { GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '@/core/context/authContext';
+import {
+  identifyTikTokUser,
+  trackTikTokEvent,
+} from '@/lib/tik-tok/tiktok-events';
 
 type FieldType = {
   email: string;
@@ -19,7 +23,13 @@ type FieldType = {
 
 export function LoginForm() {
   const router = useRouter();
-  const { login, loginWithGoogle, isProcessingLogin, isAuthReady } = useAuth();
+  const {
+    login,
+    loginWithGoogle,
+    isProcessingLogin,
+    isAuthReady,
+    userDetails,
+  } = useAuth();
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     login(values.email, values.password);
@@ -105,7 +115,13 @@ export function LoginForm() {
                     type="button"
                     className="w-full"
                     disabled={!isAuthReady || isProcessingLogin}
-                    onClick={() => loginWithGoogle()}
+                    onClick={() => {
+                      loginWithGoogle().then(() => {
+                        trackTikTokEvent('CompleteRegistration', {
+                          content_type: 'user',
+                        });
+                      });
+                    }}
                   >
                     <GoogleOutlined />
                     <span>Conectează-te cu Google</span>

@@ -15,6 +15,10 @@ import { addUser } from '@/service/user/addUser';
 import Link from 'next/link';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import { EmailAuthProvider, linkWithCredential } from 'firebase/auth'; // Importă direct
+import {
+  identifyTikTokUser,
+  trackTikTokEvent,
+} from '@/lib/tik-tok/tiktok-events';
 
 type FieldType = {
   name: string;
@@ -81,6 +85,13 @@ const RegisterPageComponent = ({
       // Ascultătorul onAuthStateChanged din AuthenticationBoundary va detecta acest nou utilizator,
       // va genera tokenul IQNECT, îl va salva în localStorage și apoi va redirecționa la /dashboard.
       toast.success('Contul a fost creat cu succes! Te redirecționăm...');
+
+      identifyTikTokUser({ email: user.email });
+
+      trackTikTokEvent('CompleteRegistration', {
+        content_type: 'user',
+      });
+
       window.location.href = '/dashboard';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
