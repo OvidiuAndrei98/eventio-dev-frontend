@@ -240,10 +240,10 @@ export default function PlannerPage() {
               </h2>
               <div className="flex flex-row-reverse items-center mb-2 gap-2">
                 <span className="text-xl font-semibold text-gray-400 line-through">
-                  199 RON
+                  129 RON
                 </span>
                 <span className="text-4xl font-extrabold text-[var(--primary-color)]">
-                  99 RON
+                  49 RON
                 </span>
               </div>
               <ul className="mb-6 space-y-2 text-gray-700 text-center">
@@ -258,8 +258,8 @@ export default function PlannerPage() {
                       content_type: 'product',
                       content_id: 'planner-digital-2025',
                       quantity: 1,
-                      price: 99.0,
-                      value: 99.0,
+                      price: 49.0,
+                      value: 49.0,
                       currency: 'RON',
                     });
                     await plannerCheckout(PLANYVITE_DIGITAL_PLANNER.priceId);
