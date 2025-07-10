@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   publisher: 'planyvite.ro',
   openGraph: {
     siteName: 'Planyvite - Planifică Evenimente Fără Stres',
-    title: 'Planyvite',
+    title: 'Planyvite - Invitații Digitale Personalizate Nunta | Botez',
   },
   title: {
     absolute: 'Invitații Digitale Personalizate și Creative | Planyvite',
