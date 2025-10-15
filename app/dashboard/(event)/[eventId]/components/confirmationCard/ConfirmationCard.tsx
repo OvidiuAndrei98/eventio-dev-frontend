@@ -11,7 +11,7 @@ import { Guest } from '@/core/types';
 const ConfirmationCard = ({ guest }: { guest: Guest }) => {
   return (
     <div className="preview-confirmation-card">
-      <div className="confirmation-field">
+      <div className="confirmation-field guest-name-field">
         <span className="field-title secondary-text-color-light">Nume</span>
         <TooltipProvider>
           <Tooltip>
