@@ -5,7 +5,6 @@ import React, { useCallback, useState } from 'react';
 import AddSectionModal from '../addSectionModal/AddSectionModal';
 import { ElementType, Template, TemplateElement } from '@/core/types';
 import { availableSectionTypes } from '../../utils/editorUtils';
-import EditorSectionCard from '../editorSectionCard/EditorSectionCard';
 import MobileSectionCard from './mobileSectionCard/MobileSectionCard';
 
 interface MobileElementsPopupProps {
@@ -26,8 +25,6 @@ interface MobileElementsPopupProps {
 const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
   template,
   handleSelectSectionType,
-  handleSectionSelect,
-  selectedItemData,
   handleAddElement,
   handleDeleteElement,
   handleDeleteSectionClick,

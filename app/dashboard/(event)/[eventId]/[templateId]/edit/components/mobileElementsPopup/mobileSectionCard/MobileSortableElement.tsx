@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import React from 'react';
 import { CSS } from '@dnd-kit/utilities';
-import { TemplateElement, TemplateSection } from '@/core/types';
+import { TemplateElement } from '@/core/types';
 import {
   EyeIcon,
   EyeOffIcon,
