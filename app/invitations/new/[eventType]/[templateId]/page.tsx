@@ -1,6 +1,7 @@
 'use client';
 
 import MapsAutoComplete from '@/components/mapsAutoComplete/MapsAutoComplete';
+import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/core/context/authContext';
 import { EventInstance, EventLocation, EventPlan } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
@@ -342,7 +343,13 @@ const NewInvitationPage = () => {
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={() => onFinish()} size="large">
+            <Button
+              type="primary"
+              onClick={() => onFinish()}
+              size="large"
+              disabled={isEventSaving}
+            >
+              {isEventSaving && <Spinner />}
               Finalizare
             </Button>
           )}
