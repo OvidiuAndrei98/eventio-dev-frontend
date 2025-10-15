@@ -36,6 +36,7 @@ interface TemplateRendererProps {
     elementId: string,
     position: FlexiblePosition
   ) => void;
+  onDrag?: (isDragging: boolean) => void;
 }
 
 const TemplateRenderer: React.FC<TemplateRendererProps> = ({
@@ -46,6 +47,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   activeBreakpointValue,
   previewMode,
   handleTemplateDragAndDrop,
+  onDrag,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeBreakpoint, setActiveBreakpoint] = useState<
@@ -61,21 +63,24 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   } | null>(null);
 
   // Used to prevent drag event to fire on a normal click and support touch devices
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 5,
+    },
+  });
+
+  const touchSensor =
+    typeof window !== 'undefined' && 'ontouchstart' in window
+      ? useSensor(require('@dnd-kit/core').TouchSensor, {
+          activationConstraint: {
+            distance: 5,
+          },
+        })
+      : null;
+
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-    ...(typeof window !== 'undefined' && 'ontouchstart' in window
-      ? [
-          useSensor(require('@dnd-kit/core').TouchSensor, {
-            activationConstraint: {
-              distance: 5,
-            },
-          }),
-        ]
-      : [])
+    mouseSensor,
+    ...(touchSensor ? [touchSensor] : [])
   );
 
   useEffect(() => {
@@ -143,6 +148,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     }
     setActiveElementData(activeData);
     setActiveSection(section);
+    onDrag?.(true);
   };
 
   const handleDragMove = (e: DragMoveEvent) => {
@@ -297,6 +303,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         delete finalPosition.top;
       }
     }
+
+    onDrag?.(false);
 
     // Salvarea dimensiunilor (width/height) NU se face aici,
 

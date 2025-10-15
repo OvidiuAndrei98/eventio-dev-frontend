@@ -820,6 +820,7 @@ const MobileEditor = ({
   handleAddSectionClick,
   handlePropertyChanged,
 }: MobileEditorProps) => {
+  const [isDragging, setIsDragging] = useState(false);
   return (
     <div className="h-full overflow-hidden">
       <TemplateRenderer
@@ -829,6 +830,7 @@ const MobileEditor = ({
         onSelect={handleSectionSelect}
         activeBreakpointValue={editViewMode}
         handleTemplateDragAndDrop={handleTemplateDragAndDrop}
+        onDrag={setIsDragging}
       />
       <div className="fixed bottom-4 right-4 z-[100] bg-transparent">
         <MobileElementsPopup
@@ -846,6 +848,7 @@ const MobileEditor = ({
         />
       </div>
       <MobilePropertiesPannel
+        isDragging={isDragging}
         selectedElement={selectedItemData}
         activeBreakpoint={editViewMode}
         handlePropertyChanged={handlePropertyChanged}

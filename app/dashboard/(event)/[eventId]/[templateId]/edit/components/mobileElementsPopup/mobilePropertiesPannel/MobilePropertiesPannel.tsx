@@ -11,15 +11,17 @@ interface MobilePropertiesPannelProps {
     newValue: unknown,
     propIsResponsive: boolean
   ) => void;
+  isDragging: boolean;
 }
 
 const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
   selectedElement,
   handlePropertyChanged,
+  isDragging,
 }) => {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
-    setOpen(true);
+    if (selectedElement) if (!isDragging) setOpen(true);
   }, [selectedElement]);
 
   return (
