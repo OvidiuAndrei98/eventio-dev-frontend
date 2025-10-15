@@ -60,13 +60,22 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     modifiers: [];
   } | null>(null);
 
-  // Used to prevent drag event to fire on a normal click
+  // Used to prevent drag event to fire on a normal click and support touch devices
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
         distance: 5,
       },
-    })
+    }),
+    ...(typeof window !== 'undefined' && 'ontouchstart' in window
+      ? [
+          useSensor(require('@dnd-kit/core').TouchSensor, {
+            activationConstraint: {
+              distance: 5,
+            },
+          }),
+        ]
+      : [])
   );
 
   useEffect(() => {
@@ -97,6 +106,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     margin: '0 auto',
     position: 'relative',
     overflowY: 'auto',
+    height: '100%',
+    scrollbarWidth: 'thin',
   };
 
   const getPropertyValue = (

@@ -71,7 +71,7 @@ const PropertyPanel = ({
   }
 
   return (
-    <div>
+    <>
       {Object.entries(configSet).map(([propertyPath, config]) => {
         if (propertyPath === 'elements' || propertyPath === 'responsive')
           return null;
@@ -317,7 +317,7 @@ const PropertyPanel = ({
             );
         }
       })}
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,14 @@
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import AddSectionModal from '../addSectionModal/AddSectionModal';
 import { ElementType, Template, TemplateElement } from '@/core/types';
 import { availableSectionTypes } from '../../utils/editorUtils';
@@ -14,12 +21,14 @@ interface MobileElementsPopupProps {
     sectionName: string
   ) => void;
   handleSectionSelect: (item: TemplateElement) => void;
-  selectedItemData: { id: string; type: string };
   handleAddElement: (newElement: TemplateElement, sectionId: string) => void;
   handleDeleteElement: (sectionId: string, elementId: string) => void;
   handleDeleteSectionClick: (sectionId: string) => void;
   handleToggleVisibility: (sectionId: string) => void;
   setTemplate: React.Dispatch<React.SetStateAction<Template>>;
+  openPopoverIndex: number | null;
+  handlePopoverOpenChange: (newOpenState: boolean) => void;
+  handleAddSectionClick: (index: number) => void;
 }
 
 const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
@@ -30,15 +39,10 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
   handleDeleteSectionClick,
   handleToggleVisibility,
   setTemplate,
+  openPopoverIndex,
+  handlePopoverOpenChange,
+  handleAddSectionClick,
 }) => {
-  //   const [open, setOpen] = React.useState(false);
-  //   const [insertionIndex, setInsertionIndex] = useState<number | null>(null);
-  const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
-
-  //   const onClose = (state: boolean) => {
-  //     setOpen(state);
-  //   };
-
   // Function used to update the template with the new elements order for in a section after the drag end event finshed
   const handleElementPositionUpdate = (
     elements: TemplateElement[],
@@ -54,26 +58,6 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
     });
   };
 
-  const handleAddSectionClick = useCallback(
-    (index: number) => {
-      if (openPopoverIndex === index) {
-        setOpenPopoverIndex(null);
-        // setInsertionIndex(null);
-      } else {
-        setOpenPopoverIndex(index);
-        // setInsertionIndex(index);
-      }
-    },
-    [openPopoverIndex]
-  );
-
-  const handlePopoverOpenChange = useCallback((newOpenState: boolean) => {
-    if (!newOpenState) {
-      setOpenPopoverIndex(null);
-      //   setInsertionIndex(null);
-    }
-  }, []);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -86,7 +70,11 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
           />
         }
       </DialogTrigger>
-      <DialogContent className="w-[90vw] h-[85vh]">
+
+      <DialogContent className="w-[90vw] h-[85vh] grid grid-rows-[auto_1fr] gap-4 overflow-hidden">
+        <DialogHeader className="text-left">
+          <DialogTitle className="text-xl">Componente</DialogTitle>
+        </DialogHeader>
         <div className="flex flex-col items-center overflow-y-auto">
           <AddSectionModal
             placeholder="Cauta sectiuni"

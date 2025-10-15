@@ -39,6 +39,7 @@ import { removeImageForTemplate } from '@/service/templates/removeImageForTempla
 import { isMobile } from 'react-device-detect';
 import { useAuth } from '@/core/context/authContext';
 import MobileElementsPopup from './components/mobileElementsPopup/MobileElementsPopup';
+import MobilePropertiesPannel from './components/mobileElementsPopup/mobilePropertiesPannel/MobilePropertiesPannel';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -614,6 +615,10 @@ const EditPage = () => {
       selectedItemData={selectedItemData}
       setTemplate={setTemplate}
       template={template}
+      openPopoverIndex={openPopoverIndex}
+      handlePopoverOpenChange={handlePopoverOpenChange}
+      handleAddSectionClick={handleAddSectionClick}
+      handlePropertyChanged={handlePropertyChanged}
     />
   ) : !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
@@ -783,9 +788,17 @@ interface MobileEditorProps {
     sectionName: string
   ) => void;
   handleToggleVisibility: (sectionId: string, elementId?: string) => void;
-  selectedItemData: { id: string; type: string };
+  selectedItemData: TemplateElement;
   setTemplate: React.Dispatch<React.SetStateAction<Template>>;
   template: Template;
+  openPopoverIndex: number | null;
+  handlePopoverOpenChange: (newOpenState: boolean) => void;
+  handleAddSectionClick: (index: number) => void;
+  handlePropertyChanged: (
+    propertyPath: string,
+    newValue: unknown,
+    propIsResponsive: boolean
+  ) => void;
 }
 
 const MobileEditor = ({
@@ -802,9 +815,13 @@ const MobileEditor = ({
   selectedItemData,
   setTemplate,
   template,
+  openPopoverIndex,
+  handlePopoverOpenChange,
+  handleAddSectionClick,
+  handlePropertyChanged,
 }: MobileEditorProps) => {
   return (
-    <div>
+    <div className="h-full overflow-hidden">
       <TemplateRenderer
         invitationData={invitationData}
         selectedElementId={selectedElementId}
@@ -821,12 +838,18 @@ const MobileEditor = ({
           handleSectionSelect={handleSectionSelect}
           handleSelectSectionType={handleSelectSectionType}
           handleToggleVisibility={handleToggleVisibility}
-          selectedItemData={selectedItemData}
           setTemplate={setTemplate}
           template={template}
+          openPopoverIndex={openPopoverIndex}
+          handlePopoverOpenChange={handlePopoverOpenChange}
+          handleAddSectionClick={handleAddSectionClick}
         />
       </div>
-      <div className="bg-white shadow rounded p-4 flex flex-col items-center overflow-y-auto"></div>
+      <MobilePropertiesPannel
+        selectedElement={selectedItemData}
+        activeBreakpoint={editViewMode}
+        handlePropertyChanged={handlePropertyChanged}
+      />
     </div>
   );
 };
