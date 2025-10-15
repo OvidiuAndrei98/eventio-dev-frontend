@@ -14,6 +14,7 @@ import {
   DragMoveEvent,
   DragStartEvent,
   MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -63,24 +64,11 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   } | null>(null);
 
   // Used to prevent drag event to fire on a normal click and support touch devices
-  const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: {
-      distance: 5,
-    },
-  });
-
-  const touchSensor =
-    typeof window !== 'undefined' && 'ontouchstart' in window
-      ? useSensor(require('@dnd-kit/core').TouchSensor, {
-          activationConstraint: {
-            distance: 5,
-          },
-        })
-      : null;
-
   const sensors = useSensors(
-    mouseSensor,
-    ...(touchSensor ? [touchSensor] : [])
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 5 } })
   );
 
   useEffect(() => {
