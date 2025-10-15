@@ -31,13 +31,13 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
   handleToggleVisibility,
   setTemplate,
 }) => {
-  const [open, setOpen] = React.useState(false);
-  const [insertionIndex, setInsertionIndex] = useState<number | null>(null);
+  //   const [open, setOpen] = React.useState(false);
+  //   const [insertionIndex, setInsertionIndex] = useState<number | null>(null);
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
 
-  const onClose = (state: boolean) => {
-    setOpen(state);
-  };
+  //   const onClose = (state: boolean) => {
+  //     setOpen(state);
+  //   };
 
   // Function used to update the template with the new elements order for in a section after the drag end event finshed
   const handleElementPositionUpdate = (
@@ -58,10 +58,10 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
     (index: number) => {
       if (openPopoverIndex === index) {
         setOpenPopoverIndex(null);
-        setInsertionIndex(null);
+        // setInsertionIndex(null);
       } else {
         setOpenPopoverIndex(index);
-        setInsertionIndex(index);
+        // setInsertionIndex(index);
       }
     },
     [openPopoverIndex]
@@ -70,7 +70,7 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
   const handlePopoverOpenChange = useCallback((newOpenState: boolean) => {
     if (!newOpenState) {
       setOpenPopoverIndex(null);
-      setInsertionIndex(null);
+      //   setInsertionIndex(null);
     }
   }, []);
 
