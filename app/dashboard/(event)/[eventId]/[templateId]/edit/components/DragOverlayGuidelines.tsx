@@ -1,5 +1,3 @@
-// components/builder/DragOverlayGuidelines.tsx
-
 import React from 'react';
 import { Guideline } from '../utils/canvasUtils/guidelineCalculations';
 

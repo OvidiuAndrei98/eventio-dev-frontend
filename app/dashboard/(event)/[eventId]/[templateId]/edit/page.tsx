@@ -29,7 +29,7 @@ import { updateTemplate } from '@/service/templates/updateTemplate';
 import { toast } from 'sonner';
 import AddSectionModal from './components/addSectionModal/AddSectionModal';
 import { availableSectionTypes } from './utils/editorUtils';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useEventContext } from '@/core/context/EventContext';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
@@ -37,9 +37,8 @@ import { useParams } from 'next/navigation';
 import { uploadImageForTemplate } from '@/service/templates/uploadImageForTemplate';
 import { removeImageForTemplate } from '@/service/templates/removeImageForTemplate';
 import { isMobile } from 'react-device-detect';
-import Image from 'next/image';
-import LaptopIllustration from '@/public/use-laptop-illustration.svg';
 import { useAuth } from '@/core/context/authContext';
+import MobileElementsPopup from './components/mobileElementsPopup/MobileElementsPopup';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -592,23 +591,31 @@ const EditPage = () => {
     });
   };
 
-  return isMobile ? (
-    <div>
-      <div className="bg-[#F6F6F6] h-[calc(100dvh-48px)] w-full flex flex-col items-center justify-center p-4">
-        <Image
-          src={LaptopIllustration}
-          alt="Laptop illustration"
-          height={200}
-          width={200}
-        />
-        <h1 className="text-xl font-normal text-center text-[#22133C]">
-          Această pagină nu este disponibilă pe mobil momentan, te rugăm să
-          accesezi aplicația de pe un desktop sau laptop pentru a putea edita
-          invitația.
-        </h1>
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
+        <span className="loader"></span>
       </div>
-    </div>
-  ) : loading || !template ? (
+    );
+  }
+
+  return isMobile ? (
+    <MobileEditor
+      invitationData={template}
+      selectedElementId={selectedItemId}
+      handleSectionSelect={handleSectionSelect}
+      editViewMode={'mobile'}
+      handleTemplateDragAndDrop={handleTemplateDragAndDrop}
+      handleAddElement={handleAddElement}
+      handleDeleteElement={handleDeleteElement}
+      handleDeleteSectionClick={handleDeleteSectionClick}
+      handleSelectSectionType={handleSelectSectionType}
+      handleToggleVisibility={handleToggleVisibility}
+      selectedItemData={selectedItemData}
+      setTemplate={setTemplate}
+      template={template}
+    />
+  ) : !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
       <span className="loader"></span>
     </div>
@@ -758,3 +765,68 @@ const EditPage = () => {
 };
 
 export default EditPage;
+
+interface MobileEditorProps {
+  invitationData: Template;
+  selectedElementId: string;
+  handleSectionSelect: (element: TemplateElement) => void;
+  editViewMode: 'mobile' | 'desktop' | 'tablet';
+  handleTemplateDragAndDrop: (
+    elementId: string,
+    position: FlexiblePosition
+  ) => void;
+  handleAddElement: (newElement: TemplateElement, sectionId: string) => void;
+  handleDeleteElement: (sectionId: string, elementId: string) => void;
+  handleDeleteSectionClick: (sectionId: string) => void;
+  handleSelectSectionType: (
+    elementType: ElementType,
+    sectionName: string
+  ) => void;
+  handleToggleVisibility: (sectionId: string, elementId?: string) => void;
+  selectedItemData: { id: string; type: string };
+  setTemplate: React.Dispatch<React.SetStateAction<Template>>;
+  template: Template;
+}
+
+const MobileEditor = ({
+  invitationData,
+  selectedElementId,
+  handleSectionSelect,
+  editViewMode = 'mobile',
+  handleTemplateDragAndDrop,
+  handleAddElement,
+  handleDeleteElement,
+  handleDeleteSectionClick,
+  handleSelectSectionType,
+  handleToggleVisibility,
+  selectedItemData,
+  setTemplate,
+  template,
+}: MobileEditorProps) => {
+  return (
+    <div>
+      <TemplateRenderer
+        invitationData={invitationData}
+        selectedElementId={selectedElementId}
+        editMode={true}
+        onSelect={handleSectionSelect}
+        activeBreakpointValue={editViewMode}
+        handleTemplateDragAndDrop={handleTemplateDragAndDrop}
+      />
+      <div className="fixed bottom-4 right-4 z-[100] bg-transparent">
+        <MobileElementsPopup
+          handleAddElement={handleAddElement}
+          handleDeleteElement={handleDeleteElement}
+          handleDeleteSectionClick={handleDeleteSectionClick}
+          handleSectionSelect={handleSectionSelect}
+          handleSelectSectionType={handleSelectSectionType}
+          handleToggleVisibility={handleToggleVisibility}
+          selectedItemData={selectedItemData}
+          setTemplate={setTemplate}
+          template={template}
+        />
+      </div>
+      <div className="bg-white shadow rounded p-4 flex flex-col items-center overflow-y-auto"></div>
+    </div>
+  );
+};

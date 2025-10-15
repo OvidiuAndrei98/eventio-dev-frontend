@@ -19,8 +19,6 @@ const elementComponentMap = {
   [ElementType.locationsElement]: LocationsElement,
   [ElementType.GifElement]: GifElement,
   [ElementType.Countdown]: CountdownElement,
-
-  // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
 interface SectionRendererProps {

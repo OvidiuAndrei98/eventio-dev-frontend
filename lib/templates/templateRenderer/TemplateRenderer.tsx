@@ -224,7 +224,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       elementAlignment: currentPosition?.elementAlignment || 'auto', // Păstrează alinierea existentă
     };
 
-    // 1. Calculul distanțelor în procente
+    // Calculul distanțelor în procente
     const newX_percent = (newX_px / parentWidth_px) * 100;
     const newY_percent = (newY_px / parentHeight_px) * 100;
 
@@ -235,7 +235,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     const distanceFromBottom_percent =
       100 - (newY_percent + (elementHeight_px / parentHeight_px) * 100);
 
-    // 2. Decizia pe axa X (stânga vs. dreapta)
+    // Decizia pe axa X (stânga vs. dreapta)
     // Verificăm dacă elementul este "lipit" de marginea stângă (within tolerancePercent from 0)
     if (newX_percent <= tolerancePercent) {
       finalPosition.left = 0; // Lipit de stânga
@@ -260,7 +260,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       }
     }
 
-    // 3. Decizia pe axa Y (sus vs. jos)
+    // Decizia pe axa Y (sus vs. jos)
     // Verificăm dacă elementul este "lipit" de marginea de sus (within tolerancePercent from 0)
     if (newY_percent <= tolerancePercent) {
       finalPosition.top = 0; // Lipit de sus
@@ -288,10 +288,9 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     }
 
     // Salvarea dimensiunilor (width/height) NU se face aici,
-    // ci prin intermediul updateElementPropertyInTemplate așa cum am discutat.
-    // Deci apelul handleTemplateDragAndDrop ar trebui să arate așa:
+
     handleTemplateDragAndDrop &&
-      handleTemplateDragAndDrop(e.active.id as string, finalPosition); // Fără finalStyle aici
+      handleTemplateDragAndDrop(e.active.id as string, finalPosition);
   };
 
   if (!invitationData || !invitationData.elements) {

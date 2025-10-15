@@ -1,5 +1,3 @@
-// utilities/guidelineCalculations.ts
-
 import { TemplateElement } from '@/core/types'; // Asigură-te că importul e corect
 
 // Definirea tipurilor pentru linii
