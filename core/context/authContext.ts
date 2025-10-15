@@ -29,9 +29,16 @@ export const AuthenticationContext = createContext<AuthContextType>({
   authenticationState: AuthenticationState.Unknown,
   userDetails: null,
   firebaseUser: null,
-  logout: async () => {},
-  loginWithGoogle: async () => {},
-  login: async () => {},
+  logout: async () => {
+    // No-op logout implementation
+    return Promise.resolve();
+  },
+  loginWithGoogle: async () => {
+    return Promise.resolve();
+  },
+  login: async () => {
+    return Promise.resolve();
+  },
   isProcessingLogin: false,
   isAuthReady: false, // Inițial, nu este gata
 });

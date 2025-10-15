@@ -133,15 +133,27 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       }
       window.location.href = '/dashboard';
       // `onAuthStateChanged` will handle state updates and redirects
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google login/linking error:', error);
       // Avoid linking a credential that already exists
-      if (error.code === 'auth/credential-already-in-use') {
-        toast.error('This Google account is already linked to another user.');
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        typeof (error as { code: unknown }).code === 'string'
+      ) {
+        if (
+          (error as { code: string }).code === 'auth/credential-already-in-use'
+        ) {
+          toast.error('This Google account is already linked to another user.');
+        } else {
+          toast.error(
+            (error as { message?: string }).message ||
+              'An error occurred during Google sign-in.'
+          );
+        }
       } else {
-        toast.error(
-          error.message || 'An error occurred during Google sign-in.'
-        );
+        toast.error('An error occurred during Google sign-in.');
       }
     } finally {
       setIsProcessingLogin(false);
@@ -188,18 +200,26 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
       window.location.href = '/dashboard';
       // The onAuthStateChanged listener will automatically handle the redirect
       // and update the state to Authenticated.
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle specific error cases
-      if (error.code === 'auth/credential-already-in-use') {
-        toast.error('Acest email este deja asociat cu un alt cont.');
-      } else if (error.code === 'auth/user-not-found') {
-        toast.error('Nu există niciun cont cu acest email.');
-      } else if (error.code === 'auth/wrong-password') {
-        toast.error('Parolă incorectă. Vă rugăm să încercați din nou.');
-      } else if (error.code === 'auth/invalid-credential') {
-        toast.error(
-          'Credentiale invalide. Vă rugăm să verificați datele introduse.'
-        );
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        typeof (error as { code: unknown }).code === 'string'
+      ) {
+        const code = (error as { code: string }).code;
+        if (code === 'auth/credential-already-in-use') {
+          toast.error('Acest email este deja asociat cu un alt cont.');
+        } else if (code === 'auth/invalid-email') {
+          toast.error('Nu există niciun cont cu acest email.');
+        } else if (code === 'auth/wrong-password') {
+          toast.error('Parolă incorectă. Vă rugăm să încercați din nou.');
+        } else if (code === 'auth/invalid-credential') {
+          toast.error(
+            'Credentiale invalide. Vă rugăm să verificați datele introduse.'
+          );
+        }
       }
     } finally {
       setIsProcessingLogin(false);

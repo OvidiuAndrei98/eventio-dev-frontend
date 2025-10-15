@@ -230,6 +230,7 @@ function EventLocationCard({
               year: 'numeric',
               month: 'long',
               day: 'numeric',
+              timeZone: 'UTC',
             })
             .charAt(0)
             .toLocaleUpperCase() +
@@ -239,6 +240,7 @@ function EventLocationCard({
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
+                timeZone: 'UTC',
               })
               .slice(1)}
         </strong>

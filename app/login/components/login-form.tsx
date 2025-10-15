@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { GoogleOutlined } from '@ant-design/icons';
 import { useAuth } from '@/core/context/authContext';
 import { trackTikTokEvent } from '@/lib/tik-tok/tiktok-events';
+import { Spinner } from '@/components/ui/spinner';
 
 type FieldType = {
   email: string;
@@ -26,10 +27,8 @@ export function LoginForm() {
     login(values.email, values.password);
   };
 
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
-    errorInfo
-  ) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = () => {
+    console.log('Failed:', 'Autentificare eșuată');
   };
 
   return (
@@ -91,6 +90,7 @@ export function LoginForm() {
                       className="w-full bg-[var(--primary-color)] hover:bg-[#a235c6] text-white"
                       disabled={!isAuthReady || isProcessingLogin}
                     >
+                      {isProcessingLogin && <Spinner />}
                       Autentificare
                     </Button>
                   </Form.Item>
