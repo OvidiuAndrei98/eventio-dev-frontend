@@ -4,39 +4,36 @@ import PropertyPanel from '../../propertyPanel/PropertyPanel';
 import { TemplateElement } from '@/core/types';
 
 interface MobilePropertiesPannelProps {
-  selectedElement: TemplateElement;
+  selectedElement: TemplateElement | undefined;
   activeBreakpoint: 'desktop' | 'tablet' | 'mobile';
   handlePropertyChanged: (
     propertyPath: string,
     newValue: unknown,
     propIsResponsive: boolean
   ) => void;
-  isDragging: boolean;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
   selectedElement,
   handlePropertyChanged,
-  isDragging,
+  onClose,
+  open,
 }) => {
-  const [open, setOpen] = React.useState(false);
-  React.useEffect(() => {
-    if (selectedElement) if (!isDragging) setOpen(true);
-  }, [selectedElement]);
-
-  return (
-    <Drawer open={open} onOpenChange={() => setOpen(!open)}>
-      <DrawerContent className="z-100 p-[0_16px_16px_16px] h-[60svh] overflow-hidden p-0">
+  return selectedElement ? (
+    <Drawer open={open} onOpenChange={onClose}>
+      <DrawerContent className=" p-[0_16px_16px_16px] h-[60svh] overflow-hidden p-0">
         <div className="h-full overflow-auto scrollbar-thin p-2">
           <PropertyPanel
-            activeBreakpoint={'mobile'}
+            activeBreakpoint="mobile"
             selectedElement={selectedElement}
             handlePropertyChanged={handlePropertyChanged}
           />
         </div>
       </DrawerContent>
     </Drawer>
-  );
+  ) : null;
 };
 
 export default MobilePropertiesPannel;

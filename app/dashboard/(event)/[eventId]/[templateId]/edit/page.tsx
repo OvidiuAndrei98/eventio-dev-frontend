@@ -821,16 +821,34 @@ const MobileEditor = ({
   handlePropertyChanged,
 }: MobileEditorProps) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedElement, setSelectedElement] = useState<
+    TemplateElement | undefined
+  >();
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedElement(selectedItemData);
+  }, [selectedItemData]);
+
   return (
     <div className="h-full overflow-hidden">
       <TemplateRenderer
         invitationData={invitationData}
         selectedElementId={selectedElementId}
         editMode={true}
-        onSelect={handleSectionSelect}
+        onSelect={(el) => {
+          handleSectionSelect(el);
+          setSelectedElement(el);
+          if (!isDragging) {
+            setPopoverOpen(true);
+          }
+        }}
         activeBreakpointValue={editViewMode}
         handleTemplateDragAndDrop={handleTemplateDragAndDrop}
-        onDrag={setIsDragging}
+        onDrag={(dragging: boolean) => {
+          setIsDragging(dragging);
+          setSelectedElement(undefined);
+        }}
       />
       <div className="fixed bottom-4 right-4 z-[100] bg-transparent">
         <MobileElementsPopup
@@ -848,9 +866,10 @@ const MobileEditor = ({
         />
       </div>
       <MobilePropertiesPannel
-        isDragging={isDragging}
-        selectedElement={selectedItemData}
-        activeBreakpoint={editViewMode}
+        open={popoverOpen && !!selectedElement && !isDragging}
+        onClose={() => setPopoverOpen(false)}
+        selectedElement={selectedElement}
+        activeBreakpoint="mobile"
         handlePropertyChanged={handlePropertyChanged}
       />
     </div>

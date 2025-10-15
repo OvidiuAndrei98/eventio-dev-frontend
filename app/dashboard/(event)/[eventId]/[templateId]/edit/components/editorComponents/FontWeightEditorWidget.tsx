@@ -43,7 +43,7 @@ const FontWeightEditorWidget = ({
     return <div>Eroare: Widget incompatibil</div>;
   }
   return (
-    <div className="mb-[10px]">
+    <div className="mb-[10px] z-99999">
       <label
         style={{
           display: 'block',
@@ -59,7 +59,7 @@ const FontWeightEditorWidget = ({
         <SelectTrigger className="w-full border-[#ccc]">
           <SelectValue placeholder="Grosime text" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent inert>
           <SelectGroup>
             <SelectItem value="300">Subtire</SelectItem>
             <SelectItem value="500">Normal</SelectItem>

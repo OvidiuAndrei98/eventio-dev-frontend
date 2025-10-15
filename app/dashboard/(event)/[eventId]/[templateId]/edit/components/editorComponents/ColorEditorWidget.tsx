@@ -43,7 +43,7 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div style={{ marginBottom: '10px', zIndex: 99999, position: 'relative' }}>
       <label
         style={{
           display: 'block',
@@ -61,6 +61,7 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
         onChange={handleInputChange}
         showText
         className="w-full justify-start"
+        getPopupContainer={(trigger) => trigger.parentNode as HTMLElement}
       />
     </div>
   );
