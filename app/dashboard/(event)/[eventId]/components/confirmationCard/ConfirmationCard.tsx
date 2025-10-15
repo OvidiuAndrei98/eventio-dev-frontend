@@ -24,7 +24,7 @@ const ConfirmationCard = ({ guest }: { guest: Guest }) => {
           </Tooltip>
         </TooltipProvider>
       </div>
-      <div className="confirmation-field">
+      <div className="confirmation-field guests-number-field">
         <span className="field-title secondary-text-color-light">
           Nr. invitati
         </span>

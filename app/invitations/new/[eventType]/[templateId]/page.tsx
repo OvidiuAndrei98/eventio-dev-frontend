@@ -55,6 +55,8 @@ const NewInvitationPage = () => {
     {} as EventLocation
   );
 
+  const [isEventSaving, setIsEventSaving] = useState(false);
+
   let afterImageUploaded: Promise<void>;
 
   const beforeUpload = (file: FileType) => {
@@ -89,6 +91,11 @@ const NewInvitationPage = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFormSubmit = async (values: any) => {
+    if (isEventSaving) {
+      return;
+    }
+    setIsEventSaving(true);
+
     if (!newEventLocation.location) {
       toast.error('Te rugam sa selectezi o locatie valida');
       return;
@@ -194,6 +201,8 @@ const NewInvitationPage = () => {
       eventAditionalQuestions: [],
     };
     await createEvent(eventData, user.userDetails.userId, selectedTemplate);
+
+    setIsEventSaving(false);
     router.push(`/dashboard/${eventId}`);
   };
 
