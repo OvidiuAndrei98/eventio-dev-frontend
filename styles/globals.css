@@ -237,7 +237,21 @@ button.ant-btn span {
 .ant-form.rsvp-form label {
   color: inherit !important;
 }
+
 @media (max-width: 1024px) {
+  .ant-color-picker-inner {
+    width: 200px !important;
+    .ant-color-picker-inner-content {
+      width: 200px !important;
+    }
+  }
+  .ant-color-picker-select {
+    height: 100px !important;
+  }
+  .ant-color-picker-saturation {
+    height: 100px !important;
+  }
+
   input[type='text'],
   input[type='number'],
   input[type='email'],

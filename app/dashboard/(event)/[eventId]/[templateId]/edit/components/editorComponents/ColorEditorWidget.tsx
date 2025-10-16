@@ -43,7 +43,13 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: '10px', position: 'relative' }}>
+    <div
+      style={{
+        marginBottom: '10px',
+        position: 'relative',
+        overflow: 'visible',
+      }}
+    >
       <label
         style={{
           display: 'block',
@@ -56,12 +62,13 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
         {config.label}:
       </label>
       <ColorPicker
+        autoAdjustOverflow
         format="hex"
         value={value}
         onChange={handleInputChange}
         showText
         className="w-full justify-start"
-        getPopupContainer={(trigger) => trigger.parentNode as HTMLElement}
+        getPopupContainer={(trigger) => trigger.parentElement as HTMLElement}
       />
     </div>
   );
