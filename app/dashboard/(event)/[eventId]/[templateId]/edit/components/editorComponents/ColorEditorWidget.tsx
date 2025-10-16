@@ -43,7 +43,7 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: '10px', zIndex: 99999, position: 'relative' }}>
+    <div style={{ marginBottom: '10px', position: 'relative' }}>
       <label
         style={{
           display: 'block',
