@@ -56,6 +56,7 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
               }
             />
           </div>
+          <h3 className="py-2 font-semibold text-xl">{selectedElement.name}</h3>
           <div className="w-full">
             <PropertyPanel
               activeBreakpoint="mobile"
