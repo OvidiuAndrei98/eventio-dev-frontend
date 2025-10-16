@@ -43,7 +43,7 @@ const FontWeightEditorWidget = ({
     return <div>Eroare: Widget incompatibil</div>;
   }
   return (
-    <div className="mb-[10px] z-99999">
+    <div className="mb-[10px]">
       <label
         style={{
           display: 'block',
