@@ -76,12 +76,16 @@ const AddSectionModal: React.FC<AddSectionModalProps> = ({
     <Popover onOpenChange={onClose} open={open}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent
-        className="w-80 p-0 overflow-hidden rounded-md shadow-lg bg-white ring-0 border-1 border-gray-200 focus-visible:ring-offset-0 focus-visible:ring-0 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+        onClick={(e) => e.stopPropagation()} // Prevenim propagarea click-ului pentru a nu închide popover-ul când facem click în interior
+        className="w-80 p-0 overflow-hidden rounded-md shadow-lg bg-white ring-0 border-1 border-gray-200 focus-visible:ring-offset-0 focus-visible:ring-0 shadow-[0_3px_10px_rgb(0,0,0,0.2)] pointer-events-auto"
         sideOffset={10}
         align="start"
       >
-        <div className="grid gap-0">
-          <div className="p-4 border-b border-gray-200 flex flex-col gap-2">
+        <div className="grid gap-0" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="p-4 border-b border-gray-200 flex flex-col gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="relative flex items-center mt-2">
               <SearchIcon size={16} className="absolute left-3 text-gray-400" />
               <Input
@@ -100,7 +104,10 @@ const AddSectionModal: React.FC<AddSectionModalProps> = ({
                 <div
                   key={item.type as string}
                   className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer rounded-sm"
-                  onClick={() => handleTypeSelect(item.type, item.name)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTypeSelect(item.type, item.name);
+                  }} // Prevenim propagarea evenimentului pentru a nu închide popover-ul înainte de a apela handler-ul
                 >
                   <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
                     {item.icon ? (
