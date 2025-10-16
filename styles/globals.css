@@ -237,6 +237,19 @@ button.ant-btn span {
 .ant-form.rsvp-form label {
   color: inherit !important;
 }
+@media (max-width: 1024px) {
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  textarea,
+  select:focus,
+  input[type='text']:focus,
+  input[type='email']:focus,
+  input[type='password']:focus,
+  textarea:focus {
+    font-size: 16px !important; /* Use 16px to prevent mobile browser zoom */
+  }
+}
 
 @keyframes rotation {
   0% {
