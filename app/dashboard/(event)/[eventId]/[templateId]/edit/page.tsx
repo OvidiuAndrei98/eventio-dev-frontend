@@ -40,6 +40,7 @@ import { isMobile } from 'react-device-detect';
 import { useAuth } from '@/core/context/authContext';
 import MobileElementsPopup from './components/mobileElementsPopup/MobileElementsPopup';
 import MobilePropertiesPannel from './components/mobileElementsPopup/mobilePropertiesPannel/MobilePropertiesPannel';
+import { SaveIcon } from 'lucide-react';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -605,7 +606,6 @@ const EditPage = () => {
       invitationData={template}
       selectedElementId={selectedItemId}
       handleSectionSelect={handleSectionSelect}
-      editViewMode={'mobile'}
       handleTemplateDragAndDrop={handleTemplateDragAndDrop}
       handleAddElement={handleAddElement}
       handleDeleteElement={handleDeleteElement}
@@ -775,7 +775,6 @@ interface MobileEditorProps {
   invitationData: Template;
   selectedElementId: string;
   handleSectionSelect: (element: TemplateElement) => void;
-  editViewMode: 'mobile' | 'desktop' | 'tablet';
   handleTemplateDragAndDrop: (
     elementId: string,
     position: FlexiblePosition
@@ -805,7 +804,6 @@ const MobileEditor = ({
   invitationData,
   selectedElementId,
   handleSectionSelect,
-  editViewMode = 'mobile',
   handleTemplateDragAndDrop,
   handleAddElement,
   handleDeleteElement,
@@ -825,31 +823,72 @@ const MobileEditor = ({
     TemplateElement | undefined
   >();
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [editViewMode, setEditViewMode] = useState<
+    'mobile' | 'desktop' | 'tablet'
+  >('mobile');
+  const [availableBreakpoints, setAvailableBreakpoints] = useState<
+    ('mobile' | 'desktop' | 'tablet')[]
+  >([]);
+
+  useEffect(() => {
+    const updateBreakpoints = () => {
+      const width = window.innerWidth;
+      if (width <= 600) {
+        setAvailableBreakpoints(['mobile']);
+        setEditViewMode('mobile');
+      } else if (width <= 900) {
+        setAvailableBreakpoints(['mobile', 'tablet']);
+        setEditViewMode('mobile');
+      }
+    };
+
+    updateBreakpoints();
+    window.addEventListener('resize', updateBreakpoints);
+    return () => window.removeEventListener('resize', updateBreakpoints);
+  }, []);
+
+  const showTablet = availableBreakpoints.includes('tablet');
 
   useEffect(() => {
     setSelectedElement(selectedItemData);
   }, [selectedItemData]);
 
   return (
-    <div className="h-full overflow-hidden">
-      <TemplateRenderer
-        invitationData={invitationData}
-        selectedElementId={selectedElementId}
-        editMode={true}
-        onSelect={(el) => {
-          handleSectionSelect(el);
-          setSelectedElement(el);
-          if (!isDragging) {
-            setPopoverOpen(true);
-          }
-        }}
-        activeBreakpointValue={editViewMode}
-        handleTemplateDragAndDrop={handleTemplateDragAndDrop}
-        onDrag={(dragging: boolean) => {
-          setIsDragging(dragging);
-          setSelectedElement(undefined);
-        }}
+    <div className="relative h-full overflow-hidden">
+      <Button
+        type="default"
+        size="middle"
+        className="!absolute !right-4 !top-2 bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200 z-10 rounded-full flex items-center gap-2"
+        icon={<SaveIcon />}
       />
+      <div
+        className={`h-full overflow-auto ${
+          editViewMode === 'mobile'
+            ? 'w-[367px] mx-auto'
+            : editViewMode === 'tablet'
+            ? 'w-[700px] mx-auto'
+            : 'max-w-[900px] min-w-[800px] ml-[calc(-23vw_+_50%)]'
+        }`}
+      >
+        <TemplateRenderer
+          invitationData={invitationData}
+          selectedElementId={selectedElementId}
+          editMode={true}
+          onSelect={(el) => {
+            handleSectionSelect(el);
+            setSelectedElement(el);
+            if (!isDragging) {
+              setPopoverOpen(true);
+            }
+          }}
+          activeBreakpointValue={editViewMode}
+          handleTemplateDragAndDrop={handleTemplateDragAndDrop}
+          onDrag={(dragging: boolean) => {
+            setIsDragging(dragging);
+            setSelectedElement(undefined);
+          }}
+        />
+      </div>
       <div className="fixed bottom-4 right-4 z-[100] bg-transparent">
         <MobileElementsPopup
           handleAddElement={handleAddElement}
@@ -866,12 +905,63 @@ const MobileEditor = ({
         />
       </div>
       <MobilePropertiesPannel
+        orientation={showTablet ? 'right' : 'bottom'}
         open={popoverOpen && !!selectedElement && !isDragging}
         onClose={() => setPopoverOpen(false)}
         selectedElement={selectedElement}
         activeBreakpoint="mobile"
         handlePropertyChanged={handlePropertyChanged}
       />
+      <div className="absolute left-1/2 bottom-4 transform -translate-x-1/2 bg-white/60 backdrop-blur-md rounded-xl shadow-lg flex justify-center items-center border border-gray-200 z-50">
+        <div
+          className="absolute top-0 left-0 h-full z-0 transition-all duration-500"
+          style={{
+            width: showTablet ? '50%' : '100%',
+            transform:
+              editViewMode === 'mobile'
+                ? 'translateX(0%)'
+                : editViewMode === 'tablet'
+                ? 'translateX(100%)'
+                : 'translateX(0%)',
+            background:
+              editViewMode === 'mobile' || editViewMode === 'tablet'
+                ? 'rgba(255,255,255,0.4)'
+                : 'transparent',
+            borderRadius: '0.75rem',
+            boxShadow:
+              editViewMode === 'mobile' || editViewMode === 'tablet'
+                ? '0 2px 8px rgba(0,0,0,0.08)'
+                : 'none',
+            border:
+              editViewMode === 'mobile' || editViewMode === 'tablet'
+                ? '1px solid rgb(244, 187, 241)'
+                : 'none',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          className={`font-semibold cursor-pointer px-8 py-2 transition-all duration-200 relative z-10 ${
+            editViewMode === 'mobile'
+              ? 'text-[var(--primary-color)]'
+              : 'text-gray-700 hover:bg-white/30 hover:backdrop-blur-md hover:rounded-xl'
+          }`}
+          onClick={() => setEditViewMode('mobile')}
+        >
+          Telefon
+        </div>
+        {showTablet && (
+          <div
+            className={`font-semibold cursor-pointer px-8 py-2 transition-all duration-200 relative z-10 ${
+              editViewMode === 'tablet'
+                ? 'text-[var(--primary-color)]'
+                : 'text-gray-700 hover:bg-white/30 hover:backdrop-blur-md hover:rounded-xl'
+            }`}
+            onClick={() => setEditViewMode('tablet')}
+          >
+            Tableta
+          </div>
+        )}
+      </div>
     </div>
   );
 };

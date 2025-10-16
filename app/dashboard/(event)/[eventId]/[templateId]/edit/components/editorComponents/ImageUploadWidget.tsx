@@ -199,6 +199,7 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
           onChange={handleInputChange}
           showText
           className="w-full justify-start mt-[10px]"
+          getPopupContainer={(trigger) => trigger.parentNode as HTMLElement}
         />
       ) : (
         ''

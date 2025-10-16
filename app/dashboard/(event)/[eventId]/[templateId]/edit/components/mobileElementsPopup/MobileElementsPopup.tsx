@@ -64,7 +64,7 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
           <Button
             shape="circle"
             icon={<PlusOutlined />}
-            className="!bg-white/30 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200"
+            className="!bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200"
             size="large"
           />
         }

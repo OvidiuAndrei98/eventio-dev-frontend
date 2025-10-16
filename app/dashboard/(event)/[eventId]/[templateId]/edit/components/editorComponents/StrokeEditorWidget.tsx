@@ -102,6 +102,7 @@ const StrokeEditorWidget = ({
           showText
           className="justify-start"
           style={{ width: 120 }}
+          getPopupContainer={(trigger) => trigger.parentNode as HTMLElement}
         />
       </div>
     </div>

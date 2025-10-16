@@ -15,6 +15,7 @@ import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 import FontSelectorWidget from '../editorComponents/FontSelectorWidget';
 import StrokeEditorWidget from '../editorComponents/StrokeEditorWidget';
 import GifSelectorWidget from '../editorComponents/GifSelectorWidget';
+import { isMobile } from 'react-device-detect';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
@@ -32,6 +33,7 @@ const PropertyPanel = ({
   handlePropertyChanged,
 }: PropertyPanelProps) => {
   const configSet = componentsConfig[selectedElement?.type];
+  const isMobileDevice = isMobile;
 
   const getPropertyValue = (
     data: TemplateElement,
@@ -264,6 +266,7 @@ const PropertyPanel = ({
               />
             );
           case EditorWidgetType.FontFamily:
+            if (isMobileDevice) return null;
             return (
               <FontSelectorWidget
                 key={propertyPath}
