@@ -29,7 +29,7 @@ import { updateTemplate } from '@/service/templates/updateTemplate';
 import { toast } from 'sonner';
 import AddSectionModal from './components/addSectionModal/AddSectionModal';
 import { availableSectionTypes } from './utils/editorUtils';
-import { PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useEventContext } from '@/core/context/EventContext';
 import { defaultElements } from '@/lib/templates/defaultTemplateElements/defaultTemplateElements';
@@ -619,6 +619,7 @@ const EditPage = () => {
       handlePopoverOpenChange={handlePopoverOpenChange}
       handleAddSectionClick={handleAddSectionClick}
       handlePropertyChanged={handlePropertyChanged}
+      handleTemplateUpdate={handleTemplateUpdate}
     />
   ) : !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
@@ -798,6 +799,7 @@ interface MobileEditorProps {
     newValue: unknown,
     propIsResponsive: boolean
   ) => void;
+  handleTemplateUpdate: () => void;
 }
 
 const MobileEditor = ({
@@ -817,6 +819,7 @@ const MobileEditor = ({
   handlePopoverOpenChange,
   handleAddSectionClick,
   handlePropertyChanged,
+  handleTemplateUpdate,
 }: MobileEditorProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedElement, setSelectedElement] = useState<
@@ -856,10 +859,11 @@ const MobileEditor = ({
   return (
     <div className="relative h-full overflow-hidden">
       <Button
-        type="default"
-        size="middle"
-        className="!absolute !right-4 !top-2 bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200 z-10 rounded-full flex items-center gap-2"
+        shape="circle"
+        size="large"
+        className="!absolute !right-4 !top-2 !bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200 z-10 rounded-full flex items-center gap-2"
         icon={<SaveIcon />}
+        onClick={handleTemplateUpdate}
       />
       <div
         className={`h-full overflow-auto ${
@@ -947,7 +951,7 @@ const MobileEditor = ({
           }`}
           onClick={() => setEditViewMode('mobile')}
         >
-          Telefon
+          Mobil
         </div>
         {showTablet && (
           <div
