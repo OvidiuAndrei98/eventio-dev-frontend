@@ -52,7 +52,7 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
               className={
                 orientation === 'right'
                   ? 'w-1 h-8 rounded bg-gray-300 mr-2'
-                  : 'w-8 h-1 rounded bg-gray-300 mb-2'
+                  : 'w-8 h-1 rounded bg-gray-300 mb-2 fixed'
               }
             />
           </div>
