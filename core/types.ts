@@ -59,7 +59,7 @@ export interface Guest {
   isAttending: boolean;
   eventId: string;
   tableId: string | null;
-  date: number;
+  date: string;
   isPrimaryContact: boolean;
   primaryContactPhone?: string;
   totalGuests?: number;

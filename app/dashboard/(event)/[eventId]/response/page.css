@@ -14,7 +14,6 @@
   background: white;
   border-radius: 0 0 8px 8px;
   padding: var(--padding-medium) var(--padding-xl) 0 var(--padding-xl);
-  margin-bottom: 20px;
   box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.03);
 }
 

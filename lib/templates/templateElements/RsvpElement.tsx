@@ -111,7 +111,9 @@ const RsvpElement = ({
     // --- Pregatirea Datelor pentru Salvare (Crearea obiectelor IndividualGuest) ---
     const guestsToSave: Guest[] = [];
     const submissionId = crypto.randomUUID();
-    const subbmisionTime = Date.now();
+    const submissionTime = new Date().toLocaleString('ro-RO', {
+      timeZone: 'UTC',
+    });
 
     if (values.isAttending === 'yes' && values.primaryGuestName?.trim()) {
       // Collect additional fields that are not part of RsvpFormData
@@ -130,7 +132,7 @@ const RsvpElement = ({
         isAttending: values.isAttending === 'yes',
         eventId: eventId,
         tableId: null,
-        date: subbmisionTime,
+        date: submissionTime,
         isPrimaryContact: true,
         primaryContactPhone: values.primaryContactPhone?.trim() || '',
         totalGuests:
@@ -155,7 +157,7 @@ const RsvpElement = ({
             isAttending: true,
             eventId: eventId,
             tableId: null,
-            date: subbmisionTime,
+            date: submissionTime,
             isPrimaryContact: false,
           });
         }
@@ -171,7 +173,7 @@ const RsvpElement = ({
         isAttending: false,
         eventId: eventId,
         tableId: null,
-        date: subbmisionTime, // Timestamp
+        date: submissionTime, // Timestamp
         isPrimaryContact: true,
         primaryContactPhone: values.primaryContactPhone?.trim() || '',
       });

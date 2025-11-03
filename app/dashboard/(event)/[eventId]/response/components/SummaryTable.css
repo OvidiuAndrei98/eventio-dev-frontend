@@ -1,24 +1,46 @@
-.response-container .summary-container {
-  padding: 0 var(--padding-large);
-  overflow: auto;
-  height: 98%;
+.response-container .summary-container-outer {
+  height: 100%;
+  overflow: hidden;
 }
 
-.response-container .summary-container .table-container {
-  background-color: white;
-  padding: var(--padding-xl);
-  padding-top: 10px;
+.response-container .summary-container {
+  padding: var(--padding-large);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
   border-radius: 8px;
-  box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.summary-container .table-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  grid-auto-rows: min-content;
+  column-gap: 32px;
+  overflow: auto;
+  font-weight: 500;
+  border: 1px solid rgba(26, 56, 96, 0.1);
+  border-top: unset;
+  background-color: white;
+  scrollbar-width: thin;
+  container-type: inline-size;
+  .summary-header {
+    border-top: unset;
+    background-color: #f6f6f6;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 }
 
 .response-container .summary-container .statistics-container {
-  padding: var(--spacing-medium);
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: var(--spacing-medium);
   display: flex;
-  margin-bottom: 20px;
 }
 
 .response-container .summary-container .statistics-container .statistic-card {
@@ -59,8 +81,7 @@
 
 .response-container .table-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .response-container .table-header .info-container {
@@ -72,16 +93,6 @@
 .response-container .table-header .info-container .secondary-title {
   line-height: 24px;
   font-size: 22px;
-}
-
-.summary-container {
-  .ant-table-wrapper {
-    .ant-table-body {
-      .ant-table-cell {
-        padding: 8px 6px;
-      }
-    }
-  }
 }
 
 @media screen and (max-width: 878px) {
@@ -96,6 +107,9 @@
 }
 
 @media screen and (max-width: 450px) {
+  .response-container .summary-container-outer {
+    padding: 8px;
+  }
   .response-container .summary-container .statistics-container {
     gap: var(--spacing-medium);
   }
@@ -124,5 +138,18 @@
     .ant-table-wrapper
     .ant-table-pagination.ant-pagination {
     margin: 8px 0;
+  }
+}
+
+@container (width < 700px) {
+  .summary-container .table-container {
+    grid-template-columns: 1fr auto auto auto;
+    column-gap: 12px;
+    .summary-header {
+      .guest-action {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
   }
 }

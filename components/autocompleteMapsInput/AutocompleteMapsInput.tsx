@@ -140,11 +140,26 @@ const AutocompleteMapsInput = ({
       eventLocationCopy.locationStartTime = values.locationStartTime;
 
       const now = new Date();
-      const hour = now.getHours().toString().padStart(2, '0');
       const min = now.getMinutes().toString().padStart(2, '0');
-      const fileName = `${values.locationPhoto.file.name}_${hour}${min}`;
+      const sec = now.getSeconds().toString().padStart(2, '0');
+      const prevName = values.locationPhoto.file.name.replace(/^\d{4}_/, '');
+      const fileName = `${min}${sec}_${prevName}`;
 
       const oldFileName = eventLocationCopy?.locationImage?.name;
+
+      const oldName = oldFileName?.replace(/^\d{4}_/, '');
+      const newName = fileName.replace(/^\d{4}_/, '');
+
+      if (
+        oldName &&
+        values.locationPhoto?.file.status !== 'removed' &&
+        oldName === newName
+      ) {
+        // If the filename is the same, it means the image was not changed
+        onLocationSelect(eventLocationCopy, null, oldFileName);
+        setSaveTriggeredFlag(false);
+        return;
+      }
 
       eventLocationCopy.locationImage = {
         name: fileName,
