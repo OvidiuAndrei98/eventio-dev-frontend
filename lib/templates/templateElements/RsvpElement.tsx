@@ -111,9 +111,7 @@ const RsvpElement = ({
     // --- Pregatirea Datelor pentru Salvare (Crearea obiectelor IndividualGuest) ---
     const guestsToSave: Guest[] = [];
     const submissionId = crypto.randomUUID();
-    const submissionTime = new Date().toLocaleString('ro-RO', {
-      timeZone: 'UTC',
-    });
+    const submissionTime = new Date().getTime();
 
     if (values.isAttending === 'yes' && values.primaryGuestName?.trim()) {
       // Collect additional fields that are not part of RsvpFormData

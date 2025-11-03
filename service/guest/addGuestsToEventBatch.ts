@@ -110,9 +110,7 @@ export const addGuestsToEventBatch = async (
       ) {
         await updateEventStatsForGuest(
           eventId,
-          new Date(Date.now()).toLocaleString('ro-RO', {
-            timeZone: 'UTC',
-          }),
+          new Date().getTime(),
           deltaResponses,
           deltaConfirmations,
           deltaRefusals

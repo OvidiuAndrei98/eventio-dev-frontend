@@ -3,7 +3,7 @@ import db from '../../lib/firebase/fireStore';
 
 export const updateEventStatsForGuest = async (
   eventId: string,
-  guestDate: string,
+  guestDate: number,
   responses: number = 1,
   confirmations: number = 0,
   refusals: number = 0

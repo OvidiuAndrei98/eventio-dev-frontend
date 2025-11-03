@@ -5,7 +5,7 @@ import { updateEventStatsForGuest } from '../event/updateEventStatsForGuest';
 export const deleteGuestById = async (
   guestId: string,
   eventId: string,
-  guestSubmissionsDate: string,
+  guestSubmissionsDate: number,
   attending: boolean
 ): Promise<void> => {
   try {
