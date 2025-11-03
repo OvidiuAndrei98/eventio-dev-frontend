@@ -35,7 +35,7 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
   const deleteGuest = async (
     guestId: string,
     eventId: string,
-    guestSubmissionsTime: string,
+    guestSubmissionsTime: number,
     attending: boolean
   ) => {
     await deleteGuestById(guestId, eventId, guestSubmissionsTime, attending);
