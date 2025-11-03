@@ -2,6 +2,7 @@ import { Guest } from '@/core/types';
 import { queryEventById } from '../event/queryEventById';
 import { doc, setDoc } from 'firebase/firestore';
 import db from '@/lib/firebase/fireStore';
+import { updateEventStatsForGuest } from '../event/updateEventStatsForGuest';
 
 export const addGuestToEvent = async (
   eventId: string,
@@ -16,6 +17,7 @@ export const addGuestToEvent = async (
     }
 
     await setDoc(doc(db, 'guest_registry/' + guest.guestId), guest);
+    await updateEventStatsForGuest(eventId, guest.date, 1, 1, 0);
   } catch (error) {
     console.error('Error adding the guest:', error);
     throw error;
