@@ -18,6 +18,9 @@ import { Guest } from '@/core/types';
 import { EventContext } from '@/core/context/EventContext';
 import { deleteGuestById } from '@/service/guest/deleteGuestById';
 import SummaryRow from './SummaryRow';
+import { AddGuestForm } from './add/AddGuestForm';
+import { useAuth } from '@/core/context/authContext';
+import { toast } from 'sonner';
 
 interface SummaryTableProps {
   guests: Guest[];
@@ -28,6 +31,8 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
   const [searchText, setSearchText] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { eventInstance } = useContext(EventContext);
+  const [addGuestModalOpen, setAddGuestModalOpen] = useState(false);
+  const user = useAuth();
 
   const isBasicPlan =
     !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
@@ -72,7 +77,11 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
                 Invitatii si statusul lor
               </span>
             </div>
-            <Button type="primary" icon={<PlusOutlined />}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setAddGuestModalOpen(true)}
+            >
               Invitat
             </Button>
           </div>
@@ -142,6 +151,23 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
             ))}
         </div>
       </div>
+      <AddGuestForm
+        open={addGuestModalOpen}
+        onOk={() => {
+          setAddGuestModalOpen(false);
+          toast.success('Invitat adăugat cu succes!');
+        }}
+        onClose={() => {
+          setAddGuestModalOpen(false);
+        }}
+        eventId={eventInstance?.eventId || ''}
+        userId={user?.userDetails?.userId || ''}
+        updateGuests={(newGuest: Guest) => {
+          if (updateGuests) {
+            updateGuests([...guests, newGuest]);
+          }
+        }}
+      />
     </div>
   );
 };
