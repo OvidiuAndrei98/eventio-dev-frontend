@@ -2,7 +2,6 @@ import { Guest } from '@/core/types';
 import { addGuestToEvent } from '@/service/guest/addGuestToEvent';
 import { Button, Form, Input } from 'antd';
 import Modal from 'antd/es/modal/Modal';
-import { update } from 'lodash';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
