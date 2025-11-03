@@ -12,7 +12,7 @@ import { Button, Input, InputRef } from 'antd';
 import './SummaryTable.css';
 import SadFaceIcon from '@/public/sad-face.svg';
 import Image from 'next/image';
-import { useContext, useRef } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Guest } from '@/core/types';
@@ -26,15 +26,12 @@ interface SummaryTableProps {
 }
 
 const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
+  const [searchText, setSearchText] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { eventInstance } = useContext(EventContext);
 
   const isBasicPlan =
     !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
-
-  const handleSearch = (confirm: FilterDropdownProps['confirm']) => {
-    confirm();
-  };
 
   const deleteGuest = async (
     guestId: string,
@@ -85,6 +82,10 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
               placeholder="Cauta invitat"
               suffix={<SearchOutlined />}
               className="max-w-[200px]"
+              onChange={(e) => {
+                setSearchText(e.target.value);
+              }}
+              ref={searchInput}
             />
             <div className="statistics-container">
               <div className="statistic-card">
@@ -127,6 +128,12 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
             .sort(
               (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
             )
+            .filter((guest) => {
+              if (searchText === '') return true;
+              return guest.name
+                .toLowerCase()
+                .includes(searchText.toLowerCase());
+            })
             .map((guest) => (
               <SummaryRow
                 key={guest.guestId}
