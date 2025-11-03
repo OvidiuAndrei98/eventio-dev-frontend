@@ -14,7 +14,7 @@ type SummaryRowProps = {
   deleteGuest: (
     guestId: string,
     eventId: string,
-    guestSubmissionsTime: string,
+    guestSubmissionsTime: number,
     attending: boolean
   ) => Promise<void>;
 };
