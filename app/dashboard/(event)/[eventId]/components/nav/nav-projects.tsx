@@ -9,6 +9,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { ChevronRight } from 'lucide-react';
 import { MenuItem } from './app-sidebar';
@@ -19,6 +20,7 @@ import {
 } from '@/components/ui/collapsible';
 
 export function NavProjects({ projects }: { projects: MenuItem[] }) {
+  const { setOpenMobile } = useSidebar();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>General</SidebarGroupLabel>
@@ -60,10 +62,11 @@ export function NavProjects({ projects }: { projects: MenuItem[] }) {
           ) : (
             <SidebarMenuItem
               key={item.title}
-              onClick={() =>
+              onClick={() => {
+                setOpenMobile(false);
                 item.onClick &&
-                item.onClick({ title: item.title, url: item.url })
-              }
+                  item.onClick({ title: item.title, url: item.url });
+              }}
             >
               <SidebarMenuButton
                 className="!cursor-pointer"

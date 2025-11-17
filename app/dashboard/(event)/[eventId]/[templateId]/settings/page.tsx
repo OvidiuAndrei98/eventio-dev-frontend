@@ -227,6 +227,9 @@ const SettingsPage = () => {
               const existingLocationIndex = aditionalLocations.findIndex(
                 (loc) => loc.locationId === editedLocation.location.locationId
               );
+              // If there is no file it means the image was not changed
+              if (!editedLocation.file) return;
+
               const locationImage = await uploadLocationImage(
                 editedLocation.file,
                 editedLocation.oldFileName
@@ -325,7 +328,7 @@ const SettingsPage = () => {
     setEditedAditionalLocations((prevData) => {
       const newEntry = {
         location: location,
-        file: file.originFileObj ? file : undefined,
+        file: file,
         oldFileName: oldFilename,
       };
       if (prevData) {

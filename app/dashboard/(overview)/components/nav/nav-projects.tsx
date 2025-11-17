@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   SidebarGroup,
@@ -9,14 +9,14 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar'
-import { ChevronRight } from 'lucide-react'
-import { MenuItem } from './app-sidebar'
+} from '@/components/ui/sidebar';
+import { ChevronRight } from 'lucide-react';
+import { MenuItem } from './app-sidebar';
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from '@/components/ui/collapsible'
+} from '@/components/ui/collapsible';
 
 export function NavProjects({ projects }: { projects: MenuItem[] }) {
   return (
@@ -63,5 +63,5 @@ export function NavProjects({ projects }: { projects: MenuItem[] }) {
         )}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

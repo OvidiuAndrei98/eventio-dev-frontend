@@ -201,9 +201,17 @@ const NewInvitationPage = () => {
       adiotionalLocations: [],
       eventAditionalQuestions: [],
     };
-    await createEvent(eventData, user.userDetails.userId, selectedTemplate);
 
-    setIsEventSaving(false);
+    try {
+      await createEvent(eventData, user.userDetails.userId, selectedTemplate);
+    } catch (error) {
+      toast.error('A aparut o eroare la crearea invitatiei');
+      console.error('Error creating event:', error);
+      return;
+    } finally {
+      setIsEventSaving(false);
+    }
+
     router.push(`/dashboard/${eventId}`);
   };
 

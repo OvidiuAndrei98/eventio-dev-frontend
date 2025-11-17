@@ -38,7 +38,7 @@ export const addGuestsToEventBatch = async (
     const normalizedPhone = guests.filter((g) => g.primaryContactPhone)[0]
       .primaryContactPhone;
 
-    // 1. Găsește guest-ul cu acest phone
+    // 1. Find guest by phone number
     const guestsRef = collection(db, 'guest_registry');
     const phoneQuery = query(
       guestsRef,
@@ -47,18 +47,18 @@ export const addGuestsToEventBatch = async (
     const phoneSnap = await getDocs(phoneQuery);
 
     if (!phoneSnap.empty) {
-      // 2. Ia submissionId
+      // 2. Get submissionId
       const guestDoc = phoneSnap.docs[0];
       const submissionId = guestDoc.get('submissionId');
 
-      // 3. Ia toți invitații cu același submissionId
+      // 3. Get all guests with the same submissionId
       const submissionQuery = query(
         guestsRef,
         where('submissionId', '==', submissionId)
       );
       const submissionSnap = await getDocs(submissionQuery);
 
-      // 4. Actualizează răspunsurile și calculează statistici
+      // 4. Update responses and calculate statistics
       let oldConfirmations = 0;
       let oldRefusals = 0;
       let oldResponses = 0;
@@ -70,7 +70,7 @@ export const addGuestsToEventBatch = async (
         if (resp !== undefined || resp !== null) oldResponses++;
       });
 
-      // Calculează noile răspunsuri pe baza fiecărui guest din guests
+      // Calculate new responses based on each guest in guests
       let newConfirmations = 0;
       let newRefusals = 0;
       let newResponses = 0;
@@ -81,20 +81,20 @@ export const addGuestsToEventBatch = async (
         if (guest.isAttending !== undefined) newResponses++;
       });
 
-      // Diferența pentru statistici
+      // Calculate deltas
       const deltaConfirmations = newConfirmations - oldConfirmations;
       const deltaRefusals = newRefusals - oldRefusals;
       const deltaResponses = newResponses - oldResponses;
 
-      // 5. Șterge toți invitații cu același submissionId și adaugă-i din nou
+      // 5. Delete all guests with the same submissionId and add them again
       const batch = writeBatch(db);
 
-      // Șterge toți invitații existenți cu submissionId
+      // Delete all existing guests with submissionId
       submissionSnap.docs.forEach((docSnap) => {
         batch.delete(doc(db, 'guest_registry', docSnap.id));
       });
 
-      // Adaugă toți invitații noi
+      // Add all new guests
       guests.forEach((guest) => {
         const guestRef = doc(db, 'guest_registry', guest.guestId);
         batch.set(guestRef, guest);
@@ -102,7 +102,7 @@ export const addGuestsToEventBatch = async (
 
       await batch.commit();
 
-      // Update statistici doar dacă s-a schimbat ceva
+      // Update statistics only if something has changed
       if (
         deltaResponses !== 0 ||
         deltaConfirmations !== 0 ||
@@ -110,7 +110,7 @@ export const addGuestsToEventBatch = async (
       ) {
         await updateEventStatsForGuest(
           eventId,
-          Date.now(),
+          new Date().getTime(),
           deltaResponses,
           deltaConfirmations,
           deltaRefusals

@@ -18,6 +18,7 @@ import { Guest } from '@/core/types';
 import { queryLastGuestsByEventId } from '@/service/guest/queryLastGuestsByEventId';
 import { toast } from 'sonner';
 import { demoChartData } from '@/lib/demoStatsData';
+import { mapTemplateTypeToLabel } from '@/core/utils';
 
 // Varianta abonomant
 
@@ -79,7 +80,7 @@ const DashboardEventPage = () => {
               {eventInstance?.eventName}
             </h2>
             <span className="text-gray-400 text-sm">
-              {eventInstance?.eventType}
+              {mapTemplateTypeToLabel(eventInstance?.eventType ?? '')}
             </span>
             <span
               className={`text-sm ${
