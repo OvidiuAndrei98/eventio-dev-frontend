@@ -99,6 +99,7 @@ const NewInvitationPage = () => {
 
     if (!newEventLocation.location) {
       toast.error('Te rugam sa selectezi o locatie valida');
+      setIsEventSaving(false);
       return;
     }
     const selectedTemplate = defaultTemplates.find(
@@ -107,14 +108,14 @@ const NewInvitationPage = () => {
     );
 
     if (!selectedTemplate) {
-      console.error('Template not found');
       toast.error('A aparut o eroare la crearea invitatiei');
+      setIsEventSaving(false);
       return;
     }
 
     if (!user.userDetails) {
-      console.error('User details not found');
       toast.error('A aparut o eroare la crearea invitatiei');
+      setIsEventSaving(false);
       return;
     }
 
