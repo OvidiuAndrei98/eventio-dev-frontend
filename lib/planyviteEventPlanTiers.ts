@@ -21,8 +21,8 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     id: 'premium',
     type: 'premium',
     name: 'Premium',
-    price: 249,
-    oldPrice: 350,
+    price: 200,
+    oldPrice: 300,
     description: 'Acces la funcționalitățile de bază',
     features: [
       'Răspunsuri nelimitate',
@@ -33,7 +33,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     ],
     cta: 'Cumpără',
     order: 2,
-    priceId: 'price_1RanVvIYmtfnTY0fzQ0a5e5p',
+    priceId: 'price_1SUOHBIYmtfnTY0fKzOWErn2',
   },
   {
     id: 'ultimate',
@@ -62,7 +62,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     id: 'ultimate_upgrade',
     type: 'ultimate',
     name: 'Ultimate',
-    price: 100,
+    price: 150,
     oldPrice: 450,
     description: 'Acces la toate funcționalitățile platformei',
     features: [
@@ -79,7 +79,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     cta: 'Cumpără',
     popular: true,
     order: 4,
-    priceId: 'price_1RanY8IYmtfnTY0fvDG9pzfI',
+    priceId: 'price_1SUOJGIYmtfnTY0fyT2ALAKb',
   },
 ];
 
