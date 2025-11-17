@@ -26,7 +26,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
     description: 'Acces la funcționalitățile de bază',
     features: [
       'Răspunsuri nelimitate',
-      'Valabilitate 6 luni',
+      'Valabilitate 8 luni',
       'Editare invitație',
       'Plan locație - Demo',
       'Checklist',
