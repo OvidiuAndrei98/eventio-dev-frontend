@@ -11,13 +11,19 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, GiftIcon } from 'lucide-react';
 import { MenuItem } from './app-sidebar';
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
 } from '@/components/ui/collapsible';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
 
 export function NavProjects({ projects }: { projects: MenuItem[] }) {
   const { setOpenMobile } = useSidebar();

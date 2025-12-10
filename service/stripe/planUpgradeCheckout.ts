@@ -25,9 +25,9 @@ export const planUpgradeCheckout = async (
       name: 'auto',
       address: 'auto',
     },
-    // consent_collection: {
-    //   terms_of_service: 'required',
-    // },
+    consent_collection: {
+      terms_of_service: 'required',
+    },
     metadata: {
       eventId: eventId,
       newPlan: plan,

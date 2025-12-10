@@ -24,6 +24,9 @@ import { useEventContext } from '@/core/context/EventContext';
 import { ControlOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useAuth } from '@/core/context/authContext';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ReedemCode } from '../reedemCode/ReedemCode';
 
 export interface MenuItem {
   title: string;
@@ -150,6 +153,10 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
+        <ReedemCode
+          eventId={eventInstance?.eventId || ''}
+          userId={user?.userId || ''}
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
