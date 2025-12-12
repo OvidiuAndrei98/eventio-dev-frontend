@@ -28,8 +28,10 @@ import {
   DragOverlay,
   DragStartEvent,
   MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
+  Modifiers,
 } from '@dnd-kit/core';
 import DraggableElement from './components/draggable-canvas/draggable-element/DraggableElement';
 import DraggableCanvas from './components/draggable-canvas/DraggableCanvas';
@@ -49,7 +51,6 @@ import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { createXlsxWorkbook } from '@/lib/utils';
 import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
 import { useEventContext } from '@/core/context/EventContext';
-import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 
 const LOGICAL_CANVAS_WIDTH = 1920;
 const LOGICAL_CANVAS_HEIGHT = 1080;
@@ -75,7 +76,16 @@ export interface DragEventData {
   type: string;
   typeId: string;
   isEditing: boolean;
-  modifiers: [];
+  modifiers?: Modifiers;
+  fromSideBar: boolean;
+}
+
+interface CurrentDragField {
+  elementId: string;
+  name: string;
+  positions: { x: number; y: number };
+  type: string;
+  typeId: string;
   fromSideBar: boolean;
 }
 
@@ -209,7 +219,6 @@ const ELEMENTS: CanvasListElementDefinition[] = [
 const TablesPage = () => {
   const { eventInstance, setEventInstance } = useEventContext();
 
-  // State-uri Dnd
   const [tableEditActive, setTableEditActive] = useState(false);
   const [activeEditTable, setActiveEditTable] = useState<CanvasElement | null>(
     null
@@ -217,40 +226,30 @@ const TablesPage = () => {
   const [canvasElements, setCanvasElements] = useState<CanvasElement[]>(
     eventInstance?.eventTableOrganization.elements ?? []
   );
-  const [activeSidebarField, setActiveSidebarField] = useState<any | null>(
-    null
-  );
+  const [activeSidebarField, setActiveSidebarField] =
+    useState<DragEventData | null>(null);
   const [sidebarFieldsRegenKey, setSidebarFieldsRegenKey] = useState(
     Date.now()
   );
-  const [activeFieldData, setActiveFieldData] = useState<{
-    modifiers: [];
-  } | null>(null);
+  const [activeFieldData, setActiveFieldData] = useState<DragEventData | null>(
+    null
+  );
   const [editModeOn, setEditModeOn] = useState(false);
   const [deleteTablesLoading, setDeleteTablesLoading] = useState(false);
 
-  // --- ZOOM & PAN STATE ---
   const [zoomScale, setZoomScale] = useState(1.0);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
-  const currentDragFieldRef = useRef<any | null>(null);
+  const currentDragFieldRef = useRef<CurrentDragField | null>(null);
 
-  // Stari pentru Panning manual
   const [isPanning, setIsPanning] = useState(false);
   const panStartCoords = useRef({ x: 0, y: 0 });
   const panOffsetStart = useRef({ x: 0, y: 0 });
 
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
-  // Constants for Plan
-  type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
   const isBasicPlan =
     !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
-  const isPremiumPlan = eventInstance?.eventPlan === 'premium';
-  const planKey: EventPlanKey =
-    (eventInstance?.eventPlan as EventPlanKey) || 'basic';
-  const maxElements =
-    PLANYVITE_EVENT_PLAN_FEATURES[planKey].maxTablePlanElements ?? 2;
 
   useEffect(() => {
     if (eventInstance) {
@@ -258,7 +257,6 @@ const TablesPage = () => {
     }
   }, [eventInstance]);
 
-  // --- FUNCTIE CALCUL INITIAL (PĂSTRATĂ pentru butonul de "Fit to Screen") ---
   const fitToScreen = useCallback(() => {
     if (canvasWrapperRef.current) {
       const availableWidth = canvasWrapperRef.current.clientWidth;
@@ -280,13 +278,11 @@ const TablesPage = () => {
     }
   }, []);
 
-  // --- useLayoutEffect GOAL: Pornește cu Zoom 1.0 și Pan 0,0 ---
   useLayoutEffect(() => {
     setZoomScale(1.0);
     setPanOffset({ x: 0, y: 0 });
   }, []);
 
-  // --- HANDLERS PENTRU ZOOM MANUAL ---
   const handleZoomIn = () => {
     setZoomScale((prev) => Math.min(prev + ZOOM_STEP, MAX_ZOOM));
   };
@@ -332,14 +328,20 @@ const TablesPage = () => {
     }
   };
 
-  // Folosim MouseSensor pentru elementele DndKit
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 0, // Fără distanță minimă de activare
+      distance: 0,
     },
   });
 
-  const sensors = useSensors(mouseSensor);
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250,
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
 
   const handleDragStart = (e: DragStartEvent) => {
     const { active } = e;
@@ -349,7 +351,7 @@ const TablesPage = () => {
     }
     setActiveDragId(active.id as string);
 
-    const activeData = active.data.current as DragEventData;
+    const activeData = active.data.current as DragEventData | undefined;
     if (!activeData) return;
 
     setActiveFieldData(activeData);
@@ -362,6 +364,8 @@ const TablesPage = () => {
         type,
         typeId,
         isEditing,
+        modifiers: activeData.modifiers,
+        fromSideBar: true,
       });
       currentDragFieldRef.current = {
         elementId: active.id as string,
@@ -382,8 +386,7 @@ const TablesPage = () => {
   };
 
   const handleDragEnd = (e: DragEndEvent) => {
-    // Resetam ID-ul drag-ului
-    setActiveDragId(null); // NOU
+    setActiveDragId(null);
 
     const canvasElement: HTMLElement | null = document.querySelector(
       '.tables-canvas-section'
@@ -397,13 +400,11 @@ const TablesPage = () => {
 
     const nextField = currentDragFieldRef.current;
 
-    // ... (Logica de adaugare/mutare neschimbata)
-
-    // CAZ 1: Adaugare Element Nou
     if (nextField && nextField.fromSideBar && canvasElement) {
       const rect = canvasElement.getBoundingClientRect();
-      const dropClientX = (e.activatorEvent as any).clientX + e.delta.x;
-      const dropClientY = (e.activatorEvent as any).clientY + e.delta.y;
+      const activatorEvent = e.activatorEvent as MouseEvent;
+      const dropClientX = activatorEvent.clientX + e.delta.x;
+      const dropClientY = activatorEvent.clientY + e.delta.y;
 
       const relativeToCanvasX = dropClientX - rect.left;
       const relativeToCanvasY = dropClientY - rect.top;
@@ -425,9 +426,7 @@ const TablesPage = () => {
 
       nextField.positions = { x: newX, y: newY };
       setCanvasElements((prev) => [...prev, nextField]);
-    }
-    // CAZ 2: Mutare Element Existent
-    else if (!e.active.data.current?.fromSideBar && canvasElement) {
+    } else if (!e.active.data.current?.fromSideBar && canvasElement) {
       const movedElementIndex = canvasElements.findIndex(
         (x) => x.elementId === e.active.id
       );
@@ -473,26 +472,18 @@ const TablesPage = () => {
       return;
     }
 
-    // --- PASUL 1: CAPTURAREA IMAGINII CU STILURI SUPRASCRISE ---
-
-    // Suprascriem transformarea CSS pentru a forța scala 1.0 și translația 0,0
     const captureOptions = {
       width: LOGICAL_CANVAS_WIDTH,
       height: LOGICAL_CANVAS_HEIGHT,
       style: {
         transform: 'translate(0px, 0px) scale(1.0)',
-        // Asigurăm că nu este ascuns de overflow
         overflow: 'visible',
       },
-      // Scurgerea overflow-ului pe viewportWrapper este importantă
-      // Vă rugăm să vă asigurați că elementul canvasWrapperRef nu are overflow: hidden,
-      // sau că acesta este temporar dezactivat, deși aici ar trebui să fie de ajuns
     };
 
     domtoimage
       .toPng(canvasElement, captureOptions)
       .then(function (imgData) {
-        // --- PASUL 2: GENERARE PDF (Logica anterioară) ---
         const PDF_ORIENTATION = 'l';
         const PDF_UNIT = 'mm';
         const PDF_FORMAT = 'a4';
@@ -690,24 +681,23 @@ const TablesPage = () => {
         onDragEnd={handleDragEnd}
       >
         <div className="tables-content-section p-4 rounded-lg shadow-md flex-1 gap-4 overflow-hidden bg-white grid grid-cols-[200px_1fr] h-[calc(100vh-5rem)]">
-          {/* SIDEBAR (ramane neschimbat) */}
           <div
             className="tables-objects-section bg-white h-full overflow-y-auto flex flex-col gap-4"
             key={sidebarFieldsRegenKey}
           >
             <h1 className="text-xl font-semibold">Elemente</h1>
-            {ELEMENTS.map((element, index) =>
+            {ELEMENTS.map((element) =>
               element.subTypes ? (
-                <TooltipProvider delayDuration={2} key={index}>
+                <TooltipProvider delayDuration={2} key={element.typeId}>
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger className="flex gap-2 items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white shadow-xs">
                       {element.name}
                     </TooltipTrigger>
                     <TooltipContent className="p-4 shadow-md bg-[white] min-w-[200px] flex flex-col gap-2">
-                      {element.subTypes?.map((sbt, idx) => (
+                      {element.subTypes?.map((sbt) => (
                         <DraggableElement
                           isEditing={editModeOn}
-                          key={idx}
+                          key={sbt.typeId}
                           name={sbt.name}
                           icon={sbt.icon}
                           type={sbt.type}
@@ -719,7 +709,7 @@ const TablesPage = () => {
                 </TooltipProvider>
               ) : (
                 <DraggableElement
-                  key={index}
+                  key={element.typeId}
                   isEditing={editModeOn}
                   name={element.name}
                   icon={element.icon}
@@ -763,7 +753,6 @@ const TablesPage = () => {
             ) : null}
           </DragOverlay>
 
-          {/* === CANVAS WRAPPER + ZOOM/PAN CONTROL (Pan Manual) === */}
           <div
             ref={canvasWrapperRef}
             className="canvas-viewport w-full h-full bg-gray-100 overflow-hidden relative border border-gray-200 rounded-md"
@@ -775,7 +764,6 @@ const TablesPage = () => {
               cursor: isPanning && !editModeOn ? 'grabbing' : 'grab',
             }}
           >
-            {/* BUTOANE ZOOM FLOTANTE */}
             <div className="absolute right-4 top-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-200">
               <Button
                 type="text"
@@ -803,7 +791,6 @@ const TablesPage = () => {
               />
             </div>
 
-            {/* ZONA DE CANVAS SCALATA ȘI TRANSLAȚĂ */}
             <div
               className="scaled-canvas-inner-dnd tables-canvas-section"
               style={{
@@ -817,7 +804,6 @@ const TablesPage = () => {
                 transition: 'transform 0.1s ease-out',
                 userSelect: 'none',
                 cursor: 'default',
-                // GRID BACKGROUND
                 backgroundImage: `linear-gradient(to right, #e0e0e0 1px, transparent 1px),
                                      linear-gradient(to bottom, #e0e0e0 1px, transparent 1px)`,
                 backgroundSize: '20px 20px',
