@@ -53,7 +53,9 @@ const DraggableElement = ({
       {...attributes}
       style={style}
       onPointerUp={handlePointerUp}
-      className="flex gap-2 items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white"
+      className={`flex gap-2 items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white cursor-grab active:cursor-grabbing ${
+        !isEditing && 'opacity-50 cursor-not-allowed hover:shadow-none'
+      }`}
     >
       <Image src={icon} alt="Round Table" width={24} height={24} />
       {name}

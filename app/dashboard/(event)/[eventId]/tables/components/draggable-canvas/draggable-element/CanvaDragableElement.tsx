@@ -1,4 +1,4 @@
-import { useDraggable } from '@dnd-kit/core';
+import { useDndContext, useDraggable, useDroppable } from '@dnd-kit/core'; // Adăugat useDroppable
 import React from 'react';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -10,20 +10,18 @@ import {
 } from '@/components/ui/tooltip';
 import { DropdownOption } from '@/core/types';
 
+// --- CONSTANTE PENTRU DIMENSIUNI (LOGICE) ---
 const TABLE_ROUND_SIZE = 100;
-const TABLE_HORIZONTAL_HEIGHT = 80; // Latura scurtă fixă pentru mesele dreptunghiulare
-const CHAIR_SIZE = 20; // Dimensiunea unui scaun (20px x 20px)
-const DISTANCE_FROM_TABLE = 15; // Distanța dintre masă și scaun
-const DEFAULT_SEAT_COUNT = 10; // Valoare implicită pentru mesele rotunde, dacă 'seats' nu este pasat
+const TABLE_HORIZONTAL_HEIGHT = 80;
+const CHAIR_SIZE = 20;
+const DISTANCE_FROM_TABLE = 15;
+const DEFAULT_SEAT_COUNT = 10;
 
-// Spațiul necesar pe latura lungă pentru un singur scaun
 const SPACE_PER_RECTANGULAR_SEAT = 60;
-
-// Calculul spațiului total necesar pe o parte pentru a include scaunul
 const PADDING_SIZE = DISTANCE_FROM_TABLE + CHAIR_SIZE / 2;
 
 // =================================================================================
-// --- Componenta TooltipContentComponent
+// --- Componenta TooltipContentComponent ---
 // =================================================================================
 
 const TooltipContentComponent = ({
@@ -79,6 +77,7 @@ interface TableProps {
   eventId: string;
   isEditing: boolean;
   onDelete: (id: string) => void;
+  isOver: boolean;
 }
 
 const TableWithChairs: React.FC<TableProps> = ({
@@ -90,6 +89,7 @@ const TableWithChairs: React.FC<TableProps> = ({
   elementId,
   isEditing,
   onDelete,
+  isOver,
 }) => {
   const numSeats = totalSeats;
   const seats: React.ReactElement[] = [];
@@ -128,8 +128,9 @@ const TableWithChairs: React.FC<TableProps> = ({
     for (let i = 0; i < count; i++) {
       const isOccupied = seats.length < guestCount;
 
+      // ATENȚIE: Am actualizat clasa pentru scaunele dreptunghiulare
       const chairClassName = isOccupied
-        ? 'bg-[url(/character-avatar-icon.png)] rounded-sm border border-gray-500 bg-cover bg-center shadow-lg'
+        ? 'bg-[url(/character-avatar-icon.png)] bg-cover bg-center border-gray-500 rounded-sm border shadow-lg'
         : 'bg-gray-400 rounded-sm border border-gray-500 shadow-sm';
 
       let seatX = 0;
@@ -209,7 +210,6 @@ const TableWithChairs: React.FC<TableProps> = ({
         }}
       >
         {seats}
-        {/* NOU: Butonul de ștergere este în colțul wrapper-ului */}
         {isEditing && (
           <span className="absolute -top-3 -right-3 z-[2]">
             <DeleteOutlined
@@ -222,7 +222,11 @@ const TableWithChairs: React.FC<TableProps> = ({
           </span>
         )}
         <div
-          className="absolute"
+          className={`absolute ${
+            isOver
+              ? 'border-2 border-green-500 shadow-xl transition-all duration-100'
+              : ''
+          }`}
           style={{
             width: tableW,
             height: tableH,
@@ -238,7 +242,6 @@ const TableWithChairs: React.FC<TableProps> = ({
 
   // --- LOGICĂ PENTRU MESE DREPTUNGHIULARE (Orizontală / Verticală) ---
   else if (typeId === 'horizontal-table' || typeId === 'vertical-table') {
-    // Dimensiunile wrapper-ului (totalW, totalH sunt deja calculate sus)
     const isHorizontal = typeId === 'horizontal-table';
 
     const seatsOnSide1 = Math.ceil(numSeats / 2);
@@ -270,7 +273,6 @@ const TableWithChairs: React.FC<TableProps> = ({
         }}
       >
         {seats}
-        {/* NOU: Butonul de ștergere este în colțul wrapper-ului */}
         {isEditing && (
           <span className="absolute -top-3 -right-3 z-[2]">
             <DeleteOutlined
@@ -283,7 +285,11 @@ const TableWithChairs: React.FC<TableProps> = ({
           </span>
         )}
         <div
-          className="absolute"
+          className={`absolute ${
+            isOver
+              ? 'border-2 border-green-500 shadow-xl transition-all duration-100'
+              : ''
+          }`}
           style={{
             width: tableW,
             height: tableH,
@@ -316,7 +322,7 @@ const CanvaDraggableElement = ({
   eventId,
   currentZoomScale,
   seats,
-  guests,
+  guests, // Prop primită de la Părinte
 }: {
   id: string;
   name: string;
@@ -329,9 +335,15 @@ const CanvaDraggableElement = ({
   eventId?: string;
   currentZoomScale: number;
   seats?: number;
-  guests: DropdownOption[];
+  guests: DropdownOption[]; // Tipul prop-ului
 }) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  // 1. Hook-ul Draggable
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setDraggableNodeRef, // Redenumit pentru a nu se suprapune
+    transform,
+  } = useDraggable({
     id,
     data: {
       name: name,
@@ -341,6 +353,26 @@ const CanvaDraggableElement = ({
     },
     disabled: !isEditing,
   });
+
+  // 2. Hook-ul Droppable cu logică pentru a verifica tipul elementului drag
+  const { active } = useDndContext();
+
+  const { setNodeRef: setDroppableNodeRef, isOver: rawIsOver } = useDroppable({
+    id,
+    data: {
+      type: 'table',
+      tableId: id,
+    },
+    disabled: type !== 'table',
+  });
+
+  const isOver = rawIsOver && active?.data?.current?.type === 'guest';
+
+  // 3. Funcție pentru combinarea referințelor
+  const setCombinedNodeRef = (node: HTMLDivElement | null) => {
+    setDraggableNodeRef(node);
+    setDroppableNodeRef(node);
+  };
 
   const guestCount = guests.length;
   const totalSeats =
@@ -358,6 +390,7 @@ const CanvaDraggableElement = ({
   let elementH = 0;
   const seatsPerLongSide = Math.ceil(totalSeats / 2);
 
+  // LOGICĂ DE CALCUL DIMENSIUNI (Rămâne neschimbată)
   if (type === 'table') {
     if (typeId === 'round-table') {
       elementW = elementH = 2 * (TABLE_ROUND_SIZE / 2 + PADDING_SIZE);
@@ -415,13 +448,12 @@ const CanvaDraggableElement = ({
 
   const style = {
     transform: dndTranslate,
-    // POZIȚIA INIȚIALĂ ESTE AJUSTATĂ CU JUMĂTATE DE LĂȚIME/ÎNĂLȚIME
     left: positions.x - elementW / 2 + 'px',
     top: positions.y - elementH / 2 + 'px',
     position: 'absolute' as const,
     background: 'transparent',
     padding: '0',
-    width: elementW + 'px', // Setăm dimensiunile elementului Draggable
+    width: elementW + 'px',
     height: elementH + 'px',
   };
 
@@ -455,7 +487,6 @@ const CanvaDraggableElement = ({
         let sizesString = '';
         let rounded = false;
 
-        // Calculăm locurile pe o singură latură lungă (jumătate din total, rotunjit în sus)
         const seatsPerLongSide = Math.ceil(totalSeats / 2);
 
         if (id === 'round-table') {
@@ -493,6 +524,7 @@ const CanvaDraggableElement = ({
             TooltipBaseContent={TooltipContent}
             isEditing={isEditing}
             onDelete={onDelete}
+            isOver={isOver}
           />
         );
 
@@ -625,7 +657,8 @@ const CanvaDraggableElement = ({
 
   return (
     <div
-      ref={setNodeRef}
+      // APLICĂM REFERINȚA COMBINATĂ PENTRU DRAGGABLE ȘI DROPPABLE
+      ref={setCombinedNodeRef}
       {...listeners}
       {...attributes}
       style={style}

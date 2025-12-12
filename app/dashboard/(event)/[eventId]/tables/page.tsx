@@ -52,6 +52,8 @@ import { createXlsxWorkbook } from '@/lib/utils';
 import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
 import { useEventContext } from '@/core/context/EventContext';
 import { queryGuestsByEvent } from '@/service/guest/queryGuestsByEvent';
+import { User } from 'lucide-react';
+import GuestListDraggableItems from './components/draggable-canvas/draggable-element/GuestListDraggableItems';
 
 const LOGICAL_CANVAS_WIDTH = 1920;
 const LOGICAL_CANVAS_HEIGHT = 1080;
@@ -81,7 +83,7 @@ export interface DragEventData {
   fromSideBar: boolean;
 }
 
-interface CurrentDragField {
+interface CurrentTableDragField {
   elementId: string;
   name: string;
   positions: { x: number; y: number };
@@ -90,6 +92,13 @@ interface CurrentDragField {
   fromSideBar: boolean;
   guestCount: number;
   seats: number;
+}
+
+interface CurrentGuestDragField {
+  fromSideBar: boolean;
+  type: 'guest';
+  guestId: string;
+  guestName: string;
 }
 
 const ELEMENTS: CanvasListElementDefinition[] = [
@@ -243,7 +252,9 @@ const TablesPage = () => {
   const [zoomScale, setZoomScale] = useState(1.0);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
-  const currentDragFieldRef = useRef<CurrentDragField | null>(null);
+  const currentDragFieldRef = useRef<
+    CurrentTableDragField | CurrentGuestDragField | null
+  >(null);
 
   const [isPanning, setIsPanning] = useState(false);
   const panStartCoords = useRef({ x: 0, y: 0 });
@@ -253,6 +264,15 @@ const TablesPage = () => {
 
   const [eventGuests, setEventGuests] = useState<Guest[]>([]);
 
+  const [showGuestList, setShowGuestList] = useState(false);
+
+  const [activeDragGuest, setActiveDragGuest] = useState<{
+    fromSideBar: boolean;
+    type: 'guest';
+    guestId: string;
+    guestName: string;
+  } | null>(null);
+
   const fetchEventGuests = async (eventId: string) => {
     const response = await queryGuestsByEvent(
       eventId,
@@ -261,8 +281,8 @@ const TablesPage = () => {
     setEventGuests(response);
   };
 
-  const isBasicPlan =
-    !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
+  const isNonUltimate =
+    !eventInstance?.eventPlan || eventInstance.eventPlan !== 'ultimate';
 
   useEffect(() => {
     if (eventInstance) {
@@ -372,30 +392,48 @@ const TablesPage = () => {
 
     if (activeData.fromSideBar) {
       const { name, type, typeId, isEditing } = activeData;
-      setActiveSidebarField({
-        name,
-        icon: activeData.icon,
-        type,
-        typeId,
-        isEditing,
-        modifiers: activeData.modifiers,
-        fromSideBar: true,
-      });
-      currentDragFieldRef.current = {
-        elementId: active.id as string,
-        name,
-        positions: { x: 0, y: 0 },
-        type,
-        typeId,
-        fromSideBar: true,
-        guestCount: 0,
-        seats: 10,
-      };
+
+      if (type === 'guest') {
+        setActiveDragGuest({
+          fromSideBar: true,
+          type: 'guest',
+          guestId: active.id as string,
+          guestName: name,
+        });
+
+        currentDragFieldRef.current = {
+          fromSideBar: true,
+          type: 'guest',
+          guestId: active.id as string,
+          guestName: name,
+        };
+      } else {
+        setActiveSidebarField({
+          name,
+          icon: activeData.icon,
+          type,
+          typeId,
+          isEditing,
+          modifiers: activeData.modifiers,
+          fromSideBar: true,
+        });
+        currentDragFieldRef.current = {
+          elementId: active.id as string,
+          name,
+          positions: { x: 0, y: 0 },
+          type,
+          typeId,
+          fromSideBar: true,
+          guestCount: 0,
+          seats: 10,
+        };
+      }
     }
   };
 
   const cleanUp = () => {
     setActiveSidebarField(null);
+    setActiveDragGuest(null);
     setActiveFieldData(null);
     currentDragFieldRef.current = null;
     setSidebarFieldsRegenKey(Date.now());
@@ -407,53 +445,51 @@ const TablesPage = () => {
     const canvasElement: HTMLElement | null = document.querySelector(
       '.tables-canvas-section'
     );
-    const { over } = e;
-
-    if (!over || over.id !== CANVAS_ID) {
-      cleanUp();
-      return;
-    }
 
     const nextField = currentDragFieldRef.current;
 
-    if (nextField && nextField.fromSideBar && canvasElement) {
-      const rect = canvasElement.getBoundingClientRect();
-      const activatorEvent = e.activatorEvent as MouseEvent;
-      const dropClientX = activatorEvent.clientX + e.delta.x;
-      const dropClientY = activatorEvent.clientY + e.delta.y;
+    if (nextField && nextField.type === 'guest') {
+      const guestField = nextField as CurrentGuestDragField;
+      if (guestField && guestField.fromSideBar && canvasElement) {
+        const { over } = e;
+        if (!over || over.data.current?.type !== 'table') {
+          cleanUp();
+          return;
+        }
+        const tableId = over.id as string;
 
-      const relativeToCanvasX = dropClientX - rect.left;
-      const relativeToCanvasY = dropClientY - rect.top;
+        assignTableToGuests(tableId, [
+          {
+            label: guestField.guestName,
+            value: guestField.guestId.replace('guest-', ''),
+          },
+        ]).then(() => {
+          fetchEventGuests(eventInstance!.eventId);
+          toast.success('Invitat asezat cu succes la masa selectata.');
+        });
+      }
+    } else {
+      const tableField = nextField as CurrentTableDragField;
+      if (tableField && tableField.fromSideBar && canvasElement) {
+        const { over } = e;
 
-      let newX = relativeToCanvasX / zoomScale;
-      let newY = relativeToCanvasY / zoomScale;
+        if (!over || over.id !== CANVAS_ID) {
+          cleanUp();
+          return;
+        }
+        const rect = canvasElement.getBoundingClientRect();
+        const activatorEvent = e.activatorEvent as MouseEvent;
+        const dropClientX = activatorEvent.clientX + e.delta.x;
+        const dropClientY = activatorEvent.clientY + e.delta.y;
 
-      newX = newX - LOGICAL_CENTER_OFFSET;
-      newY = newY - LOGICAL_CENTER_OFFSET;
+        const relativeToCanvasX = dropClientX - rect.left;
+        const relativeToCanvasY = dropClientY - rect.top;
 
-      newX = Math.max(
-        0,
-        Math.min(LOGICAL_CANVAS_WIDTH - LOGICAL_ELEMENT_SIZE, newX)
-      );
-      newY = Math.max(
-        0,
-        Math.min(LOGICAL_CANVAS_HEIGHT - LOGICAL_ELEMENT_SIZE, newY)
-      );
+        let newX = relativeToCanvasX / zoomScale;
+        let newY = relativeToCanvasY / zoomScale;
 
-      nextField.positions = { x: newX, y: newY };
-      setCanvasElements((prev) => [...prev, nextField]);
-    } else if (!e.active.data.current?.fromSideBar && canvasElement) {
-      const movedElementIndex = canvasElements.findIndex(
-        (x) => x.elementId === e.active.id
-      );
-
-      if (movedElementIndex !== -1) {
-        const currentElement = canvasElements[movedElementIndex];
-        const logicalDeltaX = e.delta.x / zoomScale;
-        const logicalDeltaY = e.delta.y / zoomScale;
-
-        let newX = currentElement.positions.x + logicalDeltaX;
-        let newY = currentElement.positions.y + logicalDeltaY;
+        newX = newX - LOGICAL_CENTER_OFFSET;
+        newY = newY - LOGICAL_CENTER_OFFSET;
 
         newX = Math.max(
           0,
@@ -464,14 +500,39 @@ const TablesPage = () => {
           Math.min(LOGICAL_CANVAS_HEIGHT - LOGICAL_ELEMENT_SIZE, newY)
         );
 
-        setCanvasElements((currentElements) =>
-          currentElements.map((el, index) => {
-            if (index === movedElementIndex) {
-              return { ...el, positions: { x: newX, y: newY } };
-            }
-            return el;
-          })
+        tableField.positions = { x: newX, y: newY };
+        setCanvasElements((prev) => [...prev, tableField]);
+      } else if (!e.active.data.current?.fromSideBar && canvasElement) {
+        const movedElementIndex = canvasElements.findIndex(
+          (x) => x.elementId === e.active.id
         );
+
+        if (movedElementIndex !== -1) {
+          const currentElement = canvasElements[movedElementIndex];
+          const logicalDeltaX = e.delta.x / zoomScale;
+          const logicalDeltaY = e.delta.y / zoomScale;
+
+          let newX = currentElement.positions.x + logicalDeltaX;
+          let newY = currentElement.positions.y + logicalDeltaY;
+
+          newX = Math.max(
+            0,
+            Math.min(LOGICAL_CANVAS_WIDTH - LOGICAL_ELEMENT_SIZE, newX)
+          );
+          newY = Math.max(
+            0,
+            Math.min(LOGICAL_CANVAS_HEIGHT - LOGICAL_ELEMENT_SIZE, newY)
+          );
+
+          setCanvasElements((currentElements) =>
+            currentElements.map((el, index) => {
+              if (index === movedElementIndex) {
+                return { ...el, positions: { x: newX, y: newY } };
+              }
+              return el;
+            })
+          );
+        }
       }
     }
 
@@ -734,7 +795,7 @@ const TablesPage = () => {
                 />
               )
             )}
-            {isBasicPlan && (
+            {isNonUltimate && (
               <div className="mt-auto mb-4 rounded-lg bg-[#f5edf7] border border-[var(--primary-color)] p-4 shadow flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-[var(--primary-color)] font-semibold text-base">
                   <span>
@@ -766,6 +827,12 @@ const TablesPage = () => {
           <DragOverlay>
             {activeSidebarField ? (
               <DraggableElement {...activeSidebarField} />
+            ) : null}
+            {activeDragGuest ? (
+              <div className="p-2 mb-1 bg-gray-100 rounded-md shadow-sm border border-gray-300 hover:bg-blue-100 cursor-grab text-sm flex items-center justify-between">
+                <span className="bg-[url(/character-avatar-icon.png)] rounded-full border border-gray-500 bg-cover bg-center shadow-lg w-6 h-6"></span>
+                <span>{activeDragGuest.guestName}</span>
+              </div>
             ) : null}
           </DragOverlay>
 
@@ -807,6 +874,29 @@ const TablesPage = () => {
               />
             </div>
 
+            <div className="absolute left-4 top-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-200">
+              <Button
+                type="text"
+                icon={<PlusOutlined />}
+                onClick={() => setShowGuestList(!showGuestList)}
+                className="w-[100px]"
+              >
+                <User size={16} />
+              </Button>
+
+              {showGuestList && (
+                <div className="mt-2 p-2 w-[400px] max-h-[400px] overflow-y-auto border-t border-gray-200">
+                  <h3 className="text-sm font-semibold mb-2">
+                    Invitati Neasezati
+                  </h3>
+                  <GuestListDraggableItems
+                    unseatedGuests={eventGuests.filter(
+                      (guest) => !guest.tableId
+                    )}
+                  />
+                </div>
+              )}
+            </div>
             <div
               className="scaled-canvas-inner-dnd tables-canvas-section"
               style={{
