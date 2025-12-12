@@ -11,6 +11,7 @@ const DraggableCanvas = ({
   onDelete,
   isEditing,
   eventId,
+  currentZoomScale,
 }: {
   id: string;
   canvasElements: CanvasElement[];
@@ -19,6 +20,7 @@ const DraggableCanvas = ({
   onDelete: (id: string) => void;
   isEditing: boolean;
   eventId?: string;
+  currentZoomScale: number;
 }) => {
   const { setNodeRef } = useDroppable({
     id: id,
@@ -31,11 +33,13 @@ const DraggableCanvas = ({
   return (
     <div
       ref={setNodeRef}
-      className="tables-canvas-section bg-[#F6F6F6] h-full overflow-y-auto rounded-lg p-2 w-full relative"
+      className="tables-canvas-section h-full overflow-y-auto rounded-lg p-2 w-full relative"
     >
       {canvasElements.map((element) => (
         <CanvaDraggableElement
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (element.type === 'table') {
               tableEditActive(true);
               setActiveEditTableId(element);
@@ -50,6 +54,7 @@ const DraggableCanvas = ({
           typeId={element.typeId}
           isEditing={isEditing}
           eventId={eventId}
+          currentZoomScale={currentZoomScale}
         />
       ))}
     </div>

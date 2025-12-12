@@ -22,6 +22,7 @@ const CanvaDraggableElement = ({
   onDelete,
   onClick,
   eventId,
+  currentZoomScale, // <-- NOU: Adaugat pentru a compensa scalarea containerului
 }: {
   id: string;
   name: string;
@@ -30,8 +31,9 @@ const CanvaDraggableElement = ({
   typeId: string;
   isEditing: boolean;
   onDelete: (id: string) => void;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   eventId?: string;
+  currentZoomScale: number; // <-- NOU: Tipul prop-ului
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
@@ -44,11 +46,22 @@ const CanvaDraggableElement = ({
     disabled: !isEditing,
   });
 
+  // --- LOGICĂ DE TRANSFORMARE REVIZUITĂ PENTRU COMPENSAREA SCALĂRII ---
+  const dndTranslate = transform
+    ? `translate3d(${transform.x / currentZoomScale}px, ${
+        transform.y / currentZoomScale
+      }px, 0)` // <-- MODIFICARE CHEIE: Scalăm invers translația DndKit
+    : undefined;
+
   const style = {
-    transform: transform
-      ? `translate(${transform.x}px, ${transform.y}px)`
-      : undefined,
-    position: 'absolute',
+    // Aplicăm translația ajustată
+    transform: dndTranslate,
+    // Poziția inițială (cea salvată)
+    left: positions.x + 'px',
+    top: positions.y + 'px',
+    position: 'absolute' as const,
+    background: 'transparent',
+    padding: '15px',
   };
 
   const getElementHtmlByType = (
@@ -90,22 +103,22 @@ const CanvaDraggableElement = ({
         };
 
         if (id === 'round-table') {
-          return <TableBase rounded={true} sizesString="w-[80px] h-[80px]" />;
+          return <TableBase rounded={true} sizesString="w-[100px] h-[100px]" />;
         } else if (id === 'horizontal-table') {
-          return <TableBase rounded={false} sizesString="w-[140px] h-[60px]" />;
+          return <TableBase rounded={false} sizesString="w-[160px] h-[80px]" />;
         } else {
-          return <TableBase rounded={false} sizesString="w-[60px] h-[140px]" />;
+          return <TableBase rounded={false} sizesString="w-[80px] h-[160px]" />;
         }
       case 'presidium':
         if (id === 'vertical-presidium') {
           return (
-            <div className="text-center rounded-sm h-[160px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="text-center rounded-sm h-[180px] w-[80px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
         } else {
           return (
-            <div className="text-center rounded-sm h-[60px] w-[160px]  flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="text-center rounded-sm h-[80px] w-[180px]  flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
@@ -113,13 +126,13 @@ const CanvaDraggableElement = ({
       case 'bar':
         if (id === 'horizontal-bar') {
           return (
-            <div className="text-center rounded-md h-[60px] w-[200px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="text-center rounded-md h-[80px] w-[220px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
         } else {
           return (
-            <div className=" rounded-md h-[200px] w-[60px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className=" rounded-md h-[220px] w-[80px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
@@ -127,19 +140,19 @@ const CanvaDraggableElement = ({
       case 'others':
         if (id === 'dance-floor') {
           return (
-            <div className="text-center rounded-md h-[250px] w-[250px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+            <div className="text-center rounded-md h-[270px] w-[270px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               {name}
             </div>
           );
         } else if (id === 'entrance') {
           return (
-            <div className="rounded-md h-[100px] w-[20px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="rounded-md h-[120px] w-[40px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               <span className="rotate-270">{name}</span>
             </div>
           );
         } else {
           return (
-            <div className="rounded-md h-[80px] w-[80px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className="rounded-md h-[100px] w-[100px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
@@ -147,13 +160,13 @@ const CanvaDraggableElement = ({
       case 'stage':
         if (id === 'horizontal-stage') {
           return (
-            <div className="text-center rounded-md h-[100px] w-[200px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+            <div className="text-center rounded-md h-[120px] w-[220px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
               {name}
             </div>
           );
         } else {
           return (
-            <div className=" rounded-md h-[200px] w-[100px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
+            <div className=" rounded-md h-[220px] w-[120px] flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-gray-300 hover:bg-gray-400 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100">
               {name}
             </div>
           );
@@ -168,15 +181,9 @@ const CanvaDraggableElement = ({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      style={{
-        ...style,
-        left: positions.x + '%',
-        top: positions.y + '%',
-        position: 'absolute',
-        background: 'transparent',
-        padding: '15px',
-      }}
-      onClick={() => !isEditing && onClick?.()}
+      style={style}
+      onClick={(e) => !isEditing && onClick?.(e)}
+      data-element-type="table"
     >
       {isEditing && (
         <span className="absolute top-0 right-0 z-[2]">
@@ -224,7 +231,7 @@ const TooltipContentComponent = ({
         toast.error('A aparut o eroare, te rugam sa reincarci pagina');
       }
     }
-  }, []);
+  }, [eventId, id, type]); // Am pastrat dependintele originale pentru useCallback
 
   useEffect(() => {
     queryTableGuests();
