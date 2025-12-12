@@ -59,9 +59,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   const [activeSection, setActiveSection] = useState<TemplateSection | null>();
   const [currentGuidelines, setCurrentGuidelines] = useState<Guideline[]>([]);
 
-  const [activeElementData, setActiveElementData] = useState<{
-    modifiers: [];
-  } | null>(null);
+  const [activeElementData, setActiveElementData] =
+    useState<DragEventData | null>(null);
 
   // Used to prevent drag event to fire on a normal click and support touch devices
   const sensors = useSensors(
