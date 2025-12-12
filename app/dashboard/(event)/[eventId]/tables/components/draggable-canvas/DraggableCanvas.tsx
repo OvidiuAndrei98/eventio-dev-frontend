@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
 import CanvaDraggableElement from './draggable-element/CanvaDragableElement';
-import { CanvasElement } from '@/core/types';
+import { CanvasElement, Guest } from '@/core/types';
 
 const DraggableCanvas = ({
   id,
@@ -12,6 +12,7 @@ const DraggableCanvas = ({
   isEditing,
   eventId,
   currentZoomScale,
+  eventGuests,
 }: {
   id: string;
   canvasElements: CanvasElement[];
@@ -21,6 +22,7 @@ const DraggableCanvas = ({
   isEditing: boolean;
   eventId?: string;
   currentZoomScale: number;
+  eventGuests: Guest[];
 }) => {
   const { setNodeRef } = useDroppable({
     id: id,
@@ -55,6 +57,10 @@ const DraggableCanvas = ({
           isEditing={isEditing}
           eventId={eventId}
           currentZoomScale={currentZoomScale}
+          seats={element.seats}
+          guests={eventGuests
+            .filter((guest) => guest.tableId?.includes(element.elementId))
+            .map((guest) => ({ label: guest.name, value: guest.guestId }))}
         />
       ))}
     </div>

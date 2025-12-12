@@ -28,6 +28,7 @@ const LateralDrawer = ({
   setTableEditActive,
   setEventInstance,
   deleteTable,
+  updateGuestList,
 }: {
   tableElement: CanvasElement;
   eventId: string;
@@ -35,6 +36,7 @@ const LateralDrawer = ({
   setTableEditActive: (state: boolean) => void;
   setEventInstance: (event: EventInstance) => void;
   deleteTable: (tableId: string) => void;
+  updateGuestList: (eventId: string) => void;
 }) => {
   const [form] = Form.useForm();
   const [addGuestsOpen, setAddGuestsOpen] = useState(false);
@@ -97,6 +99,7 @@ const LateralDrawer = ({
     );
     updateGuestsTableRef();
     setEventInstance(updatedEvent);
+    updateGuestList(eventId);
     toast.success('Masa actualizata cu succes');
     setTableEditActive(false);
   };

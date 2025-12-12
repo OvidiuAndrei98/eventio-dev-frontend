@@ -72,6 +72,8 @@ export interface CanvasElement {
   positions: { x: number; y: number };
   type: string;
   typeId: string;
+  guestCount?: number;
+  seats?: number;
 }
 
 export interface eventTableOrganization {

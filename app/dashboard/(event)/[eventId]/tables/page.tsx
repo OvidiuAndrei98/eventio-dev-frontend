@@ -51,6 +51,7 @@ import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { createXlsxWorkbook } from '@/lib/utils';
 import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
 import { useEventContext } from '@/core/context/EventContext';
+import { queryGuestsByEvent } from '@/service/guest/queryGuestsByEvent';
 
 const LOGICAL_CANVAS_WIDTH = 1920;
 const LOGICAL_CANVAS_HEIGHT = 1080;
@@ -87,6 +88,8 @@ interface CurrentDragField {
   type: string;
   typeId: string;
   fromSideBar: boolean;
+  guestCount: number;
+  seats: number;
 }
 
 const ELEMENTS: CanvasListElementDefinition[] = [
@@ -248,12 +251,23 @@ const TablesPage = () => {
 
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
+  const [eventGuests, setEventGuests] = useState<Guest[]>([]);
+
+  const fetchEventGuests = async (eventId: string) => {
+    const response = await queryGuestsByEvent(
+      eventId,
+      eventInstance?.eventPlan || 'basic'
+    );
+    setEventGuests(response);
+  };
+
   const isBasicPlan =
     !eventInstance?.eventPlan || eventInstance.eventPlan === 'basic';
 
   useEffect(() => {
     if (eventInstance) {
       setCanvasElements(eventInstance?.eventTableOrganization.elements);
+      fetchEventGuests(eventInstance.eventId);
     }
   }, [eventInstance]);
 
@@ -374,6 +388,8 @@ const TablesPage = () => {
         type,
         typeId,
         fromSideBar: true,
+        guestCount: 0,
+        seats: 10,
       };
     }
   };
@@ -818,6 +834,7 @@ const TablesPage = () => {
                 canvasElements={canvasElements}
                 eventId={eventInstance?.eventId}
                 currentZoomScale={zoomScale}
+                eventGuests={eventGuests}
               />
             </div>
           </div>
@@ -825,6 +842,7 @@ const TablesPage = () => {
       </DndContext>
       {activeEditTable && eventInstance && (
         <LateralDrawer
+          updateGuestList={fetchEventGuests}
           deleteTable={deleteTable}
           tableElement={activeEditTable}
           eventId={eventInstance?.eventId}
