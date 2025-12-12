@@ -92,7 +92,7 @@ const TableWithChairs: React.FC<TableProps> = ({
   onDelete,
 }) => {
   const numSeats = totalSeats;
-  let seats: React.ReactElement[] = [];
+  const seats: React.ReactElement[] = [];
 
   const sizeParts = sizesString.match(/w-\[(\d+)px\] h-\[(\d+)px\]/);
   const tableW = sizeParts ? parseInt(sizeParts[1], 10) : TABLE_ROUND_SIZE;
