@@ -7,14 +7,12 @@ import {
   CloseCircleOutlined,
   CrownOutlined,
 } from '@ant-design/icons';
-import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/core/context/EventContext';
 
 const { Title, Text } = Typography;
 
 const UpgradePage = () => {
-  const router = useRouter();
   const { eventInstance } = useEventContext();
 
   const handleUpgradeClick = () => {
