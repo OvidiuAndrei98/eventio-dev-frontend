@@ -8,14 +8,28 @@ import {
   CrownOutlined,
 } from '@ant-design/icons';
 import { useEventContext } from '@/core/context/EventContext';
+import { planEventUpgradeCheckout } from '@/service/stripe/planEventUpgradeCheckout';
 
 const { Title, Text } = Typography;
 
 const UpgradePage = () => {
   const { eventInstance } = useEventContext();
 
-  const handleUpgradeClick = () => {
-    console.log('Navigating to Ultimate Plan Checkout...');
+  const handleUpgradeClick = async () => {
+    if (!eventInstance?.eventId || !eventInstance?.userId) {
+      console.error('Event ID or User ID is missing.');
+      return;
+    }
+    try {
+      await planEventUpgradeCheckout(
+        eventInstance!.userId,
+        'price_1SeYkZIYmtfnTY0fvptahiW7',
+        eventInstance!.eventId,
+        'ultimate'
+      );
+    } catch (error) {
+      console.error('Eroare la redirecționarea către Stripe Checkout:', error);
+    }
   };
 
   const features = [
@@ -156,7 +170,10 @@ const UpgradePage = () => {
                 size="large"
                 onClick={handleUpgradeClick}
                 style={{ marginTop: '30px', width: '100%' }}
-                disabled={eventInstance?.eventPlan === 'ultimate'}
+                disabled={
+                  eventInstance?.eventPlan === 'ultimate' ||
+                  !eventInstance?.eventId
+                }
               >
                 Cumpară
               </Button>

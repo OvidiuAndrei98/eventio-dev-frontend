@@ -247,9 +247,9 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
         res.status(200).send(data);
         // Query the customers collection by stripeId and update the email
         const customersRef = admin.firestore().collection("customers");
-        const querySnapshot = await customersRef.where(
-          "stripeId", "==", session.customer as string
-        ).get();
+        const querySnapshot = await customersRef
+          .where("stripeId", "==", session.customer as string)
+          .get();
 
         if (!querySnapshot.empty) {
           const batch = admin.firestore().batch();
@@ -268,6 +268,36 @@ export const handleStripeWebhook = onRequest(async (req, res) => {
         );
         res.status(500).send(`Error: ${error.message}`);
         return;
+      }
+    }
+    if (session.payment_intent) {
+      try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(
+          session.payment_intent as string
+        );
+
+        const purchaseType = paymentIntent.metadata.purchaseType;
+        const eventId = paymentIntent.metadata.eventId;
+
+        if (purchaseType === "table-plan-upgrade") {
+          console.log("Upgrade plan detected. Processing user activation...");
+
+          await admin
+            .firestore()
+            .collection("users")
+            .doc(session.client_reference_id as string)
+            .update({planEventUltimateLicense: true});
+
+          await admin
+            .firestore()
+            .collection("tablePlanEvents")
+            .doc(eventId as string)
+            .update({eventPlan: "ultimate"});
+        } else {
+          console.log("Purchase type not found or is a different product.");
+        }
+      } catch (error) {
+        console.error("Error retrieving Payment Intent:", error);
       }
     }
   } else {

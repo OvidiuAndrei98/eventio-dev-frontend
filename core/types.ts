@@ -5,6 +5,7 @@ export interface User {
   displayName: string | null | undefined;
   name?: string;
   surname?: string;
+  planEventUltimateLicense?: boolean;
 }
 
 export interface UserDTO {

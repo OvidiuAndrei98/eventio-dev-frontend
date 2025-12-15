@@ -53,6 +53,12 @@ const DashboardPage = () => {
     );
   }, []);
 
+  const handlePlanEventDelete = useCallback((eventId: string) => {
+    setPlanEvents((prevEvents) =>
+      prevEvents.filter((event) => event.eventId !== eventId)
+    );
+  }, []);
+
   const onModalOk = () => {
     setOpen(false);
   };
@@ -67,8 +73,8 @@ const DashboardPage = () => {
   );
 
   const planColumns = useMemo(
-    () => getPlanColumns({ handleEventDelete: handleEventDelete }),
-    [handleEventDelete]
+    () => getPlanColumns({ handleEventDelete: handlePlanEventDelete }),
+    [handlePlanEventDelete]
   );
 
   const createNewPlan = async () => {
@@ -82,7 +88,9 @@ const DashboardPage = () => {
       eventDate: new Date().toISOString(),
       eventId: crypto.randomUUID(),
       eventName: planName,
-      eventPlan: EventPlan.basic,
+      eventPlan: user?.planEventUltimateLicense
+        ? EventPlan.ultimate
+        : EventPlan.basic,
       userId: user!.userId,
       eventType: 'tablePlan',
       eventTableOrganization: {
@@ -90,6 +98,7 @@ const DashboardPage = () => {
       },
     };
     await createPlanEvent(newPlanEvent, user!.userId);
+    setPlanEvents((prevPlans) => [...prevPlans, newPlanEvent]);
     toast.success(`Planul "${planName}" a fost creat cu succes!`);
     // Resetează numele planului după creare
     setPlanName('');

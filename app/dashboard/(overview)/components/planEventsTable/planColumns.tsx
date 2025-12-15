@@ -138,7 +138,7 @@ export const getPlanColumns = ({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Acțiuni</DropdownMenuLabel>
               <DropdownMenuItem className="hover:!bg-[#f8e5fd] active:!bg-[#f8e5fd] focus:!bg-[#f8e5fd]">
-                <Link href={`/dashboard/${event?.eventId}/tables`}>
+                <Link href={`/dashboard/plan/${event?.eventId}`}>
                   Administrează planul
                 </Link>
                 <span className="hidden">{event.eventName}</span>
