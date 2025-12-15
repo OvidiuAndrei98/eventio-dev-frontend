@@ -53,9 +53,7 @@ const AddGuestsFloatingMenu = ({
       form.resetFields();
       setGuestsList([{ name: '', id: crypto.randomUUID() }]);
       toast.success('Invitații au fost adăugați cu succes!');
-    } catch (error) {
-      toast.error('A apărut o eroare la adăugarea invitaților.');
-    }
+    } catch (error) {}
   };
 
   return (

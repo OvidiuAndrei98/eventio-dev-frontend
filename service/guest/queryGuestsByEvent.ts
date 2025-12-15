@@ -30,7 +30,7 @@ export const queryGuestsByEvent = async (
 
     const guestsCollectionRef = collection(db, 'events', eventId, 'guests');
 
-    const q = query(guestsCollectionRef, orderBy('date', 'desc'));
+    const q = query(guestsCollectionRef, orderBy('date', 'asc'));
 
     const querySnapshot = await getDocs(q);
 

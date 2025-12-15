@@ -366,6 +366,21 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
     setPanOffset({ x: 0, y: 0 });
   }, []);
 
+  const handleAddGuestsClick = async (
+    eventId: string,
+    userId: string,
+    guests: Guest[]
+  ) => {
+    if (eventGuests.length + guests.length >= maxGuestsAvailableInTablePlan) {
+      toast.error(
+        `Nu poți adăuga mai mulți invitați. Limita pentru planul tău este de ${maxGuestsAvailableInTablePlan} invitați.`
+      );
+      throw new Error('Guest limit exceeded for the current plan.');
+    } else {
+      await props.addGuestsService(eventId, userId, guests);
+    }
+  };
+
   const handleZoomIn = () => {
     setZoomScale((prev) => Math.min(prev + ZOOM_STEP, MAX_ZOOM));
   };
@@ -939,7 +954,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
               />
             </div>
 
-            <div className="absolute left-4 top-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-200">
+            <div className="absolute left-4 top-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-400">
               {showGuestList ? (
                 <Button
                   type="text"
@@ -957,7 +972,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
               )}
 
               {showGuestList && (
-                <div className="mt-2 p-2 w-[400px] max-h-[400px] overflow-y-auto border-t border-gray-200">
+                <div className="mt-2 p-2 w-[400px] max-h-[400px] overflow-y-auto border-t border-gray-400">
                   <h3 className="text-sm font-semibold mb-2">
                     Invitati Neasezati
                   </h3>
@@ -969,7 +984,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
                 </div>
               )}
             </div>
-            <div className="absolute left-4 bottom-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-200">
+            <div className="absolute left-4 bottom-4 z-50 flex flex-col gap-2 bg-white p-2 rounded-lg shadow-lg border border-gray-400">
               <div className="flex flex-row justify-between items-center">
                 {showAddGuestsMenu ? (
                   <Button
@@ -995,7 +1010,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
                   <AddGuestsFloatingMenu
                     eventId={eventInstance?.eventId || ''}
                     userId={eventInstance?.userId || ''}
-                    addGuestsService={props.addGuestsService}
+                    addGuestsService={handleAddGuestsClick}
                     refreshGuestList={async () => {
                       props.guestListChanged &&
                         (await props.guestListChanged());

@@ -108,7 +108,6 @@ const RsvpElement = ({
   const handleSubmit: FormProps<RsvpFormData>['onFinish'] = async (
     values: RsvpFormData
   ) => {
-    // --- Pregatirea Datelor pentru Salvare (Crearea obiectelor IndividualGuest) ---
     const guestsToSave: Guest[] = [];
     const submissionId = crypto.randomUUID();
     const submissionTime = new Date().getTime();
@@ -139,7 +138,6 @@ const RsvpElement = ({
       });
     }
 
-    // 2. Creeaza obiecte IndividualGuest pentru invitații suplimentari, DACA participa si numarul total e > 1
     if (
       values.isAttending === 'yes' &&
       typeof values.totalGuests === 'number' &&
@@ -177,7 +175,6 @@ const RsvpElement = ({
       });
     }
 
-    // --- Apelul Serviciului pentru Salvarea Datelor ---
     if (guestsToSave.length === 0) {
       console.warn('No valid guest data to save after processing form.');
       toast.info('No guest data to save.');
@@ -185,15 +182,11 @@ const RsvpElement = ({
     }
 
     try {
-      // Apelăm funcția serviciului care ar trebui să folosească Batch Writes în Firestore
-      // pentru a adăuga toate documentele din array-ul guestsToSave atomic.
-      // Aceasta funcție ar trebui să primească eventId, userId și array-ul de obiecte IndividualGuest.
       await addGuestsToEventBatch(eventId, userId, guestsToSave);
 
-      // --- Feedback Utilizator și Resetare Formular ---
       toast.success(
         `Raspuns(uri) inregistrat(e) cu succes pentru ${guestsToSave.length} invitat(i)!`
-      ); // Notificare de succes
+      );
 
       // Resetăm state-ul local al formularului la valorile inițiale goale după submitarea cu succes
       setFormData({

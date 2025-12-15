@@ -21,6 +21,7 @@ import SummaryRow from './SummaryRow';
 import { AddGuestForm } from './add/AddGuestForm';
 import { useAuth } from '@/core/context/authContext';
 import { toast } from 'sonner';
+import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 
 interface SummaryTableProps {
   guests: Guest[];
@@ -152,6 +153,12 @@ const SummaryTable = ({ guests, updateGuests }: SummaryTableProps) => {
         </div>
       </div>
       <AddGuestForm
+        canAddGuests={
+          !(
+            isBasicPlan &&
+            guests.length >= PLANYVITE_EVENT_PLAN_FEATURES['basic'].maxGuests
+          )
+        }
         open={addGuestModalOpen}
         onOk={() => {
           setAddGuestModalOpen(false);

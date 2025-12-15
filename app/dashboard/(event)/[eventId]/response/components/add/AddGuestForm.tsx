@@ -11,6 +11,7 @@ export interface AddGuestFormProps {
   onClose: () => void;
   eventId: string;
   userId: string;
+  canAddGuests: boolean;
   updateGuests?: (newGuest: Guest) => void;
 }
 
@@ -30,6 +31,7 @@ export function AddGuestForm({
   onClose,
   eventId,
   userId,
+  canAddGuests,
   updateGuests,
 }: AddGuestFormProps) {
   useEffect(() => {
@@ -42,6 +44,12 @@ export function AddGuestForm({
   const [form] = Form.useForm<AddGuestFormValues>();
   const onFinish = async (values: AddGuestFormValues) => {
     try {
+      if (!canAddGuests) {
+        toast.error(
+          'Nu poți adăuga mai mulți invitați. Atingerea limitei pentru planul tău actual.'
+        );
+        return;
+      }
       const guest = {
         guestId: crypto.randomUUID(),
         submissionId: crypto.randomUUID(),
@@ -58,7 +66,6 @@ export function AddGuestForm({
       onOk();
       updateGuests && updateGuests(guest);
     } catch (error) {
-      console.error('Error adding guest:', error);
       toast.error('A apărut o eroare la adăugarea invitatului.');
     }
   };

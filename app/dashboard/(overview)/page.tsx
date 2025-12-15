@@ -140,7 +140,7 @@ const DashboardPage = () => {
               <div>
                 <h1 className="font-semibold">Planurile mele</h1>
                 <span className="text-sm text-slate-500">
-                  {events.length} Planuri
+                  {planEvents.length} Planuri
                 </span>
               </div>
               <Popover>

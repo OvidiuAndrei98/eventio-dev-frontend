@@ -17,7 +17,6 @@ export const addGuestsToPlanEventBatch = async (
 
     const batch = writeBatch(db);
     const eventDocRef = doc(collection(db, 'tablePlanEvents'), eventId);
-    console.log('Target path:', eventDocRef.path);
     const guestsCollectionRef = collection(eventDocRef, 'guests');
 
     guests.forEach((guest) => {
