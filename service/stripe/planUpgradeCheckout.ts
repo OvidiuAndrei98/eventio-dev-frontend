@@ -55,6 +55,15 @@ export const planUpgradeCheckout = async (
     }
     if (url) {
       window.location.assign(url);
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'begin_checkout',
+          ecommerce: {
+            value: plan === 'premium' ? 200 : 349,
+            currency: 'RON',
+          },
+        });
+      }
     }
   });
 
