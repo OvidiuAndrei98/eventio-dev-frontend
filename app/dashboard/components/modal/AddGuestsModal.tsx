@@ -8,13 +8,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from 'antd';
-import { queryNotAssignedConfirmedGuestsByEventId } from '@/service/guest/queryNotAssignedConfirmedGuestsByEventId';
 import { DropdownOption, Guest } from '@/core/types';
-import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
-import { useEventContext } from '@/core/context/EventContext';
 import MultiselectDropdown from '@/components/multiselectDropdown/MultiselectDropdown';
-
-type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 
 interface ModalProps {
   eventId: string;

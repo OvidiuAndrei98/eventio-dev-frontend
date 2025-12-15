@@ -1,22 +1,12 @@
 import { Guest } from '@/core/types';
 import React from 'react';
 import './GuestRow.css';
-import {
-  CheckOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-  QuestionCircleOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Popconfirm } from 'antd';
 
 type GuestRowProps = {
   guest: Guest;
-  deleteGuest: (
-    guestId: string,
-    eventId: string,
-    guestSubmissionsTime: number,
-    attending: boolean
-  ) => Promise<void>;
+  deleteGuest: (guestId: string, eventId: string) => Promise<void>;
 };
 
 /**
@@ -47,14 +37,7 @@ export default function GuestRow({
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           cancelText="Anulează"
           okText="Șterge"
-          onConfirm={() =>
-            deleteGuest(
-              guest.guestId,
-              guest.eventId,
-              guest.date,
-              guest.isAttending
-            )
-          }
+          onConfirm={() => deleteGuest(guest.guestId, guest.eventId)}
         >
           <Button type="text" danger icon={<DeleteOutlined />} />
         </Popconfirm>

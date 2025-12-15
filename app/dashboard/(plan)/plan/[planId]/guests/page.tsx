@@ -8,6 +8,7 @@ import { Guest } from '@/core/types';
 import { useEventContext } from '@/core/context/EventContext';
 import { queryPlanEventGuests } from '@/service/guest/queryPlanEventGuests';
 import GuestRow from './components/GuestRow';
+import { deletePlanEventGuestById } from '@/service/guest/deletePlanEventGuestById';
 
 const GuestsPage = () => {
   const [searchText, setSearchText] = useState('');
@@ -28,19 +29,13 @@ const GuestsPage = () => {
     fetchGuests();
   }, [eventInstance]);
 
+  // TODO optimize deleteGuest to not re-fetch all guests
   const deleteGuest = async (
     guestId: string,
-    eventId: string,
-    guestSubmissionsTime: number,
-    attending: boolean
+    eventId: string
   ): Promise<void> => {
     try {
-      // Implementați logica de ștergere a invitatului aici
-      // De exemplu, apelați o funcție din serviciul de invitați pentru a șterge invitatul
-      console.log(
-        `Ștergere invitat: ${guestId} pentru evenimentul: ${eventId}`
-      );
-      // După ștergere, reîmprospătați lista de invitați
+      await deletePlanEventGuestById(guestId, eventId);
       await fetchGuests();
     } catch (error) {
       console.error('Eroare la ștergerea invitatului:', error);

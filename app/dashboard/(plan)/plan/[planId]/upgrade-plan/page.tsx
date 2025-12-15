@@ -9,11 +9,13 @@ import {
 } from '@ant-design/icons';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEventContext } from '@/core/context/EventContext';
 
 const { Title, Text } = Typography;
 
 const UpgradePage = () => {
   const router = useRouter();
+  const { eventInstance } = useEventContext();
 
   const handleUpgradeClick = () => {
     console.log('Navigating to Ultimate Plan Checkout...');
@@ -58,18 +60,10 @@ const UpgradePage = () => {
     },
   ];
 
+  // TODO Add notFound if no eventInstance
+
   return (
-    <div>
-      <div className="w-full bg-[var(--primary-color)]/40 flex items-center px-4 gap-4 h-12 text-sm font-medium text-white flex-shrink-0">
-        <Button
-          icon={<ArrowLeft />}
-          type="text"
-          className="justify-self-start"
-          onClick={() => router.back()}
-        >
-          Dashboard
-        </Button>
-      </div>
+    <div className="bg-gray-50 w-full h-full">
       <div style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
           Upgrade la Planul Ultimate
@@ -78,7 +72,7 @@ const UpgradePage = () => {
         <Row gutter={[24, 24]} justify="center">
           <Col xs={24} md={12}>
             <Card
-              title={<Title level={4}>Planul Curent (Gratuit)</Title>}
+              title={<Title level={4}>Planul Basic</Title>}
               bordered={false}
               style={{ minHeight: 450, backgroundColor: '#f0f2f5' }}
             >
@@ -165,6 +159,7 @@ const UpgradePage = () => {
                 size="large"
                 onClick={handleUpgradeClick}
                 style={{ marginTop: '30px', width: '100%' }}
+                disabled={eventInstance?.eventPlan === 'ultimate'}
               >
                 Cumpară
               </Button>

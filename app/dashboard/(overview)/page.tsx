@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import '@/styles/globals.css';
 import { EventInstance, EventPlan, PlanEventInstance } from '@/core/types';
 import { queryEventsByUser } from '@/service/event/queryEventsByUser';
@@ -47,11 +47,11 @@ const DashboardPage = () => {
     });
   }, [user]);
 
-  const handleEventDelete = (eventId: string) => {
+  const handleEventDelete = useCallback((eventId: string) => {
     setEvents((prevEvents) =>
       prevEvents.filter((event) => event.eventId !== eventId)
     );
-  };
+  }, []);
 
   const onModalOk = () => {
     setOpen(false);
@@ -123,39 +123,45 @@ const DashboardPage = () => {
         )}
       </div>
       <div className="location-plan-mngmt container min-h-[300px] my-4 mx-auto p-4 bg-white rounded-md shadow-sm relative">
-        <div className="flex flex-row items-start justify-between">
-          <div>
-            <h1 className="font-semibold">Planurile mele</h1>
-            <span className="text-sm text-slate-500">
-              {events.length} Planuri
-            </span>
-          </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className="p-4 mr-2" type="default">
-                <PlusIcon size={16} /> Plan nou
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="mr-[100px]">
-              <div className="p-4">
-                <h3 className="font-semibold mb-2">Creează un plan</h3>
-                <Input
-                  placeholder="Numele planului"
-                  value={planName}
-                  onChange={(e) => setPlanName(e.target.value)}
-                />
-                <Button
-                  className="mt-4 w-full"
-                  type="primary"
-                  onClick={createNewPlan}
-                >
-                  Creează plan
-                </Button>
+        {queryPlanEventLoading ? (
+          <span className="loader"></span>
+        ) : (
+          <>
+            <div className="flex flex-row items-start justify-between">
+              <div>
+                <h1 className="font-semibold">Planurile mele</h1>
+                <span className="text-sm text-slate-500">
+                  {events.length} Planuri
+                </span>
               </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-        <PlanEventsTable columns={planColumns} data={planEvents} />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button className="p-4 mr-2" type="default">
+                    <PlusIcon size={16} /> Plan nou
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="mr-[100px]">
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2">Creează un plan</h3>
+                    <Input
+                      placeholder="Numele planului"
+                      value={planName}
+                      onChange={(e) => setPlanName(e.target.value)}
+                    />
+                    <Button
+                      className="mt-4 w-full"
+                      type="primary"
+                      onClick={createNewPlan}
+                    >
+                      Creează plan
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <PlanEventsTable columns={planColumns} data={planEvents} />
+          </>
+        )}
       </div>
       <div className="container mx-auto py-10 bg-white rounded-md shadow-sm p-4 flex flex-col items-center justify-center">
         {events.length === 0 ? (

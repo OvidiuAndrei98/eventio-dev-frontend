@@ -57,6 +57,7 @@ import BarIcon from '@/public/bar-icon.png';
 import domtoimage from 'dom-to-image';
 import AddGuestsFloatingMenu from './add-guests-menu/AddGuestsFloatingMenu';
 import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
+import Link from 'next/link';
 
 const LOGICAL_CANVAS_WIDTH = 1920;
 const LOGICAL_CANVAS_HEIGHT = 1080;
@@ -788,13 +789,22 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
             Export invitati
           </Button>
         </div>
-        {eventInstance?.eventType !== 'tablePlan' && isNonUltimate && (
+
+        {isNonUltimate && (
           <div className="flex items-center gap-4">
             <span className="text-xs text-[var(--primary-color)]">
               {maxGuestsAvailableInTablePlan - eventGuests.length}/
               {maxGuestsAvailableInTablePlan} invitați ramași
             </span>
-            <Button type="default">Vezi Planul Ultimate</Button>
+            {eventInstance?.eventType !== 'tablePlan' ? (
+              <Link href={`choose-plan`}>
+                <Button type="default">Vezi Planul Ultimate</Button>
+              </Link>
+            ) : (
+              <Link href={`${eventInstance?.eventId}/upgrade-plan`}>
+                <Button type="default">Vezi Planul Ultimate</Button>
+              </Link>
+            )}
           </div>
         )}
         {editModeOn ? (

@@ -9,7 +9,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { MenuItem } from './app-sidebar';
-import { useAuth } from '@/core/context/authContext';
 import { useEventContext } from '@/core/context/EventContext';
 
 export function NavMain({ items }: { items: MenuItem[] }) {

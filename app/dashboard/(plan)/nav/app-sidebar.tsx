@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LucideHouse, Mails, ReceiptText, User2 } from 'lucide-react';
+import { LucideHouse, User2 } from 'lucide-react';
 
 import {
   Sidebar,
