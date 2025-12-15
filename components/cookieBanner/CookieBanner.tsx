@@ -13,13 +13,10 @@ export default function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // 1. Verifică dacă utilizatorul a luat deja o decizie
     const consent = localStorage.getItem('cookie_consent');
     if (consent !== 'granted' && consent !== 'denied') {
       setIsVisible(true);
     } else if (consent === 'granted') {
-      // Dacă consimțământul a fost dat, trimite imediat update-ul la GTM
-      // la fiecare încărcare a paginii pentru a menține starea.
       sendConsentUpdate('granted');
     }
   }, []);
