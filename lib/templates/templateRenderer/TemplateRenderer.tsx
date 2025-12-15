@@ -20,11 +20,11 @@ import {
 } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
-import { DragEventData } from '@/app/dashboard/(event)/[eventId]/tables/page';
 import {
   Guideline,
   calculateGuidelines,
 } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/canvasUtils/guidelineCalculations';
+import { DragEventData } from '@/app/dashboard/components/TablePlanRenderer';
 
 interface TemplateRendererProps {
   invitationData: Template;
