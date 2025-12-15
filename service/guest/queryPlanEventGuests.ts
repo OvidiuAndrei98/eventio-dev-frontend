@@ -21,14 +21,19 @@ type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
  * @returns A promise that resolves to an array of `Guest` objects.
  * @throws Will throw an error if there is an issue fetching the guests from the database.
  */
-export const queryGuestsByEvent = async (
+export const queryPlanEventGuests = async (
   eventId: string,
   eventPlan: string
 ): Promise<Guest[]> => {
   try {
     const guests: DocumentData[] = [];
 
-    const guestsCollectionRef = collection(db, 'events', eventId, 'guests');
+    const guestsCollectionRef = collection(
+      db,
+      'tablePlanEvents',
+      eventId,
+      'guests'
+    );
 
     const q = query(guestsCollectionRef, orderBy('date', 'desc'));
 

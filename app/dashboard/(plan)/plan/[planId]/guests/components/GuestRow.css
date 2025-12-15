@@ -1,0 +1,39 @@
+.guests-table-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto;
+  grid-template-areas: 'name date action';
+  grid-column: 1 / -1;
+  padding-inline: 16px;
+  padding-block: 8px;
+  max-width: 100%;
+  border-bottom: 1px solid rgba(26, 56, 96, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--body-text);
+  align-items: center;
+}
+
+.guests-table-item .guest-name {
+  grid-area: name;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* overflow: hidden; */
+}
+
+.guests-table-item .guest-actions {
+  grid-area: action;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+@container (width < 700px) {
+  .guests-table-item {
+    grid-template-areas: 'name action';
+  }
+  .guests-table-item .guest-date {
+    display: none;
+  }
+}

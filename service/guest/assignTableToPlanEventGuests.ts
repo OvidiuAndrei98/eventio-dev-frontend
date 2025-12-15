@@ -11,8 +11,8 @@ import db from '../../lib/firebase/fireStore';
  * @returns A promise that resolves when the batch update operation is complete.
  * @throws Will throw an error if the batch update operation fails.
  */
-export const assignTableToGuests = async (
-  eventId: string, // <-- ADĂUGAT
+export const assignTableToPlanEventGuests = async (
+  eventId: string,
   tableId: string | null | undefined,
   guests: { value: string; label: string }[]
 ): Promise<void> => {
@@ -24,7 +24,13 @@ export const assignTableToGuests = async (
     }
 
     guests.forEach((guest) => {
-      const guestRef = doc(db, 'events', eventId, 'guests', guest.value);
+      const guestRef = doc(
+        db,
+        'tablePlanEvents',
+        eventId,
+        'guests',
+        guest.value
+      );
 
       batch.update(guestRef, { tableId: tableId || null });
     });

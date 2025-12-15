@@ -1,8 +1,8 @@
 import { getStorage, ref, listAll, deleteObject } from 'firebase/storage';
-import { deleteGuestsByEventId } from '../guest/deleteGuestsByEventId';
+// import { deleteGuestsByEventId } from '../guest/deleteGuestsByEventId';
 
 export const deleteEventData = async (
-  eventId: string,
+  // eventId: string,
   userId: string,
   templateId: string
 ): Promise<void> => {
@@ -18,7 +18,7 @@ export const deleteEventData = async (
         Promise.all(promises);
       });
     }
-    await deleteGuestsByEventId(eventId);
+    // await deleteGuestsByEventId(eventId);
   } catch (error) {
     console.error('Error deleting event data:', error);
     throw error;

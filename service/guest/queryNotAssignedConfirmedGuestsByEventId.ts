@@ -8,15 +8,16 @@ import {
 } from 'firebase/firestore';
 import db from '../../lib/firebase/fireStore';
 import { Guest } from '@/core/types';
-import { max } from 'lodash';
 
 /**
  * Queries the database to retrieve a list of confirmed guests for a specific event
- * who have not been assigned to a table.
+ * who have not been assigned to a table, using the event's dedicated subcollection.
  *
  * @param eventId - The unique identifier of the event for which to fetch guests.
+ * @param maxGuests - The maximum number of guests allowed by the plan.
+ * @param plan - The plan type (e.g., 'ultimate').
  * @returns A promise that resolves to an array of `Guest` objects representing
- *          the confirmed guests who are not assigned to any table.
+ *          the confirmed guests who are not assigned to any table.
  * @throws Will throw an error if there is an issue fetching the data from the database.
  */
 export const queryNotAssignedConfirmedGuestsByEventId = async (
@@ -25,11 +26,12 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
   plan: string
 ): Promise<Guest[]> => {
   try {
+    // Referința la sub-colecția evenimentului
+    const guestsCollectionRef = collection(db, 'events', eventId, 'guests');
+
     if (plan !== 'ultimate') {
-      // 1. Query pentru invitații deja așezați la orice masă (tableId != null)
       const assignedQuery = query(
-        collection(db, 'guest_registry'),
-        where('eventId', '==', eventId),
+        guestsCollectionRef, // Colecție locală
         where('tableId', '!=', null)
       );
       const assignedSnapshot = await getDocs(assignedQuery);
@@ -41,15 +43,16 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
       }
     }
 
+    // Interogare 2: Preia invitații Neașezați și Confirmați
     const guests: DocumentData[] = [];
     const q = query(
-      collection(db, 'guest_registry'),
-      where('eventId', '==', eventId),
+      guestsCollectionRef, // Colecție locală
       where('isAttending', '==', true),
-      where('tableId', '==', null),
-      limit(maxGuests)
+      where('tableId', '==', null), // Căutăm explicit pe cei nealocați
+      limit(maxGuests) // Aplicăm limita
     );
     const querySnapshot = await getDocs(q);
+
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       guests.push(doc.data());

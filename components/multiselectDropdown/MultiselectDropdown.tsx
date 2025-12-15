@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Select, Spin } from 'antd'
-import type { SelectProps } from 'antd'
-import { debounce } from 'ts-debounce'
-import './MultiselectDropdown.css'
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Select, Spin } from 'antd';
+import type { SelectProps } from 'antd';
+import { debounce } from 'ts-debounce';
+import './MultiselectDropdown.css';
 
 /// This component is a custom multi-select dropdown that fetches options from an API
 /// based on user input. It uses the Ant Design Select component and adds a debounce
@@ -10,64 +10,32 @@ import './MultiselectDropdown.css'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface DebounceSelectProps<ValueType = any>
   extends Omit<SelectProps<ValueType>, 'options' | 'children'> {
-  fetchOptions: (search: string) => Promise<{ label: string; value: string }[]>
-  debounceTimeout?: number
-  eventId: string
+  options?: { label: string; value: string }[];
 }
 
 function MultiselectDropdown<ValueType>({
-  fetchOptions,
-  debounceTimeout = 800,
-  eventId,
+  options = [],
   ...props
 }: DebounceSelectProps<ValueType[]>) {
-  const [fetching, setFetching] = useState(false)
-  const [options, setOptions] = useState<{ label: string; value: string }[]>([])
-  const fetchRef = useRef(0)
+  const [searchValue, setSearchValue] = useState('');
 
-  const queryInitialData = async () => {
-    const data = await fetchOptions(eventId)
-    setOptions(data)
-  }
-
-  useEffect(() => {
-    queryInitialData()
-  }, [])
-
-  const debounceFetcher = useMemo(() => {
-    const loadOptions = (value: string) => {
-      fetchRef.current += 1
-      const fetchId = fetchRef.current
-      setOptions([])
-      setFetching(true)
-
-      fetchOptions(eventId).then((newOptions) => {
-        if (fetchId !== fetchRef.current) {
-          // for fetch callback order
-          return
-        }
-        const filteredOptions = newOptions.filter((option) =>
-          option.label.toLowerCase().includes(value.toLowerCase())
-        )
-
-        setOptions(filteredOptions)
-        setFetching(false)
-      })
-    }
-
-    return debounce(loadOptions, debounceTimeout)
-  }, [fetchOptions, debounceTimeout])
+  const filteredOptions = useMemo(() => {
+    if (!searchValue) return options;
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  }, [options, searchValue]);
 
   return (
     <Select
       labelInValue
       filterOption={false}
-      onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size="small" /> : null}
+      searchValue={searchValue}
+      onSearch={setSearchValue}
       {...props}
-      options={options}
+      options={filteredOptions}
     />
-  )
+  );
 }
 
-export default MultiselectDropdown
+export default MultiselectDropdown;

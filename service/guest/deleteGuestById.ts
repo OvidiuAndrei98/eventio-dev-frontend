@@ -9,24 +9,14 @@ export const deleteGuestById = async (
   attending: boolean
 ): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'guest_registry', guestId));
+    const guestRef = doc(db, 'events', eventId, 'guests', guestId);
+
+    await deleteDoc(guestRef);
+
     if (!attending) {
-      // If the guest is not attending, update the event stats for refusals
-      await updateEventStatsForGuest(
-        eventId,
-        guestSubmissionsDate,
-        -1, // responses
-        0, // confirmations
-        -1 // refusals
-      );
+      await updateEventStatsForGuest(eventId, guestSubmissionsDate, -1, 0, -1);
     } else {
-      await updateEventStatsForGuest(
-        eventId,
-        guestSubmissionsDate,
-        -1, // responses
-        -1, // confirmations
-        0 // refusals
-      );
+      await updateEventStatsForGuest(eventId, guestSubmissionsDate, -1, -1, 0);
     }
   } catch (error) {
     console.log('Error on deleting guest', error);

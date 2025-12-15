@@ -10,9 +10,11 @@ import { Guest } from '@/core/types';
 import { useEventContext } from '@/core/context/EventContext';
 import { queryGuestsByEvent } from '@/service/guest/queryGuestsByEvent';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const ResponsePage = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
+  const router = useRouter();
   const { eventInstance } = useEventContext();
 
   useEffect(() => {
@@ -55,6 +57,11 @@ const ResponsePage = () => {
       children: <RefusalsTable guests={guests} />,
     },
   ];
+
+  if (eventInstance?.eventType === 'tablePlan') {
+    router.push(`/dashboard/${eventInstance.eventId}/tables`);
+    return null;
+  }
 
   return (
     <div className="response-container">

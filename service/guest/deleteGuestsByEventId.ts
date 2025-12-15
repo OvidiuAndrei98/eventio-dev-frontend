@@ -1,33 +1,33 @@
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  writeBatch,
-} from 'firebase/firestore';
-import db from '../../lib/firebase/fireStore';
+// import {
+//   collection,
+//   query,
+//   where,
+//   getDocs,
+//   writeBatch,
+// } from 'firebase/firestore';
+// import db from '../../lib/firebase/fireStore';
 
-export const deleteGuestsByEventId = async (eventId: string): Promise<void> => {
-  try {
-    const collectionRef = collection(db, 'guest_registry');
+// export const deleteGuestsByEventId = async (eventId: string): Promise<void> => {
+//   try {
+//     const collectionRef = collection(db, 'guest_registry');
 
-    const q = query(collectionRef, where('eventId', '==', eventId));
+//     const q = query(collectionRef, where('eventId', '==', eventId));
 
-    const snapshot = await getDocs(q);
+//     const snapshot = await getDocs(q);
 
-    if (snapshot.empty) {
-      return;
-    }
+//     if (snapshot.empty) {
+//       return;
+//     }
 
-    const batch = writeBatch(db);
+//     const batch = writeBatch(db);
 
-    snapshot.docs.forEach((documentSnapshot) => {
-      batch.delete(documentSnapshot.ref);
-    });
+//     snapshot.docs.forEach((documentSnapshot) => {
+//       batch.delete(documentSnapshot.ref);
+//     });
 
-    await batch.commit();
-  } catch (error) {
-    console.log('Error on data deletion', error);
-    throw error;
-  }
-};
+//     await batch.commit();
+//   } catch (error) {
+//     console.log('Error on data deletion', error);
+//     throw error;
+//   }
+// };

@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card';
 import { StarOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
+import { useRouter } from 'next/navigation';
 
 const StatisticsPage = () => {
   const { eventInstance } = useContext(EventContext);
@@ -30,6 +31,8 @@ const StatisticsPage = () => {
   const [generalStats, setGeneralStatistics] = useState<EventStats>(
     {} as EventStats
   );
+
+  const router = useRouter();
 
   const isPremiumOrAbove =
     eventInstance?.eventPlan === 'premium' ||
@@ -72,6 +75,11 @@ const StatisticsPage = () => {
       observer.observe(element);
     }
   }, []);
+
+  if (eventInstance?.eventType === 'tablePlan') {
+    router.push(`/dashboard/${eventInstance.eventId}/tables`);
+    return null;
+  }
 
   return (
     <div className="dashboard-statistics-container">

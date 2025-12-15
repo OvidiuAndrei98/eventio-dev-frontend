@@ -63,6 +63,11 @@ const DashboardEventPage = () => {
     setGuestList(guests);
   };
 
+  if (eventInstance?.eventType === 'tablePlan') {
+    router.push(`/dashboard/${eventInstance.eventId}/tables`);
+    return null;
+  }
+
   return (
     <div
       className={`dashboard-content-container ${shrinkElement ? 'shrink' : ''}`}

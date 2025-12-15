@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import '@/styles/globals.css';
-import { EventInstance } from '@/core/types';
+import { EventInstance, EventPlan, PlanEventInstance } from '@/core/types';
 import { queryEventsByUser } from '@/service/event/queryEventsByUser';
 import EventsTable from './components/eventsTable/EventsTable';
 import { getColumns } from './components/eventsTable/columns';
@@ -10,21 +10,40 @@ import { Button } from 'antd';
 import { PlusIcon } from 'lucide-react';
 import NewInvitationModal from './components/newInvitationModal/NewInvitationModal';
 import { useAuth } from '@/core/context/authContext';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import Input from 'antd/es/input/Input';
+import { toast } from 'sonner';
+import { createPlanEvent } from '@/service/event/createPlanEvent';
+import { queryPlanEventsByUser } from '@/service/event/queryPlanEventsByUser';
+import PlanEventsTable from './components/planEventsTable/PlanEventsTable';
+import { getPlanColumns } from './components/planEventsTable/planColumns';
 
 const DashboardPage = () => {
   const [queryEventLoading, setQueryEventLoading] = useState(true);
+  const [queryPlanEventLoading, setQueryPlanEventLoading] = useState(true);
   const [events, setEvents] = useState<EventInstance[]>([]);
+  const [planEvents, setPlanEvents] = useState<PlanEventInstance[]>([]);
+  const [planName, setPlanName] = useState('');
   const user = useAuth().userDetails;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!user?.userId) {
       setQueryEventLoading(false);
+      setQueryPlanEventLoading(false);
       return;
     }
     queryEventsByUser(user.userId).then((events) => {
       setEvents(events);
       setQueryEventLoading(false);
+    });
+    queryPlanEventsByUser(user.userId).then((planEvents) => {
+      setPlanEvents(planEvents);
+      setQueryPlanEventLoading(false);
     });
   }, [user]);
 
@@ -46,6 +65,35 @@ const DashboardPage = () => {
     () => getColumns({ handleEventDelete: handleEventDelete }),
     [handleEventDelete]
   );
+
+  const planColumns = useMemo(
+    () => getPlanColumns({ handleEventDelete: handleEventDelete }),
+    [handleEventDelete]
+  );
+
+  const createNewPlan = async () => {
+    if (planEvents.length > 0) {
+      toast.error('Poți crea un singur plan în contul tău.');
+      return;
+    }
+
+    const newPlanEvent: PlanEventInstance = {
+      guests: [],
+      eventDate: new Date().toISOString(),
+      eventId: crypto.randomUUID(),
+      eventName: planName,
+      eventPlan: EventPlan.basic,
+      userId: user!.userId,
+      eventType: 'tablePlan',
+      eventTableOrganization: {
+        elements: [],
+      },
+    };
+    await createPlanEvent(newPlanEvent, user!.userId);
+    toast.success(`Planul "${planName}" a fost creat cu succes!`);
+    // Resetează numele planului după creare
+    setPlanName('');
+  };
 
   return (
     <div className="events-container h-full p-4 bg-[#F6F6F6] h-calc(100% - 48px) overflow-y-auto">
@@ -73,6 +121,41 @@ const DashboardPage = () => {
             <EventsTable columns={columns} data={events} />
           </>
         )}
+      </div>
+      <div className="location-plan-mngmt container min-h-[300px] my-4 mx-auto p-4 bg-white rounded-md shadow-sm relative">
+        <div className="flex flex-row items-start justify-between">
+          <div>
+            <h1 className="font-semibold">Planurile mele</h1>
+            <span className="text-sm text-slate-500">
+              {events.length} Planuri
+            </span>
+          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="p-4 mr-2" type="default">
+                <PlusIcon size={16} /> Plan nou
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="mr-[100px]">
+              <div className="p-4">
+                <h3 className="font-semibold mb-2">Creează un plan</h3>
+                <Input
+                  placeholder="Numele planului"
+                  value={planName}
+                  onChange={(e) => setPlanName(e.target.value)}
+                />
+                <Button
+                  className="mt-4 w-full"
+                  type="primary"
+                  onClick={createNewPlan}
+                >
+                  Creează plan
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <PlanEventsTable columns={planColumns} data={planEvents} />
       </div>
       <div className="container mx-auto py-10 bg-white rounded-md shadow-sm p-4 flex flex-col items-center justify-center">
         {events.length === 0 ? (

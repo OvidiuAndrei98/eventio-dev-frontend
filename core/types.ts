@@ -49,6 +49,18 @@ export interface EventInstance {
   eventGuestCount: number;
   adiotionalLocations: EventLocation[];
   eventAditionalQuestions: EventQuestions[];
+  guests: Guest[];
+}
+
+export interface PlanEventInstance {
+  eventName: string;
+  eventPlan: EventPlan;
+  eventDate: string;
+  eventId: string;
+  userId: string;
+  eventType: 'tablePlan';
+  eventTableOrganization: eventTableOrganization;
+  guests: Guest[];
 }
 
 export interface Guest {

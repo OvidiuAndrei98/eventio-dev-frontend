@@ -1,4 +1,3 @@
-import Modal from '@/app/dashboard/(event)/[eventId]/tables/components/modal/AddGuestsModal';
 import {
   Sheet,
   SheetClose,
@@ -8,14 +7,18 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { CanvasElement, DropdownOption, EventInstance } from '@/core/types';
-import { updateTableNameById } from '@/service/event/updateTableNameById';
-import { assignTableToGuests } from '@/service/guest/assignTableToGuest';
+import {
+  CanvasElement,
+  DropdownOption,
+  EventInstance,
+  Guest,
+} from '@/core/types';
 import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Form, FormProps, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import Modal from '../modal/AddGuestsModal';
 
 type FieldType = {
   name: string;
@@ -29,6 +32,9 @@ const LateralDrawer = ({
   setEventInstance,
   deleteTable,
   updateGuestList,
+  eventGuestsList,
+  updateTableService,
+  assignTableToGuestsService,
 }: {
   tableElement: CanvasElement;
   eventId: string;
@@ -37,6 +43,17 @@ const LateralDrawer = ({
   setEventInstance: (event: EventInstance) => void;
   deleteTable: (tableId: string) => void;
   updateGuestList: (eventId: string) => void;
+  eventGuestsList: Guest[];
+  updateTableService: (
+    name: string,
+    tableId: string,
+    eventId: string
+  ) => Promise<EventInstance>;
+  assignTableToGuestsService: (
+    eventId: string,
+    tableId: string | null,
+    guests: DropdownOption[]
+  ) => Promise<void>;
 }) => {
   const [form] = Form.useForm();
   const [addGuestsOpen, setAddGuestsOpen] = useState(false);
@@ -83,16 +100,16 @@ const LateralDrawer = ({
   };
 
   const updateGuestsTableRef = async () => {
-    assignTableToGuests(tableElement?.elementId, tableGuests);
+    assignTableToGuestsService(eventId, tableElement?.elementId, tableGuests);
     if (removedGuestsList.length) {
-      assignTableToGuests(null, removedGuestsList);
+      assignTableToGuestsService(eventId, null, removedGuestsList);
       // Reset the list after each save
       setRemovedGuestsList([]);
     }
   };
 
   const onFinish: FormProps<FieldType>['onFinish'] = async () => {
-    const updatedEvent = await updateTableNameById(
+    const updatedEvent = await updateTableService(
       inputValue,
       tableElement?.elementId,
       eventId
@@ -190,6 +207,7 @@ const LateralDrawer = ({
       </Sheet>
       {tableElement && (
         <Modal
+          guestList={eventGuestsList}
           updateGuestList={(newValues: DropdownOption[]) =>
             setTableGuests((oldValues) => {
               return [

@@ -85,17 +85,17 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
 
 export const PLANYVITE_EVENT_PLAN_FEATURES = {
   basic: {
-    maxGuests: 5,
-    maxTablePlanElements: 2,
-    nrOfGuestsAvailableInTablePlan: 5,
+    maxGuests: 30,
+    maxTablePlanElements: 3,
+    nrOfGuestsAvailableInTablePlan: 30,
     allowGifs: false,
     allowCountdown: false,
     // ...other features
   },
   premium: {
     maxGuests: 99999,
-    maxTablePlanElements: 2,
-    nrOfGuestsAvailableInTablePlan: 5,
+    maxTablePlanElements: 3,
+    nrOfGuestsAvailableInTablePlan: 30,
     allowGifs: true,
     allowCountdown: true,
     // ...other features

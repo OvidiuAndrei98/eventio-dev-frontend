@@ -8,17 +8,18 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from 'antd';
-import MultiselectDropdown from '../../../../../../../components/multiselectDropdown/MultiselectDropdown';
 import { queryNotAssignedConfirmedGuestsByEventId } from '@/service/guest/queryNotAssignedConfirmedGuestsByEventId';
-import { DropdownOption } from '@/core/types';
+import { DropdownOption, Guest } from '@/core/types';
 import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 import { useEventContext } from '@/core/context/EventContext';
+import MultiselectDropdown from '@/components/multiselectDropdown/MultiselectDropdown';
 
 type EventPlanKey = keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 
 interface ModalProps {
   eventId: string;
   isOpen: boolean;
+  guestList: Guest[];
   updateGuestList: (values: DropdownOption[]) => void;
   onOpenChange?: (open: boolean) => void;
 }
@@ -26,37 +27,14 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onOpenChange,
-  eventId,
   updateGuestList,
+  guestList,
 }) => {
   const [value, setValue] = useState<{ label: string; value: string }[]>([]);
-  const { eventInstance } = useEventContext();
-  const eventPlanKey: EventPlanKey =
-    (eventInstance?.eventPlan as EventPlanKey) || 'basic';
-  // Get the maximum number of guests available in the table plan based on the event plan
-  // This is used to limit the number of guests that can be added to the table plan
-  const maxGuestsAvailableInTablePlan =
-    PLANYVITE_EVENT_PLAN_FEATURES[eventPlanKey].nrOfGuestsAvailableInTablePlan;
 
   useEffect(() => {
     setValue([]);
   }, [isOpen]);
-
-  async function fetchGuestList(
-    eventId: string
-  ): Promise<{ label: string; value: string }[]> {
-    const guests = await queryNotAssignedConfirmedGuestsByEventId(
-      eventId,
-      maxGuestsAvailableInTablePlan,
-      eventInstance?.eventPlan || 'basic'
-    );
-    return guests.map((guest) => {
-      return {
-        label: guest.name,
-        value: guest.guestId,
-      };
-    });
-  }
 
   return (
     <Dialog open={isOpen} modal={true} onOpenChange={onOpenChange}>
@@ -72,17 +50,19 @@ const Modal: React.FC<ModalProps> = ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <MultiselectDropdown
-            eventId={eventId}
             mode="multiple"
             value={value}
             placeholder="Selecteaza invitatii"
-            fetchOptions={fetchGuestList}
             style={{ width: '100%' }}
             onChange={(newValue) => {
               if (Array.isArray(newValue)) {
                 setValue(newValue);
               }
             }}
+            options={guestList.map((guest) => ({
+              label: guest.name,
+              value: guest.guestId,
+            }))}
           />
         </div>
         <DialogFooter>

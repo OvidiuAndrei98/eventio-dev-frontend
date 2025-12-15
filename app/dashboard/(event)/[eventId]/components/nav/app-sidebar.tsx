@@ -46,44 +46,54 @@ export function AppSidebar({
   const { eventInstance } = useEventContext();
 
   const data: MenuData = {
-    navMain: [
-      {
-        title: 'Panou de control',
-        url: `/dashboard/${eventInstance?.eventId}`,
-        icon: <ControlOutlined />,
-        onClick: onClickNav,
-      },
-      {
-        title: 'Raspunsuri',
-        url: `/dashboard/${eventInstance?.eventId}/response`,
-        icon: <LucideCheckCircle />,
-        onClick: onClickNav,
-      },
-      {
-        title: 'Statistici',
-        url: `/dashboard/${eventInstance?.eventId}/statistics`,
-        icon: <TrendingUp />,
-        onClick: onClickNav,
-      },
-      {
-        title: 'Plan locatie',
-        url: `/dashboard/${eventInstance?.eventId}/tables`,
-        icon: <LucideHouse />,
-        onClick: onClickNav,
-      },
-      {
-        title: 'Editare invitație',
-        url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/edit`,
-        icon: <LayoutTemplate />,
-        onClick: onClickNav,
-      },
-      {
-        title: 'Setari invitatie',
-        url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/settings`,
-        icon: <Settings2 />,
-        onClick: onClickNav,
-      },
-    ],
+    navMain:
+      eventInstance?.eventType === 'tablePlan'
+        ? [
+            {
+              title: 'Plan locatie',
+              url: `/dashboard/${eventInstance?.eventId}/tables`,
+              icon: <LucideHouse />,
+              onClick: onClickNav,
+            },
+          ]
+        : [
+            {
+              title: 'Panou de control',
+              url: `/dashboard/${eventInstance?.eventId}`,
+              icon: <ControlOutlined />,
+              onClick: onClickNav,
+            },
+            {
+              title: 'Raspunsuri',
+              url: `/dashboard/${eventInstance?.eventId}/response`,
+              icon: <LucideCheckCircle />,
+              onClick: onClickNav,
+            },
+            {
+              title: 'Statistici',
+              url: `/dashboard/${eventInstance?.eventId}/statistics`,
+              icon: <TrendingUp />,
+              onClick: onClickNav,
+            },
+            {
+              title: 'Plan locatie',
+              url: `/dashboard/${eventInstance?.eventId}/tables`,
+              icon: <LucideHouse />,
+              onClick: onClickNav,
+            },
+            {
+              title: 'Editare invitație',
+              url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/edit`,
+              icon: <LayoutTemplate />,
+              onClick: onClickNav,
+            },
+            {
+              title: 'Setari invitatie',
+              url: `/dashboard/${eventInstance?.eventId}/${eventInstance?.templateId}/settings`,
+              icon: <Settings2 />,
+              onClick: onClickNav,
+            },
+          ],
     projects: [
       {
         title: 'Plati si facturi',

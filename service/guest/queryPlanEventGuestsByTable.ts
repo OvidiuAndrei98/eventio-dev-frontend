@@ -8,14 +8,19 @@ import {
 import db from '../../lib/firebase/fireStore';
 import { Guest } from '@/core/types';
 
-export const queryGuestsByTable = async (
+export const queryPlanEventGuestsByTable = async (
   eventId: string,
   tableId: string
 ): Promise<Guest[]> => {
   try {
     const guests: DocumentData[] = [];
 
-    const guestsCollectionRef = collection(db, 'events', eventId, 'guests');
+    const guestsCollectionRef = collection(
+      db,
+      'tablePlanEvents',
+      eventId,
+      'guests'
+    );
 
     const q = query(
       guestsCollectionRef,

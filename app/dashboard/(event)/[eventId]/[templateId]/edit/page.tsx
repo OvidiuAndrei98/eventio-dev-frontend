@@ -753,7 +753,7 @@ const EditPage = () => {
               handleTemplateDragAndDrop={handleTemplateDragAndDrop}
             />
           </div>
-          <div className="overflow-y-auto settings-panel p-4 bg-white rounded shadow h-full">
+          <div className="overflow-y-auto overflow-x-visible settings-panel p-4 bg-white rounded shadow h-full">
             <h2 className="text-lg font-semibold mb-4">
               {selectedItemData?.name}
             </h2>
