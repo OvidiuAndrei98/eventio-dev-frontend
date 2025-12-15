@@ -131,6 +131,13 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         };
         await addUser(newUser);
       }
+
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'sign_up', // Acesta este numele EXACT al Trigger-ului dumneavoastră din GTM
+        });
+      }
+
       window.location.href = '/dashboard';
       // `onAuthStateChanged` will handle state updates and redirects
     } catch (error: unknown) {

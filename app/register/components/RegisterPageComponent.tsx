@@ -89,6 +89,12 @@ const RegisterPageComponent = ({
         content_type: 'user',
       });
 
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'sign_up', // Acesta este numele EXACT al Trigger-ului dumneavoastră din GTM
+        });
+      }
+
       window.location.href = '/dashboard';
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
