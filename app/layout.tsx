@@ -9,8 +9,6 @@ import { Toaster } from 'sonner';
 import Script from 'next/script';
 import CookieBanner from '@/components/cookieBanner/CookieBanner';
 
-const GA_MEASUREMENT_ID = 'G-QNNWC4054G';
-
 export const metadata: Metadata = {
   generator: 'Next.js',
   applicationName: 'Planyvite - Planifică Evenimente Fără Stres',
@@ -36,8 +34,25 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
     >
       <head>
         <TikTokPixel />
+        <Script id="google-tag-manager-head" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-P7XC8N68');
+          `}
+        </Script>
       </head>
       <body>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=GTM-P7XC8N68`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          ></iframe>
+        </noscript>
         <AntdRegistry>
           <ConfigProvider
             theme={{
@@ -56,30 +71,6 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
           </ConfigProvider>
         </AntdRegistry>
         <Toaster />
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive" // Îl încarcă după ce pagina devine interactivă (bun pentru performanță)
-        />
-        <Script id="google-analytics-init" strategy="afterInteractive">
-          {`
-            // 1. Inițializarea Data Layer
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            // 2. CONSENT MODE (Starea Inițială - DENIED)
-            // Se asigură că nu sunt setate cookie-uri de analiză/ad-uri fără consimțământ
-            gtag('consent', 'default', {
-              'ad_storage': 'denied',
-              'analytics_storage': 'denied',
-              'wait_for_update': 500 // Așteaptă 500ms pentru un update de consimțământ
-            });
-
-            // 3. Configurația Principală (G-QNNWC4054G)
-            // Aceasta trimite pings anonime (fără cookie-uri) chiar și în starea 'denied'
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
       </body>
     </html>
   );
