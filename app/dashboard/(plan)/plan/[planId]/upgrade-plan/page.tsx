@@ -7,7 +7,6 @@ import {
   CloseCircleOutlined,
   CrownOutlined,
 } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
 import { useEventContext } from '@/core/context/EventContext';
 
 const { Title, Text } = Typography;
