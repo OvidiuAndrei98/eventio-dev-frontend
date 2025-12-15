@@ -6,6 +6,10 @@ import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import '@/styles/globals.css';
 import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
 import { Toaster } from 'sonner';
+import Script from 'next/script';
+import CookieBanner from '@/components/cookieBanner/CookieBanner';
+
+const GA_MEASUREMENT_ID = 'G-QNNWC4054G';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -48,9 +52,34 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
             }}
           >
             <AuthenticationBoundary>{children}</AuthenticationBoundary>
+            <CookieBanner />
           </ConfigProvider>
         </AntdRegistry>
         <Toaster />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive" // Îl încarcă după ce pagina devine interactivă (bun pentru performanță)
+        />
+        <Script id="google-analytics-init" strategy="afterInteractive">
+          {`
+            // 1. Inițializarea Data Layer
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            // 2. CONSENT MODE (Starea Inițială - DENIED)
+            // Se asigură că nu sunt setate cookie-uri de analiză/ad-uri fără consimțământ
+            gtag('consent', 'default', {
+              'ad_storage': 'denied',
+              'analytics_storage': 'denied',
+              'wait_for_update': 500 // Așteaptă 500ms pentru un update de consimțământ
+            });
+
+            // 3. Configurația Principală (G-QNNWC4054G)
+            // Aceasta trimite pings anonime (fără cookie-uri) chiar și în starea 'denied'
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );
