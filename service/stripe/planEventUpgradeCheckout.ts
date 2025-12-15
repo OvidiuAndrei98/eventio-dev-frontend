@@ -62,10 +62,8 @@ export const planEventUpgradeCheckout = async (
       if (window.dataLayer) {
         window.dataLayer.push({
           event: 'begin_checkout',
-          ecommerce: {
-            value: 99,
-            currency: 'RON',
-          },
+          value: 99,
+          currency: 'RON',
         });
       }
     }
