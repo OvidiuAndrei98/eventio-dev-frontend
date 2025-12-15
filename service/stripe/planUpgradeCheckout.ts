@@ -58,10 +58,8 @@ export const planUpgradeCheckout = async (
       if (window.dataLayer) {
         window.dataLayer.push({
           event: 'begin_checkout',
-          ecommerce: {
-            value: plan === 'premium' ? 200 : 349,
-            currency: 'RON',
-          },
+          value: 99,
+          currency: 'RON',
         });
       }
     }
