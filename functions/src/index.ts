@@ -17,6 +17,60 @@ import Stripe from "stripe";
 
 initializeApp();
 
+/**
+ * Triggers a Google Analytics event using the Measurement Protocol.
+ *
+ * @param {string} userId - The ID of the user triggering the event.
+ * @param {string} eventName - The name of the event to trigger.
+ * @param {Record<string, any>} eventParams - Additional parameters
+ * @return {Promise<void>} A promise that resolves when the event is sent.
+ */
+async function triggerGAEvent(
+  userId: string,
+  eventName: string,
+  eventParams = {}
+) {
+  if (!userId || !process.env.GOOGLE_TAG_ID || !process.env.GOOGLE_API_SECRET) {
+    console.error("Missing required GA parameters.");
+    return;
+  }
+
+  const endpoint = `https://www.google-analytics.com/mp/collect?measurement_id=${process.env.GOOGLE_TAG_ID}&api_secret=${process.env.GOOGLE_API_SECRET}`;
+  const clientId = userId;
+
+  const payload = {
+    client_id: clientId,
+    events: [
+      {
+        name: eventName,
+        params: {
+          ...eventParams,
+          user_id: userId,
+          engagement_time_msec: "1",
+        },
+      },
+    ],
+  };
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    if (response.status === 204) {
+      console.log(`✅ GA Event '${eventName}' triggered successfully.`);
+    } else {
+      console.error(
+        `❌ GA Event Trigger Failed (${response.status}):`,
+        await response.text()
+      );
+    }
+  } catch (error) {
+    console.error("Error sending data to GA Measurement Protocol:", error);
+  }
+}
+
 export const updateUserAfterSuccesfulPayment = onDocumentCreated(
   "customers/{userId}/payments/{paymentId}",
   async (event) => {
@@ -48,6 +102,13 @@ export const updateUserAfterSuccesfulPayment = onDocumentCreated(
           .collection("events")
           .doc(eventId)
           .update({eventPlan: newPlan});
+
+        await triggerGAEvent(userId, "purchase", {
+          purchaseType: "invite_plan_upgrade",
+          transaction_id: data.id,
+          value: data.amount_received / 100,
+          currency: "RON",
+        });
 
         logger.info(
           `Event ${eventId} updated to plan ${newPlan} for user ${userId}.`
