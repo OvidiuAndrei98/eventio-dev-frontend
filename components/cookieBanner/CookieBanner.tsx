@@ -1,11 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { denyConsent, grantConsent } from '@/lib/google/gtag';
 import { Button } from 'antd';
 
 declare global {
   interface Window {
-    dataLayer: any[];
+    dataLayer: Record<string, unknown>[];
   }
 }
 
