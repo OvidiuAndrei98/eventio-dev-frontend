@@ -253,7 +253,7 @@ button.ant-btn span {
   .ant-color-picker-saturation {
     height: 100px !important;
   }
-
+  input,
   input[type='text'],
   input[type='number'],
   input[type='email'],

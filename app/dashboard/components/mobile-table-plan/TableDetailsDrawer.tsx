@@ -56,7 +56,7 @@ const TableDetailsDrawer = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose} direction="bottom">
-      <DrawerContent className="max-h-[40vh] w-full mx-auto md:max-w-md">
+      <DrawerContent className="max-h-[50vh] w-full mx-auto md:max-w-md">
         <DrawerHeader>
           <DrawerTitle>Editează Detaliile Mesei</DrawerTitle>
           <DrawerDescription>
