@@ -260,7 +260,16 @@ const ListBasedTableAssigner = ({
                       </Button>
                     )}
 
-                    <Button size="small" type="primary" disabled={table.isFull}>
+                    <Button
+                      size="small"
+                      type="primary"
+                      disabled={table.isFull}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedTable(table);
+                        setIsSelectionModalOpen(true);
+                      }}
+                    >
                       Așează
                     </Button>
                   </div>
