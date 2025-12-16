@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Users } from 'lucide-react';
 import UnseatGuestsDrawer from './UnseatGuestDrawer';
 import TableDetailsDrawer from './TableDetailsDrawer';
+import { AnimatedCounter } from '@/components/incrementingText/incrementingText';
 
 interface ListBasedTableAssignerProps {
   eventInstance: EventInstance | null;
@@ -217,7 +218,12 @@ const ListBasedTableAssigner = ({
 
         <div className="mt-1 flex items-baseline justify-center">
           <p className="text-5xl font-extrabold text-red-400">
-            {unseatedGuests.length}
+            <AnimatedCounter
+              color={`${unseatedGuests.length === 0 ? 'green' : '#ff5a5c'}`}
+              from={0}
+              to={unseatedGuests.length}
+              duration={2}
+            />
           </p>
         </div>
 
