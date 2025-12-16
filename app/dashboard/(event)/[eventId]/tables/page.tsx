@@ -12,6 +12,7 @@ const TablesPage = () => {
   return (
     <div className="h-[calc(100%-58px)]">
       <TablePlanRenderer
+        queryTableGuestsService={queryGuestsByTable}
         addGuestsService={addGuestsToEventBatch}
         assignTableToGuestsService={assignTableToGuests}
         queryGuestsByTableService={queryGuestsByTable}

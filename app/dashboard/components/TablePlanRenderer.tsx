@@ -127,9 +127,14 @@ interface TablePlanRendererProps {
   ) => Promise<void>;
   updateTableService: (
     name: string,
+    seats: number,
     tableId: string,
     eventId: string
-  ) => Promise<EventInstance>;
+  ) => Promise<{ event: EventInstance; removedGuestIds: string[] }>;
+  queryTableGuestsService: (
+    eventId: string,
+    tableId: string
+  ) => Promise<Guest[]>;
   guestListChanged?: () => Promise<void>;
 }
 
@@ -530,6 +535,14 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           return;
         }
         const tableId = over.id as string;
+
+        if (over.data.current.guestCount >= over.data.current.seats) {
+          toast.error(
+            'Masa selectata este deja completa. Te rugam sa alegi o alta masa.'
+          );
+          cleanUp();
+          return;
+        }
 
         props
           .assignTableToGuestsService(eventInstance!.eventId, tableId, [
@@ -1065,6 +1078,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           eventGuestsList={eventGuests}
           updateTableService={props.updateTableService}
           assignTableToGuestsService={props.assignTableToGuestsService}
+          queryTableGuestsService={props.queryTableGuestsService}
         />
       )}
     </div>

@@ -29,6 +29,8 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
     // Referința la sub-colecția evenimentului
     const guestsCollectionRef = collection(db, 'events', eventId, 'guests');
 
+    let currentLimit = maxGuests;
+
     if (plan !== 'ultimate') {
       const assignedQuery = query(
         guestsCollectionRef, // Colecție locală
@@ -37,8 +39,10 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
       const assignedSnapshot = await getDocs(assignedQuery);
       const assignedCount = assignedSnapshot.size;
 
-      // 2. Dacă am atins limita, returnez array gol
-      if (assignedCount >= maxGuests) {
+      const availableSlots = maxGuests - assignedCount;
+      currentLimit = availableSlots;
+
+      if (availableSlots <= 0) {
         return [];
       }
     }
@@ -49,7 +53,7 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
       guestsCollectionRef, // Colecție locală
       where('isAttending', '==', true),
       where('tableId', '==', null), // Căutăm explicit pe cei nealocați
-      limit(maxGuests) // Aplicăm limita
+      limit(currentLimit) // Aplicăm limita
     );
     const querySnapshot = await getDocs(q);
 
@@ -64,3 +68,5 @@ export const queryNotAssignedConfirmedGuestsByEventId = async (
     throw error;
   }
 };
+
+// TOODO: De verificat daca mai este nevoie de request pe paginile care il folosesc

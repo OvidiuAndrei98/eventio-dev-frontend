@@ -15,8 +15,8 @@ import {
 } from '@/core/types';
 import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { DeleteOutlined } from '@ant-design/icons';
-import { Button, Form, FormProps, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Form, FormProps, Input, InputNumber } from 'antd';
+import React, { use, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Modal from '../modal/AddGuestsModal';
 
@@ -35,6 +35,7 @@ const LateralDrawer = ({
   eventGuestsList,
   updateTableService,
   assignTableToGuestsService,
+  queryTableGuestsService,
 }: {
   tableElement: CanvasElement;
   eventId: string;
@@ -46,14 +47,19 @@ const LateralDrawer = ({
   eventGuestsList: Guest[];
   updateTableService: (
     name: string,
+    seats: number,
     tableId: string,
     eventId: string
-  ) => Promise<EventInstance>;
+  ) => Promise<{ event: EventInstance; removedGuestIds: string[] }>;
   assignTableToGuestsService: (
     eventId: string,
     tableId: string | null,
     guests: DropdownOption[]
   ) => Promise<void>;
+  queryTableGuestsService: (
+    eventId: string,
+    tableId: string
+  ) => Promise<Guest[]>;
 }) => {
   const [form] = Form.useForm();
   const [addGuestsOpen, setAddGuestsOpen] = useState(false);
@@ -62,10 +68,16 @@ const LateralDrawer = ({
     []
   );
   const [inputValue, setInputValue] = useState<string>(tableElement.name);
+  const [tableSeats, setTableSeats] = useState<number>(
+    tableElement.seats || 10
+  );
 
   const queryTableGuests = async () => {
     if (tableElement?.elementId) {
-      const guests = await queryGuestsByTable(eventId, tableElement?.elementId);
+      const guests = await queryTableGuestsService(
+        eventId,
+        tableElement?.elementId
+      );
       setTableGuests(
         guests.map((guest) => {
           return { label: guest.name, value: guest.guestId };
@@ -84,11 +96,21 @@ const LateralDrawer = ({
   }, [tableElement.name]);
 
   useEffect(() => {
+    setTableSeats(tableElement.seats || 10);
+  }, [tableElement.seats]);
+
+  useEffect(() => {
     queryTableGuests();
     form.setFieldsValue({
       name: tableElement?.name,
+      seats: tableElement?.seats,
     });
-  }, [tableElement?.elementId, tableEditActive, tableElement.name]);
+  }, [
+    tableElement?.elementId,
+    tableEditActive,
+    tableElement.name,
+    tableElement.seats,
+  ]);
 
   const handleGuestsDelete = (guest: DropdownOption) => {
     setRemovedGuestsList((oldValues) => {
@@ -99,8 +121,8 @@ const LateralDrawer = ({
     });
   };
 
-  const updateGuestsTableRef = async () => {
-    assignTableToGuestsService(eventId, tableElement?.elementId, tableGuests);
+  const updateGuestsTableRef = async (guests: DropdownOption[]) => {
+    assignTableToGuestsService(eventId, tableElement?.elementId, guests);
     if (removedGuestsList.length) {
       assignTableToGuestsService(eventId, null, removedGuestsList);
       // Reset the list after each save
@@ -109,12 +131,19 @@ const LateralDrawer = ({
   };
 
   const onFinish: FormProps<FieldType>['onFinish'] = async () => {
-    const updatedEvent = await updateTableService(
+    const { event: updatedEvent, removedGuestIds } = await updateTableService(
       inputValue,
+      tableSeats,
       tableElement?.elementId,
       eventId
     );
-    updateGuestsTableRef();
+    let guestsToAssign = tableGuests;
+    if (removedGuestIds && removedGuestIds.length > 0) {
+      guestsToAssign = tableGuests.filter(
+        (guest) => !removedGuestIds.includes(guest.value)
+      );
+    }
+    updateGuestsTableRef(guestsToAssign);
     setEventInstance(updatedEvent);
     updateGuestList(eventId);
     toast.success('Masa actualizata cu succes');
@@ -157,6 +186,30 @@ const LateralDrawer = ({
                 ]}
               >
                 <Input onChange={(e) => setInputValue(e.target.value)} />
+              </Form.Item>
+              <Form.Item
+                className="w-full"
+                label="Locuri la masă"
+                name="seats"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Numărul de locuri la masă este obligatoriu.',
+                  },
+                  {
+                    type: 'number',
+                    min: 1,
+                    message: 'Trebuie să fie cel puțin 1 loc la masă.',
+                  },
+                ]}
+              >
+                <InputNumber
+                  className="w-full"
+                  min={1}
+                  onChange={(e) => {
+                    setTableSeats(e || 1);
+                  }}
+                />
               </Form.Item>
             </Form>
           </div>
@@ -210,6 +263,15 @@ const LateralDrawer = ({
           guestList={eventGuestsList}
           updateGuestList={(newValues: DropdownOption[]) =>
             setTableGuests((oldValues) => {
+              if (
+                oldValues.length + newValues.length >
+                (tableElement?.seats || 10)
+              ) {
+                toast.error(
+                  'Nu poti adauga mai multi invitati decat locurile disponibile la masa'
+                );
+                return oldValues;
+              }
               return [
                 ...oldValues,
                 ...newValues.filter((v) =>

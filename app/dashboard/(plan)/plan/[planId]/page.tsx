@@ -5,6 +5,7 @@ import { updatePlanEventTableNameById } from '@/service/event/updatePlanEventTab
 import { updatePlanEventTableOrganization } from '@/service/event/updatePlanEventTableOrganization';
 import { addGuestsToPlanEventBatch } from '@/service/guest/addGuestsToPlanEventBatch';
 import { assignTableToPlanEventGuests } from '@/service/guest/assignTableToPlanEventGuests';
+import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { queryPlanEventGuests } from '@/service/guest/queryPlanEventGuests';
 import { queryPlanEventGuestsByTable } from '@/service/guest/queryPlanEventGuestsByTable';
 
@@ -13,6 +14,7 @@ export default function PlanPage() {
     <div className="h-screen w-full flex flex-col">
       <div className="h-[calc(100%-58px)]">
         <TablePlanRenderer
+          queryTableGuestsService={queryPlanEventGuestsByTable}
           addGuestsService={addGuestsToPlanEventBatch}
           assignTableToGuestsService={assignTableToPlanEventGuests}
           queryGuestsByTableService={queryPlanEventGuestsByTable}

@@ -322,7 +322,7 @@ const CanvaDraggableElement = ({
   eventId,
   currentZoomScale,
   seats,
-  guests, // Prop primită de la Părinte
+  guests,
 }: {
   id: string;
   name: string;
@@ -335,6 +335,7 @@ const CanvaDraggableElement = ({
   eventId?: string;
   currentZoomScale: number;
   seats?: number;
+  /** Number of seated guests */
   guests: DropdownOption[]; // Tipul prop-ului
 }) => {
   // 1. Hook-ul Draggable
@@ -362,6 +363,8 @@ const CanvaDraggableElement = ({
     data: {
       type: 'table',
       tableId: id,
+      seats: seats || DEFAULT_SEAT_COUNT,
+      guestCount: guests.length,
     },
     disabled: type !== 'table',
   });

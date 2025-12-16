@@ -48,3 +48,5 @@ export const queryLastGuestsByEventId = async (
     throw error;
   }
 };
+
+// TOODO: De verificat daca mai este nevoie de request pe paginile care il folosesc

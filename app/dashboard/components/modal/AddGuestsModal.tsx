@@ -31,6 +31,29 @@ const Modal: React.FC<ModalProps> = ({
     setValue([]);
   }, [isOpen]);
 
+  const getLimitedUnassignedGuests = (): { label: string; value: string }[] => {
+    const sortedGuests = [...guestList].sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateA - dateB;
+    });
+
+    const limitedGuests = sortedGuests.slice(0, 30);
+
+    return limitedGuests
+
+      .filter((guest) => {
+        const isAttending = guest.isAttending === true;
+        const isNotAssigned = guest.tableId === null;
+        return isAttending && isNotAssigned;
+      })
+
+      .map((guest) => ({
+        label: guest.name,
+        value: guest.guestId,
+      }));
+  };
+
   return (
     <Dialog open={isOpen} modal={true} onOpenChange={onOpenChange}>
       <DialogContent
@@ -54,10 +77,7 @@ const Modal: React.FC<ModalProps> = ({
                 setValue(newValue);
               }
             }}
-            options={guestList.map((guest) => ({
-              label: guest.name,
-              value: guest.guestId,
-            }))}
+            options={getLimitedUnassignedGuests()}
           />
         </div>
         <DialogFooter>

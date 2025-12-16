@@ -58,7 +58,6 @@ export const planEventUpgradeCheckout = async (
     }
     if (url) {
       window.location.assign(url);
-      window.location.assign(url);
       if (window.dataLayer) {
         window.dataLayer.push({
           event: 'begin_checkout',
