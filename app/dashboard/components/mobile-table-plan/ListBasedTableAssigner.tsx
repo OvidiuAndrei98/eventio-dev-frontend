@@ -2,7 +2,7 @@
 
 import { Button } from 'antd';
 import { CanvasElement, EventInstance, Guest } from '@/core/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import TableSelectDrawer from './TableSelectDrawer';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,6 +10,7 @@ import { Users } from 'lucide-react';
 import UnseatGuestsDrawer from './UnseatGuestDrawer';
 import TableDetailsDrawer from './TableDetailsDrawer';
 import { AnimatedCounter } from '@/components/incrementingText/incrementingText';
+import { Spinner } from '@/components/ui/spinner';
 
 interface ListBasedTableAssignerProps {
   eventInstance: EventInstance | null;
@@ -48,13 +49,11 @@ const ListBasedTableAssigner = ({
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isSavingDetails, setIsSavingDetails] = useState(false);
-
+  const [tablesWithStatusloading, setTablesWithStatusLoading] = useState(true);
   const [isAssigning, setIsAssigning] = useState(false);
   const [isUnseating, setIsUnseating] = useState(false);
 
   const tables = canvasElements.filter((el) => el.type === 'table');
-
-  const unseatedGuests = eventGuests.filter((guest) => !guest.tableId);
 
   const tablesWithStatus = tables.map((table) => ({
     ...table,
@@ -64,6 +63,17 @@ const ListBasedTableAssigner = ({
       eventGuests.filter((guest) => guest.tableId === table.elementId).length >=
       (table.seats || 10),
   }));
+
+  const unseatedGuests = eventGuests.filter((guest) => !guest.tableId);
+
+  useEffect(() => {
+    setTablesWithStatusLoading(true);
+    const timer = setTimeout(() => {
+      setTablesWithStatusLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [eventInstance]);
 
   const handleTableSelect = (table: CanvasElement) => {
     setSelectedTable(table);
@@ -235,58 +245,64 @@ const ListBasedTableAssigner = ({
       </div>
       <div className="bg-white p-4 rounded-lg shadow-sm">
         <h2 className="text-lg font-bold mb-3">Plan Mese (Alege o masă)</h2>
-        <div className="space-y-3">
-          <ScrollArea className="h-[calc(100vh-400px)] w-full rounded-md border">
-            {tablesWithStatus.length > 0 ? (
-              tablesWithStatus.map((table) => (
-                <div
-                  key={table.elementId}
-                  className="p-3 border rounded-md flex justify-between items-center bg-gray-50 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleTableSelect(table)}
-                >
-                  <div>
-                    <h3 className="font-semibold">{table.name}</h3>
-                    <span className="text-sm text-gray-600">
-                      Locuri: {table.guestCount}/{table.seats}
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    {/* Butonul de Scoate (Vizibil doar dacă masa are invitați) */}
-                    {table.guestCount > 0 && (
+        <div className="space-y-3 h-full">
+          {tablesWithStatusloading ? (
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <Spinner className="w-4 h-4 text-[var(--primary-color)]" />
+            </div>
+          ) : (
+            <ScrollArea className="h-[calc(100vh-400px)] w-full rounded-md border">
+              {tablesWithStatus.length > 0 ? (
+                tablesWithStatus.map((table) => (
+                  <div
+                    key={table.elementId}
+                    className="p-3 border rounded-md flex justify-between items-center bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleTableSelect(table)}
+                  >
+                    <div>
+                      <h3 className="font-semibold">{table.name}</h3>
+                      <span className="text-sm text-gray-600">
+                        Locuri: {table.guestCount}/{table.seats}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      {/* Butonul de Scoate (Vizibil doar dacă masa are invitați) */}
+                      {table.guestCount > 0 && (
+                        <Button
+                          size="small"
+                          type="dashed"
+                          danger
+                          onClick={(e) => {
+                            e.stopPropagation(); // Previne deschiderea drawer-ului de asignare
+                            handleOpenUnseatDrawer(table);
+                          }}
+                        >
+                          Scoate
+                        </Button>
+                      )}
+
                       <Button
                         size="small"
-                        type="dashed"
-                        danger
+                        type="primary"
+                        disabled={table.isFull}
                         onClick={(e) => {
-                          e.stopPropagation(); // Previne deschiderea drawer-ului de asignare
-                          handleOpenUnseatDrawer(table);
+                          e.stopPropagation();
+                          setSelectedTable(table);
+                          setIsSelectionModalOpen(true);
                         }}
                       >
-                        Scoate
+                        Așează
                       </Button>
-                    )}
-
-                    <Button
-                      size="small"
-                      type="primary"
-                      disabled={table.isFull}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedTable(table);
-                        setIsSelectionModalOpen(true);
-                      }}
-                    >
-                      Așează
-                    </Button>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">
-                Nu există mese adăugate pe planul sălii.
-              </p>
-            )}
-          </ScrollArea>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center p-4 mt-4">
+                  Nu există mese adăugate pe planul sălii.
+                </p>
+              )}
+            </ScrollArea>
+          )}
         </div>
       </div>
       <TableSelectDrawer
