@@ -5,7 +5,6 @@ import { updatePlanEventTableNameById } from '@/service/event/updatePlanEventTab
 import { updatePlanEventTableOrganization } from '@/service/event/updatePlanEventTableOrganization';
 import { addGuestsToPlanEventBatch } from '@/service/guest/addGuestsToPlanEventBatch';
 import { assignTableToPlanEventGuests } from '@/service/guest/assignTableToPlanEventGuests';
-import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { queryPlanEventGuests } from '@/service/guest/queryPlanEventGuests';
 import { queryPlanEventGuestsByTable } from '@/service/guest/queryPlanEventGuestsByTable';
 

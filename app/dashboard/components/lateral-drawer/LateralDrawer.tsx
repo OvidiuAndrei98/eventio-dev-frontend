@@ -13,10 +13,9 @@ import {
   EventInstance,
   Guest,
 } from '@/core/types';
-import { queryGuestsByTable } from '@/service/guest/queryGuestsByTable';
 import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Form, FormProps, Input, InputNumber } from 'antd';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Modal from '../modal/AddGuestsModal';
 
