@@ -45,13 +45,15 @@ export default function CookieBanner() {
 
   if (!isVisible) return null;
   return (
-    <div className="fixed bottom-4 left-4 bg-[var(--primary-color)]/90 p-4 rounded shadow-lg flex flex-row gap-4 z-50 justify-center items-center color-white max-w-lg">
+    <div className="fixed bottom-4 bg-[var(--primary-color)]/90 p-4 rounded shadow-lg flex flex-col md:flex-row gap-4 z-50 justify-center items-center color-white max-w-[90%] left-0 right-0 mx-auto md:right-4 md:mx-4 md:left-4 md:max-w-lg">
       <p>
         Folosim cookie-uri pentru a îmbunătăți experiența. Prin acceptare, ne
         permiteți să colectăm date de analiză.
       </p>
-      <Button onClick={handleAccept}>Accept</Button>
-      <Button onClick={handleDeny}>Refuz</Button>
+      <div className="flex flex-row gap-4 md:flex-col">
+        <Button onClick={handleAccept}>Accept</Button>
+        <Button onClick={handleDeny}>Refuz</Button>
+      </div>
     </div>
   );
 }
