@@ -14,6 +14,7 @@ import {initializeApp} from "firebase-admin/app";
 import {onRequest} from "firebase-functions/v2/https";
 import {Resend} from "resend";
 import Stripe from "stripe";
+import {onSchedule} from "firebase-functions/v2/scheduler";
 
 initializeApp();
 
@@ -71,6 +72,165 @@ async function triggerGAEvent(
   }
 }
 
+export const cleanupExpiredEvents = onSchedule(
+  {
+    // Sintaxa cron job (zilnic la ora 02:00 AM)
+    schedule: "0 2 * * *",
+    timeZone: "Europe/Bucharest",
+  },
+  async () => {
+    const now = admin.firestore.Timestamp.now();
+
+    const expiredEventsQuery = admin
+      .firestore()
+      .collection("events")
+      .where("expiresAt", "<=", now)
+      .limit(500);
+
+    const snapshot = await expiredEventsQuery.get();
+
+    if (snapshot.empty) {
+      console.log("No expired events found.");
+      return;
+    }
+
+    const deletePromises: Promise<void>[] = [];
+    console.log(`Found ${snapshot.size} expired events to process.`);
+
+    snapshot.forEach((doc) => {
+      const eventId = doc.id;
+      const eventData = doc.data();
+      const userId = eventData.userId;
+      const templateId = eventData.templateId;
+
+      deletePromises.push(
+        deleteEventAndSubcollections(eventId, userId, templateId)
+      );
+    });
+
+    await Promise.all(deletePromises);
+
+    console.log("Expired events cleanup complete.");
+    return;
+  }
+);
+
+/**
+ * Deletes all files in a specified Storage folder (prefix).
+ *
+ * @param {string} prefix - The folder path in Storage to delete files.
+ * @return {Promise<void>} Resolves when deletion is complete.
+ */
+async function deleteStorageFolder(prefix: string): Promise<void> {
+  const bucket = admin.storage().bucket("planyvite-18d36.firebasestorage.app");
+
+  const [files] = await bucket.getFiles({prefix: prefix});
+
+  if (files.length === 0) {
+    console.log(`No files found in Storage for prefix: ${prefix}`);
+    return;
+  }
+
+  const deletePromises = files.map((file) => file.delete());
+
+  await Promise.all(deletePromises);
+
+  console.log(
+    `Successfully deleted ${files.length} files under prefix: ${prefix}`
+  );
+}
+
+/**
+ * Deletes an event and its associated subcollections from Firestore.
+ *
+ * @param {string} eventId - The ID of the event to delete.
+ * @param {string} userId - The ID of the user who owns the event.
+ * @param {string} templateId - The ID of the template.
+ * @return {Promise<void>} Resolves when event deleted.
+ */
+async function deleteEventAndSubcollections(
+  eventId: string,
+  userId: string,
+  templateId: string
+): Promise<void> {
+  const eventRef = admin.firestore().collection("events").doc(eventId);
+
+  const storagePath = `${userId}/${templateId}/`;
+  await deleteStorageFolder(storagePath);
+
+  const guestsRef = eventRef.collection("guests");
+  await deleteCollectionInBatch(guestsRef, 500);
+
+  const statsRef = eventRef.collection("stats");
+  await deleteCollectionInBatch(statsRef, 500);
+
+  const templateRef = admin.firestore().collection("templates").doc(templateId);
+
+  await templateRef.delete();
+  await eventRef.delete();
+
+  console.log(`Successfully deleted event: ${eventId}`);
+}
+
+/**
+ * Deletes documents in a collection or query in batches to avoid timeouts.
+ *
+ * @param {admin.firestore.CollectionReference} collectionRef - Query ref
+ * @param {number} batchSize - The number of documents to delete in each batch.
+ * @return {Promise<void>} Resolves when all documents are deleted.
+ */
+async function deleteCollectionInBatch(
+  collectionRef: admin.firestore.CollectionReference | admin.firestore.Query,
+  batchSize: number
+): Promise<void> {
+  const snapshot = await collectionRef.limit(batchSize).get();
+
+  if (snapshot.empty) {
+    return;
+  }
+
+  const batch = admin.firestore().batch();
+  snapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+
+  if (snapshot.size === batchSize) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return deleteCollectionInBatch(collectionRef, batchSize);
+  }
+}
+
+/**
+ * Calculates the new expiry timestamp based on the plan type.
+ * @param {string} plan - The plan type ('basic', 'premium', 'ultimate').
+ * @return {admin.firestore.Timestamp} - The calculated expiry timestamp.
+ */
+const calculateNewExpiryTimestamp = (
+  plan: string
+): admin.firestore.Timestamp => {
+  const expiryDate = new Date(); // Pornim de la momentul actual
+  const today = new Date();
+
+  // NOTĂ: Calculul trebuie să fie identic cu cel de pe client pentru coerență
+  if (plan === "basic") {
+    // 72 de ore (3 zile)
+    expiryDate.setTime(today.getTime() + 72 * 60 * 60 * 1000);
+  } else if (plan === "premium") {
+    // 8 luni
+    expiryDate.setMonth(today.getMonth() + 8);
+  } else if (plan === "ultimate") {
+    // 12 luni
+    expiryDate.setMonth(today.getMonth() + 12);
+  } else {
+    // Fallback la 72 de ore
+    expiryDate.setTime(today.getTime() + 72 * 60 * 60 * 1000);
+  }
+
+  return admin.firestore.Timestamp.fromDate(expiryDate);
+};
+
 export const updateUserAfterSuccesfulPayment = onDocumentCreated(
   "customers/{userId}/payments/{paymentId}",
   async (event) => {
@@ -96,12 +256,13 @@ export const updateUserAfterSuccesfulPayment = onDocumentCreated(
     const newPlan = data.metadata?.newPlan;
 
     if (data.status === "succeeded" && eventId && newPlan) {
+      const newExpiryTimestamp = calculateNewExpiryTimestamp(newPlan);
       try {
         await admin
           .firestore()
           .collection("events")
           .doc(eventId)
-          .update({eventPlan: newPlan});
+          .update({eventPlan: newPlan, expiresAt: newExpiryTimestamp});
 
         await triggerGAEvent(userId, "purchase", {
           purchaseType: "invite_plan_upgrade",
