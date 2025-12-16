@@ -4,12 +4,9 @@ import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import ListBasedTableAssigner from './ListBasedTableAssigner';
 import { useEventContext } from '@/core/context/EventContext';
-import { assignTableToPlanEventGuests } from '@/service/guest/assignTableToPlanEventGuests';
-import { CanvasElement, Guest } from '@/core/types';
-import { queryPlanEventGuests } from '@/service/guest/queryPlanEventGuests';
+import { CanvasElement, EventInstance, Guest } from '@/core/types';
 import { UserAddOutlined } from '@ant-design/icons';
 import { ListCheck } from 'lucide-react';
-import { updatePlanEventTableNameById } from '@/service/event/updatePlanEventTableName';
 
 interface MobileTablePlanContainerProps {
   updateTableDetailsService: (
@@ -17,7 +14,7 @@ interface MobileTablePlanContainerProps {
     seats: number,
     tableId: string,
     eventId: string
-  ) => Promise<{ event: any; removedGuestIds: string[] }>;
+  ) => Promise<{ event: EventInstance; removedGuestIds: string[] }>;
   assignTableToGuestsService: (
     eventId: string,
     tableId: string | null,
