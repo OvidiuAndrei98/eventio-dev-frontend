@@ -218,7 +218,7 @@ const ListBasedTableAssigner = ({
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
             Invitați Neatribuiți
@@ -243,7 +243,7 @@ const ListBasedTableAssigner = ({
           </p>
         </div>
       </div>
-      <div className="bg-white p-4 rounded-lg shadow-sm">
+      <div className="bg-white p-2 rounded-lg shadow-sm">
         <h2 className="text-lg font-bold mb-3">Plan Mese (Alege o masă)</h2>
         <div className="space-y-3 h-full">
           {tablesWithStatusloading ? (
@@ -251,12 +251,12 @@ const ListBasedTableAssigner = ({
               <Spinner className="w-4 h-4 text-[var(--primary-color)]" />
             </div>
           ) : (
-            <ScrollArea className="h-[calc(100vh-400px)] w-full rounded-md border">
+            <ScrollArea className="h-[calc(100svh-390px)] w-full rounded-md border border-none">
               {tablesWithStatus.length > 0 ? (
                 tablesWithStatus.map((table) => (
                   <div
                     key={table.elementId}
-                    className="p-3 border rounded-md flex justify-between items-center bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                    className="p-2 border rounded-md flex justify-between items-center bg-gray-50 hover:bg-gray-100 cursor-pointer mb-2"
                     onClick={() => handleTableSelect(table)}
                   >
                     <div>
