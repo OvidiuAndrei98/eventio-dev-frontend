@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import { Guest } from '@/core/types';
 import { toast } from 'sonner';
+import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 
 const AddGuestsModal = ({
   eventId,
@@ -10,6 +11,8 @@ const AddGuestsModal = ({
   addGuestsService,
   refreshGuestList,
   setAddGuestsModalOpen,
+  eventGuests,
+  eventPlan,
 }: {
   eventId: string;
   userId: string;
@@ -21,6 +24,8 @@ const AddGuestsModal = ({
   ) => Promise<void>;
   refreshGuestList: () => Promise<void>;
   setAddGuestsModalOpen: (open: boolean) => void;
+  eventGuests: Guest[];
+  eventPlan: keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 }) => {
   const [guestsList, setGuestsList] = React.useState<
     { name: string; id: string }[]
@@ -54,14 +59,26 @@ const AddGuestsModal = ({
     });
 
     try {
-      await addGuestsService(eventId, userId, finalGuestsList);
-      await refreshGuestList();
+      if (
+        eventGuests.length + finalGuestsList.length >=
+        PLANYVITE_EVENT_PLAN_FEATURES[eventPlan].maxGuests
+      ) {
+        toast.error(
+          `Nu poți adăuga mai mulți invitați. Limita pentru planul tău este de ${PLANYVITE_EVENT_PLAN_FEATURES[eventPlan].maxGuests} invitați.`
+        );
+        throw new Error('Guest limit exceeded for the current plan.');
+      } else {
+        await addGuestsService(eventId, userId, finalGuestsList);
+        await refreshGuestList();
+        setGuestAddLoading(false);
+        form.resetFields();
+        setGuestsList([{ name: '', id: crypto.randomUUID() }]);
+        setAddGuestsModalOpen(false);
+        toast.success('Invitații au fost adăugați cu succes!');
+      }
+    } catch (error) {
       setGuestAddLoading(false);
-      form.resetFields();
-      setGuestsList([{ name: '', id: crypto.randomUUID() }]);
-      setAddGuestsModalOpen(false);
-      toast.success('Invitații au fost adăugați cu succes!');
-    } catch (error) {}
+    }
   };
 
   return (

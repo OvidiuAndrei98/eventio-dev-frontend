@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import ListBasedTableAssigner from './ListBasedTableAssigner';
 import { useEventContext } from '@/core/context/EventContext';
-import { CanvasElement, EventInstance, Guest } from '@/core/types';
+import { CanvasElement, EventInstance, EventPlan, Guest } from '@/core/types';
 import { UserAddOutlined } from '@ant-design/icons';
 import { ListCheck } from 'lucide-react';
 import AddGuestsModal from './shared-components/AddGuestsModal';
@@ -101,6 +101,8 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
         />
       )}
       <AddGuestsModal
+        eventGuests={eventGuests}
+        eventPlan={EventPlan[eventInstance?.eventPlan || 'basic']}
         setAddGuestsModalOpen={setAddGuestsModalOpen}
         open={addGuestsModalOpen}
         addGuestsService={props.addGuestsService}
