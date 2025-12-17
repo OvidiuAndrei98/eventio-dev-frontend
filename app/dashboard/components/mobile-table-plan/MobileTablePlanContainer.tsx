@@ -4,10 +4,17 @@ import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import ListBasedTableAssigner from './ListBasedTableAssigner';
 import { useEventContext } from '@/core/context/EventContext';
-import { CanvasElement, EventInstance, EventPlan, Guest } from '@/core/types';
+import {
+  CanvasElement,
+  EventInstance,
+  EventPlan,
+  eventTableOrganization,
+  Guest,
+} from '@/core/types';
 import { UserAddOutlined } from '@ant-design/icons';
 import { ListCheck } from 'lucide-react';
 import AddGuestsModal from './shared-components/AddGuestsModal';
+import AddTableDrawer from './shared-components/AddTableModal';
 
 interface MobileTablePlanContainerProps {
   updateTableDetailsService: (
@@ -35,6 +42,10 @@ interface MobileTablePlanContainerProps {
     userId: string,
     guests: Guest[]
   ) => Promise<void>;
+  updateTablesService: (
+    eventTableOrganization: eventTableOrganization,
+    eventId: string
+  ) => Promise<void>;
 }
 
 const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
@@ -45,6 +56,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
   const [eventGuests, setEventGuests] = useState<Guest[]>([]);
   const [canvasElements, setCanvasElements] = useState<CanvasElement[]>([]);
   const [addGuestsModalOpen, setAddGuestsModalOpen] = useState(false);
+  const [addTableModalOpen, setAddTableModalOpen] = useState(false);
 
   const fetchEventGuests = async () => {
     if (!eventInstance) return;
@@ -70,7 +82,11 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
             icon={<UserAddOutlined />}
             className="!w-[48px] !h-[48px]"
           ></Button>
-          <Button icon={<ListCheck />} className="!w-[48px] !h-[48px]"></Button>
+          <Button
+            icon={<ListCheck />}
+            className="!w-[48px] !h-[48px]"
+            onClick={() => setAddTableModalOpen(true)}
+          ></Button>
         </div>
         <Button
           className="!h-[48px]"
@@ -91,6 +107,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
         <div></div>
       ) : (
         <ListBasedTableAssigner
+          updateTablesService={props.updateTablesService}
           setEventInstance={setEventInstance}
           updateTableDetailsService={props.updateTableDetailsService}
           eventInstance={eventInstance}
@@ -109,6 +126,17 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
         eventId={eventInstance?.eventId || ''}
         userId={eventInstance?.userId || ''}
         refreshGuestList={fetchEventGuests}
+      />
+      <AddTableDrawer
+        setEventInstance={setEventInstance}
+        eventInstance={eventInstance}
+        eventPlan={eventInstance?.eventPlan || 'basic'}
+        eventTablesCount={
+          canvasElements.filter((el) => el.type === 'table').length
+        }
+        isOpen={addTableModalOpen}
+        onClose={() => setAddTableModalOpen(false)}
+        onCreateTable={props.updateTablesService}
       />
     </div>
   );

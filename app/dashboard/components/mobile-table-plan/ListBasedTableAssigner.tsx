@@ -1,7 +1,12 @@
 'use client';
 
 import { Button } from 'antd';
-import { CanvasElement, EventInstance, Guest } from '@/core/types';
+import {
+  CanvasElement,
+  EventInstance,
+  eventTableOrganization,
+  Guest,
+} from '@/core/types';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import TableSelectDrawer from './TableSelectDrawer';
@@ -29,6 +34,10 @@ interface ListBasedTableAssignerProps {
     eventId: string
   ) => Promise<{ event: EventInstance; removedGuestIds: string[] }>;
   fetchEventGuests: () => Promise<void>;
+  updateTablesService: (
+    eventTableOrganization: eventTableOrganization,
+    eventId: string
+  ) => Promise<void>;
 }
 
 const ListBasedTableAssigner = ({
@@ -39,6 +48,7 @@ const ListBasedTableAssigner = ({
   assignTableToGuestsService,
   updateTableDetailsService,
   fetchEventGuests,
+  updateTablesService,
 }: ListBasedTableAssignerProps) => {
   const [selectedTable, setSelectedTable] = useState<CanvasElement | null>(
     null
@@ -199,7 +209,7 @@ const ListBasedTableAssigner = ({
           removedGuestIds.map((id) => ({ label: '', value: id }))
         );
         toast.info(
-          `${removedGuestIds.length} invitați au fost dez-asignați din cauza reducerii locurilor la masă.`
+          `${removedGuestIds.length} invitați au fost scoși deoarece numărul de locuri la masă a fost redus.`
         );
       }
 
@@ -211,6 +221,51 @@ const ListBasedTableAssigner = ({
       console.error('Eroare la salvarea detaliilor mesei:', error);
       toast.error('A apărut o eroare la salvarea detaliilor.');
       throw error; // Re-aruncăm eroarea pentru ca formularul să o gestioneze
+    } finally {
+      setIsSavingDetails(false);
+    }
+  };
+
+  const handleDeleteTable = async (tableId: string) => {
+    if (!eventInstance) return;
+    setIsSavingDetails(true);
+
+    try {
+      const { event, removedGuestIds } = await updateTableDetailsService(
+        '',
+        0,
+        tableId,
+        eventInstance.eventId
+      );
+      // Remove guests from table if any
+      if (removedGuestIds.length > 0) {
+        await assignTableToGuestsService(
+          eventInstance.eventId,
+          null,
+          removedGuestIds.map((id) => ({ label: '', value: id }))
+        );
+        toast.info(
+          `${removedGuestIds.length} invitați au fost dez-asignați deoarece masa a fost ștearsă.`
+        );
+      }
+
+      const eventCopy = { ...event };
+      eventCopy.eventTableOrganization.elements =
+        eventCopy.eventTableOrganization.elements.filter(
+          (el) => el.elementId !== tableId
+        );
+
+      await fetchEventGuests();
+      setEventInstance(eventCopy);
+      updateTablesService(
+        eventCopy.eventTableOrganization,
+        eventInstance.eventId
+      );
+      toast.success(`Masa a fost ștearsă cu succes.`);
+      setIsDetailsModalOpen(false);
+    } catch (error) {
+      console.error('Eroare la ștergerea mesei:', error);
+      toast.error('A apărut o eroare la ștergerea mesei.');
     } finally {
       setIsSavingDetails(false);
     }
@@ -330,6 +385,7 @@ const ListBasedTableAssigner = ({
       )}
       {isDetailsModalOpen && selectedTable !== null && (
         <TableDetailsDrawer
+          onDelete={handleDeleteTable}
           onSaveDetails={handleSaveTableDetails}
           table={selectedTable}
           isOpen={isDetailsModalOpen}

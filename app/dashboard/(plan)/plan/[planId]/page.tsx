@@ -42,6 +42,7 @@ export default function PlanPage() {
       <div className="h-[calc(100%-58px)]">
         {isMobile ? (
           <MobileTablePlanContainer
+            updateTablesService={updatePlanEventTableOrganization}
             addGuestsService={addGuestsToPlanEventBatch}
             addGuestsToTableService={assignTableToPlanEventGuests}
             assignTableToGuestsService={assignTableToPlanEventGuests}

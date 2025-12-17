@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/drawer';
 import { toast } from 'sonner';
 import { CanvasElement } from '@/core/types';
+import { DeleteOutlined } from '@ant-design/icons';
 
 interface TableDetailsDrawerProps {
   table: CanvasElement;
@@ -23,6 +24,7 @@ interface TableDetailsDrawerProps {
     newDetails: { name: string; seats: number }
   ) => Promise<void>;
   isSaving: boolean;
+  onDelete: (id: string) => void;
 }
 
 const TableDetailsDrawer = ({
@@ -31,6 +33,7 @@ const TableDetailsDrawer = ({
   onClose,
   onSaveDetails,
   isSaving,
+  onDelete,
 }: TableDetailsDrawerProps) => {
   const [form] = Form.useForm();
 
@@ -121,6 +124,13 @@ const TableDetailsDrawer = ({
                     Anulează
                   </Button>
                 </DrawerClose>
+                <Button
+                  type="default"
+                  size="large"
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={() => onDelete(table.elementId)}
+                />
               </div>
             </DrawerFooter>
           </Form>

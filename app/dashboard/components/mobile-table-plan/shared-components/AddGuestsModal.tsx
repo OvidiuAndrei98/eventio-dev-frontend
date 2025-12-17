@@ -60,7 +60,7 @@ const AddGuestsModal = ({
 
     try {
       if (
-        eventGuests.length + finalGuestsList.length >=
+        eventGuests.length + finalGuestsList.length >
         PLANYVITE_EVENT_PLAN_FEATURES[eventPlan].maxGuests
       ) {
         toast.error(

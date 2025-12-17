@@ -40,6 +40,7 @@ const TablesPage = () => {
     <div className="h-[calc(100%-58px)]">
       {isMobile ? (
         <MobileTablePlanContainer
+          updateTablesService={updateEventTableOrganization}
           addGuestsService={addGuestsToEventBatch}
           addGuestsToTableService={assignTableToGuests}
           assignTableToGuestsService={assignTableToGuests}
