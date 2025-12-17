@@ -4,7 +4,6 @@ import MobileTablePlanContainer from '@/app/dashboard/components/mobile-table-pl
 import TablePlanRenderer from '@/app/dashboard/components/TablePlanRenderer';
 import { updatePlanEventTableNameById } from '@/service/event/updatePlanEventTableName';
 import { updatePlanEventTableOrganization } from '@/service/event/updatePlanEventTableOrganization';
-import { addGuestsToEventBatch } from '@/service/guest/addGuestsToEventBatch';
 import { addGuestsToPlanEventBatch } from '@/service/guest/addGuestsToPlanEventBatch';
 import { assignTableToPlanEventGuests } from '@/service/guest/assignTableToPlanEventGuests';
 import { queryPlanEventGuests } from '@/service/guest/queryPlanEventGuests';
