@@ -7,6 +7,7 @@ import { useEventContext } from '@/core/context/EventContext';
 import { CanvasElement, EventInstance, Guest } from '@/core/types';
 import { UserAddOutlined } from '@ant-design/icons';
 import { ListCheck } from 'lucide-react';
+import AddGuestsModal from './shared-components/AddGuestsModal';
 
 interface MobileTablePlanContainerProps {
   updateTableDetailsService: (
@@ -20,10 +21,20 @@ interface MobileTablePlanContainerProps {
     tableId: string | null,
     guests: { label: string; value: string }[]
   ) => Promise<void>;
-  queryTableGuestsService: (
+  queryEventGuestsService: (
     eventId: string,
     tablePlan: string
   ) => Promise<Guest[]>;
+  addGuestsToTableService: (
+    eventId: string,
+    tableId: string,
+    guests: { label: string; value: string }[]
+  ) => Promise<void>;
+  addGuestsService: (
+    eventId: string,
+    userId: string,
+    guests: Guest[]
+  ) => Promise<void>;
 }
 
 const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
@@ -33,10 +44,11 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
   const { eventInstance, setEventInstance } = useEventContext();
   const [eventGuests, setEventGuests] = useState<Guest[]>([]);
   const [canvasElements, setCanvasElements] = useState<CanvasElement[]>([]);
+  const [addGuestsModalOpen, setAddGuestsModalOpen] = useState(false);
 
   const fetchEventGuests = async () => {
     if (!eventInstance) return;
-    const guests = await props.queryTableGuestsService(
+    const guests = await props.queryEventGuestsService(
       eventInstance.eventId,
       eventInstance.eventPlan
     );
@@ -54,6 +66,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
       <div className="tables-controls-section p-2 flex gap-2 items-center justify-between border-b">
         <div className="flex flex-row gap-4 items-center">
           <Button
+            onClick={() => setAddGuestsModalOpen(true)}
             icon={<UserAddOutlined />}
             className="!w-[48px] !h-[48px]"
           ></Button>
@@ -87,6 +100,14 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
           fetchEventGuests={fetchEventGuests}
         />
       )}
+      <AddGuestsModal
+        setAddGuestsModalOpen={setAddGuestsModalOpen}
+        open={addGuestsModalOpen}
+        addGuestsService={props.addGuestsService}
+        eventId={eventInstance?.eventId || ''}
+        userId={eventInstance?.userId || ''}
+        refreshGuestList={fetchEventGuests}
+      />
     </div>
   );
 };
