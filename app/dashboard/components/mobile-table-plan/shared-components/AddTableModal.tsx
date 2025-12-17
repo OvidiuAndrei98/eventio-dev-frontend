@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Input, Form, InputNumber, Radio, Space } from 'antd';
+import { Button, Input, Form, InputNumber, Radio } from 'antd';
 import {
   Drawer,
   DrawerContent,
@@ -45,7 +45,11 @@ const AddTableDrawer = ({
   const [form] = Form.useForm();
   const [isCreatingTable, setIsCreatingTable] = React.useState(false);
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: {
+    name: string;
+    seats: number;
+    type: string;
+  }) => {
     if (isCreatingTable) return;
     setIsCreatingTable(true);
     if (!values.name || !values.seats) {
