@@ -47,9 +47,10 @@ const MobileDeviceNotice = () => {
             <br />
             <br />
             Modul <span className="font-bold">Canvas Interactiv</span>{' '}
-            (aranjarea meselor prin drag-and-drop) nu este disponibil pe mobil.
-            Pentru experiența completă de design, te rugăm să accesezi contul de
-            pe un <span className="font-bold">calculator sau laptop</span>.
+            (aranjarea meselor prin drag-and-drop) nu este disponibil pe mobil
+            (În curând). Pentru experiența completă de design, te rugăm să
+            accesezi contul de pe un{' '}
+            <span className="font-bold">calculator sau laptop</span>.
             <br />
             <br />
             Poți continua pe mobil folosind{' '}
