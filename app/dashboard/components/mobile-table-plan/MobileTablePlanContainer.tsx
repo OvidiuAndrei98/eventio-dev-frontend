@@ -15,6 +15,7 @@ import { UserAddOutlined } from '@ant-design/icons';
 import { ListCheck } from 'lucide-react';
 import AddGuestsModal from './shared-components/AddGuestsModal';
 import AddTableDrawer from './shared-components/AddTableModal';
+import MobileDeviceNotice from './shared-components/MobileDeviceNotice';
 
 interface MobileTablePlanContainerProps {
   updateTableDetailsService: (
@@ -74,6 +75,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
 
   return (
     <div className="table-plan-app-wrapper bg-gray-50 h-[calc(100svh-64px)] w-full grid grid-cols-1 grid-rows-[auto_auto_1fr] p-2 gap-4">
+      <MobileDeviceNotice />
       {/* Header-ul cu Butonul de Switch */}
       <div className="tables-controls-section p-2 flex gap-2 items-center justify-between border-b">
         <div className="flex flex-row gap-4 items-center">
