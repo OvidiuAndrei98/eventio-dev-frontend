@@ -710,7 +710,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
     setCanvasElements(removedElementList);
   };
 
-  const deleteTable = async (id?: string) => {
+  const updateTables = async (id?: string) => {
     if (!eventInstance) return;
 
     let removedElementList: CanvasElement[] = canvasElements;
@@ -852,7 +852,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
               loading={deleteTablesLoading}
               onClick={async () => {
                 try {
-                  await deleteTable();
+                  await updateTables();
                   setEditModeOn(false);
                 } catch (error) {
                   toast.error('A aparut o eroare la salvare');
@@ -1069,7 +1069,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
       {activeEditTable && eventInstance && (
         <LateralDrawer
           updateGuestList={fetchEventGuests}
-          deleteTable={deleteTable}
+          deleteTable={updateTables}
           tableElement={activeEditTable}
           eventId={eventInstance?.eventId}
           tableEditActive={tableEditActive}
