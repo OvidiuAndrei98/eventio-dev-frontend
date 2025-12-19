@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   applicationName: 'Planyvite - Planifică Evenimente Fără Stres',
   referrer: 'origin-when-cross-origin',
   publisher: 'planyvite.ro',
+  alternates: {
+    canonical: 'https://planyvite.ro',
+  },
   openGraph: {
     siteName: 'Planyvite - Planifică Evenimente Fără Stres',
     title: 'Planyvite',
