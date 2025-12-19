@@ -4,7 +4,7 @@ import '@/lib/firebase/firebaseConfig'; // Ensure Firebase is initialized
 import { Metadata } from 'next';
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import '@/styles/globals.css';
-import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
+// import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
 import { Toaster } from 'sonner';
 import Script from 'next/script';
 import CookieBanner from '@/components/cookieBanner/CookieBanner';
