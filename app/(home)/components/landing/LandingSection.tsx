@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import './LandingSection.css';
 import GradientText from '../../../../components/GradientText';
 import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';

@@ -4,8 +4,6 @@ import { Button } from 'antd';
 import { useRouter } from 'next/navigation';
 
 export default function HeroButton() {
-  const router = useRouter();
-
   return (
     <Button
       type="primary"
