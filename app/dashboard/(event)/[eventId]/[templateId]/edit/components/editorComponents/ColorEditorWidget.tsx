@@ -68,7 +68,7 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
         onChange={handleInputChange}
         showText
         className="w-full justify-start"
-        getPopupContainer={() => document.body}
+        getPopupContainer={(trigger) => trigger.parentElement || document.body}
       />
     </div>
   );
