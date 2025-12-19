@@ -260,12 +260,16 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
   return (
     <AuthenticationContext.Provider value={contextValue}>
       {(() => {
-        // Loader cât timp auth e necunoscut
+        if (!isAuthReady && isAnonymousPage(pathname)) {
+          return <>{children}</>;
+        }
+
+        // Loader cât timp auth e necunoscut (doar pentru pagini private)
         if (authenticationState === AuthenticationState.Unknown) {
           return <LoadingIndicator />;
         }
 
-        // Dacă ești autentificat și pe /login sau /register, nu arăta children (login form), doar loader și lasă useEffect-ul să redirecționeze
+        // Dacă ești autentificat și pe /login sau /register, redirecționăm
         if (
           authenticationState === AuthenticationState.Authenticated &&
           (pathname === '/login' || pathname === '/register')
@@ -278,24 +282,21 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
           return <>{children}</>;
         }
 
-        // Utilizator anonim, afișează conținutul permis
+        // Utilizator anonim/neautentificat pe pagină permisă
+        if (isAnonymousPage(pathname)) {
+          return <>{children}</>;
+        }
+
+        // Dacă e pe pagină privată fără auth, trimitem la login
         if (
-          authenticationState === AuthenticationState.Anonymous &&
-          isAnonymousPage(pathname)
+          authenticationState === AuthenticationState.Unauthenticated &&
+          !isAnonymousPage(pathname)
         ) {
-          return <>{children}</>;
+          router.push('/login');
+          return <LoadingIndicator />;
         }
 
-        // Utilizator neautentificat, redirecționează dacă nu e pagină anonimă
-        if (authenticationState === AuthenticationState.Unauthenticated) {
-          if (!isAnonymousPage(pathname)) {
-            router.push('/login');
-            return <LoadingIndicator />;
-          }
-          return <>{children}</>;
-        }
-
-        return null;
+        return <LoadingIndicator />;
       })()}
     </AuthenticationContext.Provider>
   );

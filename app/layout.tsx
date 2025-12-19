@@ -33,7 +33,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
       style={{ scrollBehavior: 'smooth', backgroundColor: 'white' }}
     >
       <head>
-        <TikTokPixel />
+        {/* <TikTokPixel /> */}
         <Script id="google-tag-manager-head" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

@@ -4,6 +4,7 @@ import GradientText from '../../../../components/GradientText';
 import AnimatedContent from '../../../../components/animatedContainer/AnimatedContent';
 import Image from 'next/image';
 import HeroImage from '../../../../public/hero-image.svg';
+import HeroButton from './HeroButton';
 
 const LandingSection = () => {
   return (
@@ -29,20 +30,13 @@ const LandingSection = () => {
               PLANYVITE!
             </GradientText>
           </h1>
-          <span className="text-lg md:text-xl lg:text-2xl mb-6 text-gray-500">
+          <h2 className="text-lg md:text-xl lg:text-2xl mb-6 text-gray-500">
             Economisește timp, reduce risipa și impresionează-ți oaspeții cu
             invitații digitale personalizate. Urmărește RSVP-urile în timp real
             și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.
-          </span>
+          </h2>
           <div className="w-full flex justify-center">
-            <Button
-              type="primary"
-              size="large"
-              className="try-button my-4 !p-6 !text-lg !font-bold !rounded-full !text-white"
-              onClick={() => (window.location.href = '/login')}
-            >
-              Încearcă gratuit
-            </Button>
+            <HeroButton />
           </div>
         </div>
       </AnimatedContent>
