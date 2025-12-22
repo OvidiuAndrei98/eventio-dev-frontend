@@ -41,7 +41,13 @@ const HomeNavBar = () => {
           <Link href="#models-section">Modele</Link>
         </li>
         <li className="nav-item">
-          <Link href="https://expo.planyvite.ro">Furnizori</Link>
+          <Link
+            href="https://expo.planyvite.ro"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Furnizori
+          </Link>
         </li>
       </ul>
       <Button

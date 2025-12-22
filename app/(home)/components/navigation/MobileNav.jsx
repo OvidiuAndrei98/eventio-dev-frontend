@@ -98,7 +98,12 @@ const MobileNav = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="w-full block" href="https://expo.planyvite.ro">
+            <Link
+              className="w-full block"
+              href="https://expo.planyvite.ro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Furnizori
             </Link>
           </li>
