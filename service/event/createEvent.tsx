@@ -43,13 +43,13 @@ export const calculateExpiryDate = (
   const today = new Date();
 
   if (userPlan === 'basic') {
-    expiryDate.setTime(today.getMonth() + 3);
+    expiryDate.setMonth(today.getMonth() + 3);
   } else if (userPlan === 'premium') {
     expiryDate.setMonth(today.getMonth() + 8);
   } else if (userPlan === 'ultimate') {
     expiryDate.setMonth(today.getMonth() + 12);
   } else {
-    expiryDate.setTime(today.getMonth() + 3);
+    expiryDate.setMonth(today.getMonth() + 3);
   }
 
   return expiryDate;
