@@ -58,6 +58,7 @@ import domtoimage from 'dom-to-image';
 import AddGuestsFloatingMenu from './add-guests-menu/AddGuestsFloatingMenu';
 import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
 import Link from 'next/link';
+import TablePlanExportModal from './table-plan-exports/TablePlanExportModal';
 
 const LOGICAL_CANVAS_WIDTH = 1920;
 const LOGICAL_CANVAS_HEIGHT = 1080;
@@ -795,7 +796,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
             eventInstance.eventId,
             null,
             guestsToBeRemoved.map((guest) => {
-              return { value: guest.guestId, label: guest.name };
+              return { value: guest.guestId, label: guest.fullName };
             })
           );
         }
@@ -1081,6 +1082,12 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           queryTableGuestsService={props.queryTableGuestsService}
         />
       )}
+      <TablePlanExportModal
+        isOpen={true}
+        onClose={() => {}}
+        tables={canvasElements}
+        guests={eventGuests}
+      />
     </div>
   );
 };

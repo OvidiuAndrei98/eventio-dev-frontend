@@ -13,12 +13,14 @@ import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 interface RsvpFormData {
-  primaryGuestName: string;
+  primaryGuestFirstName: string;
+  primaryGuestLastName: string;
   primaryDietaryRestrictions: string;
   isAttending: 'yes' | 'no' | '';
   totalGuests: number | '';
   additionalGuestsDetails: Array<{
-    name: string;
+    firstName: string;
+    lastName: string;
     dietaryRestrictions: string;
   }>;
   primaryContactPhone?: string;
@@ -86,7 +88,8 @@ const RsvpElement = ({
 
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<RsvpFormData>({
-    primaryGuestName: '',
+    primaryGuestFirstName: '',
+    primaryGuestLastName: '',
     primaryContactPhone: '',
     primaryDietaryRestrictions: '',
     isAttending: '',
@@ -112,7 +115,11 @@ const RsvpElement = ({
     const submissionId = crypto.randomUUID();
     const submissionTime = new Date().getTime();
 
-    if (values.isAttending === 'yes' && values.primaryGuestName?.trim()) {
+    if (
+      values.isAttending === 'yes' &&
+      values.primaryGuestFirstName?.trim() &&
+      values.primaryGuestLastName?.trim()
+    ) {
       // Collect additional fields that are not part of RsvpFormData
       const additionalFields: { key: string; value: string }[] = [];
       Object.entries(values).forEach(([key, value]) => {
@@ -124,7 +131,9 @@ const RsvpElement = ({
       guestsToSave.push({
         guestId: crypto.randomUUID(),
         submissionId: submissionId,
-        name: values.primaryGuestName.trim(),
+        firstName: values.primaryGuestFirstName.trim(),
+        lastName: values.primaryGuestLastName.trim(),
+        fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
         dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
         isAttending: values.isAttending === 'yes',
         eventId: eventId,
@@ -144,11 +153,13 @@ const RsvpElement = ({
       values.totalGuests > 1
     ) {
       for (const guestDetails of values.additionalGuestsDetails) {
-        if (guestDetails.name.trim()) {
+        if (guestDetails.firstName.trim() && guestDetails.lastName.trim()) {
           guestsToSave.push({
             guestId: crypto.randomUUID(),
             submissionId: submissionId,
-            name: guestDetails.name.trim(),
+            firstName: guestDetails.firstName.trim(),
+            lastName: guestDetails.lastName.trim(),
+            fullName: `${guestDetails.firstName.trim()} ${guestDetails.lastName.trim()}`,
             dietaryRestrictions: guestDetails.dietaryRestrictions?.trim() || '',
             isAttending: true,
             eventId: eventId,
@@ -160,11 +171,17 @@ const RsvpElement = ({
       }
     }
 
-    if (values.isAttending === 'no' && values.primaryGuestName?.trim()) {
+    if (
+      values.isAttending === 'no' &&
+      values.primaryGuestFirstName?.trim() &&
+      values.primaryGuestLastName?.trim()
+    ) {
       guestsToSave.push({
         guestId: crypto.randomUUID(),
         submissionId: submissionId,
-        name: values.primaryGuestName.trim(),
+        firstName: values.primaryGuestFirstName.trim(),
+        lastName: values.primaryGuestLastName.trim(),
+        fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
         dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
         isAttending: false,
         eventId: eventId,
@@ -190,7 +207,8 @@ const RsvpElement = ({
 
       // Resetăm state-ul local al formularului la valorile inițiale goale după submitarea cu succes
       setFormData({
-        primaryGuestName: '',
+        primaryGuestFirstName: '',
+        primaryGuestLastName: '',
         primaryContactPhone: '', // Reseteaza si email-ul
         primaryDietaryRestrictions: '',
         isAttending: '',
@@ -286,19 +304,36 @@ const RsvpElement = ({
         autoComplete="off"
         layout="vertical"
       >
-        <Form.Item<RsvpFormData>
-          style={{ color: 'inherit' }}
-          label="Numele tau:"
-          name="primaryGuestName"
-          rules={[
-            {
-              required: true,
-              message: 'Numele este obligatorie.',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+        <div className="flex flex-row gap-2 w-full">
+          <Form.Item<RsvpFormData>
+            style={{ color: 'inherit' }}
+            label="Prenume"
+            name="primaryGuestFirstName"
+            rules={[
+              {
+                required: true,
+                message: 'Prenumele este obligatorie.',
+              },
+            ]}
+            className="!w-full"
+          >
+            <Input className="!w-full" />
+          </Form.Item>
+          <Form.Item<RsvpFormData>
+            style={{ color: 'inherit' }}
+            label="Nume"
+            name="primaryGuestLastName"
+            rules={[
+              {
+                required: true,
+                message: 'Numele este obligatorie.',
+              },
+            ]}
+            className="!w-full"
+          >
+            <Input className="!w-full" />
+          </Form.Item>
+        </div>
         <Form.Item<RsvpFormData>
           style={{ color: 'inherit' }}
           label="Numar de telefon:"
@@ -384,13 +419,17 @@ const RsvpElement = ({
               required
               min={1}
               onChange={(value) => {
-                const list: { name: string; dietaryRestrictions: string }[] =
-                  [];
+                const list: {
+                  firstName: string;
+                  lastName: string;
+                  dietaryRestrictions: string;
+                }[] = [];
 
                 if (value) {
                   for (let i = 0; i < value - 1; i++) {
                     list.push({
-                      name: '',
+                      firstName: '',
+                      lastName: '',
                       dietaryRestrictions: '',
                     });
                   }
@@ -451,19 +490,36 @@ const RsvpElement = ({
                       >
                         Invitat #{index + 2}{' '}
                       </h4>
-                      <Form.Item
-                        style={{ color: 'inherit' }}
-                        label="Nume:"
-                        name={[field.name, 'name']}
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Numele este obligatoriu',
-                          },
-                        ]}
-                      >
-                        <Input />
-                      </Form.Item>
+                      <div className="flex flex-row gap-2 w-full">
+                        <Form.Item
+                          style={{ color: 'inherit' }}
+                          label="Prenume:"
+                          name={[field.name, 'firstName']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Prenumele este obligatoriu',
+                            },
+                          ]}
+                          className="w-full"
+                        >
+                          <Input className="w-full" />
+                        </Form.Item>
+                        <Form.Item
+                          style={{ color: 'inherit' }}
+                          label="Nume:"
+                          name={[field.name, 'lastName']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Numele este obligatoriu',
+                            },
+                          ]}
+                          className="w-full"
+                        >
+                          <Input className="w-full" />
+                        </Form.Item>
+                      </div>
                       <Form.Item
                         style={{ color: 'inherit' }}
                         label="Restricții Dietetice (opțional):"

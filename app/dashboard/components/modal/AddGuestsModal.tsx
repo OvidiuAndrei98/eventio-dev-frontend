@@ -41,15 +41,13 @@ const Modal: React.FC<ModalProps> = ({
     const limitedGuests = sortedGuests.slice(0, 30);
 
     return limitedGuests
-
       .filter((guest) => {
         const isAttending = guest.isAttending === true;
         const isNotAssigned = guest.tableId === null;
         return isAttending && isNotAssigned;
       })
-
       .map((guest) => ({
-        label: guest.name,
+        label: guest.fullName,
         value: guest.guestId,
       }));
   };

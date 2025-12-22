@@ -12,7 +12,7 @@ const GuestListDraggableItems = ({
         <DraggableGuest
           key={guest.guestId}
           id={guest.guestId}
-          name={guest.name}
+          name={guest.fullName}
         />
       ))}
       {unseatedGuests.length === 0 && (

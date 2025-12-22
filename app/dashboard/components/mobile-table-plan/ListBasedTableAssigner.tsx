@@ -109,7 +109,7 @@ const ListBasedTableAssigner = ({
 
     // Transformăm lista de Guest în formatul necesar serviciului
     const serviceGuests = guestsToAssign.map((guest) => ({
-      label: guest.name,
+      label: guest.fullName,
       value: guest.guestId,
     }));
 
@@ -159,7 +159,7 @@ const ListBasedTableAssigner = ({
 
     setIsUnseating(true);
     const serviceGuests = guestsToUnseat.map((guest) => ({
-      label: guest.name,
+      label: guest.fullName,
       value: guest.guestId,
     }));
 

@@ -79,7 +79,7 @@ const LateralDrawer = ({
       );
       setTableGuests(
         guests.map((guest) => {
-          return { label: guest.name, value: guest.guestId };
+          return { label: guest.fullName, value: guest.guestId };
         })
       );
     }

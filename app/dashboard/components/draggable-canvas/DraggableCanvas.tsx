@@ -60,7 +60,7 @@ const DraggableCanvas = ({
           seats={element.seats}
           guests={eventGuests
             .filter((guest) => guest.tableId?.includes(element.elementId))
-            .map((guest) => ({ label: guest.name, value: guest.guestId }))}
+            .map((guest) => ({ label: guest.fullName, value: guest.guestId }))}
         />
       ))}
     </div>

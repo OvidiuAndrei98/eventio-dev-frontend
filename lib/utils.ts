@@ -45,7 +45,7 @@ export const createXlsxWorkbook = (
 
     // Adaugă invitații pentru masa curentă
     guests.forEach((guest) => {
-      sheetData.push([guest.name]);
+      sheetData.push([guest.fullName]);
       currentRow++;
     });
 
