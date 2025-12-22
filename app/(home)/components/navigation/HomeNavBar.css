@@ -65,6 +65,12 @@
   }
 }
 
+@media screen and (max-width: 1100px) {
+  .home-page-navigation .homepage-nav-menu {
+    gap: 1.2rem;
+  }
+}
+
 @-webkit-keyframes stickySlideDown {
   from {
     -webkit-transform: translateY(-100%);

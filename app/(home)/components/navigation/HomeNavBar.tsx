@@ -40,6 +40,9 @@ const HomeNavBar = () => {
         <li className="nav-item">
           <Link href="#models-section">Modele</Link>
         </li>
+        <li className="nav-item">
+          <Link href="https://expo.planyvite.ro">Furnizori</Link>
+        </li>
       </ul>
       <Button
         className="login-button !p-5 !text-md !font-bold !rounded-full !text-white"

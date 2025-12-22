@@ -70,22 +70,37 @@ const MobileNav = () => {
       <nav className="mobile-menu z-[1001]">
         <ul className="homepage-nav-menu">
           <li className="nav-item">
-            <Link href="#first-section">Acasă</Link>
+            <Link className="w-full block" href="#first-section">
+              Acasă
+            </Link>
           </li>
           <li className="nav-item">
-            <Link href="#planner-section">Planificator</Link>
+            <Link className="w-full block" href="#planner-section">
+              Planificator
+            </Link>
           </li>
           <li className="nav-item">
-            <Link href="#features-section">Funcționalități</Link>
+            <Link className="w-full block" href="#features-section">
+              Funcționalități
+            </Link>
           </li>
           <li className="nav-item">
             <Link href="#how-it-works-section-id">Cum funcționează</Link>
           </li>
           <li className="nav-item">
-            <Link href="#prices-section">Prețuri</Link>
+            <Link className="w-full block" href="#prices-section">
+              Prețuri
+            </Link>
           </li>
           <li className="nav-item">
-            <Link href="#models-section">Modele</Link>
+            <Link className="w-full block" href="#models-section">
+              Modele
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="w-full block" href="https://expo.planyvite.ro">
+              Furnizori
+            </Link>
           </li>
         </ul>
         <Button

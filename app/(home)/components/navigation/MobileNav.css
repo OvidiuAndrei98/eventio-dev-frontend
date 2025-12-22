@@ -111,7 +111,7 @@
 }
 
 .mobile-menu li:hover {
-  background: #cccccc;
+  background: var(--primary-color);
 }
 
 .mobile-menu li a {
