@@ -219,7 +219,7 @@ const MobileTablePlanExportModal = ({
         .ant-modal-root .ant-modal-wrap { overflow: hidden !important; }
         .ant-modal-content { height: 100vh; border-radius: 0 !important; }
         .ant-tabs, .ant-tabs-content, .ant-tabs-tabpane { height: 100% !important; display: flex; flex-direction: column; }
-        .PlanExportModal .ant-modal-body { height: calc(100vh - 58px); }
+        .PlanExportModal .ant-modal-body { height: calc(100dvh - 68px); }
       `}</style>
 
       <Tabs
