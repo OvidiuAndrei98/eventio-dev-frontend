@@ -8,7 +8,7 @@ import {
 } from '@/core/types';
 import {
   Button,
-  ColorPicker,
+  // ColorPicker,
   GetProp,
   Upload,
   UploadFile,
@@ -143,24 +143,24 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
     }
   };
 
-  const handleInputChange = (color: Color) => {
-    const updatedData = {
-      ...backgoundImageFields,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      opacity: (color as any).toRgbString(),
-    };
-    setBackgroundImageFields(updatedData);
-    onChange(updatedData);
-  };
+  // const handleInputChange = (color: Color) => {
+  //   const updatedData = {
+  //     ...backgoundImageFields,
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //     opacity: (color as any).toRgbString(),
+  //   };
+  //   setBackgroundImageFields(updatedData);
+  //   onChange(updatedData);
+  // };
 
-  if (
-    config.widgetType !== EditorWidgetType.ImageUpload ||
-    config.dataType !== PropertyDataType.Object
-  ) {
-    console.error('Configurație invalidă pentru ImageUploadWidget:', config);
-    // Renderizăm un mesaj de eroare sau o componentă fallback dacă configurația nu este validă
-    return <div>Eroare: Widget incompatibil</div>;
-  }
+  // if (
+  //   config.widgetType !== EditorWidgetType.ImageUpload ||
+  //   config.dataType !== PropertyDataType.Object
+  // ) {
+  //   console.error('Configurație invalidă pentru ImageUploadWidget:', config);
+  //   // Renderizăm un mesaj de eroare sau o componentă fallback dacă configurația nu este validă
+  //   return <div>Eroare: Widget incompatibil</div>;
+  // }
 
   return (
     <div style={{ marginBottom: '10px' }}>
@@ -192,7 +192,7 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
           </Button>
         </Upload>
       </ImgCrop>
-      {uploadObject && uploadObject.status == 'done' ? (
+      {/* {uploadObject && uploadObject.status == 'done' ? (
         <ColorPicker
           format="rgb"
           value={value?.opacity}
@@ -203,7 +203,7 @@ const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
         />
       ) : (
         ''
-      )}
+      )} */}
     </div>
   );
 };
