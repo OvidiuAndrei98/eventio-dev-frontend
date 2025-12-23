@@ -97,6 +97,7 @@ interface CurrentTableDragField {
   fromSideBar: boolean;
   guestCount: number;
   seats: number;
+  number: number;
 }
 
 interface CurrentGuestDragField {
@@ -111,6 +112,7 @@ interface TablePlanRendererProps {
   assignTableToGuestsService: (
     eventId: string,
     tableId: string | null,
+    tableNumber: number | null | undefined,
     guests: { label: string; value: string }[]
   ) => Promise<void>;
   updateTablesService: (
@@ -276,6 +278,8 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
   const maxTablesAllowed =
     PLANYVITE_EVENT_PLAN_FEATURES[eventInstance?.eventPlan || 'basic']
       .maxTablePlanElements;
+
+  const [exportsModalOpen, setExportsModalOpen] = useState(false);
 
   const [tableEditActive, setTableEditActive] = useState(false);
   const [activeEditTable, setActiveEditTable] = useState<CanvasElement | null>(
@@ -505,6 +509,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           fromSideBar: true,
           guestCount: 0,
           seats: 10,
+          number: canvasElements.length + 1,
         };
       }
     }
@@ -546,12 +551,17 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
         }
 
         props
-          .assignTableToGuestsService(eventInstance!.eventId, tableId, [
-            {
-              label: guestField.guestName,
-              value: guestField.guestId.replace('guest-', ''),
-            },
-          ])
+          .assignTableToGuestsService(
+            eventInstance!.eventId,
+            tableId,
+            over.data.current?.tableNumber,
+            [
+              {
+                label: guestField.guestName,
+                value: guestField.guestId.replace('guest-', ''),
+              },
+            ]
+          )
           .then(() => {
             fetchEventGuests(eventInstance!.eventId);
             toast.success('Invitat asezat cu succes la masa selectata.');
@@ -795,6 +805,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           await props.assignTableToGuestsService(
             eventInstance.eventId,
             null,
+            null,
             guestsToBeRemoved.map((guest) => {
               return { value: guest.guestId, label: guest.fullName };
             })
@@ -811,11 +822,8 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
     <div className="bg-[#F6F6F6] h-full w-full flex flex-col">
       <div className="tables-controls-section p-4 flex gap-4 items-center justify-between shrink-0 h-16">
         <div className="flex gap-2">
-          <Button type="default" onClick={exportToPDF}>
-            Export salon
-          </Button>
-          <Button type="default" onClick={exportGuestsToExcel}>
-            Export invitati
+          <Button type="default" onClick={() => setExportsModalOpen(true)}>
+            Exporturi
           </Button>
         </div>
 
@@ -1083,9 +1091,10 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
         />
       )}
       <TablePlanExportModal
-        isOpen={true}
-        onClose={() => {}}
-        tables={canvasElements}
+        exportPdf={exportToPDF}
+        exportExcel={exportGuestsToExcel}
+        isOpen={exportsModalOpen}
+        onClose={() => setExportsModalOpen(false)}
         guests={eventGuests}
       />
     </div>

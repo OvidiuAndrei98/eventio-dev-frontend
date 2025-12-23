@@ -25,6 +25,7 @@ interface ListBasedTableAssignerProps {
   assignTableToGuestsService: (
     eventId: string,
     tableId: string | null,
+    tableNumber: number | null | undefined,
     guests: { label: string; value: string }[]
   ) => Promise<void>;
   updateTableDetailsService: (
@@ -95,6 +96,7 @@ const ListBasedTableAssigner = ({
 
     const tableId = selectedTable.elementId;
     const tableName = selectedTable.name;
+    const tableNumber = selectedTable.number;
     const seatsAvailable =
       (selectedTable.seats || 10) - (selectedTable.guestCount || 0);
 
@@ -117,6 +119,7 @@ const ListBasedTableAssigner = ({
       await assignTableToGuestsService(
         eventInstance.eventId,
         tableId,
+        tableNumber,
         serviceGuests
       );
 
@@ -168,6 +171,7 @@ const ListBasedTableAssigner = ({
       await assignTableToGuestsService(
         eventInstance.eventId,
         null,
+        null,
         serviceGuests
       );
 
@@ -206,6 +210,7 @@ const ListBasedTableAssigner = ({
         await assignTableToGuestsService(
           eventInstance.eventId,
           null,
+          null,
           removedGuestIds.map((id) => ({ label: '', value: id }))
         );
         toast.info(
@@ -241,6 +246,7 @@ const ListBasedTableAssigner = ({
       if (removedGuestIds.length > 0) {
         await assignTableToGuestsService(
           eventInstance.eventId,
+          null,
           null,
           removedGuestIds.map((id) => ({ label: '', value: id }))
         );

@@ -14,6 +14,7 @@ import db from '../../lib/firebase/fireStore';
 export const assignTableToGuests = async (
   eventId: string, // <-- ADĂUGAT
   tableId: string | null | undefined,
+  tableNumber: number | null | undefined,
   guests: { value: string; label: string }[]
 ): Promise<void> => {
   try {
@@ -26,7 +27,10 @@ export const assignTableToGuests = async (
     guests.forEach((guest) => {
       const guestRef = doc(db, 'events', eventId, 'guests', guest.value);
 
-      batch.update(guestRef, { tableId: tableId || null });
+      batch.update(guestRef, {
+        tableId: tableId || null,
+        tableNumber: tableNumber || null,
+      });
     });
 
     await batch.commit();

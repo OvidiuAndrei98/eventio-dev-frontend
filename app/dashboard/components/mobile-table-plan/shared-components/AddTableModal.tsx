@@ -74,6 +74,7 @@ const AddTableDrawer = ({
       seats: values.seats,
       positions: { x: 50, y: 50 },
       guestCount: 0,
+      number: eventTablesCount + 1,
     };
     try {
       await addTableToEvent(canvasElement);

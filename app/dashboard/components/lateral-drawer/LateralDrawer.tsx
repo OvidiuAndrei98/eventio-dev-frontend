@@ -53,6 +53,7 @@ const LateralDrawer = ({
   assignTableToGuestsService: (
     eventId: string,
     tableId: string | null,
+    tableNumber: number | null | undefined,
     guests: DropdownOption[]
   ) => Promise<void>;
   queryTableGuestsService: (
@@ -121,9 +122,14 @@ const LateralDrawer = ({
   };
 
   const updateGuestsTableRef = async (guests: DropdownOption[]) => {
-    assignTableToGuestsService(eventId, tableElement?.elementId, guests);
+    assignTableToGuestsService(
+      eventId,
+      tableElement?.elementId,
+      tableElement?.number,
+      guests
+    );
     if (removedGuestsList.length) {
-      assignTableToGuestsService(eventId, null, removedGuestsList);
+      assignTableToGuestsService(eventId, null, null, removedGuestsList);
       // Reset the list after each save
       setRemovedGuestsList([]);
     }

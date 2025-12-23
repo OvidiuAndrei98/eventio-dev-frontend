@@ -79,6 +79,7 @@ export interface Guest {
   primaryContactPhone?: string;
   totalGuests?: number;
   eventAditionalQuestions?: Record<string, string>[];
+  tableNumber?: string;
 }
 
 export interface CanvasElement {
@@ -89,6 +90,7 @@ export interface CanvasElement {
   typeId: string;
   guestCount?: number;
   seats?: number;
+  number?: number;
 }
 
 export interface eventTableOrganization {

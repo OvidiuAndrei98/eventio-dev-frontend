@@ -322,6 +322,7 @@ const CanvaDraggableElement = ({
   eventId,
   currentZoomScale,
   seats,
+  tableNumber,
   guests,
 }: {
   id: string;
@@ -334,6 +335,7 @@ const CanvaDraggableElement = ({
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   eventId?: string;
   currentZoomScale: number;
+  tableNumber: number | null | undefined;
   seats?: number;
   /** Number of seated guests */
   guests: DropdownOption[]; // Tipul prop-ului
@@ -365,6 +367,7 @@ const CanvaDraggableElement = ({
       tableId: id,
       seats: seats || DEFAULT_SEAT_COUNT,
       guestCount: guests.length,
+      tableNumber: tableNumber,
     },
     disabled: type !== 'table',
   });

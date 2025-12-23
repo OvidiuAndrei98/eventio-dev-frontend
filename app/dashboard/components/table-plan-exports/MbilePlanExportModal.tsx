@@ -1,39 +1,52 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import { Modal, Button, Radio, Input, message, Tabs, Segmented } from 'antd';
+import {
+  Modal,
+  Button,
+  Radio,
+  Input,
+  message,
+  Tabs,
+  Segmented,
+  Drawer,
+  Space,
+} from 'antd';
 import {
   DownloadOutlined,
-  InfoCircleOutlined,
-  ExpandOutlined,
+  SettingOutlined,
   UserOutlined,
-  LayoutOutlined,
   SortAscendingOutlined,
-  BlockOutlined,
+  LayoutOutlined,
+  CloseOutlined,
+  ExpandOutlined,
 } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import { domToCanvas } from 'modern-screenshot';
 import { Guest } from '@/core/types';
 
-interface TablePlanExportModalProps {
+interface MobileTablePlanExportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  exportPdf: () => void;
-  exportExcel: () => void;
   guests?: Guest[];
+  exportExcel: () => void;
 }
 
-const TablePlanExportModal = ({
+type TemplateKey = 'minimal' | 'floral' | 'modern';
+
+const MobileTablePlanExportModal = ({
   isOpen,
   onClose,
   guests = [],
-  exportPdf,
   exportExcel,
-}: TablePlanExportModalProps) => {
+}: MobileTablePlanExportModalProps) => {
   const [activeTab, setActiveTab] = useState('1');
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [exportMode, setExportMode] = useState<'alfabetic' | 'mese'>(
     'alfabetic'
   );
+  const [isExporting, setIsExporting] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const [weddingNames, setWeddingNames] = useState({
     bride: 'Narcisa',
@@ -42,19 +55,16 @@ const TablePlanExportModal = ({
   });
 
   const [opisConfig, setOpisConfig] = useState<{
-    template: 'minimal' | 'floral' | 'modern';
+    template: TemplateKey;
     color: string;
   }>({
     template: 'minimal',
     color: '#3d3d3d',
   });
 
-  const exportRef = useRef<HTMLDivElement>(null);
-
-  type TemplateConfig = {
+  type TemplateDefinition = {
     fontFamily: string;
     secondaryFont: string;
-    // Gradient care simulează textura de hârtie (crem/ivory cu variații)
     bgGradient: string;
     bgImage: string;
     overlay: string;
@@ -62,15 +72,14 @@ const TablePlanExportModal = ({
     subtitleSize: string;
     letterSpacing: string;
     borderStyle: string;
-    textTransform: React.CSSProperties['textTransform'];
+    textTransform: string;
     fontWeight: string;
   };
 
-  const templates: Record<'minimal' | 'floral' | 'modern', TemplateConfig> = {
+  const templates: Record<TemplateKey, TemplateDefinition> = {
     minimal: {
       fontFamily: "'Cinzel', serif",
       secondaryFont: "'Montserrat', sans-serif",
-      // Gradient care simulează textura de hârtie (crem/ivory cu variații)
       bgGradient: 'radial-gradient(circle, #fdfbf7 0%, #f5f0e6 100%)',
       bgImage: '',
       overlay: 'transparent',
@@ -109,16 +118,15 @@ const TablePlanExportModal = ({
     },
   };
 
-  const current = templates[opisConfig.template];
+  const current = templates[opisConfig.template] || templates.minimal;
 
-  // Logica de date
   const alphabetGroups = useMemo(() => {
     const sorted = [...guests].sort((a, b) =>
       (a.lastName || '').localeCompare(b.lastName || '', 'ro')
     );
     const groups: { letter: string; guests: Guest[] }[] = [];
     const initials = Array.from(
-      new Set(sorted.map((g) => (g.lastName || ' ')[0].toUpperCase()))
+      new Set(sorted.map((g) => (g.lastName || ' ')[0]?.toUpperCase() || '#'))
     ).sort();
     initials.forEach((letter) => {
       const guestsForLetter = sorted.filter((g) =>
@@ -144,13 +152,13 @@ const TablePlanExportModal = ({
 
   const activeDisplayData =
     exportMode === 'alfabetic' ? alphabetGroups : tableGroups;
-
   const [activePageItems, setActivePageItems] = useState<
     { letter: string; guests: Guest[] }[]
   >([]);
 
   const handleExport = async () => {
     if (!exportRef.current) return;
+    setIsExporting(true);
     const hide = message.loading('Se generează fișierul A2...', 0);
     try {
       const pdf = new jsPDF({
@@ -175,9 +183,11 @@ const TablePlanExportModal = ({
         594,
         420
       );
+      setIsExporting(false);
       pdf.save(`Panou_${exportMode}_${weddingNames.bride}.pdf`);
       message.success('Export realizat!');
     } catch (e) {
+      console.error(e);
       message.error('Eroare export.');
     } finally {
       setActivePageItems([]);
@@ -187,267 +197,98 @@ const TablePlanExportModal = ({
 
   return (
     <Modal
-      title="Centru Comandă Eveniment"
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      width={1400}
+      width="100vw"
+      className="PlanExportModal"
       centered
+      style={{
+        top: 0,
+        width: '100vw',
+        paddingBottom: 0,
+        margin: 0,
+        height: '98vh',
+      }}
+      closeIcon={<CloseOutlined style={{ fontSize: 20, color: '#000' }} />}
+      title="Centru Export"
       destroyOnClose
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700&family=Montserrat:wght@300;400;700&display=swap');
+        /* Elimină scroll-ul body-ului când modalul e deschis */
+        .ant-modal-root .ant-modal-wrap { overflow: hidden !important; }
+        .ant-modal-content { height: 100vh; border-radius: 0 !important; }
+        .ant-tabs, .ant-tabs-content, .ant-tabs-tabpane { height: 100% !important; display: flex; flex-direction: column; }
+        .PlanExportModal .ant-modal-body { height: calc(100vh - 58px); }
       `}</style>
 
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
+        centered
+        style={{ flex: 1 }}
         items={[
           {
             key: '1',
-            label: (
-              <span>
-                <BlockOutlined /> Plan Salon
-              </span>
-            ),
+            label: <SortAscendingOutlined />,
             children: (
               <div
                 style={{
-                  height: 600,
-                  borderRadius: 12,
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
+                  flexDirection: 'column',
+                  height: '100%',
                 }}
               >
-                <div style={{ textAlign: 'center' }}>
-                  <Button onClick={exportPdf}>Export Plan Salon</Button>
-                </div>
-              </div>
-            ),
-          },
-          {
-            key: '2',
-            label: (
-              <span>
-                <SortAscendingOutlined /> Export Panou Opis
-              </span>
-            ),
-            children: (
-              <div style={{ display: 'flex', gap: '20px' }}>
-                {/* SIDEBAR REORGANIZAT */}
+                <Segmented
+                  block
+                  value={exportMode}
+                  onChange={(v) => setExportMode(v as 'alfabetic' | 'mese')}
+                  options={[
+                    {
+                      label: 'Alfabetic',
+                      value: 'alfabetic',
+                      icon: <SortAscendingOutlined />,
+                    },
+                    {
+                      label: 'Pe Mese',
+                      value: 'mese',
+                      icon: <LayoutOutlined />,
+                    },
+                  ]}
+                  style={{ marginBottom: 15 }}
+                />
+
                 <div
                   style={{
-                    width: '320px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '15px',
+                    fontSize: '10px',
+                    color: '#888',
+                    textAlign: 'center',
+                    marginBottom: 5,
                   }}
                 >
-                  <div
-                    style={{
-                      background: '#f0f5ff',
-                      padding: '15px',
-                      borderRadius: '10px',
-                      border: '1px solid #adc6ff',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '11px',
-                        color: '#1d39c4',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      <InfoCircleOutlined /> CONFIGURARE EXPORT
-                    </h4>
-                    <span style={{ fontSize: '10px', color: '#666' }}>
-                      MOD ORGANIZARE:
-                    </span>
-                    <Segmented
-                      block
-                      value={exportMode}
-                      onChange={(v: string | number | boolean) =>
-                        setExportMode(v as 'alfabetic' | 'mese')
-                      }
-                      options={[
-                        {
-                          label: 'Alfabetic',
-                          value: 'alfabetic',
-                          icon: <SortAscendingOutlined />,
-                        },
-                        {
-                          label: 'Pe Mese',
-                          value: 'mese',
-                          icon: <LayoutOutlined />,
-                        },
-                      ]}
-                      style={{ marginTop: 5, marginBottom: 15 }}
-                    />
-                    <ul
-                      style={{
-                        fontSize: '10px',
-                        color: '#262626',
-                        paddingLeft: '15px',
-                        margin: 0,
-                      }}
-                    >
-                      <li>
-                        Format: <b>PDF A2 Landscape</b>
-                      </li>
-                      <li>
-                        Rezoluție: <b>300 DPI (Print Ready)</b>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div
-                    style={{
-                      background: '#f8f8f8',
-                      padding: '15px',
-                      borderRadius: '10px',
-                    }}
-                  >
-                    <h4
-                      style={{
-                        fontSize: '11px',
-                        color: '#888',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      TEXT ȘI DESIGN
-                    </h4>
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: '5px',
-                        marginBottom: '8px',
-                      }}
-                    >
-                      <Input
-                        size="small"
-                        value={weddingNames.bride}
-                        onChange={(e) =>
-                          setWeddingNames({
-                            ...weddingNames,
-                            bride: e.target.value,
-                          })
-                        }
-                      />
-                      <Input
-                        size="small"
-                        value={weddingNames.groom}
-                        onChange={(e) =>
-                          setWeddingNames({
-                            ...weddingNames,
-                            groom: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <Input.TextArea
-                      size="small"
-                      rows={2}
-                      value={weddingNames.subtitle}
-                      onChange={(e) =>
-                        setWeddingNames({
-                          ...weddingNames,
-                          subtitle: e.target.value,
-                        })
-                      }
-                      style={{ marginBottom: 10 }}
-                    />
-
-                    <Radio.Group
-                      value={opisConfig.template}
-                      onChange={(e) =>
-                        setOpisConfig({
-                          ...opisConfig,
-                          template: e.target.value,
-                        })
-                      }
-                      block
-                      size="small"
-                      style={{ marginBottom: 10 }}
-                    >
-                      <Radio.Button value="minimal">Minimal</Radio.Button>
-                      <Radio.Button value="floral">Floral</Radio.Button>
-                      <Radio.Button value="modern">Modern</Radio.Button>
-                    </Radio.Group>
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                      }}
-                    >
-                      <span style={{ fontSize: 11 }}>Culoare:</span>
-                      <input
-                        type="color"
-                        value={opisConfig.color}
-                        onChange={(e) =>
-                          setOpisConfig({
-                            ...opisConfig,
-                            color: e.target.value,
-                          })
-                        }
-                        style={{
-                          flex: 1,
-                          height: 25,
-                          border: 'none',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={handleExport}
-                    icon={<DownloadOutlined />}
-                    block
-                    style={{ height: 60, fontWeight: 800, background: '#000' }}
-                  >
-                    DESCARCĂ PDF A2
-                  </Button>
+                  <ExpandOutlined /> Glisează stânga-dreapta pentru a vedea
+                  panoul
                 </div>
 
-                {/* PREVIEW */}
+                {/* CONTAINER SCROLLABIL (MODIFICAREA PRINCIPALĂ) */}
                 <div
                   style={{
                     flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 10,
+                    overflow: 'auto', // Permite scroll pe ambele direcții
+                    borderRadius: 12,
+                    border: '1px solid #ddd',
+                    marginBottom: '80px',
+                    background: '#f0f0f0',
                   }}
                 >
+                  {/* CANVAS-UL DE PREVIEW LA DIMENSIUNE MARE */}
                   <div
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: 12,
-                      color: '#888',
-                    }}
-                  >
-                    <span>
-                      <ExpandOutlined /> Previzualizare{' '}
-                      {exportMode === 'alfabetic' ? 'Opis' : 'Plan Mese'}
-                    </span>
-                    <span>
-                      Pagini: {Math.ceil(activeDisplayData.length / 12)}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: '600px',
+                      width: '1200px', // Lățime simulată de desktop
+                      minHeight: '100%',
                       background: current.bgGradient || '#fff',
-                      borderRadius: 12,
-                      border: '2px solid #eee',
                       position: 'relative',
-                      overflow: 'hidden',
+                      padding: '40px',
                     }}
                   >
                     {current.bgImage && (
@@ -459,8 +300,9 @@ const TablePlanExportModal = ({
                           width: '100%',
                           height: '100%',
                           objectFit: 'cover',
+                          zIndex: 0,
                         }}
-                        alt="bg"
+                        alt=""
                       />
                     )}
                     <div
@@ -468,53 +310,54 @@ const TablePlanExportModal = ({
                         position: 'absolute',
                         inset: 0,
                         backgroundColor: current.overlay,
+                        zIndex: 1,
                       }}
                     />
-                    <div
-                      style={{ position: 'relative', zIndex: 1, padding: 30 }}
-                    >
-                      <div style={{ textAlign: 'center', marginBottom: 25 }}>
-                        <h2
+
+                    <div style={{ position: 'relative', zIndex: 2 }}>
+                      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                        <div
                           style={{
                             fontFamily: current.fontFamily,
                             color: opisConfig.color,
-                            fontSize: 44,
+                            fontSize: 48,
                             margin: 0,
-                            textTransform: current.textTransform,
+                            textTransform:
+                              current.textTransform as React.CSSProperties['textTransform'],
                           }}
                         >
                           {weddingNames.bride} & {weddingNames.groom}
-                        </h2>
-                        <p
+                        </div>
+                        <div
                           style={{
                             fontFamily: current.secondaryFont,
-                            fontSize: 9,
+                            fontSize: 14,
+                            opacity: 0.8,
                             textTransform: 'uppercase',
-                            letterSpacing: 3,
-                            marginTop: 4,
-                            color: '#666',
+                            marginTop: 10,
+                            letterSpacing: 4,
                           }}
                         >
                           {weddingNames.subtitle}
-                        </p>
+                        </div>
                       </div>
+
                       <div
                         style={{
                           display: 'grid',
                           gridTemplateColumns: 'repeat(6, 1fr)',
-                          gap: '15px 12px',
+                          gap: '30px 20px',
                         }}
                       >
-                        {activeDisplayData.slice(0, 12).map((group, idx) => (
+                        {activeDisplayData.map((group, idx) => (
                           <div key={idx}>
                             <div
                               style={{
                                 fontFamily: current.fontFamily,
                                 color: opisConfig.color,
-                                fontSize: '16px',
+                                fontSize: 20,
                                 borderBottom: `${current.borderStyle} ${opisConfig.color}`,
-                                marginBottom: '6px',
-                                fontWeight: current.fontWeight,
+                                marginBottom: 10,
                               }}
                             >
                               {group.letter}
@@ -523,11 +366,11 @@ const TablePlanExportModal = ({
                               <div
                                 key={i}
                                 style={{
+                                  fontSize: 11,
                                   display: 'flex',
                                   justifyContent: 'space-between',
-                                  fontSize: 7,
                                   fontFamily: current.secondaryFont,
-                                  textTransform: current.textTransform,
+                                  marginBottom: 4,
                                 }}
                               >
                                 <span
@@ -549,33 +392,62 @@ const TablePlanExportModal = ({
                     </div>
                   </div>
                 </div>
+
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 12,
+                    left: 12,
+                    right: 12,
+                    display: 'flex',
+                    gap: 10,
+                    background: '#fff',
+                    paddingTop: 10,
+                    zIndex: 10,
+                  }}
+                >
+                  <Button
+                    icon={<SettingOutlined />}
+                    size="large"
+                    onClick={() => setSettingsVisible(true)}
+                  >
+                    Design
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon={<DownloadOutlined />}
+                    size="large"
+                    block
+                    loading={isExporting}
+                    onClick={handleExport}
+                    style={{ background: '#000' }}
+                  >
+                    {isExporting ? 'Se Generează...' : 'Export Panou A2'}
+                  </Button>
+                </div>
               </div>
             ),
           },
           {
-            key: '3',
-            label: (
-              <span>
-                <UserOutlined /> Listă Recepție
-              </span>
-            ),
+            key: '2',
+            label: <UserOutlined />,
             children: (
               <div
                 style={{
-                  height: 600,
+                  flex: 1,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  background: '#f5f5f5',
-                  borderRadius: 12,
+                  padding: 20,
                 }}
               >
                 <Button
-                  type="primary"
+                  block
                   size="large"
-                  onClick={() => exportExcel()}
+                  icon={<DownloadOutlined />}
+                  onClick={exportExcel}
                 >
-                  Export Tabel A4 (Hostess)
+                  Export Hostess Excel
                 </Button>
               </div>
             ),
@@ -583,7 +455,69 @@ const TablePlanExportModal = ({
         ]}
       />
 
-      {/* MOTOR EXPORT ASCUNS */}
+      <Drawer
+        title="Design Panou"
+        placement="bottom"
+        height="65%"
+        onClose={() => setSettingsVisible(false)}
+        open={settingsVisible}
+      >
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Input
+              value={weddingNames.bride}
+              onChange={(e) =>
+                setWeddingNames({ ...weddingNames, bride: e.target.value })
+              }
+            />
+            <Input
+              value={weddingNames.groom}
+              onChange={(e) =>
+                setWeddingNames({ ...weddingNames, groom: e.target.value })
+              }
+            />
+          </div>
+          <Input.TextArea
+            value={weddingNames.subtitle}
+            onChange={(e) =>
+              setWeddingNames({ ...weddingNames, subtitle: e.target.value })
+            }
+          />
+          <Radio.Group
+            value={opisConfig.template}
+            onChange={(e) =>
+              setOpisConfig({
+                ...opisConfig,
+                template: e.target.value as TemplateKey,
+              })
+            }
+            buttonStyle="solid"
+            block
+          >
+            <Radio.Button value="minimal">Minimal</Radio.Button>
+            <Radio.Button value="floral">Floral</Radio.Button>
+            <Radio.Button value="modern">Modern</Radio.Button>
+          </Radio.Group>
+          <input
+            type="color"
+            value={opisConfig.color}
+            onChange={(e) =>
+              setOpisConfig({ ...opisConfig, color: e.target.value })
+            }
+            style={{ width: '100%', height: 40 }}
+          />
+          <Button
+            type="primary"
+            block
+            size="large"
+            onClick={() => setSettingsVisible(false)}
+          >
+            Modifică
+          </Button>
+        </Space>
+      </Drawer>
+
+      {/* MOTOR EXPORT ASCUNS - NESCHIMBAT (PENTRU CALITATE A2) */}
       <div
         style={{
           height: 0,
@@ -629,7 +563,8 @@ const TablePlanExportModal = ({
                   fontFamily: current.fontFamily,
                   color: opisConfig.color,
                   fontSize: current.titleSize,
-                  textTransform: current.textTransform,
+                  textTransform:
+                    current.textTransform as React.CSSProperties['textTransform'],
                 }}
               >
                 {weddingNames.bride} & {weddingNames.groom}
@@ -695,4 +630,4 @@ const TablePlanExportModal = ({
   );
 };
 
-export default TablePlanExportModal;
+export default MobileTablePlanExportModal;
