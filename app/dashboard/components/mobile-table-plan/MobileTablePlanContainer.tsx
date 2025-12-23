@@ -88,7 +88,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
             );
             if (tableGuests.length) {
               guestsTableOrganization.push({
-                tableName: el.name,
+                tableName: el.name + (el.number ? ` (${el.number})` : ''),
                 guests: tableGuests,
               });
             }
