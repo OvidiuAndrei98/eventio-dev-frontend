@@ -56,7 +56,7 @@ const SettingsPage = () => {
     eventId: string;
     templateId: string;
   }>();
-  const { eventInstance } = useEventContext();
+  const { eventInstance, setEventInstance } = useEventContext();
   const [aditionalQuestionsForm] = Form.useForm();
   const [teplateSaveLoading, setTemplateSaveLoading] = useState(false);
   const [templateSettings, setTemplateSettings] = useState<
@@ -259,6 +259,14 @@ const SettingsPage = () => {
 
         // Update template settings
         await updateTemplateSettings(templateId, evQuestionsCopy);
+
+        // Update the in-memory event instance if available
+        if (eventInstance) {
+          setEventInstance({
+            ...eventInstance,
+            eventActive: Boolean(templateSettings.eventActive),
+          });
+        }
       }
       setTemplateSaveLoading(false);
       toast.success('Setari actualizate cu succes');
