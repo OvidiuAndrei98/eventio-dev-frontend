@@ -44,7 +44,6 @@ export default function PlanPage() {
           <MobileTablePlanContainer
             updateTablesService={updatePlanEventTableOrganization}
             addGuestsService={addGuestsToPlanEventBatch}
-            addGuestsToTableService={assignTableToPlanEventGuests}
             assignTableToGuestsService={assignTableToPlanEventGuests}
             queryEventGuestsService={queryPlanEventGuests}
             updateTableDetailsService={updatePlanEventTableNameById}

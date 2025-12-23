@@ -92,7 +92,7 @@ const UnseatGuestsDrawer = ({
                   return (
                     <List.Item className="!py-2 px-4 hover:bg-gray-50 transition-colors">
                       <div className="flex justify-between items-center w-full">
-                        <span>{guest.name}</span>
+                        <span>{guest.fullName}</span>
                         <Checkbox
                           checked={isChecked}
                           onChange={(e) =>

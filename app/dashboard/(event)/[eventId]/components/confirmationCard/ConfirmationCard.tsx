@@ -16,10 +16,10 @@ const ConfirmationCard = ({ guest }: { guest: Guest }) => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="field-content">{guest.name}</span>
+              <span className="field-content">{guest.fullName}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <span className="field-content">{guest.name}</span>
+              <span className="field-content">{guest.fullName}</span>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

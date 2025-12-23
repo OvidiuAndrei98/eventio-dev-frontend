@@ -69,7 +69,7 @@ const GuestsPage = () => {
             )
             .filter((guest) => {
               if (searchText === '') return true;
-              return guest.name
+              return guest.fullName
                 .toLowerCase()
                 .includes(searchText.toLowerCase());
             })

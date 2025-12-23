@@ -67,7 +67,9 @@ export interface PlanEventInstance {
 export interface Guest {
   guestId: string;
   submissionId: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   dietaryRestrictions: string;
   isAttending: boolean;
   eventId: string;
@@ -77,6 +79,7 @@ export interface Guest {
   primaryContactPhone?: string;
   totalGuests?: number;
   eventAditionalQuestions?: Record<string, string>[];
+  tableNumber?: string;
 }
 
 export interface CanvasElement {
@@ -87,6 +90,7 @@ export interface CanvasElement {
   typeId: string;
   guestCount?: number;
   seats?: number;
+  number?: number;
 }
 
 export interface eventTableOrganization {

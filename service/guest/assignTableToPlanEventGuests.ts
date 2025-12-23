@@ -14,6 +14,7 @@ import db from '../../lib/firebase/fireStore';
 export const assignTableToPlanEventGuests = async (
   eventId: string,
   tableId: string | null | undefined,
+  tableNumber: number | null | undefined,
   guests: { value: string; label: string }[]
 ): Promise<void> => {
   try {
@@ -32,7 +33,10 @@ export const assignTableToPlanEventGuests = async (
         guest.value
       );
 
-      batch.update(guestRef, { tableId: tableId || null });
+      batch.update(guestRef, {
+        tableId: tableId || null,
+        tableNumber: tableNumber || null,
+      });
     });
 
     await batch.commit();

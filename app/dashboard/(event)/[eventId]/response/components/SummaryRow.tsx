@@ -30,7 +30,7 @@ export default function SummaryRow({
 }: React.PropsWithChildren<SummaryRowProps>) {
   return (
     <div className="item">
-      <section className="guest-name">{guest.name}</section>
+      <section className="guest-name">{guest.fullName}</section>
       <section className="guest-phone">
         {guest.primaryContactPhone ?? '-'}
       </section>

@@ -20,7 +20,7 @@ export default function GuestRow({
 }: React.PropsWithChildren<GuestRowProps>) {
   return (
     <div className="guests-table-item">
-      <section className="guest-name">{guest.name}</section>
+      <section className="guest-name">{guest.fullName}</section>
 
       <section className="guest-date">
         {new Date(guest.date).toLocaleString('ro-RO', {

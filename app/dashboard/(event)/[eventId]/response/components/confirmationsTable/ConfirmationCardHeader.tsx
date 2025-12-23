@@ -8,7 +8,7 @@ interface ConfirmationCardHeaderProps {
 const ConfirmationCardHeader = ({ guest }: ConfirmationCardHeaderProps) => {
   return (
     <div className="card-header-container">
-      <span>{guest.name}</span>
+      <span>{guest.fullName}</span>
       <span>
         {new Date(guest.date).toLocaleString('RO', {
           year: 'numeric',
