@@ -41,6 +41,7 @@ import { useAuth } from '@/core/context/authContext';
 import MobileElementsPopup from './components/mobileElementsPopup/MobileElementsPopup';
 import MobilePropertiesPannel from './components/mobileElementsPopup/mobilePropertiesPannel/MobilePropertiesPannel';
 import { SaveIcon } from 'lucide-react';
+import { addErrorLog } from '@/service/logs/addErrorLog';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -552,6 +553,10 @@ const EditPage = () => {
       setTemplateUpdateLoading(false);
       toast.success('Template-ul a fost actualizat');
     } catch (error) {
+      await addErrorLog(user.userId, {
+        errorType: 'Template Update Error',
+        error: error instanceof Error ? error.message : String(error),
+      });
       setTemplateUpdateLoading(false);
       toast.error('Eroare la actualizarea template-ului');
     }

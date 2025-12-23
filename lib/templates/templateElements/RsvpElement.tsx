@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { BREAKPOINTS, mergeResponsiveProperties } from '../constants';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { addErrorLog } from '@/service/logs/addErrorLog';
 
 interface RsvpFormData {
   primaryGuestFirstName: string;
@@ -218,6 +219,9 @@ const RsvpElement = ({
       form.resetFields();
     } catch (error) {
       console.error('Error saving guests:', error);
+      await addErrorLog(userId, {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast.error(
         'A aparut o eroare la inregistrarea raspunsului. Te rugam incearca din nou.'
       );
