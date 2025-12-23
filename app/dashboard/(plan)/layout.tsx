@@ -24,6 +24,8 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { AppSidebar } from './nav/app-sidebar';
 import { handleSideMenuNavigation } from '@/lib/utils';
+import { Button } from 'antd';
+import Link from 'next/link';
 
 const routeTitleMapper: { [key: string]: string } = {
   plan: 'Plan salon',
@@ -137,6 +139,14 @@ const PlanLayout = ({ children }: { children: React.ReactNode }) => {
                   })}
                 </BreadcrumbList>
               </Breadcrumb>
+              {eventInstance?.eventPlan === 'basic' && (
+                <Link
+                  href={`${eventInstance?.eventId}/upgrade-plan`}
+                  className="ml-auto self-center"
+                >
+                  <Button type="default">Vezi Planul Ultimate</Button>
+                </Link>
+              )}
             </div>
           </header>
           {children}

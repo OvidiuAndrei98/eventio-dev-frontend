@@ -74,7 +74,7 @@ const UpgradePage = () => {
   // TODO Add notFound if no eventInstance
 
   return (
-    <div className="bg-gray-50 w-full h-full">
+    <div className="bg-gray-50 w-full h-full overflow-y-auto">
       <div style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
           Upgrade la Planul Ultimate
