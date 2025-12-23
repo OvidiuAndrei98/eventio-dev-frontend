@@ -208,7 +208,7 @@ const MobileTablePlanExportModal = ({
         width: '100vw',
         paddingBottom: 0,
         margin: 0,
-        height: '98vh',
+        height: '98svh',
       }}
       closeIcon={<CloseOutlined style={{ fontSize: 20, color: '#000' }} />}
       title="Centru Export"
