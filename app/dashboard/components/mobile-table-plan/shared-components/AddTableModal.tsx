@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Input, Form, InputNumber, Radio } from 'antd';
 import {
   Drawer,
@@ -44,6 +44,13 @@ const AddTableDrawer = ({
 }: AddTableDrawerProps) => {
   const [form] = Form.useForm();
   const [isCreatingTable, setIsCreatingTable] = React.useState(false);
+  const [tableType, setTableType] = React.useState<
+    'round-table' | 'horizontal-table' | 'vertical-table'
+  >('round-table');
+
+  useEffect(() => {
+    form.setFieldsValue({ type: tableType });
+  }, [tableType, form]);
 
   const handleSubmit = async (values: {
     name: string;
@@ -74,6 +81,7 @@ const AddTableDrawer = ({
       seats: values.seats,
       positions: { x: 50, y: 50 },
       guestCount: 0,
+      number: eventTablesCount + 1,
     };
     try {
       await addTableToEvent(canvasElement);
@@ -136,7 +144,18 @@ const AddTableDrawer = ({
               label="Tipul Mesei"
               rules={[{ required: true }]}
             >
-              <Radio.Group className="w-full">
+              <Radio.Group
+                className="w-full"
+                value={tableType}
+                onChange={(e) =>
+                  setTableType(
+                    e.target.value as
+                      | 'round-table'
+                      | 'horizontal-table'
+                      | 'vertical-table'
+                  )
+                }
+              >
                 <div className="grid grid-cols-3 gap-2">
                   <Radio.Button
                     value="round-table"

@@ -16,8 +16,8 @@ export interface AddGuestFormProps {
 }
 
 interface AddGuestFormValues {
-  name: string;
-  phone: string;
+  firstName: string;
+  lastName: string;
   dietaryRestrictions?: string;
 }
 
@@ -53,9 +53,12 @@ export function AddGuestForm({
       const guest = {
         guestId: crypto.randomUUID(),
         submissionId: crypto.randomUUID(),
-        name: values.name,
-        primaryContactPhone: values.phone,
+        fullName: `${values.firstName.trim()} ${values.lastName.trim()}`,
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
+        primaryContactPhone: '-',
         dietaryRestrictions: values.dietaryRestrictions || '',
+        totalGuests: 1,
         isAttending: true,
         eventId: eventId,
         tableId: null,
@@ -93,35 +96,26 @@ export function AddGuestForm({
         form={form}
         layout="vertical"
       >
-        <Form.Item
-          name="name"
-          rules={[{ required: true, message: 'Numele este necesar.' }]}
-        >
-          <Input placeholder="Nume" />
-        </Form.Item>
-        <Form.Item
-          name="phone"
-          rules={[
-            {
-              required: true,
-              message: 'Numărul de telefon este necesar.',
-            },
-            {
-              type: 'number',
-              message: 'Introduceți un număr de telefon valid.',
-              transform: (value) => {
-                if (!value) return NaN;
-                return Number(value);
-              },
-            },
-            {
-              min: 10,
-              message: 'Introduceți un număr de telefon valid.',
-            },
-          ]}
-        >
-          <Input placeholder="Număr de telefon" />
-        </Form.Item>
+        <div className="flex flex-row gap-2 w-full">
+          <Form.Item
+            label={'Prenume'}
+            name={`firstName`}
+            required
+            className="w-full"
+            rules={[{ required: true, message: 'Prenumele este necesar' }]}
+          >
+            <Input placeholder="Prenume" className="w-full" />
+          </Form.Item>
+          <Form.Item
+            label={'Nume'}
+            name={`lastName`}
+            required
+            className="w-full"
+            rules={[{ required: true, message: 'Numele este necesar' }]}
+          >
+            <Input placeholder="Nume" className="w-full" />
+          </Form.Item>
+        </div>
         <Form.Item name="dietaryRestrictions">
           <Input.TextArea placeholder="Restricții alimentare" />
         </Form.Item>

@@ -42,7 +42,6 @@ const TablesPage = () => {
         <MobileTablePlanContainer
           updateTablesService={updateEventTableOrganization}
           addGuestsService={addGuestsToEventBatch}
-          addGuestsToTableService={assignTableToGuests}
           assignTableToGuestsService={assignTableToGuests}
           queryEventGuestsService={queryGuestsByEvent}
           updateTableDetailsService={updateTableNameById}

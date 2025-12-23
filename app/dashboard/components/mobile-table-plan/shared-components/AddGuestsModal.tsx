@@ -28,12 +28,12 @@ const AddGuestsModal = ({
   eventPlan: keyof typeof PLANYVITE_EVENT_PLAN_FEATURES;
 }) => {
   const [guestsList, setGuestsList] = React.useState<
-    { name: string; id: string }[]
+    { firstName: string; lastName: string; id: string }[]
   >([]);
   const [guestAddLoading, setGuestAddLoading] = React.useState(false);
 
   useEffect(() => {
-    setGuestsList([{ name: '', id: crypto.randomUUID() }]);
+    setGuestsList([{ firstName: '', lastName: '', id: crypto.randomUUID() }]);
   }, []);
 
   const [form] = Form.useForm();
@@ -42,13 +42,16 @@ const AddGuestsModal = ({
     setGuestAddLoading(true);
     const finalGuestsList: Guest[] = [];
     guestsList.forEach((guest) => {
-      if (guest.name.trim() !== '') {
+      if (guest.firstName.trim() !== '' && guest.lastName.trim() !== '') {
         finalGuestsList.push({
           guestId: crypto.randomUUID(),
           submissionId: crypto.randomUUID(),
-          name: guest.name,
+          fullName: `${guest.firstName} ${guest.lastName}`,
+          firstName: guest.firstName.trim(),
+          lastName: guest.lastName.trim(),
           primaryContactPhone: '-',
           dietaryRestrictions: '',
+          totalGuests: 1,
           isAttending: true,
           eventId: eventId,
           tableId: null,
@@ -72,7 +75,9 @@ const AddGuestsModal = ({
         await refreshGuestList();
         setGuestAddLoading(false);
         form.resetFields();
-        setGuestsList([{ name: '', id: crypto.randomUUID() }]);
+        setGuestsList([
+          { firstName: '', lastName: '', id: crypto.randomUUID() },
+        ]);
         setAddGuestsModalOpen(false);
         toast.success('Invitații au fost adăugați cu succes!');
       }
@@ -102,36 +107,63 @@ const AddGuestsModal = ({
             onFinish={handleFinish}
           >
             {guestsList.map((guest, index) => (
-              <div key={guest.id} className="flex items-center gap-2">
-                <Form.Item
-                  label={`Invitat ${index + 1}`}
-                  name={guest.id}
-                  required
-                  className="w-full"
-                  rules={[{ required: true, message: 'Numele este necesar' }]}
-                >
-                  <Input
-                    placeholder={`Nume invitat ${index + 1}`}
-                    value={guest.name}
-                    onChange={(e) => {
-                      const newGuestsList = [...guestsList];
-                      newGuestsList[index].name = e.target.value;
-                      setGuestsList(newGuestsList);
-                    }}
-                    className="w-full"
-                  />
-                </Form.Item>
-                {guestsList.length > 1 && (
-                  <Button
-                    type="default"
-                    danger
-                    onClick={() => {
-                      setGuestsList(guestsList.filter((_, i) => i !== index));
-                    }}
-                  >
-                    Șterge
-                  </Button>
-                )}
+              <div key={guest.id} className="flex flex-col gap-2">
+                <div className="flex items-start gap-2">
+                  <div className="flex flex-row gap-2 w-full">
+                    <Form.Item
+                      label={index === 0 ? 'Prenume' : ''}
+                      name={`${guest.id}-firstName`}
+                      required
+                      className="w-full"
+                      rules={[
+                        { required: true, message: 'Prenumele este necesar' },
+                      ]}
+                    >
+                      <Input
+                        placeholder="Prenume"
+                        value={guest.firstName}
+                        onChange={(e) => {
+                          const newGuestsList = [...guestsList];
+                          newGuestsList[index].firstName = e.target.value;
+                          setGuestsList(newGuestsList);
+                        }}
+                        className="w-full"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label={index === 0 ? 'Nume' : ''}
+                      name={`${guest.id}-lastName`}
+                      required
+                      className="w-full"
+                      rules={[
+                        { required: true, message: 'Numele este necesar' },
+                      ]}
+                    >
+                      <Input
+                        placeholder="Nume"
+                        value={guest.lastName}
+                        onChange={(e) => {
+                          const newGuestsList = [...guestsList];
+                          newGuestsList[index].lastName = e.target.value;
+                          setGuestsList(newGuestsList);
+                        }}
+                        className="w-full"
+                      />
+                    </Form.Item>
+                  </div>
+                  {guestsList.length > 1 && (
+                    <Button
+                      type="default"
+                      danger
+                      onClick={() => {
+                        setGuestsList(guestsList.filter((_, i) => i !== index));
+                      }}
+                      className={`${index === 0 ? 'mt-[22px]' : 'mt-0'} !py-4`}
+                    >
+                      Șterge
+                    </Button>
+                  )}
+                </div>
               </div>
             ))}
           </Form>
@@ -142,7 +174,7 @@ const AddGuestsModal = ({
           onClick={() => {
             setGuestsList([
               ...guestsList,
-              { name: '', id: crypto.randomUUID() },
+              { firstName: '', lastName: '', id: crypto.randomUUID() },
             ]);
           }}
         >
@@ -161,7 +193,7 @@ const AddGuestsModal = ({
             onClick={() => form.submit()}
             loading={guestAddLoading}
           >
-            Adaugă
+            Adaugă {guestsList.length} Invitat(ți)
           </Button>
         </div>
       </div>

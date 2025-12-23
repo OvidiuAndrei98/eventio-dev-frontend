@@ -10,7 +10,7 @@ const ConfirmationCardContent = ({ guest }: ConfirmationCardContentProps) => {
     <div className="card-content-container">
       <div className="card-row">
         <span className="secondary-text-color-light title">Nume</span>
-        <span className="value">{guest.name}</span>
+        <span className="value">{guest.fullName}</span>
       </div>
       {guest.primaryContactPhone && guest.primaryContactPhone !== '' && (
         <div className="card-row">
