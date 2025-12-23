@@ -141,9 +141,9 @@ const RefusalsTable = ({ guests }: RefusalsTableProps) => {
   const columns: TableProps<Guest>['columns'] = [
     {
       title: 'Invitat',
-      dataIndex: 'name',
+      dataIndex: 'name' as DataIndex,
       key: 'name',
-      ...getColumnSearchProps('name'),
+      ...getColumnSearchProps('name' as DataIndex),
     },
     {
       title: 'Telefon',

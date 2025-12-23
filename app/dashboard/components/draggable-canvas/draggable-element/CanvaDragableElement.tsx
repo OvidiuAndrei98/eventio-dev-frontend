@@ -463,7 +463,11 @@ const CanvaDraggableElement = ({
     height: elementH + 'px',
   };
 
-  const getTooltipBaseContent = (rounded: boolean, name: string) => (
+  const getTooltipBaseContent = (
+    rounded: boolean,
+    name: string,
+    tableNumber: number
+  ) => (
     <TooltipProvider delayDuration={2}>
       <Tooltip delayDuration={300}>
         <TooltipTrigger
@@ -471,7 +475,7 @@ const CanvaDraggableElement = ({
             rounded ? 'full' : 'sm'
           } w-full h-full flex gap-2 items-center justify-center p-3 text-base font-bold text-gray-900 bg-[#f1ebf4] hover:bg-[#ECE2F2] group dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white border-solid border-1 border-gray-100`}
         >
-          {name}
+          {name} ({tableNumber})
         </TooltipTrigger>
         <TooltipContent className="p-4 shadow-md bg-[white] min-w-[250px] flex flex-col gap-2 pointer-events-auto">
           <TooltipContentComponent name={name} tableGuests={guests} />
@@ -515,7 +519,11 @@ const CanvaDraggableElement = ({
           rounded = false;
         }
 
-        const TooltipContent = getTooltipBaseContent(rounded, name);
+        const TooltipContent = getTooltipBaseContent(
+          rounded,
+          name,
+          tableNumber || 1
+        );
 
         return (
           <TableWithChairs

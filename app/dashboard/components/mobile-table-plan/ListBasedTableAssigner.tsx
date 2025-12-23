@@ -321,7 +321,9 @@ const ListBasedTableAssigner = ({
                     onClick={() => handleTableSelect(table)}
                   >
                     <div>
-                      <h3 className="font-semibold">{table.name}</h3>
+                      <h3 className="font-semibold">
+                        {table.name} ({table.number || 1})
+                      </h3>
                       <span className="text-sm text-gray-600">
                         Locuri: {table.guestCount}/{table.seats}
                       </span>
