@@ -372,30 +372,40 @@ const EditPage = () => {
       setTemplate((prevTemplate) => {
         // Do this only for the background image property
         if (propertyPath === 'backgroundImage') {
-          // Set reference to the updated element id and bg image value
-          // Avoid duplicate ids in updatedBackgroundImages
-          setUpdatedBackgroundImages((prev) => {
-            // Remove any previous entry for this id
-            const filtered = prev.filter(
-              (obj) =>
-                !Object.prototype.hasOwnProperty.call(
-                  obj,
-                  selectedElementOrSectionId
-                )
-            );
-            return [
-              ...filtered,
-              {
-                [selectedElementOrSectionId]: {
-                  newValue: newValue as {
-                    name: string;
-                    opacity: string;
-                    url: string;
+          const newBg = newValue as {
+            name: string;
+            opacity: string;
+            url: string;
+          } | null;
+          const existingUrl =
+            initialImagesRef.current?.[selectedElementOrSectionId]?.url ?? null;
+          const newUrl = newBg?.url ?? null;
+
+          // Only track changes when the url actually changed OR when the background was removed (null)
+          if (newValue === null || newUrl !== existingUrl) {
+            setUpdatedBackgroundImages((prev) => {
+              // Remove any previous entry for this id
+              const filtered = prev.filter(
+                (obj) =>
+                  !Object.prototype.hasOwnProperty.call(
+                    obj,
+                    selectedElementOrSectionId
+                  )
+              );
+              return [
+                ...filtered,
+                {
+                  [selectedElementOrSectionId]: {
+                    newValue: newValue as {
+                      name: string;
+                      opacity: string;
+                      url: string;
+                    } | null,
                   },
                 },
-              },
-            ];
-          });
+              ];
+            });
+          }
         }
 
         // Call the helper for immutably updating the element
