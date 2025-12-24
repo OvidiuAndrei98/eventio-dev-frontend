@@ -384,7 +384,8 @@ const EditPage = () => {
 
           // Always update the tracking object, but mark imageUpdated only when the url actually changed
           const imageUpdated =
-            typeof newUrl === 'string' && newUrl.startsWith('data:');
+            (typeof newUrl === 'string' && newUrl.startsWith('data:')) ||
+            newUrl === null;
 
           setUpdatedBackgroundImages((prev) => {
             // Remove any previous entry for this id
@@ -444,7 +445,8 @@ const EditPage = () => {
 
           // Always update the tracking object, but mark imageUpdated only when the url actually changed
           const imageUpdated =
-            typeof newUrl === 'string' && newUrl.startsWith('data:');
+            (typeof newUrl === 'string' && newUrl.startsWith('data:')) ||
+            newUrl === null;
 
           setUpdatedBackgroundImages((prev) => {
             // Remove any previous entry for this id
@@ -513,11 +515,14 @@ const EditPage = () => {
             initialImagesRef.current[itemId] &&
             typeof initialImagesRef.current[itemId]?.name === 'string'
           ) {
-            await removeImageForTemplate(
-              user,
-              templateId,
-              initialImagesRef.current[itemId]!.name
-            );
+            if (update.newValue?.imageUpdated) {
+              await removeImageForTemplate(
+                user,
+                templateId,
+                initialImagesRef.current[itemId]!.name
+              );
+            }
+
             const selectedElementType = selectedItemData.type;
 
             // Decide daca actualizezi un element sau o sectiune
