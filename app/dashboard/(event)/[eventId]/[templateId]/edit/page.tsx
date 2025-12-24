@@ -42,6 +42,12 @@ import MobileElementsPopup from './components/mobileElementsPopup/MobileElements
 import MobilePropertiesPannel from './components/mobileElementsPopup/mobilePropertiesPannel/MobilePropertiesPannel';
 import { SaveIcon } from 'lucide-react';
 import { addErrorLog } from '@/service/logs/addErrorLog';
+import { set } from 'lodash';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -54,6 +60,7 @@ const EditPage = () => {
   const [templateUpdateLoading, setTemplateUpdateLoading] = useState(false);
   const [insertionIndex, setInsertionIndex] = useState<number | null>(null);
   const [openPopoverIndex, setOpenPopoverIndex] = useState<number | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [editViewMode, setEditViewMode] = useState<
     'mobile' | 'desktop' | 'tablet'
   >('mobile');
@@ -149,6 +156,7 @@ const EditPage = () => {
         setOpenPopoverIndex(index);
         setInsertionIndex(index);
       }
+      setHasUnsavedChanges(true);
     },
     [openPopoverIndex]
   );
@@ -189,6 +197,7 @@ const EditPage = () => {
           elements: updatedSections,
         };
       });
+      setHasUnsavedChanges(true);
     },
     [template, insertionIndex, setTemplate]
   );
@@ -216,6 +225,7 @@ const EditPage = () => {
           elements: updatedSections,
         };
       });
+      setHasUnsavedChanges(true);
     },
     [template, setTemplate]
   );
@@ -253,6 +263,7 @@ const EditPage = () => {
           elements: updatedSections,
         };
       });
+      setHasUnsavedChanges(true);
     },
     [template, insertionIndex, setTemplate]
   );
@@ -304,6 +315,7 @@ const EditPage = () => {
           elements: updatedSections,
         };
       });
+      setHasUnsavedChanges(true);
     },
     [template, setTemplate]
   );
@@ -454,6 +466,7 @@ const EditPage = () => {
         return updatedTemplate;
       });
     }
+    setHasUnsavedChanges(true);
   };
 
   const handleSectionSelect = (element: TemplateElement) => {
@@ -561,6 +574,8 @@ const EditPage = () => {
       setUpdatedBackgroundImages([]);
       // await fetchTemplate();
       setTemplateUpdateLoading(false);
+      // Reset unsaved changes flag
+      setHasUnsavedChanges(false);
       toast.success('Template-ul a fost actualizat');
     } catch (error) {
       await addErrorLog(user.userId, {
@@ -589,6 +604,8 @@ const EditPage = () => {
         editViewMode
       );
 
+      setHasUnsavedChanges(true);
+
       return updatedTemplate;
     });
   };
@@ -606,6 +623,8 @@ const EditPage = () => {
       templateCopy.elements[sectionIndex].elements = elements;
       return templateCopy;
     });
+
+    setHasUnsavedChanges(true);
   };
 
   if (loading) {
@@ -618,6 +637,7 @@ const EditPage = () => {
 
   return isMobile ? (
     <MobileEditor
+      hasUnsavedChanges={hasUnsavedChanges}
       invitationData={template}
       selectedElementId={selectedItemId}
       handleSectionSelect={handleSectionSelect}
@@ -667,14 +687,53 @@ const EditPage = () => {
                 Vezi invitatia
               </Link>
             </Button>
-            <Button
-              loading={templateUpdateLoading}
-              type="primary"
-              size="middle"
-              onClick={handleTemplateUpdate}
-            >
-              Salveaza
-            </Button>
+            <div className="flex items-center gap-3">
+              <div className="relative inline-flex items-center">
+                <span
+                  aria-hidden="true"
+                  className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[40px] h-[20px] rounded-md pointer-events-none"
+                  style={{
+                    // stronger visible glow using the --primary-color CSS variable
+                    boxShadow:
+                      '0 10px 8px rgba(0,0,0,0.12), 0 0 3px 6px var(--primary-color)',
+                    background: 'transparent',
+                    zIndex: 0,
+                    // use Tailwind's keyframes name but override timing to slow it down
+                    animationName: hasUnsavedChanges ? 'ping' : 'none',
+                    animationDuration: hasUnsavedChanges ? '1s' : '0s',
+                    animationIterationCount: hasUnsavedChanges
+                      ? 'infinite'
+                      : '0',
+                    animationTimingFunction: 'cubic-bezier(.4,0,.6,1)',
+                    opacity: hasUnsavedChanges ? 1 : 0,
+                  }}
+                />
+                <Button
+                  loading={templateUpdateLoading}
+                  type="primary"
+                  size="middle"
+                  onClick={handleTemplateUpdate}
+                  className="relative z-10"
+                >
+                  Salveaza
+                </Button>
+              </div>
+
+              {hasUnsavedChanges && (
+                <div className="flex items-center gap-2">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-xl text-red-600 font-medium cursor-default">
+                        !
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>Aveti modificari nesalvate</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="relative w-full h-[calc(100dvh-142px)] bg-[#F1F5F9] p-2 grid grid-cols-[250px_1fr_210px] gap-2">
@@ -788,6 +847,7 @@ const EditPage = () => {
 export default EditPage;
 
 interface MobileEditorProps {
+  hasUnsavedChanges: boolean;
   invitationData: Template;
   selectedElementId: string;
   handleSectionSelect: (element: TemplateElement) => void;
@@ -818,6 +878,7 @@ interface MobileEditorProps {
 }
 
 const MobileEditor = ({
+  hasUnsavedChanges,
   invitationData,
   selectedElementId,
   handleSectionSelect,
@@ -873,13 +934,38 @@ const MobileEditor = ({
 
   return (
     <div className="relative h-full overflow-hidden">
-      <Button
-        shape="circle"
-        size="large"
-        className="!absolute !right-4 !top-2 !bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200 z-10 rounded-full flex items-center gap-2"
-        icon={<SaveIcon />}
-        onClick={handleTemplateUpdate}
-      />
+      <div className="relative inline-flex items-center !absolute !right-4 !top-2 z-10">
+        <span
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[20px] h-[20px] rounded-full pointer-events-none"
+          style={{
+            // stronger visible glow using the --primary-color CSS variable
+            boxShadow:
+              '0 10px 8px rgba(0,0,0,0.12), 0 0 3px 8px var(--primary-color)',
+            background: 'transparent',
+            zIndex: 0,
+            // use Tailwind's keyframes name but override timing to slow it down
+            animationName: hasUnsavedChanges ? 'ping' : 'none',
+            animationDuration: hasUnsavedChanges ? '1s' : '0s',
+            animationIterationCount: hasUnsavedChanges ? 'infinite' : '0',
+            animationTimingFunction: 'cubic-bezier(.4,0,.6,1)',
+            opacity: hasUnsavedChanges ? 1 : 0,
+          }}
+        />
+        <Button
+          shape="circle"
+          size="large"
+          className="!bg-white/60 !text-[var(--primary-color)] !backdrop-blur-xl !shadow-lg !border border-gray-200 rounded-full flex items-center gap-2 relative z-10"
+          icon={<SaveIcon />}
+          onClick={handleTemplateUpdate}
+          style={{
+            boxShadow:
+              '0 10px 8px rgba(0,0,0,0.12), 0 0 3px 6px var(--primary-color)',
+            transformOrigin: 'center',
+          }}
+        />
+      </div>
+
       <div
         className={`h-full overflow-auto ${
           editViewMode === 'mobile'

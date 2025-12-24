@@ -385,28 +385,29 @@ const RsvpElement = ({
           </Select>
         </Form.Item>
         {/* Randarea întrebărilor adiționale pentru RSVP */}
-        {eventAditionalQuestions.map((q, index) => (
-          <Form.Item
-            style={{ color: 'inherit' }}
-            rules={[
-              {
-                required: true,
-                message: 'Aceasta intrebare este obligatorie',
-              },
-            ]}
-            label={q.qName}
-            name={q.qName.replace(/\s+/g, '_')}
-            key={q.qName + index}
-          >
-            <Select placeholder={'--Alege--'}>
-              {q.qAnswers.map((qa, index) => (
-                <Select.Option value={qa.value} key={index}>
-                  {qa.value}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        ))}
+        {form.getFieldValue('isAttending') === 'yes' &&
+          eventAditionalQuestions.map((q, index) => (
+            <Form.Item
+              style={{ color: 'inherit' }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Aceasta intrebare este obligatorie',
+                },
+              ]}
+              label={q.qName}
+              name={q.qName.replace(/\s+/g, '_')}
+              key={q.qName + index}
+            >
+              <Select placeholder={'--Alege--'}>
+                {q.qAnswers.map((qa, index) => (
+                  <Select.Option value={qa.value} key={index}>
+                    {qa.value}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          ))}
         {formData.isAttending === 'yes' && (
           <Form.Item<RsvpFormData>
             style={{ color: 'inherit' }}

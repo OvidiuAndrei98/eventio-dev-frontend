@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { useEventContext } from '@/core/context/EventContext';
 import { queryEventsStatisticsPerWeek } from '@/service/event/queryEventsStatistics';
 import { StarOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
 
 const chartConfig = {
   responses: {
@@ -46,6 +47,7 @@ const ActivityChart = ({
 }) => {
   const [eventStats, setEventStatistics] = useState<EventStats[]>([]);
   const { eventInstance } = useEventContext();
+  const router = useRouter();
 
   const isPremiumOrAbove =
     eventInstance?.eventPlan === EventPlan.premium ||
@@ -101,6 +103,9 @@ const ActivityChart = ({
 
             {showActionButton && (
               <Button
+                onClick={() =>
+                  router.push(`/dashboard/${eventInstance?.eventId}/statistics`)
+                }
                 icon={
                   isBasicPlan ? (
                     <span

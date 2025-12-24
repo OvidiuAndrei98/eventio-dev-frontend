@@ -46,8 +46,6 @@ const ColorEditorWidget: React.FC<ColorEditorWidgetProps> = ({
     <div
       style={{
         marginBottom: '10px',
-        position: 'relative',
-        overflow: 'visible',
       }}
     >
       <label

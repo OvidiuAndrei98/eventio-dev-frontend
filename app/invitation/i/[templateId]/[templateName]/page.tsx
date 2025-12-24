@@ -6,6 +6,8 @@ import { queryTemplateById } from '@/service/templates/queryTemplateById';
 import { notFound, useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import WorkInProgressSvg from '@/public/work-in-progress.svg';
+import Image from 'next/image';
 
 const InvitationPage = () => {
   const { templateId } = useParams<{
@@ -33,14 +35,38 @@ const InvitationPage = () => {
   if (!loading && !template?.templateId) {
     notFound();
   }
+  if (loading || !template) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
+        <span className="loader"></span>
+      </div>
+    );
+  }
 
-  return loading || !template ? (
-    <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
-      <span className="loader"></span>
-    </div>
-  ) : (
+  if (!template.settings?.eventActive) {
+    return (
+      <div className="flex flex-col gap-4 items-center justify-center w-full h-screen bg-[#F1F5F9]">
+        <Image
+          src={WorkInProgressSvg}
+          alt="Work in Progress"
+          width={300}
+          height={300}
+        />
+        <h1 className="text-gray-600 text-lg">
+          Invitatia nu este activa momentan, Mirii inca lucreaza la ea.
+        </h1>
+        <p className="text-gray-400 text-sm mt-2">
+          Te rugam sa incerci din nou mai tarziu.
+        </p>
+      </div>
+    );
+  }
+
+  return (
     <div
-      className={`w-full h-auto ${template.settings.backgroundColor} mx-auto`}
+      className={`w-full h-auto ${
+        template.settings?.backgroundColor ?? ''
+      } mx-auto`}
     >
       <TemplateRenderer invitationData={template} editMode={false} />
     </div>

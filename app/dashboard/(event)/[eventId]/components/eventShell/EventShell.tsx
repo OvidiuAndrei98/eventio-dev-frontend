@@ -172,7 +172,13 @@ export default function EventShell({ children }: EventShellProps) {
                                 {routeTitleMapper[route] || route}
                               </BreadcrumbPage>
                             ) : (
-                              <BreadcrumbLink href={href}>
+                              <BreadcrumbLink
+                                href={
+                                  route === 'dashboard'
+                                    ? `/dashboard/${eventId}`
+                                    : href
+                                }
+                              >
                                 {routeTitleMapper[route] || route}
                               </BreadcrumbLink>
                             )}

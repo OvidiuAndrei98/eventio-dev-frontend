@@ -198,6 +198,7 @@ const NewInvitationPage = () => {
       eventTableOrganization: {
         elements: [],
       },
+      // TODO Not used in the new invitation flow, to be removed in feature releases
       guests: [],
       // TODO Not used in the new invitation flow, to be removed in feature releases
       adiotionalLocations: [],
