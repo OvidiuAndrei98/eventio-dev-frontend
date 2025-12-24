@@ -75,6 +75,7 @@ const EditPage = () => {
       string,
       {
         newValue?: {
+          imageUpdated: boolean;
           name: string;
           opacity: string;
           url: string;
@@ -372,41 +373,46 @@ const EditPage = () => {
       setTemplate((prevTemplate) => {
         // Do this only for the background image property
         if (propertyPath === 'backgroundImage') {
+          // Only track changes when the url actually changed OR when the background was removed (null)
           const newBg = newValue as {
             name: string;
             opacity: string;
             url: string;
           } | null;
-          const existingUrl =
-            findItemInTemplateById(prevTemplate, selectedElementOrSectionId)
-              ?.backgroundImage?.url ?? null;
+
           const newUrl = newBg?.url ?? null;
 
-          // Only track changes when the url actually changed OR when the background was removed (null)
-          if (newValue === null || newUrl !== existingUrl) {
-            setUpdatedBackgroundImages((prev) => {
-              // Remove any previous entry for this id
-              const filtered = prev.filter(
-                (obj) =>
-                  !Object.prototype.hasOwnProperty.call(
-                    obj,
-                    selectedElementOrSectionId
-                  )
-              );
-              return [
-                ...filtered,
-                {
-                  [selectedElementOrSectionId]: {
-                    newValue: newValue as {
-                      name: string;
-                      opacity: string;
-                      url: string;
-                    } | null,
-                  },
+          // Always update the tracking object, but mark imageUpdated only when the url actually changed
+          const imageUpdated =
+            typeof newUrl === 'string' && newUrl.startsWith('data:');
+
+          setUpdatedBackgroundImages((prev) => {
+            // Remove any previous entry for this id
+            const filtered = prev.filter(
+              (obj) =>
+                !Object.prototype.hasOwnProperty.call(
+                  obj,
+                  selectedElementOrSectionId
+                )
+            );
+
+            return [
+              ...filtered,
+              {
+                [selectedElementOrSectionId]: {
+                  newValue:
+                    newBg === null
+                      ? null
+                      : {
+                          imageUpdated,
+                          name: newBg.name,
+                          opacity: newBg.opacity,
+                          url: newBg.url,
+                        },
                 },
-              ];
-            });
-          }
+              },
+            ];
+          });
         }
 
         // Call the helper for immutably updating the element
@@ -427,41 +433,46 @@ const EditPage = () => {
       setTemplate((prevTemplate) => {
         // Do this only for the background image property
         if (propertyPath === 'backgroundImage') {
+          // Only track changes when the url actually changed OR when the background was removed (null)
           const newBg = newValue as {
             name: string;
             opacity: string;
             url: string;
           } | null;
-          const existingUrl =
-            findItemInTemplateById(prevTemplate, selectedElementOrSectionId)
-              ?.backgroundImage?.url ?? null;
+
           const newUrl = newBg?.url ?? null;
 
-          // Only track changes when the url actually changed OR when the background was removed (null)
-          if (newValue === null || newUrl !== existingUrl) {
-            setUpdatedBackgroundImages((prev) => {
-              // Remove any previous entry for this id
-              const filtered = prev.filter(
-                (obj) =>
-                  !Object.prototype.hasOwnProperty.call(
-                    obj,
-                    selectedElementOrSectionId
-                  )
-              );
-              return [
-                ...filtered,
-                {
-                  [selectedElementOrSectionId]: {
-                    newValue: newValue as {
-                      name: string;
-                      opacity: string;
-                      url: string;
-                    } | null,
-                  },
+          // Always update the tracking object, but mark imageUpdated only when the url actually changed
+          const imageUpdated =
+            typeof newUrl === 'string' && newUrl.startsWith('data:');
+
+          setUpdatedBackgroundImages((prev) => {
+            // Remove any previous entry for this id
+            const filtered = prev.filter(
+              (obj) =>
+                !Object.prototype.hasOwnProperty.call(
+                  obj,
+                  selectedElementOrSectionId
+                )
+            );
+
+            return [
+              ...filtered,
+              {
+                [selectedElementOrSectionId]: {
+                  newValue:
+                    newBg === null
+                      ? null
+                      : {
+                          imageUpdated,
+                          name: newBg.name,
+                          opacity: newBg.opacity,
+                          url: newBg.url,
+                        },
                 },
-              ];
-            });
-          }
+              },
+            ];
+          });
         }
 
         // Call the helper for immutably updating the element
@@ -535,7 +546,7 @@ const EditPage = () => {
             }
           }
 
-          if (update.newValue) {
+          if (update.newValue?.imageUpdated) {
             const storageUrl = await uploadImageForTemplate(
               update.newValue.url,
               user,
