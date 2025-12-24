@@ -378,7 +378,8 @@ const EditPage = () => {
             url: string;
           } | null;
           const existingUrl =
-            initialImagesRef.current?.[selectedElementOrSectionId]?.url ?? null;
+            findItemInTemplateById(prevTemplate, selectedElementOrSectionId)
+              ?.backgroundImage?.url ?? null;
           const newUrl = newBg?.url ?? null;
 
           // Only track changes when the url actually changed OR when the background was removed (null)
@@ -432,7 +433,8 @@ const EditPage = () => {
             url: string;
           } | null;
           const existingUrl =
-            initialImagesRef.current?.[selectedElementOrSectionId]?.url ?? null;
+            findItemInTemplateById(prevTemplate, selectedElementOrSectionId)
+              ?.backgroundImage?.url ?? null;
           const newUrl = newBg?.url ?? null;
 
           // Only track changes when the url actually changed OR when the background was removed (null)
