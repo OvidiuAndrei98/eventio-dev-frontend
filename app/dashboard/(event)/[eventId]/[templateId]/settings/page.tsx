@@ -57,6 +57,7 @@ const SettingsPage = () => {
     templateId: string;
   }>();
   const { eventInstance, setEventInstance } = useEventContext();
+  const [hasChanges, setHasChanges] = useState(false);
   const [aditionalQuestionsForm] = Form.useForm();
   const [teplateSaveLoading, setTemplateSaveLoading] = useState(false);
   const [templateSettings, setTemplateSettings] = useState<
@@ -270,6 +271,7 @@ const SettingsPage = () => {
       }
       setTemplateSaveLoading(false);
       toast.success('Setari actualizate cu succes');
+      setHasChanges(false);
     } catch (error) {
       setTemplateSaveLoading(false);
       console.log(error);
@@ -278,6 +280,9 @@ const SettingsPage = () => {
       } else {
         toast.error('A aparut o eroare la actualizarea setarilor');
       }
+    } finally {
+      setTemplateSaveLoading(false);
+      setHasChanges(false);
     }
   };
 
@@ -290,12 +295,12 @@ const SettingsPage = () => {
           const qAnswers = i.qAnswers?.filter((qa) => qa?.value) ?? [];
           if (qAnswers.length <= 0) {
             throw new Error(
-              'Exista intrebari fara raspunsuri, lista nu au fost actualizata'
+              'Exista intrebari fara raspunsuri, setarile nu au fost salvate.'
             );
           }
           if (i.qName.trim() === '') {
             throw new Error(
-              'Exista intrebari necompletate, lista nu au fost actualizata'
+              'Exista intrebari necompletate, setarile nu au fost salvate.'
             );
           }
           const eventQuestion = {
@@ -415,6 +420,7 @@ const SettingsPage = () => {
       handleAddAditionalEventLocation(loc, file, oldFileName);
     }
     setNewEventLocationPopoverOpen(false);
+    setHasChanges(true);
   };
 
   if (!user) {
@@ -427,13 +433,31 @@ const SettingsPage = () => {
   ) : (
     <div className="bg-[#F6F6F6] h-full p-4 flex flex-col overflow-y-auto">
       <div className="w-full flex items-center justify-end mb-4 col-span-full row-start-1">
-        <Button
-          loading={teplateSaveLoading}
-          type="primary"
-          onClick={() => handleUpdateTemplateSettings()}
-        >
-          Salveaza
-        </Button>
+        <div className="relative inline-flex items-center">
+          <span
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[45px] h-[20px] rounded-md pointer-events-none"
+            style={{
+              boxShadow:
+                '0 10px 8px rgba(0,0,0,0.12), 0 0 3px 6px var(--primary-color)',
+              background: 'transparent',
+              zIndex: 0,
+              animationName: hasChanges ? 'ping' : 'none',
+              animationDuration: hasChanges ? '1s' : '0s',
+              animationIterationCount: hasChanges ? 'infinite' : '0',
+              animationTimingFunction: 'cubic-bezier(.4,0,.6,1)',
+              opacity: hasChanges ? 1 : 0,
+            }}
+          />
+          <Button
+            loading={teplateSaveLoading}
+            type="primary"
+            onClick={() => handleUpdateTemplateSettings()}
+            className="relative z-10"
+          >
+            Salveaza
+          </Button>
+        </div>
       </div>
       <div className="row flex flex-col w-full gap-4 md:!flex-row">
         <div className="w-full flex flex-col gap-4">
@@ -446,7 +470,11 @@ const SettingsPage = () => {
                 </span>
                 <Switch
                   value={templateSettings.eventActive}
-                  onChange={(value) => onSettingsChange('eventActive', value)}
+                  onChange={(value) => {
+                    value !== templateSettings.eventActive &&
+                      setHasChanges(true);
+                    onSettingsChange('eventActive', value);
+                  }}
                   className="max-w-[40px]"
                   checkedChildren={<CheckOutlined />}
                   unCheckedChildren={<CloseOutlined />}
@@ -467,9 +495,11 @@ const SettingsPage = () => {
                       | undefined
                       | null
                   }
-                  onChange={(newValue) =>
-                    onSettingsChange('backgroundColor', newValue)
-                  }
+                  onChange={(newValue) => {
+                    newValue !== templateSettings.backgroundColor &&
+                      setHasChanges(true);
+                    onSettingsChange('backgroundColor', newValue);
+                  }}
                 />
               </div>
             </div>
@@ -506,6 +536,9 @@ const SettingsPage = () => {
                         extra={
                           <CloseOutlined
                             onClick={() => {
+                              fields.length !==
+                                eventInstance?.eventAditionalQuestions
+                                  ?.length && setHasChanges(true);
                               remove(field.name);
                             }}
                           />
@@ -575,7 +608,16 @@ const SettingsPage = () => {
                         </li>
                       </ul>
                     </Tag>
-                    <Button type="dashed" onClick={() => add()} block>
+                    <Button
+                      type="dashed"
+                      onClick={() => {
+                        fields.length !==
+                          eventInstance?.eventAditionalQuestions?.length &&
+                          setHasChanges(true);
+                        add();
+                      }}
+                      block
+                    >
                       + Adauga intrebare
                     </Button>
                   </div>
@@ -706,9 +748,10 @@ const SettingsPage = () => {
                       className="md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       type="text"
                       icon={<DeleteOutlined />}
-                      onClick={() =>
-                        handleDeleteAditionalLocation(loc.locationId)
-                      }
+                      onClick={() => {
+                        handleDeleteAditionalLocation(loc.locationId);
+                        setHasChanges(true);
+                      }}
                     />
                   </div>
                 </div>
