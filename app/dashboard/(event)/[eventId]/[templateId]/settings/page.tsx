@@ -143,7 +143,7 @@ const SettingsPage = () => {
               name: fileName,
             };
           }
-          if (oldFilename) {
+          if (oldFilename && /^\d{4}_/.test(oldFilename)) {
             await removeImageForTemplate(user, templateId, oldFilename);
           }
           return newImageOject;
@@ -155,7 +155,7 @@ const SettingsPage = () => {
     if (file?.status === 'removed') {
       if (user) {
         try {
-          if (oldFilename) {
+          if (oldFilename && /^\d{4}_/.test(oldFilename)) {
             // If the file was removed, we need to delete the old image
             await removeImageForTemplate(user, templateId, oldFilename);
           }
@@ -204,7 +204,7 @@ const SettingsPage = () => {
         });
 
         // Update the main event location image if it was edited
-        if (editedEvemtLocation?.file) {
+        if (editedEvemtLocation?.file || editedEvemtLocation?.oldFileName) {
           // If the edited location is the main event location, update it
           if (
             editedEvemtLocation.location.locationId ===
@@ -212,7 +212,7 @@ const SettingsPage = () => {
           ) {
             evQuestionsCopy.eventLocation.locationImage =
               await uploadLocationImage(
-                editedEvemtLocation.file,
+                editedEvemtLocation.file ?? { status: 'removed' },
                 editedEvemtLocation.oldFileName
               );
           }
@@ -370,7 +370,7 @@ const SettingsPage = () => {
     // and the file will remain the same, so we send undefined to the update function
     setEditedEventLocation({
       location,
-      file: file.originFileObj ? file : undefined,
+      file: file?.originFileObj ? file : undefined,
       oldFileName: oldFilename,
     });
     onSettingsChange('eventLocation', location);

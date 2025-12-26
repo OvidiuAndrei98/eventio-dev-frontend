@@ -139,42 +139,50 @@ const AutocompleteMapsInput = ({
       eventLocationCopy.title = values.locationTitle;
       eventLocationCopy.locationStartTime = values.locationStartTime;
 
-      const now = new Date();
-      const min = now.getMinutes().toString().padStart(2, '0');
-      const sec = now.getSeconds().toString().padStart(2, '0');
-      const prevName = values.locationPhoto.file.name.replace(/^\d{4}_/, '');
-      const fileName = `${min}${sec}_${prevName}`;
-
+      const fileInfo = values.locationPhoto?.file;
       const oldFileName = eventLocationCopy?.locationImage?.name;
 
-      const oldName = oldFileName?.replace(/^\d{4}_/, '');
-      const newName = fileName.replace(/^\d{4}_/, '');
-
-      if (
-        oldName &&
-        values.locationPhoto?.file.status !== 'removed' &&
-        oldName === newName
-      ) {
-        // If the filename is the same, it means the image was not changed
-        onLocationSelect(eventLocationCopy, null, oldFileName);
+      // If the image was removed, clear the locationImage and notify
+      if (fileInfo?.status === 'removed') {
+        eventLocationCopy.locationImage = undefined;
+        onLocationSelect(eventLocationCopy, undefined, oldFileName);
         setSaveTriggeredFlag(false);
         return;
       }
 
-      eventLocationCopy.locationImage = {
-        name: fileName,
-        url: values.locationPhoto.file.thumbUrl,
-      };
+      // If there's an existing image name and an uploaded/selected file, check whether it actually changed
+      if (fileInfo && oldFileName && fileInfo.name) {
+        const prevName = fileInfo.name.replace(/^\d{4}_/, '');
+        const oldName = oldFileName.replace(/^\d{4}_/, '');
+
+        // If the underlying filename (without the timestamp prefix) is the same, the image didn't change.
+        if (prevName === oldName && fileInfo.status !== 'removed') {
+          // Do not change the stored image object; inform caller that file didn't change (pass null).
+          onLocationSelect(eventLocationCopy, null, oldFileName);
+          setSaveTriggeredFlag(false);
+          return;
+        }
+      }
+
+      // Otherwise, if there's a new file (or there was no old one), attach/update the image object
+      if (fileInfo && fileInfo.status !== 'removed') {
+        const now = new Date();
+        const min = now.getMinutes().toString().padStart(2, '0');
+        const sec = now.getSeconds().toString().padStart(2, '0');
+        const prevName = (fileInfo.name || '').replace(/^\d{4}_/, '');
+        const fileName = `${min}${sec}_${prevName}`;
+
+        eventLocationCopy.locationImage = {
+          name: fileName,
+          url: fileInfo.thumbUrl,
+        };
+      }
 
       if (!editingLocation) {
         eventLocationCopy.locationId = crypto.randomUUID();
       }
 
-      onLocationSelect(
-        eventLocationCopy,
-        values.locationPhoto.file,
-        oldFileName
-      );
+      onLocationSelect(eventLocationCopy, fileInfo, oldFileName);
       setSaveTriggeredFlag(false);
     }
   };

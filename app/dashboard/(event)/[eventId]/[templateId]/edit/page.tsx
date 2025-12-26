@@ -509,85 +509,85 @@ const EditPage = () => {
       let updatedTemplate = { ...template };
 
       for (const imageUpdateObj of updatedBackgroundImages) {
-        for (const [itemId, update] of Object.entries(imageUpdateObj)) {
-          if (
-            initialImagesRef.current &&
-            initialImagesRef.current[itemId] &&
-            typeof initialImagesRef.current[itemId]?.name === 'string'
-          ) {
-            if (update.newValue?.imageUpdated) {
-              await removeImageForTemplate(
-                user,
-                templateId,
-                initialImagesRef.current[itemId]!.name
-              );
-            }
+        // iterate keys to avoid casting Object.entries to an incompatible tuple type
+        for (const itemId of Object.keys(imageUpdateObj)) {
+          const entry = imageUpdateObj[itemId];
+          const newValue = entry?.newValue ?? null;
 
-            const selectedElementType = selectedItemData.type;
+          // If nothing changed (no removal and no imageUpdated) skip
+          const isRemoval = newValue === null;
+          const isImageUpdated = !!newValue && !!newValue.imageUpdated;
 
-            // Decide daca actualizezi un element sau o sectiune
-            if (
-              selectedElementType !== ElementType.Section &&
-              selectedElementType !== ElementType.RSVP_SECTION &&
-              selectedElementType !== ElementType.LocationsSection
-            ) {
-              updatedTemplate = updateElementPropertyInTemplate(
-                updatedTemplate,
-                itemId,
-                'backgroundImage',
-                null,
-                false,
-                editViewMode
-              );
-            } else {
-              updatedTemplate = updateSectionPropertyInTemplate(
-                updatedTemplate,
-                itemId,
-                'backgroundImage',
-                null,
-                false,
-                editViewMode
-              );
-            }
+          if (!isRemoval && !isImageUpdated) continue;
+
+          // If there was an initial stored image for this item and we are removing or replacing it -> delete it
+          const initialImage = initialImagesRef.current?.[itemId];
+          if (initialImage && (isRemoval || isImageUpdated)) {
+            await removeImageForTemplate(user, templateId, initialImage.name);
           }
 
-          if (update.newValue?.imageUpdated) {
-            const storageUrl = await uploadImageForTemplate(
-              update.newValue.url,
-              user,
-              templateId,
-              update.newValue.name
-            );
-            const selectedElementType = selectedItemData.type;
-            // Decide daca actualizezi un element sau o sectiune
-            if (
-              selectedElementType !== ElementType.Section &&
-              selectedElementType !== ElementType.RSVP_SECTION &&
-              selectedElementType !== ElementType.LocationsSection
-            ) {
-              // Update local copy, nu state-ul React!
-              updatedTemplate = updateElementPropertyInTemplate(
-                updatedTemplate,
-                itemId,
-                'backgroundImage',
-                {
-                  url: storageUrl,
-                  name: update.newValue?.name,
-                  opacity: update.newValue?.opacity,
-                },
-                false,
-                editViewMode
-              );
-            } else {
+          // Find the actual item in the current updatedTemplate to decide if it's a section or element
+          const targetItem = findItemInTemplateById(updatedTemplate, itemId);
+          const isSection =
+            targetItem &&
+            (targetItem.type === ElementType.Section ||
+              targetItem.type === ElementType.RSVP_SECTION ||
+              targetItem.type === ElementType.LocationsSection);
+
+          // Handle removal: set backgroundImage to null
+          if (isRemoval) {
+            if (isSection) {
               updatedTemplate = updateSectionPropertyInTemplate(
                 updatedTemplate,
                 itemId,
                 'backgroundImage',
-                {
-                  url: storageUrl,
-                  name: update.newValue?.name,
-                  opacity: update.newValue?.opacity,
-                },
+                null,
+                false,
+                editViewMode
+              );
+            } else {
+              updatedTemplate = updateElementPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                null,
+                false,
+                editViewMode
+              );
+            }
+            continue;
+          }
+
+          // Handle new image upload only when imageUpdated is true
+          if (isImageUpdated && newValue?.url) {
+            const storageUrl = await uploadImageForTemplate(
+              newValue.url,
+              user,
+              templateId,
+              newValue.name!
+            );
+
+            const bgObj = {
+              url: storageUrl,
+              name: newValue.name!,
+              opacity: newValue.opacity!,
+            };
+
+            if (isSection) {
+              updatedTemplate = updateSectionPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                bgObj,
+                false,
+                editViewMode
+              );
+            } else {
+              updatedTemplate = updateElementPropertyInTemplate(
+                updatedTemplate,
+                itemId,
+                'backgroundImage',
+                bgObj,
                 false,
                 editViewMode
               );
