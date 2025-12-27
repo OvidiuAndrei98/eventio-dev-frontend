@@ -145,7 +145,7 @@ const AutocompleteMapsInput = ({
       // If the image was removed, clear the locationImage and notify
       if (fileInfo?.status === 'removed') {
         eventLocationCopy.locationImage = undefined;
-        onLocationSelect(eventLocationCopy, undefined, oldFileName);
+        onLocationSelect(eventLocationCopy, { status: 'removed' }, oldFileName);
         setSaveTriggeredFlag(false);
         return;
       }
@@ -158,7 +158,11 @@ const AutocompleteMapsInput = ({
         // If the underlying filename (without the timestamp prefix) is the same, the image didn't change.
         if (prevName === oldName && fileInfo.status !== 'removed') {
           // Do not change the stored image object; inform caller that file didn't change (pass null).
-          onLocationSelect(eventLocationCopy, null, oldFileName);
+          onLocationSelect(
+            eventLocationCopy,
+            { status: 'not_changed' },
+            oldFileName
+          );
           setSaveTriggeredFlag(false);
           return;
         }
@@ -166,14 +170,14 @@ const AutocompleteMapsInput = ({
 
       // Otherwise, if there's a new file (or there was no old one), attach/update the image object
       if (fileInfo && fileInfo.status !== 'removed') {
-        const now = new Date();
-        const min = now.getMinutes().toString().padStart(2, '0');
-        const sec = now.getSeconds().toString().padStart(2, '0');
-        const prevName = (fileInfo.name || '').replace(/^\d{4}_/, '');
-        const fileName = `${min}${sec}_${prevName}`;
+        // const now = new Date();
+        // const min = now.getMinutes().toString().padStart(2, '0');
+        // const sec = now.getSeconds().toString().padStart(2, '0');
+        // const prevName = (fileInfo.name || '').replace(/^\d{4}_/, '');
+        // const fileName = `${min}${sec}_${prevName}`;
 
         eventLocationCopy.locationImage = {
-          name: fileName,
+          name: fileInfo.name,
           url: fileInfo.thumbUrl,
         };
       }

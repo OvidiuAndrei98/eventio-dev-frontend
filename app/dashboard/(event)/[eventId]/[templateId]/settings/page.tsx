@@ -204,18 +204,29 @@ const SettingsPage = () => {
           }
         });
 
-        // Update the main event location image if it was edited
-        if (editedEvemtLocation?.file || editedEvemtLocation?.oldFileName) {
-          // If the edited location is the main event location, update it
+        // Update the main event location image and other location data if it was edited
+        if (editedEvemtLocation) {
           if (
             editedEvemtLocation.location.locationId ===
             templateSettings.eventLocation?.locationId
           ) {
-            evQuestionsCopy.eventLocation.locationImage =
-              await uploadLocationImage(
-                editedEvemtLocation.file ?? { status: 'removed' },
+            // Start with the existing image (preserve if not changed)
+            let locationImage = templateSettings.eventLocation?.locationImage;
+
+            // If a file was provided (or explicitly removed), upload/delete and get the new image info
+            if (editedEvemtLocation.file) {
+              locationImage = await uploadLocationImage(
+                editedEvemtLocation.file,
                 editedEvemtLocation.oldFileName
               );
+            }
+
+            // Merge updated location fields and the resolved locationImage
+            evQuestionsCopy.eventLocation = {
+              ...(templateSettings.eventLocation ?? {}),
+              ...editedEvemtLocation.location,
+              locationImage,
+            };
           }
         }
 
@@ -229,7 +240,11 @@ const SettingsPage = () => {
                 (loc) => loc.locationId === editedLocation.location.locationId
               );
               // If there is no file it means the image was not changed
-              if (!editedLocation.file) return;
+              if (
+                !editedLocation.file ||
+                editedLocation.file.status === 'not_changed'
+              )
+                return;
 
               const locationImage = await uploadLocationImage(
                 editedLocation.file,
@@ -260,6 +275,9 @@ const SettingsPage = () => {
 
         // Update template settings
         await updateTemplateSettings(templateId, evQuestionsCopy);
+
+        // Update local state
+        setTemplateSettings(evQuestionsCopy);
 
         // Update the in-memory event instance if available
         if (eventInstance) {
@@ -375,7 +393,11 @@ const SettingsPage = () => {
     // and the file will remain the same, so we send undefined to the update function
     setEditedEventLocation({
       location,
-      file: file?.originFileObj ? file : undefined,
+      file: file?.originFileObj
+        ? file
+        : file.status === 'removed'
+        ? file
+        : undefined,
       oldFileName: oldFilename,
     });
     onSettingsChange('eventLocation', location);
