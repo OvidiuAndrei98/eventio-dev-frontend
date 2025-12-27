@@ -191,7 +191,11 @@ const NewInvitationPage = () => {
       templateId: newTemplateId,
       eventActive: false,
       eventPlan: EventPlan.basic,
-      eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName}`,
+      eventInvitationLink: `/invitation/i/${newTemplateId}/${eventName
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\-]/g, '')}`,
       eventId: eventId,
       userId: user.userDetails?.userId,
       eventTemplateThumbnailUrl: selectedTemplate.thumbnailUrl,
