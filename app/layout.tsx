@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   applicationName: 'Planyvite - Planifică Evenimente Fără Stres',
   referrer: 'origin-when-cross-origin',
   publisher: 'planyvite.ro',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+    ],
+  },
   openGraph: {
     siteName: 'Planyvite - Planifică Evenimente Fără Stres',
     title: 'Planyvite - Invitații Digitale Personalizate Nunta | Botez',
