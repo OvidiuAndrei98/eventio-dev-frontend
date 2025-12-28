@@ -258,22 +258,6 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
           )
         )}
       </div>
-
-      {/* ELEMENT DECORATIV SPEAKER */}
-      {!editMode && isLargerThanMobile && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '16vh',
-            width: '40px',
-            height: '4px',
-            backgroundColor: '#2d3436',
-            borderRadius: '10px',
-            zIndex: 1001,
-            opacity: 0.4,
-          }}
-        />
-      )}
     </div>
   );
 };
