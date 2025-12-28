@@ -100,10 +100,20 @@ function Masonry({
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               objectFit: 'cover',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              justifyContent: 'space-evenly',
+              cursor: 'pointer',
             }}
             onClick={() => onClick(item.type)}
           >
-            {item.text}
+            {item.text?.split(' ').map((word, index) => (
+              <span key={index} className="masonry-text">
+                {word}
+              </span>
+            ))}
           </div>
         </AnimatedDiv>
       ))}

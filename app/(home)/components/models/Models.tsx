@@ -37,7 +37,7 @@ const Models = () => {
       id: 3,
       image: '/thumbnails/aniversary_cat_cov.jpg',
       height: 800,
-      text: 'ANIVERSARE',
+      text: 'ANIVERSARE & MAJORAT',
       type: 'anniversary',
     },
     {
