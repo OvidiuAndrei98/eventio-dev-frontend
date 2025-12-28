@@ -6,7 +6,6 @@ import {
   TemplateElement,
   TemplateSection,
 } from '@/core/types';
-import { BREAKPOINTS, getBreakpointName } from '../constants';
 import EditSectionRenderer from './EditSectionRenderer';
 import {
   DndContext,
@@ -19,7 +18,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
-import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
+// import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
 import {
   Guideline,
   calculateGuidelines,
@@ -31,7 +30,6 @@ interface TemplateRendererProps {
   selectedElementId?: string;
   editMode?: boolean;
   onSelect?: (section: TemplateElement) => void;
-  activeBreakpointValue?: string;
   previewMode?: boolean;
   handleTemplateDragAndDrop?: (
     elementId: string,
@@ -45,119 +43,92 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   selectedElementId,
   editMode = false,
   onSelect,
-  activeBreakpointValue,
   previewMode,
   handleTemplateDragAndDrop,
   onDrag,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeBreakpoint, setActiveBreakpoint] = useState<
-    keyof typeof BREAKPOINTS | 'desktop'
-  >((activeBreakpointValue as 'mobile' | 'tablet' | 'desktop') ?? 'desktop');
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  );
+
   const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
   const [activeSection, setActiveSection] = useState<TemplateSection | null>();
   const [currentGuidelines, setCurrentGuidelines] = useState<Guideline[]>([]);
-
   const [activeElementData, setActiveElementData] =
     useState<DragEventData | null>(null);
 
-  // Used to prevent drag event to fire on a normal click and support touch devices
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: { distance: 5 },
-    }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, {
       activationConstraint: { distance: 5, delay: 100 },
     })
   );
 
   useEffect(() => {
-    setActiveBreakpoint(
-      activeBreakpointValue as 'mobile' | 'tablet' | 'desktop'
-    );
-    if (!editMode) {
-      const updateContainerWidth = () => {
-        if (containerRef.current) {
-          const width = containerRef.current.offsetWidth;
-          setActiveBreakpoint(getBreakpointName(width));
-        }
-      };
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-      updateContainerWidth();
-      window.addEventListener('resize', updateContainerWidth);
+  const isLargerThanMobile = windowWidth > 450;
 
-      return () => {
-        window.removeEventListener('resize', updateContainerWidth);
-      };
-    }
-  }, [activeBreakpointValue]);
-
-  const invitationAreaStyle: React.CSSProperties = {
-    maxWidth: `100%`,
-    // height: `calc(100% - 72px);`,
+  // STILUL PENTRU REPLICAREA DISPOZITIVULUI
+  const phoneFrameStyle: React.CSSProperties = {
+    width: isLargerThanMobile ? '100%' : '100%',
+    maxWidth: isLargerThanMobile ? '430px' : 'none',
+    // Înălțime dinamică: în editor se adaptează containerului, live ocupă ecranul
+    height: editMode ? '100%' : isLargerThanMobile ? '82vh' : '100vh',
+    maxHeight: editMode && isLargerThanMobile ? 'calc(100vh - 120px)' : 'none',
     backgroundColor: backgroundColor,
-    margin: '0 auto',
     position: 'relative',
     overflowY: 'auto',
-    height: '100%',
-    scrollbarWidth: 'thin',
+    overflowX: 'hidden',
+    scrollbarWidth: 'none',
+    paddingLeft: isLargerThanMobile ? '0' : '12px',
+    paddingRight: isLargerThanMobile ? '0' : '12px',
+
+    // UI Rama telefonului (activă pe ecrane mari)
+    border: isLargerThanMobile ? '10px solid #2d3436' : 'none',
+    borderRadius: isLargerThanMobile ? '40px' : '0px',
+    boxShadow: isLargerThanMobile
+      ? '0 30px 60px -12px rgba(50, 50, 93, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2)'
+      : 'none',
+
+    zIndex: 2,
+    transition: 'all 0.3s ease-in-out',
   };
 
-  const getPropertyValue = (
-    data: TemplateElement,
-    defaultPropertyPath: string,
-    activeBreakpoint: 'desktop' | 'tablet' | 'mobile',
-    isPropertyResponsive: boolean
-  ): unknown => {
-    if (!data || !defaultPropertyPath) {
-      return undefined;
-    }
-
-    if (activeBreakpoint !== 'desktop' && isPropertyResponsive) {
-      const responsivePath = `responsive.${activeBreakpoint}.${defaultPropertyPath}`;
-
-      const responsiveValue = getNestedValue(data, responsivePath);
-
-      if (responsiveValue !== undefined) {
-        return responsiveValue;
-      }
-    }
-
-    const defaultValue = getNestedValue(data, defaultPropertyPath);
-
-    return defaultValue;
-  };
+  // const getPropertyValue = (
+  //   data: TemplateElement,
+  //   defaultPropertyPath: string
+  // ): unknown => {
+  //   if (!data || !defaultPropertyPath) return undefined;
+  //   const responsivePath = `responsive.mobile.${defaultPropertyPath}`;
+  //   const responsiveValue = getNestedValue(data, responsivePath);
+  //   if (responsiveValue !== undefined) return responsiveValue;
+  //   return getNestedValue(data, defaultPropertyPath);
+  // };
 
   const handleDragStart = (e: DragStartEvent, section: TemplateSection) => {
-    const { active } = e;
-    const activeData = active.data.current as DragEventData;
-    if (!activeData) {
-      return;
-    }
+    const activeData = e.active.data.current as DragEventData;
+    if (!activeData) return;
     setActiveElementData(activeData);
     setActiveSection(section);
     onDrag?.(true);
   };
 
   const handleDragMove = (e: DragMoveEvent) => {
-    // Calculăm și actualizăm liniile de ghidaj la fiecare mișcare
     if (e.active && e.active.rect.current?.translated && activeSection) {
-      const canvasElement: HTMLElement = document.querySelector(
+      const canvasElement = document.querySelector(
         '#' + activeSection.id
       ) as HTMLElement;
-
       if (canvasElement) {
-        const draggedRect = e.active.rect.current.translated;
-        const containerRect = canvasElement.getBoundingClientRect();
-
-        // Preluăm toate elementele vizibile pentru a calcula alinierea cu ele
-        // Este esențial ca ID-urile elementelor din `section.elements` să corespundă
-        // cu ID-urile DOM pentru a putea prelua getBoundingClientRect().
         setCurrentGuidelines(
           calculateGuidelines(
-            draggedRect,
-            containerRect,
+            e.active.rect.current.translated,
+            canvasElement.getBoundingClientRect(),
             activeSection.elements,
             e.active.id as string
           )
@@ -168,186 +139,125 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
   const handleDragEnd = (e: DragEndEvent, section: TemplateSection) => {
     setCurrentGuidelines([]);
-    const canvasElement: HTMLElement = document.querySelector(
+    const canvasElement = document.querySelector(
       '#' + section.id
     ) as HTMLElement;
-
-    if (!canvasElement) {
-      console.warn(`Elementul canvas cu ID ${section.id} nu a fost găsit.`);
-      return;
-    }
-
-    const movedElementIndex = section.elements.findIndex(
-      (x) => x.id === e.active.id
-    );
-
-    if (movedElementIndex === -1) {
-      console.warn(
-        `Elementul cu ID ${e.active?.id} nu a fost găsit pentru mutare.`
-      );
-      return;
-    }
-
-    const currentElement = section.elements[movedElementIndex];
-    // Preluăm poziția curentă pentru breakpoint-ul activ (pentru a păstra elementAlignment)
-    const currentPosition = getPropertyValue(
-      currentElement,
-      'position',
-      activeBreakpoint, // <-- activeBreakpoint (din editor)
-      true
-    ) as FlexiblePosition;
-
-    const elementRect = e.active.rect.current?.translated;
-    if (!elementRect) {
-      console.error(
-        'Dimensiunile elementului tras nu au putut fi determinate.'
-      );
-      return;
-    }
-
+    if (!canvasElement) return;
     const canvasRect = canvasElement.getBoundingClientRect();
+    const elementRect = e.active.rect.current?.translated;
+    if (!elementRect) return;
 
-    // Coordonatele elementului relativ la părinte, ÎN PIXELI
-    let newX_px = elementRect.left - canvasRect.left;
-    let newY_px = elementRect.top - canvasRect.top;
-    const elementWidth_px = elementRect.width;
-    const elementHeight_px = elementRect.height;
-    const parentWidth_px = canvasRect.width;
-    const parentHeight_px = canvasRect.height;
-
-    // Restricționează valorile în pixeli pentru a rămâne în limitele containerului
-    newX_px = Math.max(0, Math.min(parentWidth_px - elementWidth_px, newX_px));
-    newY_px = Math.max(
-      0,
-      Math.min(parentHeight_px - elementHeight_px, newY_px)
+    const newX_percent = parseFloat(
+      (((elementRect.left - canvasRect.left) / canvasRect.width) * 100).toFixed(
+        2
+      )
     );
-
-    // Toleranța în procente. Definește cât de aproape trebuie să fie de margine
-    // pentru a fi considerat "lipit" de acea margine (și să seteze valoarea la 0%).
-    const tolerancePercent = 1; // 1% din lățimea/înălțimea părinte
-
-    const finalPosition: FlexiblePosition = {
-      elementAlignment: currentPosition?.elementAlignment || 'auto', // Păstrează alinierea existentă
-    };
-
-    // Calculul distanțelor în procente
-    const newX_percent = (newX_px / parentWidth_px) * 100;
-    const newY_percent = (newY_px / parentHeight_px) * 100;
-
-    // Calculăm distanța de la marginea dreaptă a elementului până la marginea dreaptă a containerului
-    const distanceFromRight_percent =
-      100 - (newX_percent + (elementWidth_px / parentWidth_px) * 100);
-    // Calculăm distanța de la marginea de jos a elementului până la marginea de jos a containerului
-    const distanceFromBottom_percent =
-      100 - (newY_percent + (elementHeight_px / parentHeight_px) * 100);
-
-    // Decizia pe axa X (stânga vs. dreapta)
-    // Verificăm dacă elementul este "lipit" de marginea stângă (within tolerancePercent from 0)
-    if (newX_percent <= tolerancePercent) {
-      finalPosition.left = 0; // Lipit de stânga
-      delete finalPosition.right; // Asigurăm că nu avem ambele proprietăți
-    }
-    // Verificăm dacă elementul este "lipit" de marginea dreaptă (within tolerancePercent from 0)
-    else if (distanceFromRight_percent <= tolerancePercent) {
-      finalPosition.right = 0; // Lipit de dreapta
-      delete finalPosition.left; // Asigurăm că nu avem ambele proprietăți
-    }
-    // Dacă nu este lipit de nicio margine, decidem care ancoră este mai "naturală"
-    else {
-      // Dacă distanța de la stânga e mai mică decât distanța de la dreapta
-      if (newX_percent < distanceFromRight_percent) {
-        finalPosition.left = parseFloat(newX_percent.toFixed(2));
-        delete finalPosition.right;
-      }
-      // Dacă distanța de la dreapta e mai mică decât distanța de la stânga
-      else {
-        finalPosition.right = parseFloat(distanceFromRight_percent.toFixed(2));
-        delete finalPosition.left;
-      }
-    }
-
-    // Decizia pe axa Y (sus vs. jos)
-    // Verificăm dacă elementul este "lipit" de marginea de sus (within tolerancePercent from 0)
-    if (newY_percent <= tolerancePercent) {
-      finalPosition.top = 0; // Lipit de sus
-      delete finalPosition.bottom;
-    }
-    // Verificăm dacă elementul este "lipit" de marginea de jos (within tolerancePercent from 0)
-    else if (distanceFromBottom_percent <= tolerancePercent) {
-      finalPosition.bottom = 0; // Lipit de jos
-      delete finalPosition.top;
-    }
-    // Dacă nu este lipit de nicio margine, decidem care ancoră este mai "naturală"
-    else {
-      // Dacă distanța de la sus e mai mică decât distanța de la jos
-      if (newY_percent < distanceFromBottom_percent) {
-        finalPosition.top = parseFloat(newY_percent.toFixed(2));
-        delete finalPosition.bottom;
-      }
-      // Dacă distanța de la jos e mai mică decât distanța de la sus
-      else {
-        finalPosition.bottom = parseFloat(
-          distanceFromBottom_percent.toFixed(2)
-        );
-        delete finalPosition.top;
-      }
-    }
+    const newY_percent = parseFloat(
+      (((elementRect.top - canvasRect.top) / canvasRect.height) * 100).toFixed(
+        2
+      )
+    );
 
     onDrag?.(false);
-
-    // Salvarea dimensiunilor (width/height) NU se face aici,
-
-    handleTemplateDragAndDrop &&
-      handleTemplateDragAndDrop(e.active.id as string, finalPosition);
+    handleTemplateDragAndDrop?.(e.active.id as string, {
+      left: newX_percent,
+      top: newY_percent,
+      elementAlignment: 'auto',
+    });
   };
 
-  if (!invitationData || !invitationData.elements) {
-    return <div>Nu s-au găsit date pentru invitație.</div>;
-  }
-
   return (
-    <div ref={containerRef} style={invitationAreaStyle}>
-      {sections?.map((section) => {
-        return editMode && onSelect && selectedElementId ? (
-          <DndContext
-            sensors={sensors}
-            modifiers={
-              activeElementData
-                ? activeElementData.modifiers
-                : [restrictToParentElement]
-            }
-            onDragCancel={() => {
-              setActiveElementData(null);
-              setCurrentGuidelines([]);
-            }}
-            onDragStart={(e) => handleDragStart(e, section)}
-            onDragEnd={(e) => handleDragEnd(e, section)}
-            onDragMove={(e) => handleDragMove(e)}
-          >
-            <EditSectionRenderer
+    <div
+      style={{
+        position: editMode ? 'relative' : 'fixed',
+        top: 0,
+        left: 0,
+        width: editMode ? '100%' : '100vw',
+        height: editMode ? '100%' : '100vh',
+
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        // Fundal doar pentru modul Live/Preview
+        backgroundColor:
+          !editMode && isLargerThanMobile ? '#f8fafc' : 'transparent',
+        backgroundImage:
+          !editMode && isLargerThanMobile
+            ? 'radial-gradient(circle at center, #ffffff 0%, #e2e8f0 100%)'
+            : 'none',
+
+        overflow: editMode ? 'visible' : 'hidden',
+        zIndex: editMode ? 1 : 1000,
+      }}
+    >
+      <style>{`
+        .phone-inner-container::-webkit-scrollbar { display: none; }
+        .phone-inner-container { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
+      <div
+        ref={containerRef}
+        style={phoneFrameStyle}
+        className="phone-inner-container"
+      >
+        {sections?.map((section) =>
+          editMode && onSelect && selectedElementId ? (
+            <DndContext
+              key={section.id}
+              sensors={sensors}
+              modifiers={
+                activeElementData
+                  ? activeElementData.modifiers
+                  : [restrictToParentElement]
+              }
+              onDragCancel={() => {
+                setActiveElementData(null);
+                setCurrentGuidelines([]);
+              }}
+              onDragStart={(e) => handleDragStart(e, section)}
+              onDragEnd={(e) => handleDragEnd(e, section)}
+              onDragMove={(e) => handleDragMove(e)}
+            >
+              <EditSectionRenderer
+                templateData={invitationData}
+                sectionData={section}
+                activeBreakpoint="mobile"
+                selectedElementId={selectedElementId}
+                isSelected={selectedElementId === section.id}
+                onSelect={onSelect}
+                currentGuidelines={currentGuidelines}
+              />
+            </DndContext>
+          ) : (
+            <SectionRenderer
               key={section.id}
               templateData={invitationData}
               sectionData={section}
-              activeBreakpoint={activeBreakpoint}
-              selectedElementId={selectedElementId}
-              isSelected={selectedElementId === section.id}
-              onSelect={onSelect}
-              currentGuidelines={currentGuidelines}
+              activeBreakpoint="mobile"
+              eventId={invitationData.eventId}
+              userId={invitationData.userId}
+              previewMode={previewMode}
             />
-          </DndContext>
-        ) : (
-          <SectionRenderer
-            key={section.id}
-            templateData={invitationData}
-            sectionData={section}
-            activeBreakpoint={activeBreakpoint}
-            eventId={invitationData.eventId}
-            userId={invitationData.userId}
-            previewMode={previewMode}
-            //de adaugat isActive pt ferificare in link daca e activa
-          />
-        );
-      })}
+          )
+        )}
+      </div>
+
+      {/* Speaker/Notch decorativ - Ascuns în Editor pentru a nu încărca Grid-ul */}
+      {!editMode && isLargerThanMobile && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '11vh',
+            width: '50px',
+            height: '4px',
+            backgroundColor: '#475569',
+            borderRadius: '10px',
+            zIndex: 1001,
+            opacity: 0.3,
+          }}
+        />
+      )}
     </div>
   );
 };

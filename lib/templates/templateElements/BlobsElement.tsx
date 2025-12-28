@@ -73,13 +73,7 @@ const BlobsElement = ({
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
     alignSelf: finalElementProps.position.elementAlignment,
-    width: `100${
-      previewMode && activeBreakpoint !== 'desktop'
-        ? '%'
-        : editMode
-        ? '%'
-        : 'vw'
-    }`,
+    width: `101%`,
     padding: 0,
   };
 

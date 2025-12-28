@@ -693,7 +693,7 @@ const EditPage = () => {
       <div className="flex flex-col items-center justify-center w-full h-screen bg-[#F1F5F9]">
         <div className="editor-controls flex items-center justify-between w-full p-4  border-dashed border-b-1 border-gray-300 shadow">
           <div></div>
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <Radio.Group
               size="middle"
               buttonStyle="solid"
@@ -705,7 +705,7 @@ const EditPage = () => {
               <Radio.Button value="tablet">Tableta</Radio.Button>
               <Radio.Button value="desktop">Desktop</Radio.Button>
             </Radio.Group>
-          </div>
+          </div> */}
           <div className="flex items-center justify-center gap-2">
             <Button type="default" size="middle">
               <Link
@@ -837,21 +837,12 @@ const EditPage = () => {
               </React.Fragment>
             ))}
           </div>
-          <div
-            className={`overflow-y-auto h-full ${
-              editViewMode === 'mobile'
-                ? 'w-[367px] mx-auto'
-                : editViewMode === 'tablet'
-                ? 'w-[700px] mx-auto'
-                : 'max-w-[900px] min-w-[800px] ml-[calc(-23vw_+_50%)]'
-            }`}
-          >
+          <div className={`overflow-y-auto h-full`}>
             <TemplateRenderer
               invitationData={template}
               selectedElementId={selectedItemId}
               editMode={true}
               onSelect={handleSectionSelect}
-              activeBreakpointValue={editViewMode}
               handleTemplateDragAndDrop={handleTemplateDragAndDrop}
             />
           </div>
@@ -994,15 +985,7 @@ const MobileEditor = ({
         />
       </div>
 
-      <div
-        className={`h-full overflow-auto ${
-          editViewMode === 'mobile'
-            ? 'w-[367px] mx-auto'
-            : editViewMode === 'tablet'
-            ? 'w-[700px] mx-auto'
-            : 'max-w-[900px] min-w-[800px] ml-[calc(-23vw_+_50%)]'
-        }`}
-      >
+      <div className={`h-full overflow-auto`}>
         <TemplateRenderer
           invitationData={invitationData}
           selectedElementId={selectedElementId}
@@ -1014,7 +997,6 @@ const MobileEditor = ({
               setPopoverOpen(true);
             }
           }}
-          activeBreakpointValue={editViewMode}
           handleTemplateDragAndDrop={handleTemplateDragAndDrop}
           onDrag={(dragging: boolean) => {
             setIsDragging(dragging);
@@ -1045,7 +1027,7 @@ const MobileEditor = ({
         activeBreakpoint="mobile"
         handlePropertyChanged={handlePropertyChanged}
       />
-      <div className="absolute left-1/2 bottom-4 transform -translate-x-1/2 bg-white/60 backdrop-blur-md rounded-xl shadow-lg flex justify-center items-center border border-gray-200 z-50">
+      {/* <div className="absolute left-1/2 bottom-4 transform -translate-x-1/2 bg-white/60 backdrop-blur-md rounded-xl shadow-lg flex justify-center items-center border border-gray-200 z-50">
         <div
           className="absolute top-0 left-0 h-full z-0 transition-all duration-500"
           style={{
@@ -1094,7 +1076,7 @@ const MobileEditor = ({
             Tableta
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

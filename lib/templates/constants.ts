@@ -6,7 +6,7 @@ import {
 
 // Define breakpoints (maximum limits included)
 export const BREAKPOINTS = {
-  mobile: 430, // Max width for mobile
+  mobile: 450, // Max width for mobile
   tablet: 778, // Max width for tablet
   desktop: 1200, // Max width for desktop
 };
