@@ -12,14 +12,6 @@ export const componentsConfig: { [elementType: string]: EditorConfigSet } = {
       widgetType: EditorWidgetType.TextInput,
       responsive: false,
     },
-    'style.height': {
-      label: 'Înălțime Secțiune (px)',
-      dataType: PropertyDataType.Number,
-      widgetType: EditorWidgetType.NumberInput,
-      min: 0,
-      step: 1,
-      responsive: true,
-    },
     'style.backgroundColor': {
       label: 'Culoare Fundal',
       dataType: PropertyDataType.Color,

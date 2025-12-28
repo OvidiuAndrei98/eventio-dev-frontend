@@ -21,7 +21,7 @@ export const defaultElements = {
       },
       disabled: false,
       responsive: {
-        mobile: { style: { height: 700 } },
+        mobile: { style: { height: '100%' } },
         tablet: { style: { height: 850 } },
       },
       style: { height: 1200 },

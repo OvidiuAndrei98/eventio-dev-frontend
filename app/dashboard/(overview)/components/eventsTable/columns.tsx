@@ -54,8 +54,8 @@ export const getColumns = ({
             <Image
               src={event.eventTemplateThumbnailUrl}
               alt="Event Thumbnail"
-              width={70}
-              height={40}
+              width={40}
+              height={70}
               className="rounded-md"
             />
             <TooltipProvider>

@@ -22,7 +22,7 @@ const InvitationCard = ({
       className="invitation-card max-w-[400px] h-[400px] bg-[var(--primary-color)]/10 relative overflow-hidden"
       style={{
         backgroundImage: `url(${image})`,
-        backgroundSize: '80% 80%',
+        backgroundSize: '35% 60%',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}

@@ -58,7 +58,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     backgroundColor: 'transparent',
     width: '100%',
     maxWidth: '1200px',
-    minHeight: '100px',
+    minHeight: '100%',
     position: 'relative' as const,
     flexDirection: 'column',
     alignItems: 'center',
@@ -67,6 +67,8 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   };
 
   const sectionWrapperStyle: React.CSSProperties = {
+    minHeight: finalElementProps.style.height as string,
+    height: finalElementProps.style.height as string,
     display: 'flex',
     overflowX: 'hidden',
     justifyContent: 'center',

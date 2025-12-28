@@ -21,6 +21,7 @@ const PreviewPage = () => {
   const fetchTemplate = async () => {
     try {
       const response = await queryTemplateById(templateId);
+      console.log('Fetched template:', response);
       setTemplate(response);
     } catch (error) {
       console.error('Error fetching template:', error);

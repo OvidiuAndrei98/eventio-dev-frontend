@@ -38,7 +38,7 @@ const Models = () => {
       image: '/thumbnails/aniversary_cat_cov.jpg',
       height: 800,
       text: 'ANIVERSARE',
-      type: 'aniversary',
+      type: 'anniversary',
     },
     {
       id: 4,

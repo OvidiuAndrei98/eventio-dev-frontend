@@ -103,15 +103,15 @@ const DashboardEventPage = () => {
               )}
             </span>
           </div>
-          <div className="rounded-lg shadow-md overflow-hidden flex justify-center items-center w-[150px]">
-            <Image
-              className="object-cover w-[140px] h-[78px] "
-              alt="Event Thumbnail"
-              src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
-              width={100}
-              height={100}
-            />
-          </div>
+          {/* <div className="rounded-lg shadow-md overflow-hidden flex justify-center items-center w-[150px]"> */}
+          <Image
+            className="object-cover w-[70px] h-[140px] "
+            alt="Event Thumbnail"
+            src={eventInstance?.eventTemplateThumbnailUrl ?? ''}
+            width={50}
+            height={140}
+          />
+          {/* </div> */}
 
           <Button
             icon={<SendOutlined />}
