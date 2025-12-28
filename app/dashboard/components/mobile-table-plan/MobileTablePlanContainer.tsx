@@ -12,7 +12,7 @@ import {
   Guest,
 } from '@/core/types';
 import { UserAddOutlined } from '@ant-design/icons';
-import { DownloadIcon, ListCheck } from 'lucide-react';
+import { DownloadIcon } from 'lucide-react';
 import AddGuestsModal from './shared-components/AddGuestsModal';
 import AddTableDrawer from './shared-components/AddTableModal';
 import MobileDeviceNotice from './shared-components/MobileDeviceNotice';
