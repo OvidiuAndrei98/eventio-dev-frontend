@@ -80,7 +80,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   const phoneFrameStyle: React.CSSProperties = {
     width: editMode && windowWidth < 450 ? '95%' : '100%',
     maxWidth: isLargerThanMobile ? '430px' : 'none',
-    height: editMode ? '932px' : isLargerThanMobile ? '932px' : '100vh',
+    height: editMode ? '95%' : isLargerThanMobile ? '932px' : '100vh',
     maxHeight: editMode && isLargerThanMobile ? '932px' : 'none',
 
     // Culoarea invitației tale
