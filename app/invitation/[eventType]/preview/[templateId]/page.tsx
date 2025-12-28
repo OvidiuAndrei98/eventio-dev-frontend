@@ -79,7 +79,6 @@ const InvitationPreviewPage = () => {
           <TemplateRenderer
             invitationData={selectedTemplate}
             editMode={false}
-            activeBreakpointValue={editViewMode}
             previewMode={true}
           />
           <div className="z-2 bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">

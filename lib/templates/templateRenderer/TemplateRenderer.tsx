@@ -18,7 +18,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
-// import { getNestedValue } from '@/app/dashboard/(event)/[eventId]/[templateId]/edit/utils/objectUtils';
 import {
   Guideline,
   calculateGuidelines,
@@ -52,8 +51,12 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     typeof window !== 'undefined' ? window.innerWidth : 1200
   );
 
+  const backgroundImageUrl =
+    'https://img.freepik.com/free-photo/white-paper-texture_1194-5416.jpg';
+
   const { settings, elements: sections } = invitationData;
   const backgroundColor = settings?.backgroundColor || '#ffffff';
+
   const [activeSection, setActiveSection] = useState<TemplateSection | null>();
   const [currentGuidelines, setCurrentGuidelines] = useState<Guideline[]>([]);
   const [activeElementData, setActiveElementData] =
@@ -74,42 +77,30 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
   const isLargerThanMobile = windowWidth > 450;
 
-  // STILUL PENTRU REPLICAREA DISPOZITIVULUI
   const phoneFrameStyle: React.CSSProperties = {
-    width: isLargerThanMobile ? '100%' : '100%',
+    width: windowWidth < 450 ? '95%' : '100%',
     maxWidth: isLargerThanMobile ? '430px' : 'none',
-    // Înălțime dinamică: în editor se adaptează containerului, live ocupă ecranul
     height: editMode ? '100%' : isLargerThanMobile ? '82vh' : '100vh',
     maxHeight: editMode && isLargerThanMobile ? 'calc(100vh - 120px)' : 'none',
+
+    // Culoarea invitației tale
     backgroundColor: backgroundColor,
+
     position: 'relative',
     overflowY: 'auto',
     overflowX: 'hidden',
     scrollbarWidth: 'none',
-    paddingLeft: isLargerThanMobile ? '0' : '12px',
-    paddingRight: isLargerThanMobile ? '0' : '12px',
 
-    // UI Rama telefonului (activă pe ecrane mari)
     border: isLargerThanMobile ? '10px solid #2d3436' : 'none',
     borderRadius: isLargerThanMobile ? '40px' : '0px',
     boxShadow: isLargerThanMobile
-      ? '0 30px 60px -12px rgba(50, 50, 93, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2)'
+      ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
       : 'none',
 
-    zIndex: 2,
-    transition: 'all 0.3s ease-in-out',
+    zIndex: 10,
+    margin: '0 auto',
+    transition: 'all 0.3s ease',
   };
-
-  // const getPropertyValue = (
-  //   data: TemplateElement,
-  //   defaultPropertyPath: string
-  // ): unknown => {
-  //   if (!data || !defaultPropertyPath) return undefined;
-  //   const responsivePath = `responsive.mobile.${defaultPropertyPath}`;
-  //   const responsiveValue = getNestedValue(data, responsivePath);
-  //   if (responsiveValue !== undefined) return responsiveValue;
-  //   return getNestedValue(data, defaultPropertyPath);
-  // };
 
   const handleDragStart = (e: DragStartEvent, section: TemplateSection) => {
     const activeData = e.active.data.current as DragEventData;
@@ -147,12 +138,12 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     const elementRect = e.active.rect.current?.translated;
     if (!elementRect) return;
 
-    const newX_percent = parseFloat(
+    const newX = parseFloat(
       (((elementRect.left - canvasRect.left) / canvasRect.width) * 100).toFixed(
         2
       )
     );
-    const newY_percent = parseFloat(
+    const newY = parseFloat(
       (((elementRect.top - canvasRect.top) / canvasRect.height) * 100).toFixed(
         2
       )
@@ -160,8 +151,8 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
 
     onDrag?.(false);
     handleTemplateDragAndDrop?.(e.active.id as string, {
-      left: newX_percent,
-      top: newY_percent,
+      left: newX,
+      top: newY,
       elementAlignment: 'auto',
     });
   };
@@ -174,19 +165,10 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         left: 0,
         width: editMode ? '100%' : '100vw',
         height: editMode ? '100%' : '100vh',
-
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-
-        // Fundal doar pentru modul Live/Preview
-        backgroundColor:
-          !editMode && isLargerThanMobile ? '#f8fafc' : 'transparent',
-        backgroundImage:
-          !editMode && isLargerThanMobile
-            ? 'radial-gradient(circle at center, #ffffff 0%, #e2e8f0 100%)'
-            : 'none',
-
+        backgroundColor: editMode ? 'transparent' : '#f5f5f5',
         overflow: editMode ? 'visible' : 'hidden',
         zIndex: editMode ? 1 : 1000,
       }}
@@ -195,6 +177,40 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         .phone-inner-container::-webkit-scrollbar { display: none; }
         .phone-inner-container { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
+      {/* STRAT FUNDAL IMAGINE (DOAR LIVE) */}
+      {!editMode && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url(${backgroundImageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* OVERLAY PENTRU SOFT LIGHT (DOAR LIVE) */}
+      {!editMode && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%)',
+            backdropFilter: 'blur(2px)',
+            zIndex: 2,
+          }}
+        />
+      )}
 
       <div
         ref={containerRef}
@@ -243,18 +259,18 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
         )}
       </div>
 
-      {/* Speaker/Notch decorativ - Ascuns în Editor pentru a nu încărca Grid-ul */}
+      {/* ELEMENT DECORATIV SPEAKER */}
       {!editMode && isLargerThanMobile && (
         <div
           style={{
             position: 'absolute',
             top: '11vh',
-            width: '50px',
+            width: '40px',
             height: '4px',
-            backgroundColor: '#475569',
+            backgroundColor: '#2d3436',
             borderRadius: '10px',
             zIndex: 1001,
-            opacity: 0.3,
+            opacity: 0.4,
           }}
         />
       )}
