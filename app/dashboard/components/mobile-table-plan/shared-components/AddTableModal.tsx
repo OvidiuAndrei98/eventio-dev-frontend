@@ -73,6 +73,22 @@ const AddTableDrawer = ({
       return;
     }
 
+    const existingNumbers = eventInstance?.eventTableOrganization.elements
+      .filter((el) => el.type === 'table')
+      .map((el) => el.number || 0)
+      .sort((a, b) => a - b);
+
+    let nextNumber = 1;
+    if (existingNumbers) {
+      for (const num of existingNumbers) {
+        if (num === nextNumber) {
+          nextNumber++;
+        } else if (num > nextNumber) {
+          break;
+        }
+      }
+    }
+
     const canvasElement: CanvasElement = {
       elementId: crypto.randomUUID(),
       type: 'table',
@@ -81,7 +97,7 @@ const AddTableDrawer = ({
       seats: values.seats,
       positions: { x: 50, y: 50 },
       guestCount: 0,
-      number: eventTablesCount + 1,
+      number: nextNumber, // Folosim numărul calculat aici
     };
     try {
       await addTableToEvent(canvasElement);
@@ -136,7 +152,7 @@ const AddTableDrawer = ({
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
-            initialValues={{ type: 'round', seats: 10 }}
+            initialValues={{ type: 'round-table', seats: 10 }}
           >
             {/* Selecție Tip Masă */}
             <Form.Item

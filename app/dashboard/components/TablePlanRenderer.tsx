@@ -491,6 +491,28 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           guestName: name,
         };
       } else {
+        // --- LOGICĂ CALCUL NUMĂR MASĂ DISPONIBIL ---
+        // Extragem toate numerele meselor existente pe canvas
+        const existingNumbers = canvasElements
+          .filter(
+            (el) =>
+              el.type === 'table' ||
+              el.type === 'rectangle' ||
+              el.type === 'circle'
+          ) // Ajustează tipurile conform logicii tale
+          .map((el) => el.number || 0)
+          .sort((a, b) => a - b);
+
+        let nextNumber = 1;
+        // Căutăm prima valoare care lipsește din secvență
+        for (const num of existingNumbers) {
+          if (num === nextNumber) {
+            nextNumber++;
+          } else if (num > nextNumber) {
+            break;
+          }
+        }
+
         setActiveSidebarField({
           name,
           icon: activeData.icon,
@@ -500,6 +522,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           modifiers: activeData.modifiers,
           fromSideBar: true,
         });
+
         currentDragFieldRef.current = {
           elementId: active.id as string,
           name,
@@ -509,7 +532,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
           fromSideBar: true,
           guestCount: 0,
           seats: 10,
-          number: canvasElements.length + 1,
+          number: nextNumber,
         };
       }
     }

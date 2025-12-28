@@ -19,6 +19,8 @@ import MobileDeviceNotice from './shared-components/MobileDeviceNotice';
 import MobileTablePlanExportModal from '../table-plan-exports/MbilePlanExportModal';
 import { createXlsxWorkbook } from '@/lib/utils';
 import { toast } from 'sonner';
+import RoundTableIcon from '@/public/round-table.png';
+import Image from 'next/image';
 
 interface MobileTablePlanContainerProps {
   updateTableDetailsService: (
@@ -113,10 +115,17 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
             className="!w-[48px] !h-[42px]"
           ></Button>
           <Button
-            icon={<ListCheck />}
             className="!w-[42px] !h-[42px]"
             onClick={() => setAddTableModalOpen(true)}
-          ></Button>
+          >
+            <Image
+              className="w-[40px] scale-150"
+              src={RoundTableIcon}
+              alt="Add Table"
+              width={200}
+              height={200}
+            />
+          </Button>
           <Button
             icon={<DownloadIcon />}
             className="!w-[42px] !h-[42px]"

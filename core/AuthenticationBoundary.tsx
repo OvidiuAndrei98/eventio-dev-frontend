@@ -102,6 +102,8 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
    * Handles user login with Google, including linking anonymous accounts.
    */
   const loginWithGoogle = async () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
     setIsProcessingLogin(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -138,7 +140,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         });
       }
 
-      window.location.href = '/dashboard';
+      window.location.href = callbackUrl;
       // `onAuthStateChanged` will handle state updates and redirects
     } catch (error: unknown) {
       console.error('Google login/linking error:', error);
@@ -172,6 +174,8 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
    * This now correctly handles account linking.
    */
   const login = async (email: string, password: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
     setIsProcessingLogin(true);
     try {
       let userCredential;
@@ -204,7 +208,7 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
         };
         await addUser(newUser);
       }
-      window.location.href = '/dashboard';
+      window.location.href = callbackUrl;
       // The onAuthStateChanged listener will automatically handle the redirect
       // and update the state to Authenticated.
     } catch (error: unknown) {
@@ -292,7 +296,8 @@ export function AuthenticationBoundary({ children }: { children?: ReactNode }) {
           authenticationState === AuthenticationState.Unauthenticated &&
           !isAnonymousPage(pathname)
         ) {
-          router.push('/login');
+          const encodePath = encodeURIComponent(pathname);
+          router.push(`/login?callbackUrl=${encodePath}`);
           return <LoadingIndicator />;
         }
 
