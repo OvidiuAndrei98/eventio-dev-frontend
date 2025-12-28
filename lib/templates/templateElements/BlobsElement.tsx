@@ -25,14 +25,12 @@ const BlobsElement = ({
   selectedElementId,
   onSelect,
   editMode,
-  previewMode,
 }: BlobTemplateElement & {
   activeBreakpoint: keyof typeof BREAKPOINTS | 'desktop';
   selectedElementId?: string;
   isSelected?: boolean;
   onSelect?: (element: TemplateElement) => void;
   editMode?: boolean;
-  previewMode?: boolean;
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
