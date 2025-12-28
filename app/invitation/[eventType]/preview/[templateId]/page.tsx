@@ -81,7 +81,7 @@ const InvitationPreviewPage = () => {
             editMode={false}
             previewMode={true}
           />
-          <div className="z-2 bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
+          <div className="z-[9999] bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
             {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
             <div className="flex justify-between w-full items-center md:items-end md:w-auto md:gap-4">
               <button className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center gap-2 cursor-pointer">

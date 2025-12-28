@@ -78,7 +78,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   const isLargerThanMobile = windowWidth > 450;
 
   const phoneFrameStyle: React.CSSProperties = {
-    width: windowWidth < 450 ? '95%' : '100%',
+    width: editMode && windowWidth < 450 ? '95%' : '100%',
     maxWidth: isLargerThanMobile ? '430px' : 'none',
     height: editMode ? '100%' : isLargerThanMobile ? '82vh' : '100vh',
     maxHeight: editMode && isLargerThanMobile ? 'calc(100vh - 120px)' : 'none',
