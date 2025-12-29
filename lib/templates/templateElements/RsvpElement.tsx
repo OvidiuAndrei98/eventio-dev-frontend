@@ -113,7 +113,8 @@ const RsvpElement = ({
     values: RsvpFormData
   ) => {
     const guestsToSave: Guest[] = [];
-    const submissionId = crypto.randomUUID();
+    const submissionId =
+      Date.now().toString(36) + Math.random().toString(36).substring(2);
     const submissionTime = new Date().getTime();
 
     if (
@@ -307,6 +308,10 @@ const RsvpElement = ({
         onFinish={handleSubmit}
         autoComplete="none"
         layout="vertical"
+        onFinishFailed={(errorInfo) => {
+          console.log('Failed:', errorInfo);
+          toast.error('Te rugăm să verifici toate câmpurile obligatorii.');
+        }}
       >
         <div className="flex flex-row gap-2 w-full">
           <Form.Item<RsvpFormData>
