@@ -305,7 +305,7 @@ const RsvpElement = ({
         autoFocus={false}
         name="rsvp-form"
         onFinish={handleSubmit}
-        autoComplete="off"
+        autoComplete="none"
         layout="vertical"
       >
         <div className="flex flex-row gap-2 w-full">
@@ -545,6 +545,7 @@ const RsvpElement = ({
             htmlType="submit"
             size="large"
             className="w-full"
+            onClick={(e) => e.stopPropagation()}
           >
             Trimite răspuns
           </Button>
