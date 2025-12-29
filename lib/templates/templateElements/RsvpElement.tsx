@@ -131,7 +131,8 @@ const RsvpElement = ({
       });
 
       guestsToSave.push({
-        guestId: crypto.randomUUID(),
+        guestId:
+          Date.now().toString(36) + Math.random().toString(36).substring(2),
         submissionId: submissionId,
         firstName: values.primaryGuestFirstName.trim(),
         lastName: values.primaryGuestLastName.trim(),
@@ -157,7 +158,8 @@ const RsvpElement = ({
       for (const guestDetails of values.additionalGuestsDetails) {
         if (guestDetails.firstName.trim() && guestDetails.lastName.trim()) {
           guestsToSave.push({
-            guestId: crypto.randomUUID(),
+            guestId:
+              Date.now().toString(36) + Math.random().toString(36).substring(2),
             submissionId: submissionId,
             firstName: guestDetails.firstName.trim(),
             lastName: guestDetails.lastName.trim(),
@@ -179,7 +181,8 @@ const RsvpElement = ({
       values.primaryGuestLastName?.trim()
     ) {
       guestsToSave.push({
-        guestId: crypto.randomUUID(),
+        guestId:
+          Date.now().toString(36) + Math.random().toString(36).substring(2),
         submissionId: submissionId,
         firstName: values.primaryGuestFirstName.trim(),
         lastName: values.primaryGuestLastName.trim(),
