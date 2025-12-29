@@ -391,7 +391,7 @@ const RsvpElement = ({
               style={{ color: 'inherit' }}
               rules={[
                 {
-                  required: true,
+                  required: form.getFieldValue('isAttending') === 'yes',
                   message: 'Aceasta intrebare este obligatorie',
                 },
               ]}

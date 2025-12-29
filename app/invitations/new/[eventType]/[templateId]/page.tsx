@@ -22,6 +22,7 @@ import {
   Upload,
   UploadProps,
 } from 'antd';
+import locale from 'antd/es/calendar/locale/ro_RO';
 import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { useParams, useRouter } from 'next/navigation';
@@ -434,9 +435,16 @@ function SelectEventDate({
       toast.error('Te rugam sa completezi toate campurile');
       return;
     }
+
+    const date = new Date(eventDate);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const universalDate = `${year}-${month}-${day}T00:00:00.000Z`;
     onSelectEventDateAction({
       eventName,
-      eventDate: eventDate.toISOString(),
+      eventDate: universalDate,
       guestsCount,
     });
   };
@@ -457,6 +465,7 @@ function SelectEventDate({
             rules={[{ required: true, message: 'Data este obligatorie' }]}
           >
             <Calendar
+              locale={locale}
               disabledDate={(current) => {
                 return (
                   current &&
