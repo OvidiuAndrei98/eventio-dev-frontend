@@ -64,13 +64,14 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     alignItems: 'center',
     padding: '8px 8px 8px 8px',
     zIndex: 2,
+    overflow: 'hidden',
   };
 
   const sectionWrapperStyle: React.CSSProperties = {
     minHeight: finalElementProps.style.height as string,
     height: finalElementProps.style.height as string,
     display: 'flex',
-    overflowX: 'hidden',
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
