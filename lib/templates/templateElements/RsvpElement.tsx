@@ -552,7 +552,7 @@ const RsvpElement = ({
             type="primary"
             htmlType="submit"
             size="large"
-            className="w-full"
+            className="w-full relative z-[30]"
             onClick={(e) => e.stopPropagation()}
           >
             Trimite răspuns
