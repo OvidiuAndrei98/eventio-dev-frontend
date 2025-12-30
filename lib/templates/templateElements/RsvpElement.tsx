@@ -112,6 +112,9 @@ const RsvpElement = ({
   const handleSubmit: FormProps<RsvpFormData>['onFinish'] = async (
     values: RsvpFormData
   ) => {
+    try {
+    // ALERT 1: Verificăm dacă funcția pornește
+    // alert("Funcția handleSubmit a pornit!");
     const guestsToSave: Guest[] = [];
     const submissionId =
       Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -234,6 +237,15 @@ const RsvpElement = ({
       // (ex., resetează state-ul de "loading" dacă ai implementat așa ceva)
       // setIsSubmitting(false);
     }
+  } catch (error) {
+    console.error('Unexpected error in handleSubmit:', error);
+    alert("EROARE CRITICĂ: " + (error instanceof Error ? error.message : String(error)));
+    await addErrorLog(userId, {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    toast.error(
+      'A aparut o eroare neasteptata. Te rugam incearca din nou.'
+    );
   };
 
   // --- Randarea Interfeței Utilizator (UI) a Formularului ---
