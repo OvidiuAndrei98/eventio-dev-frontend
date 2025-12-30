@@ -113,139 +113,143 @@ const RsvpElement = ({
     values: RsvpFormData
   ) => {
     try {
-    // ALERT 1: Verificăm dacă funcția pornește
-    // alert("Funcția handleSubmit a pornit!");
-    const guestsToSave: Guest[] = [];
-    const submissionId =
-      Date.now().toString(36) + Math.random().toString(36).substring(2);
-    const submissionTime = new Date().getTime();
+      // ALERT 1: Verificăm dacă funcția pornește
+      alert('Funcția handleSubmit a pornit!');
+      const guestsToSave: Guest[] = [];
+      const submissionId =
+        Date.now().toString(36) + Math.random().toString(36).substring(2);
+      const submissionTime = new Date().getTime();
 
-    if (
-      values.isAttending === 'yes' &&
-      values.primaryGuestFirstName?.trim() &&
-      values.primaryGuestLastName?.trim()
-    ) {
-      // Collect additional fields that are not part of RsvpFormData
-      const additionalFields: { key: string; value: string }[] = [];
-      Object.entries(values).forEach(([key, value]) => {
-        if (!(key in formData)) {
-          additionalFields.push({ key, value });
-        }
-      });
+      if (
+        values.isAttending === 'yes' &&
+        values.primaryGuestFirstName?.trim() &&
+        values.primaryGuestLastName?.trim()
+      ) {
+        // Collect additional fields that are not part of RsvpFormData
+        const additionalFields: { key: string; value: string }[] = [];
+        Object.entries(values).forEach(([key, value]) => {
+          if (!(key in formData)) {
+            additionalFields.push({ key, value });
+          }
+        });
 
-      guestsToSave.push({
-        guestId:
-          Date.now().toString(36) + Math.random().toString(36).substring(2),
-        submissionId: submissionId,
-        firstName: values.primaryGuestFirstName.trim(),
-        lastName: values.primaryGuestLastName.trim(),
-        fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
-        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
-        isAttending: values.isAttending === 'yes',
-        eventId: eventId,
-        tableId: null,
-        date: submissionTime,
-        isPrimaryContact: true,
-        primaryContactPhone: values.primaryContactPhone?.trim() || '',
-        totalGuests:
-          typeof values.totalGuests === 'number' ? values.totalGuests : 1,
-        eventAditionalQuestions: additionalFields,
-      });
-    }
+        guestsToSave.push({
+          guestId:
+            Date.now().toString(36) + Math.random().toString(36).substring(2),
+          submissionId: submissionId,
+          firstName: values.primaryGuestFirstName.trim(),
+          lastName: values.primaryGuestLastName.trim(),
+          fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
+          dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
+          isAttending: values.isAttending === 'yes',
+          eventId: eventId,
+          tableId: null,
+          date: submissionTime,
+          isPrimaryContact: true,
+          primaryContactPhone: values.primaryContactPhone?.trim() || '',
+          totalGuests:
+            typeof values.totalGuests === 'number' ? values.totalGuests : 1,
+          eventAditionalQuestions: additionalFields,
+        });
+      }
 
-    if (
-      values.isAttending === 'yes' &&
-      typeof values.totalGuests === 'number' &&
-      values.totalGuests > 1
-    ) {
-      for (const guestDetails of values.additionalGuestsDetails) {
-        if (guestDetails.firstName.trim() && guestDetails.lastName.trim()) {
-          guestsToSave.push({
-            guestId:
-              Date.now().toString(36) + Math.random().toString(36).substring(2),
-            submissionId: submissionId,
-            firstName: guestDetails.firstName.trim(),
-            lastName: guestDetails.lastName.trim(),
-            fullName: `${guestDetails.firstName.trim()} ${guestDetails.lastName.trim()}`,
-            dietaryRestrictions: guestDetails.dietaryRestrictions?.trim() || '',
-            isAttending: true,
-            eventId: eventId,
-            tableId: null,
-            date: submissionTime,
-            isPrimaryContact: false,
-          });
+      if (
+        values.isAttending === 'yes' &&
+        typeof values.totalGuests === 'number' &&
+        values.totalGuests > 1
+      ) {
+        for (const guestDetails of values.additionalGuestsDetails) {
+          if (guestDetails.firstName.trim() && guestDetails.lastName.trim()) {
+            guestsToSave.push({
+              guestId:
+                Date.now().toString(36) +
+                Math.random().toString(36).substring(2),
+              submissionId: submissionId,
+              firstName: guestDetails.firstName.trim(),
+              lastName: guestDetails.lastName.trim(),
+              fullName: `${guestDetails.firstName.trim()} ${guestDetails.lastName.trim()}`,
+              dietaryRestrictions:
+                guestDetails.dietaryRestrictions?.trim() || '',
+              isAttending: true,
+              eventId: eventId,
+              tableId: null,
+              date: submissionTime,
+              isPrimaryContact: false,
+            });
+          }
         }
       }
-    }
 
-    if (
-      values.isAttending === 'no' &&
-      values.primaryGuestFirstName?.trim() &&
-      values.primaryGuestLastName?.trim()
-    ) {
-      guestsToSave.push({
-        guestId:
-          Date.now().toString(36) + Math.random().toString(36).substring(2),
-        submissionId: submissionId,
-        firstName: values.primaryGuestFirstName.trim(),
-        lastName: values.primaryGuestLastName.trim(),
-        fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
-        dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
-        isAttending: false,
-        eventId: eventId,
-        tableId: null,
-        date: submissionTime, // Timestamp
-        isPrimaryContact: true,
-        primaryContactPhone: values.primaryContactPhone?.trim() || '',
-      });
-    }
+      if (
+        values.isAttending === 'no' &&
+        values.primaryGuestFirstName?.trim() &&
+        values.primaryGuestLastName?.trim()
+      ) {
+        guestsToSave.push({
+          guestId:
+            Date.now().toString(36) + Math.random().toString(36).substring(2),
+          submissionId: submissionId,
+          firstName: values.primaryGuestFirstName.trim(),
+          lastName: values.primaryGuestLastName.trim(),
+          fullName: `${values.primaryGuestFirstName.trim()} ${values.primaryGuestLastName.trim()}`,
+          dietaryRestrictions: values.primaryDietaryRestrictions?.trim() || '',
+          isAttending: false,
+          eventId: eventId,
+          tableId: null,
+          date: submissionTime, // Timestamp
+          isPrimaryContact: true,
+          primaryContactPhone: values.primaryContactPhone?.trim() || '',
+        });
+      }
 
-    if (guestsToSave.length === 0) {
-      console.warn('No valid guest data to save after processing form.');
-      toast.info('No guest data to save.');
-      return;
-    }
+      if (guestsToSave.length === 0) {
+        console.warn('No valid guest data to save after processing form.');
+        toast.info('No guest data to save.');
+        return;
+      }
 
-    try {
-      await addGuestsToEventBatch(eventId, userId, guestsToSave);
+      try {
+        await addGuestsToEventBatch(eventId, userId, guestsToSave);
 
-      toast.success(
-        `Raspuns(uri) inregistrat(e) cu succes pentru ${guestsToSave.length} invitat(i)!`
-      );
+        toast.success(
+          `Raspuns(uri) inregistrat(e) cu succes pentru ${guestsToSave.length} invitat(i)!`
+        );
 
-      // Resetăm state-ul local al formularului la valorile inițiale goale după submitarea cu succes
-      setFormData({
-        primaryGuestFirstName: '',
-        primaryGuestLastName: '',
-        primaryContactPhone: '', // Reseteaza si email-ul
-        primaryDietaryRestrictions: '',
-        isAttending: '',
-        totalGuests: '',
-        additionalGuestsDetails: [], // Reseteaza array-ul la gol
-      });
-      form.resetFields();
+        // Resetăm state-ul local al formularului la valorile inițiale goale după submitarea cu succes
+        setFormData({
+          primaryGuestFirstName: '',
+          primaryGuestLastName: '',
+          primaryContactPhone: '', // Reseteaza si email-ul
+          primaryDietaryRestrictions: '',
+          isAttending: '',
+          totalGuests: '',
+          additionalGuestsDetails: [], // Reseteaza array-ul la gol
+        });
+        form.resetFields();
+      } catch (error) {
+        console.error('Error saving guests:', error);
+        await addErrorLog(userId, {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        toast.error(
+          'A aparut o eroare la inregistrarea raspunsului. Te rugam incearca din nou.'
+        );
+      } finally {
+        // Codul din acest bloc rulează indiferent dacă submitarea a avut succes sau a eșuat
+        // (ex., resetează state-ul de "loading" dacă ai implementat așa ceva)
+        // setIsSubmitting(false);
+      }
     } catch (error) {
-      console.error('Error saving guests:', error);
+      console.error('Unexpected error in handleSubmit:', error);
+      alert(
+        'EROARE CRITICĂ: ' +
+          (error instanceof Error ? error.message : String(error))
+      );
       await addErrorLog(userId, {
         error: error instanceof Error ? error.message : String(error),
       });
-      toast.error(
-        'A aparut o eroare la inregistrarea raspunsului. Te rugam incearca din nou.'
-      );
-    } finally {
-      // Codul din acest bloc rulează indiferent dacă submitarea a avut succes sau a eșuat
-      // (ex., resetează state-ul de "loading" dacă ai implementat așa ceva)
-      // setIsSubmitting(false);
+      toast.error('A aparut o eroare neasteptata. Te rugam incearca din nou.');
     }
-  } catch (error) {
-    console.error('Unexpected error in handleSubmit:', error);
-    alert("EROARE CRITICĂ: " + (error instanceof Error ? error.message : String(error)));
-    await addErrorLog(userId, {
-      error: error instanceof Error ? error.message : String(error),
-    });
-    toast.error(
-      'A aparut o eroare neasteptata. Te rugam incearca din nou.'
-    );
   };
 
   // --- Randarea Interfeței Utilizator (UI) a Formularului ---
