@@ -24,7 +24,12 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
   orientation = 'bottom',
 }) => {
   return selectedElement ? (
-    <Drawer open={open} onOpenChange={onClose} direction={orientation}>
+    <Drawer
+      open={open}
+      onOpenChange={onClose}
+      direction={orientation}
+      repositionInputs={false}
+    >
       <DrawerContent
         className={
           orientation === 'right'
