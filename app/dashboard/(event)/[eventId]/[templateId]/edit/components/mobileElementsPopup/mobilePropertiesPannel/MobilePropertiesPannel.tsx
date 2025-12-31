@@ -28,41 +28,38 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
       <DrawerContent
         className={
           orientation === 'right'
-            ? 'p-[0_16px_16px_16px] h-full w-[400px] overflow-hidden p-0'
-            : 'p-[0_16px_16px_16px] max-h-[60dvh] overflow-hidden p-0'
+            ? 'p-0 h-full w-[400px] overflow-hidden'
+            : 'p-0 max-h-[70vh] overflow-hidden bottom-0 fixed rounded-t-[10px] border-t'
         }
+        style={{ transform: orientation === 'bottom' ? 'none' : undefined }}
       >
+        {orientation === 'bottom' && (
+          <div className="mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full bg-gray-300" />
+        )}
+
         <div
-          className={`h-full overflow-auto scrollbar-thin p-2 flex ${
-            orientation === 'right' ? 'flex-col' : 'flex-col'
-          }`}
+          className="flex flex-col h-full overflow-hidden"
           style={{
-            flexDirection: orientation === 'right' ? 'row' : 'column',
+            flexDirection: 'column',
           }}
         >
-          <div
-            className={`flex justify-center items-center mb-2 ${
-              orientation === 'right' ? 'flex-col' : 'flex-row'
-            }`}
-            style={{
-              flexDirection: orientation === 'right' ? 'column' : 'row',
-            }}
-          >
-            <div
-              className={
-                orientation === 'right'
-                  ? 'w-1 h-8 rounded bg-gray-300 mr-2'
-                  : 'w-8 h-1 rounded bg-gray-300 mb-2 fixed'
-              }
-            />
+          <div className="px-4 pt-2 pb-2 border-b bg-white">
+            <h3 className="font-semibold text-xl truncate">
+              {selectedElement.name}
+            </h3>
           </div>
-          <h3 className="py-2 font-semibold text-xl">{selectedElement.name}</h3>
-          <div className="w-full">
-            <PropertyPanel
-              activeBreakpoint="mobile"
-              selectedElement={selectedElement}
-              handlePropertyChanged={handlePropertyChanged}
-            />
+
+          <div
+            className="flex-1 overflow-y-auto px-4 pb-10 scrollbar-thin"
+            onFocusCapture={(e) => e.stopPropagation()}
+          >
+            <div className="w-full pt-2">
+              <PropertyPanel
+                activeBreakpoint="mobile"
+                selectedElement={selectedElement}
+                handlePropertyChanged={handlePropertyChanged}
+              />
+            </div>
           </div>
         </div>
       </DrawerContent>
