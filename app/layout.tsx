@@ -1,7 +1,7 @@
 import { ConfigProvider } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import '@/lib/firebase/firebaseConfig'; // Ensure Firebase is initialized
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { AuthenticationBoundary } from '@/core/AuthenticationBoundary';
 import '@/styles/globals.css';
 // import { TikTokPixel } from '@/lib/tik-tok/TikTokPixel';
@@ -30,6 +30,12 @@ export const metadata: Metadata = {
   description: `Economisește timp, reduce risipa și impresionează-ți oaspeții cu
             invitații digitale personalizate. Urmărește RSVP-urile în timp real
             și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.`,
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  interactiveWidget: 'resizes-content',
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
