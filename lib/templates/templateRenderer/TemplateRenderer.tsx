@@ -64,9 +64,11 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     useState<DragEventData | null>(null);
 
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 3, delay: 250 },
+    }),
     useSensor(TouchSensor, {
-      activationConstraint: { distance: 10, delay: 700 },
+      activationConstraint: { distance: 3, delay: 250 },
     })
   );
 
