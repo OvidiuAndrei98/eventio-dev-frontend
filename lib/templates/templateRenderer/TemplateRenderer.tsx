@@ -68,7 +68,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       activationConstraint: { distance: 5 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { distance: 5, delay: 300 },
+      activationConstraint: { distance: 15, delay: 300 },
     })
   );
 
