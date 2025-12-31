@@ -68,7 +68,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       activationConstraint: { distance: 5 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { distance: 15, delay: 150 },
+      activationConstraint: { tolerance: 5, delay: 150 },
     })
   );
 
@@ -104,6 +104,17 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     transition: 'all 0.3s ease',
   };
 
+  const triggerHapticFeedback = () => {
+    if (
+      typeof window !== 'undefined' &&
+      window.navigator &&
+      window.navigator.vibrate
+    ) {
+      // 50ms este o vibrație scurtă și discretă, ideală pentru drag & drop
+      window.navigator.vibrate(50);
+    }
+  };
+
   const getPropertyValue = (
     data: TemplateElement,
     defaultPropertyPath: string,
@@ -132,6 +143,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
   const handleDragStart = (e: DragStartEvent, section: TemplateSection) => {
     const activeData = e.active.data.current as DragEventData;
     if (!activeData) return;
+    triggerHapticFeedback();
     setActiveElementData(activeData);
     setActiveSection(section);
     onDrag?.(true);
