@@ -34,7 +34,7 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
         className={
           orientation === 'right'
             ? 'p-0 h-full w-[400px] overflow-hidden'
-            : 'h-full w-full bottom-0 fixed rounded-none'
+            : 'max-h-[70dvh] w-full bottom-0 fixed rounded-none'
         }
         style={{ transform: orientation === 'bottom' ? 'none' : undefined }}
       >

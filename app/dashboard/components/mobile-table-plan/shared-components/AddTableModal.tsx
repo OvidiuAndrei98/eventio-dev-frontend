@@ -138,8 +138,13 @@ const AddTableDrawer = ({
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose} direction="bottom">
-      <DrawerContent className="max-h-[95vh] w-full mx-auto md:max-w-md">
+    <Drawer
+      open={isOpen}
+      onOpenChange={onClose}
+      direction="bottom"
+      repositionInputs={false}
+    >
+      <DrawerContent className="max-h-[90vh] w-full mx-auto md:max-w-md">
         <DrawerHeader>
           <DrawerTitle>Adaugă Masă Nouă</DrawerTitle>
           <DrawerDescription>
