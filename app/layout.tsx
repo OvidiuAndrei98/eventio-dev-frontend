@@ -36,6 +36,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html
       lang="en"
+      translate="no"
       style={{ scrollBehavior: 'smooth', backgroundColor: 'white' }}
     >
       <head>
@@ -50,7 +51,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
           `}
         </Script>
       </head>
-      <body>
+      <body className="notranslate" translate="no">
         <noscript>
           <iframe
             src={`https://www.googletagmanager.com/ns.html?id=GTM-P7XC8N68`}
