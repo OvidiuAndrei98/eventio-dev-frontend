@@ -84,7 +84,6 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     backgroundImage: sectionData.backgroundImage
       ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
       : 'unset',
-    touchAction: 'none',
   } as React.CSSProperties;
 
   const validElements = sectionData.elements.filter(

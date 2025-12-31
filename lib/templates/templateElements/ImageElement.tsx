@@ -134,6 +134,7 @@ const ImageElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
+        touchAction: 'none',
       }}
       className={` ${
         editMode && isSelected && selectedElementId === id

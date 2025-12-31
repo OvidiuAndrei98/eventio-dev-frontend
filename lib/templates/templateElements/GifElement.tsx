@@ -183,6 +183,7 @@ const GifElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
+        touchAction: 'none',
       }}
       className={` ${
         // Show thick border if selected in edit mode

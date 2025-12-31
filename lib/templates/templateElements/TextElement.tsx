@@ -172,6 +172,7 @@ const TextElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
+        touchAction: 'none',
       }}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}
