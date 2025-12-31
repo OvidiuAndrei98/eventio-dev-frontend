@@ -55,17 +55,18 @@ const CountdownElement = ({
     loadFont(finalElementProps.style.fontFamily as string);
   }
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-    data: {
-      name,
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
       id,
-      modifiers:
-        finalElementProps.position.elementAlignment !== 'auto'
-          ? [restrictToParentElement, restrictToVerticalAxis]
-          : [restrictToParentElement],
-    },
-  });
+      data: {
+        name,
+        id,
+        modifiers:
+          finalElementProps.position.elementAlignment !== 'auto'
+            ? [restrictToParentElement, restrictToVerticalAxis]
+            : [restrictToParentElement],
+      },
+    });
 
   // Countdown logic
   // It takes a target date string and returns an object with days, hours, minutes, seconds, and a finished flag
@@ -188,7 +189,7 @@ const CountdownElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
-        touchAction: 'none',
+        touchAction: isDragging ? 'none' : 'auto',
       }}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}

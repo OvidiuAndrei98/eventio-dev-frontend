@@ -60,17 +60,18 @@ const TextElement = ({
     loadFont(finalElementProps.style.fontFamily as string);
   }
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-    data: {
-      name: name,
-      id: id,
-      modifiers:
-        finalElementProps.position.elementAlignment !== 'auto'
-          ? [restrictToParentElement, restrictToVerticalAxis]
-          : [restrictToParentElement],
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id,
+      data: {
+        name: name,
+        id: id,
+        modifiers:
+          finalElementProps.position.elementAlignment !== 'auto'
+            ? [restrictToParentElement, restrictToVerticalAxis]
+            : [restrictToParentElement],
+      },
+    });
 
   let textContentStyle: React.CSSProperties = {
     fontFamily: (finalElementProps.style.fontFamily as string) || 'inherit',
@@ -172,7 +173,7 @@ const TextElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
-        touchAction: 'none',
+        touchAction: isDragging ? 'none' : 'auto',
       }}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}

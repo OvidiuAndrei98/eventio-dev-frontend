@@ -56,17 +56,18 @@ const BlobsElement = ({
     activeBreakpoint
   ) as TemplateElement;
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-    data: {
-      name: name,
-      id: id,
-      modifiers:
-        finalElementProps.position.elementAlignment !== 'auto'
-          ? [restrictToParentElement, restrictToVerticalAxis]
-          : [restrictToParentElement],
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id,
+      data: {
+        name: name,
+        id: id,
+        modifiers:
+          finalElementProps.position.elementAlignment !== 'auto'
+            ? [restrictToParentElement, restrictToVerticalAxis]
+            : [restrictToParentElement],
+      },
+    });
 
   const baseStyle: React.CSSProperties = {
     ...finalElementProps.style,
@@ -144,7 +145,7 @@ const BlobsElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
-        touchAction: 'none',
+        touchAction: isDragging ? 'none' : 'auto',
       }}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}

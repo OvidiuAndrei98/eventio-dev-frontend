@@ -57,17 +57,18 @@ const ImageElement = ({
     activeBreakpoint
   ) as ImageTemplateElement;
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id,
-    data: {
-      name: name,
-      id: id,
-      modifiers:
-        finalElementProps.position.elementAlignment !== 'auto'
-          ? [restrictToParentElement, restrictToVerticalAxis]
-          : [restrictToParentElement],
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id,
+      data: {
+        name: name,
+        id: id,
+        modifiers:
+          finalElementProps.position.elementAlignment !== 'auto'
+            ? [restrictToParentElement, restrictToVerticalAxis]
+            : [restrictToParentElement],
+      },
+    });
 
   const baseStyle: React.CSSProperties = {
     backgroundRepeat: finalElementProps.backgroundImage ? 'no-repeat' : 'usent',
@@ -134,7 +135,7 @@ const ImageElement = ({
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`
           : undefined,
-        touchAction: 'none',
+        touchAction: isDragging ? 'none' : 'auto',
       }}
       className={` ${
         editMode && isSelected && selectedElementId === id
