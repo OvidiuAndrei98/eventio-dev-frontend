@@ -137,6 +137,15 @@ export const findInheritedValue = (
   return defaultValue; // Returneaza valoarea default (number, string etc.)
 };
 
+/**
+ *  Generează o valoare CSS pentru interpolare liniară folosind calc()
+ * @param valueAtStartBp Valoarea proprietății la breakpoint-ul de start
+ * @param valueAtEndBp Valoarea proprietății la breakpoint-ul de end
+ * @param startBpWidth Lățimea breakpoint-ului de start (în pixeli)
+ * @param endBpWidth Lățimea breakpoint-ului de end (în pixeli)
+ * @param unit Unitatea de măsură pentru valoare (ex: '%', 'px')
+ * @returns Valoarea CSS generată pentru interpolare liniară folosind calc()
+ */
 export const generateInterpolatedCssValue = (
   valueAtStartBp: number,
   valueAtEndBp: number,
@@ -155,6 +164,13 @@ export const generateInterpolatedCssValue = (
   return `calc(${valStartWithUnit} + (${diffVal}${unit} * ((100vw - ${startBpWidth}px) / ${diffBpWidth})))`;
 };
 
+/**
+ *  Generează o valoare CSS pentru font-size fluid folosind clamp(),
+ * @param mobilePx  Valoarea font-size pentru breakpoint-ul mobile (în pixeli)
+ * @param tabletPx Valoarea font-size pentru breakpoint-ul tablet (în pixeli)
+ * @param desktopPx Valoarea font-size pentru breakpoint-ul desktop (în pixeli)
+ * @returns Valoarea CSS generată pentru font-size fluid folosind clamp()
+ */
 export const generateFluidFontSize = (
   mobilePx: number | undefined,
   tabletPx: number | undefined,

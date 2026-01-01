@@ -40,10 +40,10 @@ export const updateElementPropertyInTemplate = (
 
         // Facem copii imutabile pe calea responsive: element -> responsive -> [breakpoint]
         // Incepem cu obiectul 'responsive' (creeaza {} daca nu exista)
-        const updatedResponsive = { ...(originalElement.responsive || {}) }; // Mergem la obiectul breakpoint-ului activ (creeaza {} daca nu exista)
+        const updatedResponsive = { ...(originalElement.responsive || {}) };
         const updatedBreakpointProps = {
-          ...((updatedResponsive[breakpoint] || {}) as ResponsiveProperties), // Asigura-te ca ResponsiveProperties este tipul corect
-        }; // Acesta este obiectul unde trebuie setată proprietatea (ex: style, position)
+          ...((updatedResponsive[breakpoint] || {}) as ResponsiveProperties),
+        };
 
         if (isValueReset) {
           // --- Gasim valoarea mostenita ---

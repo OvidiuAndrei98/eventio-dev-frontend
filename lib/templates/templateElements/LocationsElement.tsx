@@ -77,6 +77,7 @@ const LocationsElement = ({
 
   const titleElementStyle: React.CSSProperties = {
     color: `${finalElementProps.titleStyle?.color}`,
+    fontFamily: `${finalElementProps.titleStyle?.fontFamily}`,
   };
 
   const dateElementStyle: React.CSSProperties = {

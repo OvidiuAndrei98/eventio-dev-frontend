@@ -181,68 +181,64 @@ const RefusalsTable = ({ guests }: RefusalsTableProps) => {
 
   return (
     <div className="summary-container">
-      <div className="table-container">
-        {isBasicPlan && (
-          <div className="text-[var(--primary-color)] text-center font-medium response-alert">
-            Pentru a vedea toate răspunsurile, ai nevoie de planul{' '}
-            <span className="font-bold text-[var(--premium-color)]">
-              Premium
-            </span>{' '}
-            sau <span className="font-bold">Ultimate</span>.
-          </div>
-        )}
-        <div className="flex justify-between mb-2 items-center">
-          <span className="secondary-title !text-lg md:!text-2xl">
-            Raspunsuri refuzate
-            {isBasicPlan && (
-              <span style={{ color: '#FFB347', marginLeft: 6 }}>
-                <StarOutlined />
-              </span>
-            )}
-          </span>
-          <div className="bg-[#FFEBEB] p-2 md:py-3 md:px-3 flex gap-2 items-center rounded-md border-1 border-dotted border-[#FF001B]">
-            <Image
-              src={SadFaceIcon}
-              alt="sad-face"
-              width={windowSize < 780 ? 14 : 20}
-              height={windowSize < 780 ? 14 : 20}
-              style={{ color: 'rebeccapurple' }}
-            />
-            Refuzuri
-            <span>{declinedGuests.length}</span>
-          </div>
+      {isBasicPlan && (
+        <div className="text-[var(--primary-color)] text-center font-medium response-alert">
+          Pentru a vedea toate răspunsurile, ai nevoie de planul{' '}
+          <span className="font-bold text-[var(--premium-color)]">Premium</span>{' '}
+          sau <span className="font-bold">Ultimate</span>.
         </div>
-        <Table<Guest>
-          columns={
-            windowSize < 780
-              ? columns
-              : [
-                  ...columns.slice(0, 2),
-                  {
-                    title: 'Data',
-                    width: 'auto',
-                    align: 'center',
-                    dataIndex: 'date',
-                    key: 'date',
-                    render: (
-                      _: any, // eslint-disable-line
-                      record: Guest
-                    ) => (
-                      <span>
-                        {new Date(record.date).toLocaleString('RO', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </span>
-                    ),
-                  },
-                  ...columns.slice(2),
-                ]
-          }
-          dataSource={data}
-        />
+      )}
+      <div className="flex justify-between mb-2 items-center">
+        <span className="secondary-title !text-lg md:!text-2xl">
+          Lista Refuzuri
+          {isBasicPlan && (
+            <span style={{ color: '#FFB347', marginLeft: 6 }}>
+              <StarOutlined />
+            </span>
+          )}
+        </span>
+        <div className="bg-[#FFEBEB] p-2 md:py-3 md:px-3 flex gap-2 items-center rounded-md border-1 border-dotted border-[#FF001B]">
+          <Image
+            src={SadFaceIcon}
+            alt="sad-face"
+            width={windowSize < 780 ? 14 : 20}
+            height={windowSize < 780 ? 14 : 20}
+            style={{ color: 'rebeccapurple' }}
+          />
+          Refuzuri
+          <span>{declinedGuests.length}</span>
+        </div>
       </div>
+      <Table<Guest>
+        columns={
+          windowSize < 780
+            ? columns
+            : [
+                ...columns.slice(0, 2),
+                {
+                  title: 'Data',
+                  width: 'auto',
+                  align: 'center',
+                  dataIndex: 'date',
+                  key: 'date',
+                  render: (
+                    _: any, // eslint-disable-line
+                    record: Guest
+                  ) => (
+                    <span>
+                      {new Date(record.date).toLocaleString('RO', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  ),
+                },
+                ...columns.slice(2),
+              ]
+        }
+        dataSource={data}
+      />
     </div>
   );
 };

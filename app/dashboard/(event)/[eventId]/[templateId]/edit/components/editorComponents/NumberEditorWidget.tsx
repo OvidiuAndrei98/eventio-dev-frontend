@@ -10,17 +10,11 @@ import {
 } from '@/core/types';
 
 interface NumberEditorWidgetProps {
-  /** Configurația specifică a proprietății pentru acest widget. */
   config: PropertyEditorConfig;
   version: number;
-  value:
-    | number
-    | undefined
-    | null /** Callback apelat când valoarea se schimbă (după debounce). */; // Prop from parent (source of truth)
-  onChange: (
-    newValue: number | undefined | null
-  ) => void /** Optional: Delay-ul pentru debounce în milisecunde. */; // Parent's handler
-  debounceDelay?: number; // Prop optional for delay // Add activeBreakpoint as prop for logging
+  value: number | undefined | null;
+  onChange: (newValue: number | undefined | null) => void;
+  debounceDelay?: number;
   activeBreakpoint?: string;
 }
 
@@ -47,7 +41,9 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
   const debouncedOnChange = useDebouncedCallback(
     // The callback to be debounced. This calls the parent's onChange handler.
     (newValue: number | undefined | null) => {
-      onChange(newValue); // <-- Call the actual parent handler HERE
+      if (newValue !== undefined) {
+        onChange(newValue); // <-- Call the actual parent handler HERE
+      }
     },
     debounceDelay // The debounce delay
   ); // useDebouncedCallback manages its own dependencies (the callback and delay) and cleanup. // --- useEffect for syncing prop value to local state --- // This effect is essential to keep the local state (number | undefined) in sync // with the 'value' prop (number | undefined | null) received from the parent (the source of truth). // It runs when the 'value' prop changes.
@@ -129,6 +125,9 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
         placeholder={!displayValue ? 'auto' : ''}
         value={displayValue} // Input is controlled by displayValue (string)
         onChange={handleInputChange} // Local handler // Apply specific attributes (min, max, step) from config
+        onBlur={() => {
+          onChange(localValue);
+        }}
         min={config.min}
         step={config.step}
         style={{
@@ -145,4 +144,3 @@ const NumberEditorWidget: React.FC<NumberEditorWidgetProps> = ({
 };
 
 export default NumberEditorWidget;
-// Make sure to export the correct component (NumberEditorWidget or TextInputEditorWidget)

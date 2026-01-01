@@ -89,13 +89,18 @@ const AddTableDrawer = ({
       }
     }
 
+    const tableRandomPosition = {
+      x: Math.random() * 500,
+      y: Math.random() * 500,
+    };
+
     const canvasElement: CanvasElement = {
       elementId: crypto.randomUUID(),
       type: 'table',
       typeId: values.type,
       name: values.name,
       seats: values.seats,
-      positions: { x: 50, y: 50 },
+      positions: tableRandomPosition,
       guestCount: 0,
       number: nextNumber, // Folosim numărul calculat aici
     };
@@ -144,7 +149,7 @@ const AddTableDrawer = ({
       direction="bottom"
       repositionInputs={false}
     >
-      <DrawerContent className="max-h-[90vh] w-full mx-auto md:max-w-md">
+      <DrawerContent className="w-full mx-auto md:max-w-md">
         <DrawerHeader>
           <DrawerTitle>Adaugă Masă Nouă</DrawerTitle>
           <DrawerDescription>
@@ -152,8 +157,9 @@ const AddTableDrawer = ({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="p-4 overflow-y-auto">
+        <div className="p-4 overflow-y-auto h-full">
           <Form
+            className="h-full flex flex-col"
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
@@ -223,7 +229,7 @@ const AddTableDrawer = ({
               <InputNumber min={1} max={50} className="w-full" size="large" />
             </Form.Item>
 
-            <DrawerFooter className="px-0 mt-8">
+            <DrawerFooter className="px-0 mt-auto">
               <div className="flex flex-row gap-2 w-full">
                 <Button
                   type="primary"

@@ -69,7 +69,7 @@ const UploadAvatar: React.FC = () => {
     <Upload
       name="avatar"
       listType="picture-circle"
-      className="avatar-uploader"
+      className="avatar-uploader rounded-full overflow-hidden"
       showUploadList={false}
       beforeUpload={beforeUpload}
       onChange={handleChange}
@@ -78,7 +78,7 @@ const UploadAvatar: React.FC = () => {
         <Image
           src={imageUrl}
           alt="avatar"
-          className="rounded-full"
+          className="rounded-full object-cover overflow-hidden"
           width={100}
           height={100}
         />
