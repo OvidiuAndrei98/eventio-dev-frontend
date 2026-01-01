@@ -282,6 +282,9 @@ const BorderEditorWidget = ({
           onChange={handleBorderColorChange}
           size="middle"
           disabled={selectedBorderPositions.length === 0}
+          getPopupContainer={(trigger) =>
+            trigger.parentElement || document.body
+          }
         />
       </div>
     </div>

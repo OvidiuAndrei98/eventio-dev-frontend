@@ -117,7 +117,7 @@ const LocationsElement = ({
           : disabled
           ? 'hidden'
           : 'block'
-      }`}
+      } ${editMode ? 'm-6' : ''}`}
       id={id}
       onMouseEnter={editMode ? () => handleMouseEnter() : undefined}
       onMouseLeave={editMode ? () => handleMouseLeave() : undefined}
