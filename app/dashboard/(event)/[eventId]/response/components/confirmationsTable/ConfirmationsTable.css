@@ -49,7 +49,7 @@
 
 .confirmations-container .confirmations-table-container .collapsible-table {
   overflow-y: auto;
-  height: calc(100% - 100px);
+  height: calc(100% - 175px);
 }
 
 .confirmations-container
@@ -76,5 +76,9 @@
 
   .confirmations-container .table-container {
     padding: var(--padding-large) var(--padding-medium);
+  }
+
+  .confirmations-container .confirmations-table-container {
+    padding: var(--padding-medium);
   }
 }

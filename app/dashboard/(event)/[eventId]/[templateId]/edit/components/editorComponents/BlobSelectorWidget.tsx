@@ -52,7 +52,7 @@ const BlobSelectorWidget = ({
         {blobsKeys.map((blob) => (
           <div
             onClick={() => handleInputChange(blob)}
-            className={`flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white ${
+            className={`flex items-center p-3 min-h-[50px] text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white ${
               value === blob && 'ring-1 ring-[#CB92D9]'
             }`}
             key={blob}

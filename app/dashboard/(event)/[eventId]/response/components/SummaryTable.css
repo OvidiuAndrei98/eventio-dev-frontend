@@ -128,10 +128,6 @@
     padding: 0 8px;
   }
 
-  .response-container .summary-container .table-container {
-    padding: var(--padding-large) var(--padding-medium);
-  }
-
   .response-container
     .summary-container
     .table-container
