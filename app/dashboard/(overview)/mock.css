@@ -146,4 +146,7 @@
   .content-right {
     width: auto;
   }
+  .dashboard-card.confirmations {
+    padding: var(--spacing-medium);
+  }
 }

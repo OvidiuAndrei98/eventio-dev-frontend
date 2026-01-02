@@ -1,6 +1,6 @@
 .preview-confirmation-card {
   display: flex;
-  padding: var(--padding-medium);
+  padding: var(--padding-small);
   align-items: center;
   justify-content: space-between;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
@@ -33,7 +33,7 @@
     }
   }
   .field-content {
-    max-width: 142px;
+    max-width: 120px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

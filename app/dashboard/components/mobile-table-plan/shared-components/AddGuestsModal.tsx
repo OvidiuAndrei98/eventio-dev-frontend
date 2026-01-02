@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { Guest } from '@/core/types';
 import { toast } from 'sonner';
 import { PLANYVITE_EVENT_PLAN_FEATURES } from '@/lib/planyviteEventPlanTiers';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const AddGuestsModal = ({
   eventId,
@@ -87,117 +88,132 @@ const AddGuestsModal = ({
   };
 
   return (
-    <Modal
-      open={open}
-      footer={null}
-      closeIcon={null}
-      centered
-      rootClassName="mobiele-add-guests-modal"
-    >
-      <div className="flex flex-col items-center justify-center w-full p-2 gap-2 overflow-hidden">
-        <Button type="dashed" className="w-full">
-          Importa din Excel
-        </Button>
-        <span>Sau</span>
-        <div className="w-full max-h-[calc(100svh-400px)] overflow-y-auto scrollbar-thin">
-          <Form
-            layout="vertical"
-            className="w-full"
-            form={form}
-            onFinish={handleFinish}
-          >
-            {guestsList.map((guest, index) => (
-              <div key={guest.id} className="flex flex-col gap-2">
-                <div className="flex items-start gap-2">
-                  <div className="flex flex-row gap-2 w-full">
-                    <Form.Item
-                      label={index === 0 ? 'Prenume' : ''}
-                      name={`${guest.id}-firstName`}
-                      required
-                      className="w-full"
-                      rules={[
-                        { required: true, message: 'Prenumele este necesar' },
-                      ]}
-                    >
-                      <Input
-                        placeholder="Prenume"
-                        value={guest.firstName}
-                        onChange={(e) => {
-                          const newGuestsList = [...guestsList];
-                          newGuestsList[index].firstName = e.target.value;
-                          setGuestsList(newGuestsList);
-                        }}
-                        className="w-full"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label={index === 0 ? 'Nume' : ''}
-                      name={`${guest.id}-lastName`}
-                      required
-                      className="w-full"
-                      rules={[
-                        { required: true, message: 'Numele este necesar' },
-                      ]}
-                    >
-                      <Input
-                        placeholder="Nume"
-                        value={guest.lastName}
-                        onChange={(e) => {
-                          const newGuestsList = [...guestsList];
-                          newGuestsList[index].lastName = e.target.value;
-                          setGuestsList(newGuestsList);
-                        }}
-                        className="w-full"
-                      />
-                    </Form.Item>
+    <Dialog open={open} onOpenChange={setAddGuestsModalOpen} modal>
+      <DialogContent className="mobiele-add-guests-modal h-[95dvh] overflow-hidden p-0 pt-6">
+        <div className="w-full grid grid-cols-1 grid-rows-[50px_20px_1fr_50px_50px] justify-items-center p-4 overflow-hidden h-full gap-4">
+          <div className="row-start-1 w-full flex flex-col items-center gap-2">
+            <Button type="dashed" className="w-full">
+              Importa din Excel
+            </Button>
+          </div>
+
+          <div className="row-start-2 w-full flex items-center justify-center">
+            <span>Sau</span>
+          </div>
+
+          <div className="row-start-3 w-full overflow-hidden">
+            <div className="w-full h-full min-h-0 overflow-y-auto scrollbar-thin pr-2">
+              <Form
+                layout="vertical"
+                className="w-full"
+                form={form}
+                onFinish={handleFinish}
+              >
+                {guestsList.map((guest, index) => (
+                  <div key={guest.id} className="flex flex-col gap-2">
+                    <div className="flex items-start gap-2">
+                      <div className="flex flex-row gap-2 w-full">
+                        <Form.Item
+                          label={index === 0 ? 'Prenume' : ''}
+                          name={`${guest.id}-firstName`}
+                          required
+                          className="w-full"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Prenumele este necesar',
+                            },
+                          ]}
+                        >
+                          <Input
+                            placeholder="Prenume"
+                            value={guest.firstName}
+                            onChange={(e) => {
+                              const newGuestsList = [...guestsList];
+                              newGuestsList[index].firstName = e.target.value;
+                              setGuestsList(newGuestsList);
+                            }}
+                            className="w-full"
+                          />
+                        </Form.Item>
+                        <Form.Item
+                          label={index === 0 ? 'Nume' : ''}
+                          name={`${guest.id}-lastName`}
+                          required
+                          className="w-full"
+                          rules={[
+                            { required: true, message: 'Numele este necesar' },
+                          ]}
+                        >
+                          <Input
+                            placeholder="Nume"
+                            value={guest.lastName}
+                            onChange={(e) => {
+                              const newGuestsList = [...guestsList];
+                              newGuestsList[index].lastName = e.target.value;
+                              setGuestsList(newGuestsList);
+                            }}
+                            className="w-full"
+                          />
+                        </Form.Item>
+                      </div>
+                      {guestsList.length > 1 && (
+                        <Button
+                          type="default"
+                          danger
+                          onClick={() => {
+                            setGuestsList(
+                              guestsList.filter((_, i) => i !== index)
+                            );
+                          }}
+                          className={`${
+                            index === 0 ? 'mt-[22px]' : 'mt-0'
+                          } py-4`}
+                        >
+                          Șterge
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  {guestsList.length > 1 && (
-                    <Button
-                      type="default"
-                      danger
-                      onClick={() => {
-                        setGuestsList(guestsList.filter((_, i) => i !== index));
-                      }}
-                      className={`${index === 0 ? 'mt-[22px]' : 'mt-0'} !py-4`}
-                    >
-                      Șterge
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </Form>
+                ))}
+              </Form>
+            </div>
+          </div>
+
+          <div className="row-start-4 w-full flex items-center">
+            <Button
+              className="w-full"
+              type="dashed"
+              onClick={() => {
+                setGuestsList([
+                  ...guestsList,
+                  { firstName: '', lastName: '', id: crypto.randomUUID() },
+                ]);
+              }}
+            >
+              Adaugă alt invitat
+            </Button>
+          </div>
+
+          <div className="row-start-5 w-full flex flex-row justify-between px-4 gap-2 bg-white">
+            <Button
+              type="default"
+              disabled={guestAddLoading}
+              onClick={() => setAddGuestsModalOpen(false)}
+            >
+              Anulează
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => form.submit()}
+              loading={guestAddLoading}
+            >
+              Adaugă {guestsList.length} Invitat(ți)
+            </Button>
+          </div>
         </div>
-        <Button
-          className="w-full"
-          type="dashed"
-          onClick={() => {
-            setGuestsList([
-              ...guestsList,
-              { firstName: '', lastName: '', id: crypto.randomUUID() },
-            ]);
-          }}
-        >
-          Adaugă alt invitat
-        </Button>
-        <div className="flex flex-row justify-between w-full px-4 gap-2 bg-white">
-          <Button
-            type="default"
-            disabled={guestAddLoading}
-            onClick={() => setAddGuestsModalOpen(false)}
-          >
-            Anulează
-          </Button>
-          <Button
-            type="primary"
-            onClick={() => form.submit()}
-            loading={guestAddLoading}
-          >
-            Adaugă {guestsList.length} Invitat(ți)
-          </Button>
-        </div>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 
