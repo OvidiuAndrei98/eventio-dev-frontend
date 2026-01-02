@@ -57,7 +57,9 @@ const BlobSelectorWidget = ({
             }`}
             key={blob}
           >
-            {blobs[blob as keyof typeof blobs]()}
+            <div className="w-full h-full max-h-[40px] flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:block">
+              {blobs[blob as keyof typeof blobs]()}
+            </div>
           </div>
         ))}
       </div>
