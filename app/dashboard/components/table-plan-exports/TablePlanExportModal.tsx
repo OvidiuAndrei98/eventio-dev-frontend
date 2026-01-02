@@ -686,7 +686,7 @@ const TablePlanExportModal = ({
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      <b>{g.tableNumber}</b>
+                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
                     </div>
                   ))}
                 </div>

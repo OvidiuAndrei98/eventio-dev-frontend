@@ -329,7 +329,7 @@ const TablePlanRenderer = (props: TablePlanRendererProps) => {
       eventId,
       eventInstance?.eventPlan || 'basic'
     );
-    setEventGuests(response);
+    setEventGuests(response.filter((guest) => guest.isAttending));
   };
 
   const isNonUltimate =

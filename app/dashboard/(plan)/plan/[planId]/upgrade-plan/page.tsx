@@ -40,8 +40,8 @@ const UpgradePage = () => {
       isUpgrade: true,
     },
     {
-      name: 'Număr de Mese (Plan Salon)',
-      free: '3',
+      name: 'Număr de Mese',
+      free: '4',
       ultimate: 'Nelimitat',
       isUpgrade: true,
     },

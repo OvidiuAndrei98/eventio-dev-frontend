@@ -67,7 +67,7 @@ const TablePlanContainer = (props: MobileTablePlanContainerProps) => {
       eventInstance.eventId,
       eventInstance.eventPlan
     );
-    setEventGuests(guests);
+    setEventGuests(guests.filter((guest) => guest.isAttending));
     setCanvasElements(eventInstance?.eventTableOrganization.elements || []);
   };
 
