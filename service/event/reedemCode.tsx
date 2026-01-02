@@ -46,7 +46,7 @@ export const reedemCodeService = async (
 
     if (eventToUpdate) {
       await updateDoc(eventToUpdate, {
-        eventPlan: 'premium',
+        eventPlan: dbCode.discountType,
       });
       // also update the redemptions count
       const couponQuery = query(

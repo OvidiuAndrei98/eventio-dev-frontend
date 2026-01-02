@@ -275,6 +275,12 @@ button.ant-btn span {
   max-height: 80% !important;
 }
 
+.event-date-form-container {
+  .ant-select-dropdown {
+    touch-action: none;
+  }
+}
+
 @keyframes rotation {
   0% {
     transform: rotate(0deg);

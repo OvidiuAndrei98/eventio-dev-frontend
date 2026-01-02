@@ -196,7 +196,7 @@ const GifElement = ({
       // Show thin border on hover in edit mode
       editMode && !isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''
     } :  border-1
-    border-[transparent] z-3 p-2 ${
+    border-[transparent] z-10 p-2 ${
       // Handle opacity and visibility based on edit mode and disabled state
       editMode
         ? disabled

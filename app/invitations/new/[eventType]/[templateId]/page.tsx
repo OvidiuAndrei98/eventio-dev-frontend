@@ -450,7 +450,7 @@ function SelectEventDate({
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center event-date-form-container">
       <h2 className="text-lg font-semibold my-2">Datele evenimentului</h2>
       <Form
         form={form}
