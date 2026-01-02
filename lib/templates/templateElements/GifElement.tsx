@@ -240,6 +240,7 @@ const GifElement = ({
       )}
       {/* Render the gif image */}
       <Image
+        className="select-none pointer-events-none"
         ref={imgRef}
         src={gifSrc}
         style={{ ...imageStyle }}

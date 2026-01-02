@@ -26,7 +26,7 @@ const ConfirmationCard = ({ guest }: { guest: Guest }) => {
       </div>
       <div className="confirmation-field guests-number-field">
         <span className="field-title secondary-text-color-light">
-          Nr. invitati
+          Nr. Pers.
         </span>
         <span className="field-content">{guest.totalGuests ?? '-'}</span>
       </div>

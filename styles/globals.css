@@ -277,6 +277,8 @@ button.ant-btn span {
 
 .event-date-form-container {
   .ant-select-dropdown {
+    overflow-y: auto;
+    z-index: 99999;
     touch-action: none;
   }
 }
