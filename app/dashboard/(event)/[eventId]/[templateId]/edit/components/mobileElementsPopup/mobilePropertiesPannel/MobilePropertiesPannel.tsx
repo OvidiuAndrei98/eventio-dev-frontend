@@ -36,7 +36,10 @@ const MobilePropertiesPannel: React.FC<MobilePropertiesPannelProps> = ({
             ? 'p-0 h-full w-[400px] overflow-hidden'
             : 'max-h-[70dvh] w-full bottom-0 fixed rounded-none'
         }
-        style={{ transform: orientation === 'bottom' ? 'none' : undefined }}
+        style={{
+          transform: orientation === 'bottom' ? 'none' : undefined,
+          zIndex: 999,
+        }}
       >
         {orientation === 'bottom' && (
           <div className="mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full bg-gray-300" />

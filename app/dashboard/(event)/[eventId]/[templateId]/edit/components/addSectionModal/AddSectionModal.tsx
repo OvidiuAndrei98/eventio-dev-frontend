@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { Input } from '@/components/ui/input';
-
-import { Search as SearchIcon, LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -22,7 +20,6 @@ interface AvailableSectionType {
 interface AddSectionModalProps {
   availableSectionTypes: AvailableSectionType[];
   open: boolean;
-  placeholder: string;
   onSelectType: (elementType: ElementType, elementName: string) => void;
   onClose?: (state: boolean) => void;
   children?: React.ReactNode;
@@ -31,34 +28,10 @@ interface AddSectionModalProps {
 const AddSectionModal: React.FC<AddSectionModalProps> = ({
   availableSectionTypes,
   open,
-  placeholder,
   onSelectType,
   onClose, // onClose va fi apelat cand se inchide popover-ul (click afara, Escape etc.)
   children, // Elementul care declanseaza popover-ul
 }) => {
-  // State local pentru textul din bara de căutare
-  const [searchTerm, setSearchTerm] = useState('');
-  // State local pentru tab-ul activ ('section', 'app', 'all' sau altele)
-  // Implicit "all", dar daca exista doar o categorie, putem selecta direct aia.
-
-  // Filtrăm lista de tipuri de secțiuni pe baza textului de căutare și a tab-ului activ
-  const filteredTypes = useMemo(() => {
-    let filtered = availableSectionTypes;
-
-    // Filtrare după textul de căutare
-    if (searchTerm) {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (item) =>
-          item.name.toLowerCase().includes(lowerSearchTerm) || // Caută în nume
-          (item.type &&
-            (item.type as string).toLowerCase().includes(lowerSearchTerm)) // Caută și în type-ul tehnic (daca exista)
-      );
-    }
-
-    return filtered;
-  }, [availableSectionTypes, searchTerm]);
-
   // Handler apelat la click pe un tip de secțiune din listă
   const handleTypeSelect = useCallback(
     (type: ElementType, name: string) => {
@@ -82,25 +55,9 @@ const AddSectionModal: React.FC<AddSectionModalProps> = ({
         align="start"
       >
         <div className="grid gap-0" onClick={(e) => e.stopPropagation()}>
-          <div
-            className="p-4 border-b border-gray-200 flex flex-col gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative flex items-center mt-2">
-              <SearchIcon size={16} className="absolute left-3 text-gray-400" />
-              <Input
-                type="text"
-                placeholder={placeholder}
-                className="w-full pl-9 pr-3 py-2 rounded-md text-sm h-7 focus-visible:ring-0 focus:outline-none focus-visible:border-[#cb93d9]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-
           <div className="flex-grow overflow-y-auto px-2 py-1">
-            {filteredTypes.length > 0 ? (
-              filteredTypes.map((item) => (
+            {availableSectionTypes.length > 0 ? (
+              availableSectionTypes.map((item) => (
                 <div
                   key={item.type as string}
                   className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer rounded-sm"

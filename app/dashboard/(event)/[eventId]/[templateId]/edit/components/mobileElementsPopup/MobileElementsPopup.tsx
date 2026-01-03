@@ -76,7 +76,6 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
         </DialogHeader>
         <div className="flex flex-col items-center overflow-y-auto">
           <AddSectionModal
-            placeholder="Cauta sectiuni"
             open={openPopoverIndex === 0}
             availableSectionTypes={availableSectionTypes}
             onSelectType={handleSelectSectionType}
@@ -121,7 +120,6 @@ const MobileElementsPopup: React.FC<MobileElementsPopupProps> = ({
                 key={section.id + index}
               />
               <AddSectionModal
-                placeholder="Cauta sectiuni"
                 open={openPopoverIndex === index + 1}
                 availableSectionTypes={availableSectionTypes}
                 onSelectType={handleSelectSectionType}

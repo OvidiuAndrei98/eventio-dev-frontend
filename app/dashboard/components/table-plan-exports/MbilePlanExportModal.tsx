@@ -383,7 +383,9 @@ const MobileTablePlanExportModal = ({
                                 >
                                   {g.lastName} {g.firstName}
                                 </span>
-                                <b>{g.tableNumber}</b>
+                                {exportMode === 'alfabetic' && (
+                                  <b>{g.tableNumber}</b>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -617,7 +619,7 @@ const MobileTablePlanExportModal = ({
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      <b>{g.tableNumber}</b>
+                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
                     </div>
                   ))}
                 </div>
