@@ -91,7 +91,7 @@ const TableSelectDrawer = ({
           <h3 className="font-semibold mb-2">
             Invitați Neatribuiți ({unseatedGuests.length})
           </h3>
-          <ScrollArea className="h-[60vh] w-full border rounded-md">
+          <ScrollArea className="h-[calc(100%_-_24px)] w-full border rounded-md">
             <List
               size="small"
               dataSource={unseatedGuests}

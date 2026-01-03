@@ -329,7 +329,6 @@ const ListBasedTableAssigner = ({
                       </span>
                     </div>
                     <div className="flex gap-2">
-                      {/* Butonul de Scoate (Vizibil doar dacă masa are invitați) */}
                       {table.guestCount > 0 && (
                         <Button
                           size="small"

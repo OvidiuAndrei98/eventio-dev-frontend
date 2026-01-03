@@ -82,7 +82,7 @@ const UnseatGuestsDrawer = ({
 
         <div className="p-4 flex-grow overflow-hidden">
           <h3 className="font-semibold mb-2">Invitați Așezați</h3>
-          <ScrollArea className="h-[60vh] w-full border rounded-md">
+          <ScrollArea className="h-[calc(100%_-_24px)] w-full border rounded-md">
             {tableGuests.length === 0 ? (
               <p className="text-gray-500 p-4">
                 Această masă nu are invitați așezați.
