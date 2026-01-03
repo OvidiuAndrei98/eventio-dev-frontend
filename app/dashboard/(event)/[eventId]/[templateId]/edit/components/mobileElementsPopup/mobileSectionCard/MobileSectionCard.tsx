@@ -214,7 +214,6 @@ const MobileSectionCard = ({
             </SortableContext>
           </DndContext>
           <AddSectionModal
-            placeholder="Cauta elemente"
             open={isPopoverOpen}
             availableSectionTypes={availableElementTypes.filter((el) =>
               el.availableFor.includes(section.type)
