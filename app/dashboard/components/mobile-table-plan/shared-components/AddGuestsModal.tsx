@@ -90,18 +90,13 @@ const AddGuestsModal = ({
   return (
     <Dialog open={open} onOpenChange={setAddGuestsModalOpen} modal>
       <DialogContent className="mobiele-add-guests-modal h-[95dvh] overflow-hidden p-0 pt-6">
-        <div className="w-full grid grid-cols-1 grid-rows-[50px_20px_1fr_50px_50px] justify-items-center p-4 overflow-hidden h-full gap-4">
-          <div className="row-start-1 w-full flex flex-col items-center gap-2">
+        <div className="w-full grid grid-cols-1 grid-rows-[1fr_auto_auto] items-start justify-items-center p-4 overflow-hidden h-full gap-2">
+          {/* <div className="row-start-1 w-full flex flex-col items-center gap-2">
             <Button type="dashed" className="w-full">
               Importa din Excel
             </Button>
-          </div>
-
-          <div className="row-start-2 w-full flex items-center justify-center">
-            <span>Sau</span>
-          </div>
-
-          <div className="row-start-3 w-full overflow-hidden">
+          </div> */}
+          <div className="row-start-1 row-end-2 w-full overflow-hidden h-full">
             <div className="w-full h-full min-h-0 overflow-y-auto scrollbar-thin pr-2">
               <Form
                 layout="vertical"
@@ -180,7 +175,7 @@ const AddGuestsModal = ({
             </div>
           </div>
 
-          <div className="row-start-4 w-full flex items-center">
+          <div className="row-start-2 w-full flex items-center">
             <Button
               className="w-full"
               type="dashed"
@@ -195,7 +190,7 @@ const AddGuestsModal = ({
             </Button>
           </div>
 
-          <div className="row-start-5 w-full flex flex-row justify-between px-4 gap-2 bg-white">
+          <div className="row-start-3 w-full flex flex-row justify-between gap-2 bg-white">
             <Button
               type="default"
               disabled={guestAddLoading}

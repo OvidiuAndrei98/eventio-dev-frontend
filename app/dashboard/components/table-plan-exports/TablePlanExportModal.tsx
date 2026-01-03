@@ -135,7 +135,7 @@ const TablePlanExportModal = ({
     guests
       .filter((g) => g.tableNumber)
       .forEach((g) => {
-        const t = g.tableNumber || 'Fără masă';
+        const t = g.tableNumber as string;
         if (!map[t]) map[t] = [];
         map[t].push(g);
       });

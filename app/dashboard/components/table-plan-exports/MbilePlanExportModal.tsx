@@ -140,11 +140,13 @@ const MobileTablePlanExportModal = ({
 
   const tableGroups = useMemo(() => {
     const map: Record<string, Guest[]> = {};
-    guests.forEach((g) => {
-      const t = g.tableNumber || 'Fără masă';
-      if (!map[t]) map[t] = [];
-      map[t].push(g);
-    });
+    guests
+      .filter((g) => g.tableNumber !== undefined && g.tableNumber !== null)
+      .forEach((g) => {
+        const t = g.tableNumber as string;
+        if (!map[t]) map[t] = [];
+        map[t].push(g);
+      });
     return Object.entries(map)
       .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
       .map(([num, g]) => ({ letter: `Masa ${num}`, guests: g }));
