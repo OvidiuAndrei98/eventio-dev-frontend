@@ -78,6 +78,7 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",
     "react-highlight-words": "^0.21.0",
+    "react-joyride": "^3.0.0-7",
     "react-window": "^1.8.11",
     "recharts": "^2.15.1",
     "sonner": "^2.0.7",

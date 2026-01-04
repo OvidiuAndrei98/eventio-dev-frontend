@@ -40,14 +40,15 @@ import { isMobile } from 'react-device-detect';
 import { useAuth } from '@/core/context/authContext';
 import MobileElementsPopup from './components/mobileElementsPopup/MobileElementsPopup';
 import MobilePropertiesPannel from './components/mobileElementsPopup/mobilePropertiesPannel/MobilePropertiesPannel';
-import { SaveIcon } from 'lucide-react';
+import { HelpCircle, SaveIcon } from 'lucide-react';
 import { addErrorLog } from '@/service/logs/addErrorLog';
-import { set } from 'lodash';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { editorGuideStepsDesktop } from '@/lib/tour/stepts';
+import { TourWrapper } from '@/components/tour/TourWrapper';
 
 const EditPage = () => {
   const { templateId } = useParams<{
@@ -64,6 +65,7 @@ const EditPage = () => {
   const [editViewMode, setEditViewMode] = useState<
     'mobile' | 'desktop' | 'tablet'
   >('mobile');
+  const [isTourRunning, setIsTourRunning] = useState(false);
 
   // Reference to store initial images from the template
   const initialImagesRef = useRef<
@@ -707,6 +709,13 @@ const EditPage = () => {
             </Radio.Group>
           </div> */}
           <div className="flex items-center justify-center gap-2">
+            <Button
+              type="default"
+              size="middle"
+              icon={<HelpCircle />}
+              onClick={() => setIsTourRunning(true)}
+            />
+
             <Button type="default" size="middle">
               <Link
                 href={`${eventInstance?.eventInvitationLink}/preview`}
@@ -741,7 +750,7 @@ const EditPage = () => {
                   type="primary"
                   size="middle"
                   onClick={handleTemplateUpdate}
-                  className="relative z-10"
+                  className="relative z-10 editor-step-7-desktop"
                 >
                   Salveaza
                 </Button>
@@ -765,7 +774,7 @@ const EditPage = () => {
           </div>
         </div>
         <div className="relative w-full h-[calc(100dvh-142px)] bg-[#F1F5F9] p-2 grid grid-cols-[250px_1fr_210px] gap-2">
-          <div className="bg-white shadow rounded p-4 flex flex-col items-center overflow-y-auto">
+          <div className="bg-white shadow rounded p-4 flex flex-col items-center overflow-y-auto editor-step-1-desktop">
             <AddSectionModal
               open={openPopoverIndex === 0}
               availableSectionTypes={availableSectionTypes}
@@ -820,7 +829,7 @@ const EditPage = () => {
                   onClose={handlePopoverOpenChange}
                 >
                   <div
-                    className="group relative h-[6px] flex items-center justify-center cursor-pointer w-full"
+                    className="group relative h-[6px] flex items-center justify-center cursor-pointer w-full editor-step-4-desktop"
                     onClick={() => handleAddSectionClick(index + 1)}
                   >
                     <div className="absolute left-0 right-0 h-px bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center top-1/2 transform -translate-y-1/2"></div>
@@ -844,7 +853,7 @@ const EditPage = () => {
               handleTemplateDragAndDrop={handleTemplateDragAndDrop}
             />
           </div>
-          <div className="overflow-y-auto overflow-x-visible settings-panel p-4 bg-white rounded shadow h-full">
+          <div className="overflow-y-auto overflow-x-visible settings-panel p-4 bg-white rounded shadow h-full editor-step-5-desktop">
             <h2 className="text-lg font-semibold mb-4">
               {selectedItemData?.name}
             </h2>
@@ -857,6 +866,12 @@ const EditPage = () => {
         </div>
         <div className="p-2"></div>
       </div>
+      <TourWrapper
+        tourId="editorGuideDesktop"
+        steps={editorGuideStepsDesktop}
+        forceRun={isTourRunning}
+        onTourEnd={() => setIsTourRunning(false)}
+      />
     </>
   );
 };

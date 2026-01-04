@@ -216,7 +216,7 @@ const EditorSectionCard = ({
       </div>
 
       {isOpen && (
-        <div className="template-editor-section-content flex flex-col w-full pl-5 pt-2">
+        <div className="template-editor-section-content flex flex-col w-full pl-5 pt-2 editor-step-2-desktop">
           <DndContext
             sensors={sensors}
             modifiers={[restrictToVerticalAxis, restrictToParentElement]}
@@ -263,7 +263,7 @@ const EditorSectionCard = ({
           >
             <div
               onClick={handleAddSectionClick}
-              className={`template-editor-element-card flex items-center gap-2 hover:bg-gray-100 p-[4px] rounded cursor-pointer w-full text-[#cb93d9]`}
+              className={`template-editor-element-card flex items-center gap-2 hover:bg-gray-100 p-[4px] rounded cursor-pointer w-full text-[#cb93d9] editor-step-3-desktop`}
             >
               <PlusCircleOutlined />
               <span className="text-sm font-[600] truncate">

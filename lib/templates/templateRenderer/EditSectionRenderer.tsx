@@ -116,7 +116,9 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
           : ''
       } 
       ${!isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''} border-1
-      border-[transparent] ${sectionData.disabled && 'opacity-[0.5]'}`}
+      border-[transparent] ${
+        sectionData.disabled && 'opacity-[0.5]'
+      } editor-step-6-desktop`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => {
