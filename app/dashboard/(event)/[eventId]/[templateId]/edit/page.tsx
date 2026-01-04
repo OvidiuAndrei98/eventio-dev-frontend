@@ -9,7 +9,7 @@ import {
 } from '@/core/types';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
-import { Button, Radio, RadioChangeEvent } from 'antd';
+import { Button } from 'antd';
 import React, {
   useCallback,
   useEffect,
@@ -145,10 +145,6 @@ const EditPage = () => {
   useEffect(() => {
     fetchTemplate();
   }, [templateId]);
-
-  const onEditViewChange = (e: RadioChangeEvent) => {
-    setEditViewMode(e.target.value);
-  };
 
   const handleAddSectionClick = useCallback(
     (index: number) => {
@@ -934,9 +930,6 @@ const MobileEditor = ({
     TemplateElement | undefined
   >();
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const [editViewMode, setEditViewMode] = useState<
-    'mobile' | 'desktop' | 'tablet'
-  >('mobile');
   const [availableBreakpoints, setAvailableBreakpoints] = useState<
     ('mobile' | 'desktop' | 'tablet')[]
   >([]);
@@ -946,10 +939,8 @@ const MobileEditor = ({
       const width = window.innerWidth;
       if (width <= 600) {
         setAvailableBreakpoints(['mobile']);
-        setEditViewMode('mobile');
       } else if (width <= 900) {
         setAvailableBreakpoints(['mobile', 'tablet']);
-        setEditViewMode('mobile');
       }
     };
 
@@ -1040,56 +1031,6 @@ const MobileEditor = ({
         activeBreakpoint="mobile"
         handlePropertyChanged={handlePropertyChanged}
       />
-      {/* <div className="absolute left-1/2 bottom-4 transform -translate-x-1/2 bg-white/60 backdrop-blur-md rounded-xl shadow-lg flex justify-center items-center border border-gray-200 z-50">
-        <div
-          className="absolute top-0 left-0 h-full z-0 transition-all duration-500"
-          style={{
-            width: showTablet ? '50%' : '100%',
-            transform:
-              editViewMode === 'mobile'
-                ? 'translateX(0%)'
-                : editViewMode === 'tablet'
-                ? 'translateX(100%)'
-                : 'translateX(0%)',
-            background:
-              editViewMode === 'mobile' || editViewMode === 'tablet'
-                ? 'rgba(255,255,255,0.4)'
-                : 'transparent',
-            borderRadius: '0.75rem',
-            boxShadow:
-              editViewMode === 'mobile' || editViewMode === 'tablet'
-                ? '0 2px 8px rgba(0,0,0,0.08)'
-                : 'none',
-            border:
-              editViewMode === 'mobile' || editViewMode === 'tablet'
-                ? '1px solid rgb(244, 187, 241)'
-                : 'none',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          className={`font-semibold cursor-pointer px-8 py-2 transition-all duration-200 relative z-10 ${
-            editViewMode === 'mobile'
-              ? 'text-[var(--primary-color)]'
-              : 'text-gray-700 hover:bg-white/30 hover:backdrop-blur-md hover:rounded-xl'
-          }`}
-          onClick={() => setEditViewMode('mobile')}
-        >
-          Mobil
-        </div>
-        {showTablet && (
-          <div
-            className={`font-semibold cursor-pointer px-8 py-2 transition-all duration-200 relative z-10 ${
-              editViewMode === 'tablet'
-                ? 'text-[var(--primary-color)]'
-                : 'text-gray-700 hover:bg-white/30 hover:backdrop-blur-md hover:rounded-xl'
-            }`}
-            onClick={() => setEditViewMode('tablet')}
-          >
-            Tableta
-          </div>
-        )}
-      </div> */}
     </div>
   );
 };
