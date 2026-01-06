@@ -57,7 +57,7 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     backgroundAttachment: 'unset',
     backgroundColor: 'transparent',
     width: '100%',
-    maxWidth: '1200px',
+    maxWidth: '390px',
     minHeight: '100%',
     position: 'relative' as const,
     flexDirection: 'column',
@@ -91,6 +91,21 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
 
   return (
     <div style={sectionWrapperStyle} className="w-full mx-auto">
+      {validElements.map((element) => {
+        const ComponentToRender =
+          elementComponentMap[element.type as keyof typeof elementComponentMap];
+        if (element.type === ElementType.Blob) {
+          return (
+            <ComponentToRender
+              key={element.id}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              {...(element as any)}
+              activeBreakpoint={activeBreakpoint}
+              previewMode={previewMode}
+            />
+          );
+        }
+      })}
       <div
         id={sectionData.id}
         style={sectionStyle}
@@ -133,16 +148,6 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
                   eventAditionalQuestions={
                     templateData.settings.eventAditionalQuestions
                   }
-                />
-              );
-            case ElementType.Blob:
-              return (
-                <ComponentToRender
-                  key={element.id}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  {...(element as any)}
-                  activeBreakpoint={activeBreakpoint}
-                  previewMode={previewMode}
                 />
               );
             case ElementType.Container:
