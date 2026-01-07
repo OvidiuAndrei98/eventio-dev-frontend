@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import { Modal, Button, Radio, Input, message, Tabs, Segmented } from 'antd';
+import {
+  Modal,
+  Button,
+  Radio,
+  Input,
+  message,
+  Tabs,
+  Segmented,
+  Card,
+  Divider,
+} from 'antd';
 import {
   DownloadOutlined,
   InfoCircleOutlined,
@@ -10,6 +20,8 @@ import {
   LayoutOutlined,
   SortAscendingOutlined,
   BlockOutlined,
+  FilePdfOutlined,
+  FileExcelOutlined,
 } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import { domToCanvas } from 'modern-screenshot';
@@ -23,6 +35,8 @@ interface TablePlanExportModalProps {
   guests?: Guest[];
 }
 
+type DensityKey = 'relaxat' | 'standard' | 'compact';
+
 const TablePlanExportModal = ({
   isOpen,
   onClose,
@@ -30,10 +44,11 @@ const TablePlanExportModal = ({
   exportPdf,
   exportExcel,
 }: TablePlanExportModalProps) => {
-  const [activeTab, setActiveTab] = useState('1');
+  const [activeTab, setActiveTab] = useState('2');
   const [exportMode, setExportMode] = useState<'alfabetic' | 'mese'>(
     'alfabetic'
   );
+  const [density, setDensity] = useState<DensityKey>('standard');
 
   const [weddingNames, setWeddingNames] = useState({
     bride: 'Narcisa',
@@ -49,50 +64,66 @@ const TablePlanExportModal = ({
     color: '#3d3d3d',
   });
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const exportRef = useRef<HTMLDivElement>(null);
 
-  type TemplateConfig = {
-    fontFamily: string;
-    secondaryFont: string;
-    // Gradient care simulează textura de hârtie (crem/ivory cu variații)
-    bgGradient: string;
-    bgImage: string;
-    overlay: string;
-    titleSize: string;
-    subtitleSize: string;
-    letterSpacing: string;
-    borderStyle: string;
-    textTransform: React.CSSProperties['textTransform'];
-    fontWeight: string;
+  const densities: Record<
+    DensityKey,
+    {
+      ppg: number; // persoane per grup (coloană)
+      cpg: number; // coloane per pagină
+      fontSize: number;
+      titleSize: number;
+      subtitleSize: number;
+      headerSize: number;
+    }
+  > = {
+    relaxat: {
+      ppg: 10,
+      cpg: 12,
+      fontSize: 18,
+      titleSize: 80,
+      subtitleSize: 24,
+      headerSize: 40,
+    },
+    standard: {
+      ppg: 11,
+      cpg: 18,
+      fontSize: 14,
+      titleSize: 70,
+      subtitleSize: 20,
+      headerSize: 32,
+    },
+    compact: {
+      ppg: 14,
+      cpg: 24,
+      fontSize: 11,
+      titleSize: 60,
+      subtitleSize: 16,
+      headerSize: 26,
+    },
   };
 
-  const templates: Record<'minimal' | 'floral' | 'modern', TemplateConfig> = {
+  const d = densities[density];
+
+  const templates: Record<'minimal' | 'floral' | 'modern', any> = {
     minimal: {
       fontFamily: "'Cinzel', serif",
       secondaryFont: "'Montserrat', sans-serif",
-      // Gradient care simulează textura de hârtie (crem/ivory cu variații)
       bgGradient: 'radial-gradient(circle, #fdfbf7 0%, #f5f0e6 100%)',
       bgImage: '',
       overlay: 'transparent',
-      titleSize: '80px',
-      subtitleSize: '24px',
-      letterSpacing: '10px',
       borderStyle: '1px solid',
       textTransform: 'uppercase',
-      fontWeight: '400',
     },
     floral: {
       fontFamily: "'Great Vibes', cursive",
       secondaryFont: "'Libre Baskerville', serif",
-      bgGradient: '',
       bgImage: '/opis_backgrounds/floral_bg.jpg',
       overlay: 'rgba(255,255,255,0.3)',
-      titleSize: '110px',
-      subtitleSize: '28px',
-      letterSpacing: '0px',
       borderStyle: '1px solid',
       textTransform: 'none',
-      fontWeight: '400',
     },
     modern: {
       fontFamily: "'Montserrat', sans-serif",
@@ -100,52 +131,53 @@ const TablePlanExportModal = ({
       bgGradient: '',
       bgImage: '',
       overlay: 'transparent',
-      titleSize: '70px',
-      subtitleSize: '20px',
-      letterSpacing: '20px',
       borderStyle: '4px double',
       textTransform: 'uppercase',
-      fontWeight: '700',
     },
   };
 
-  const current = templates[opisConfig.template];
+  const currentStyle = templates[opisConfig.template] || templates.minimal;
 
-  // Logica de date
-  const alphabetGroups = useMemo(() => {
-    const sorted = [...guests].sort((a, b) =>
-      (a.lastName || '').localeCompare(b.lastName || '', 'ro')
-    );
-    const groups: { letter: string; guests: Guest[] }[] = [];
-    const initials = Array.from(
-      new Set(sorted.map((g) => (g.lastName || ' ')[0].toUpperCase()))
-    ).sort();
-    initials.forEach((letter) => {
-      const guestsForLetter = sorted.filter((g) =>
-        (g.lastName || '').toUpperCase().startsWith(letter)
+  const activeDisplayData = useMemo(() => {
+    let baseData: Array<{ letter: string; guests: Guest[] }> = [];
+    if (exportMode === 'alfabetic') {
+      const sorted = [...guests].sort((a, b) =>
+        (a.lastName || '').localeCompare(b.lastName || '', 'ro')
       );
-      for (let i = 0; i < guestsForLetter.length; i += 12)
-        groups.push({ letter, guests: guestsForLetter.slice(i, i + 12) });
-    });
-    return groups;
-  }, [guests]);
-
-  const tableGroups = useMemo(() => {
-    const map: Record<string, Guest[]> = {};
-    guests
-      .filter((g) => g.tableNumber)
-      .forEach((g) => {
-        const t = g.tableNumber as string;
-        if (!map[t]) map[t] = [];
-        map[t].push(g);
+      const initials = Array.from(
+        new Set(sorted.map((g) => (g.lastName || ' ')[0]?.toUpperCase() || '#'))
+      ).sort();
+      initials.forEach((letter) => {
+        const guestsForLetter = sorted.filter((g) =>
+          (g.lastName || '').toUpperCase().startsWith(letter)
+        );
+        for (let i = 0; i < guestsForLetter.length; i += d.ppg)
+          baseData.push({
+            letter,
+            guests: guestsForLetter.slice(i, i + d.ppg),
+          });
       });
-    return Object.entries(map)
-      .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
-      .map(([num, g]) => ({ letter: `Masa ${num}`, guests: g }));
-  }, [guests]);
-
-  const activeDisplayData =
-    exportMode === 'alfabetic' ? alphabetGroups : tableGroups;
+    } else {
+      const map: Record<string, Guest[]> = {};
+      guests
+        .filter((g) => g.tableNumber)
+        .forEach((g) => {
+          const t = g.tableNumber as string;
+          if (!map[t]) map[t] = [];
+          map[t].push(g);
+        });
+      Object.entries(map)
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
+        .forEach(([num, g]) => {
+          for (let i = 0; i < g.length; i += d.ppg)
+            baseData.push({
+              letter: `Masa ${num}`,
+              guests: g.slice(i, i + d.ppg),
+            });
+        });
+    }
+    return baseData;
+  }, [guests, exportMode, d.ppg]);
 
   const [activePageItems, setActivePageItems] = useState<
     { letter: string; guests: Guest[] }[]
@@ -153,79 +185,114 @@ const TablePlanExportModal = ({
 
   const handleExport = async () => {
     if (!exportRef.current) return;
-    const hide = message.loading('Se generează fișierul A2...', 0);
+    setIsExporting(true);
+    const hide = message.loading('Se generează fișierul...', 0);
     try {
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a2',
       });
-      setActivePageItems(activeDisplayData.slice(0, 12));
-      await new Promise((r) => setTimeout(r, 1000));
-      await document.fonts.ready;
-      const canvas = await domToCanvas(exportRef.current, {
-        scale: 1.5,
-        backgroundColor: '#ffffff',
-        width: 2245,
-        height: 1587,
-      });
-      pdf.addImage(
-        canvas.toDataURL('image/jpeg', 0.95),
-        'JPEG',
-        0,
-        0,
-        594,
-        420
-      );
+      const totalPages = Math.ceil(activeDisplayData.length / d.cpg);
+
+      for (let i = 0; i < totalPages; i++) {
+        setActivePageItems(activeDisplayData.slice(i * d.cpg, (i + 1) * d.cpg));
+        await new Promise((r) => setTimeout(r, 1000));
+        await document.fonts.ready;
+        const canvas = await domToCanvas(exportRef.current, {
+          scale: 1.5,
+          backgroundColor: '#ffffff',
+          width: 2245,
+          height: 1587,
+        });
+        if (i > 0) pdf.addPage('a2', 'landscape');
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg', 0.95),
+          'JPEG',
+          0,
+          0,
+          594,
+          420
+        );
+      }
       pdf.save(`Panou_${exportMode}_${weddingNames.bride}.pdf`);
       message.success('Export realizat!');
     } catch (e) {
+      console.error(e);
       message.error('Eroare export.');
     } finally {
       setActivePageItems([]);
+      setIsExporting(false);
       hide();
     }
   };
 
   return (
     <Modal
-      title="Centru Comandă Eveniment"
+      title={
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <LayoutOutlined style={{ color: '#1890ff' }} />
+          <span>Centru Comandă Export</span>
+        </div>
+      }
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      width={1400}
+      width={1300}
       centered
       destroyOnClose
     >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700&family=Montserrat:wght@300;400;700&display=swap');
-      `}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700&family=Montserrat:wght@300;400;700&display=swap');`}</style>
 
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
+        type="card"
         items={[
           {
             key: '1',
             label: (
               <span>
-                <BlockOutlined /> Plan Salon
+                <BlockOutlined /> Planul Sălii
               </span>
             ),
             children: (
               <div
                 style={{
-                  height: 600,
-                  borderRadius: 12,
+                  height: 650,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#fff',
+                  background: '#fafafa',
+                  borderRadius: 12,
+                  border: '1px dashed #d9d9d9',
                 }}
               >
-                <div style={{ textAlign: 'center' }}>
-                  <Button onClick={exportPdf}>Export Plan Salon</Button>
-                </div>
+                <Card
+                  style={{
+                    width: 400,
+                    textAlign: 'center',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  }}
+                >
+                  <LayoutOutlined
+                    style={{ fontSize: 48, color: '#d9d9d9', marginBottom: 20 }}
+                  />
+                  <h3>Previzualizare Plan Salon</h3>
+                  <p style={{ color: '#8c8c8c', marginBottom: 24 }}>
+                    Aici poți genera layout-ul vizual al meselor așa cum sunt
+                    așezate în sală.
+                  </p>
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={<FilePdfOutlined />}
+                    onClick={exportPdf}
+                    block
+                  >
+                    Exportă Plan PDF
+                  </Button>
+                </Card>
               </div>
             ),
           },
@@ -233,66 +300,92 @@ const TablePlanExportModal = ({
             key: '2',
             label: (
               <span>
-                <SortAscendingOutlined /> Export Panou Opis
+                <SortAscendingOutlined /> Panou Intrare (Opis)
               </span>
             ),
             children: (
-              <div style={{ display: 'flex', gap: '20px' }}>
-                {/* SIDEBAR REORGANIZAT */}
+              <div style={{ display: 'flex', gap: '24px', height: '700px' }}>
                 <div
                   style={{
-                    width: '320px',
+                    width: '350px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '15px',
+                    gap: '16px',
+                    overflowY: 'auto',
+                    paddingRight: '8px',
                   }}
                 >
-                  <div
-                    style={{
-                      background: '#f0f5ff',
-                      padding: '15px',
-                      borderRadius: '10px',
-                      border: '1px solid #adc6ff',
-                    }}
+                  <Card
+                    size="small"
+                    title={
+                      <span style={{ fontSize: 12 }}>
+                        <InfoCircleOutlined /> 1. CONFIGURARE EXPORT
+                      </span>
+                    }
+                    headStyle={{ background: '#f0f5ff' }}
                   >
-                    <h4
-                      style={{
-                        fontSize: '11px',
-                        color: '#1d39c4',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      <InfoCircleOutlined /> CONFIGURARE EXPORT
-                    </h4>
-                    <span style={{ fontSize: '10px', color: '#666' }}>
-                      MOD ORGANIZARE:
-                    </span>
-                    <Segmented
-                      block
-                      value={exportMode}
-                      onChange={(v: string | number | boolean) =>
-                        setExportMode(v as 'alfabetic' | 'mese')
-                      }
-                      options={[
-                        {
-                          label: 'Alfabetic',
-                          value: 'alfabetic',
-                          icon: <SortAscendingOutlined />,
-                        },
-                        {
-                          label: 'Pe Mese',
-                          value: 'mese',
-                          icon: <LayoutOutlined />,
-                        },
-                      ]}
-                      style={{ marginTop: 5, marginBottom: 15 }}
-                    />
+                    <div style={{ marginBottom: 16 }}>
+                      <span
+                        style={{
+                          fontSize: '11px',
+                          color: '#8c8c8c',
+                          display: 'block',
+                          marginBottom: 8,
+                        }}
+                      >
+                        MOD ORGANIZARE DATE:
+                      </span>
+                      <Segmented
+                        block
+                        value={exportMode}
+                        onChange={(v) => setExportMode(v as any)}
+                        options={[
+                          {
+                            label: 'Alfabetic',
+                            value: 'alfabetic',
+                            icon: <SortAscendingOutlined />,
+                          },
+                          {
+                            label: 'Pe Mese',
+                            value: 'mese',
+                            icon: <LayoutOutlined />,
+                          },
+                        ]}
+                      />
+                    </div>
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '11px',
+                          color: '#8c8c8c',
+                          display: 'block',
+                          marginBottom: 8,
+                        }}
+                      >
+                        DENSITATE TEXT (PAGINAȚIE):
+                      </span>
+                      <Radio.Group
+                        block
+                        value={density}
+                        onChange={(e) => setDensity(e.target.value)}
+                        optionType="button"
+                        buttonStyle="solid"
+                        size="small"
+                      >
+                        <Radio.Button value="relaxat">Relaxat</Radio.Button>
+                        <Radio.Button value="standard">Standard</Radio.Button>
+                        <Radio.Button value="compact">Compact</Radio.Button>
+                      </Radio.Group>
+                    </div>
                     <ul
                       style={{
+                        background: '#e2f0f5ff',
                         fontSize: '10px',
                         color: '#262626',
-                        paddingLeft: '15px',
                         margin: 0,
+                        padding: '8px',
+                        marginTop: '12px',
+                        borderRadius: '4px',
                       }}
                     >
                       <li>
@@ -302,90 +395,107 @@ const TablePlanExportModal = ({
                         Rezoluție: <b>300 DPI (Print Ready)</b>
                       </li>
                     </ul>
-                  </div>
+                  </Card>
 
-                  <div
-                    style={{
-                      background: '#f8f8f8',
-                      padding: '15px',
-                      borderRadius: '10px',
-                    }}
+                  <Card
+                    size="small"
+                    title={
+                      <span style={{ fontSize: 12 }}>
+                        2. PERSONALIZARE DESIGN
+                      </span>
+                    }
                   >
-                    <h4
-                      style={{
-                        fontSize: '11px',
-                        color: '#888',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      TEXT ȘI DESIGN
-                    </h4>
                     <div
                       style={{
                         display: 'flex',
-                        gap: '5px',
-                        marginBottom: '8px',
+                        gap: '8px',
+                        marginBottom: '12px',
                       }}
                     >
-                      <Input
-                        size="small"
-                        value={weddingNames.bride}
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: 10, color: '#8c8c8c' }}>
+                          MIREASĂ
+                        </span>
+                        <Input
+                          size="middle"
+                          value={weddingNames.bride}
+                          onChange={(e) =>
+                            setWeddingNames({
+                              ...weddingNames,
+                              bride: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: 10, color: '#8c8c8c' }}>
+                          MIRE
+                        </span>
+                        <Input
+                          size="middle"
+                          value={weddingNames.groom}
+                          onChange={(e) =>
+                            setWeddingNames({
+                              ...weddingNames,
+                              groom: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div style={{ marginBottom: 12 }}>
+                      <span style={{ fontSize: 10, color: '#8c8c8c' }}>
+                        MESAJ SUBTITLU
+                      </span>
+                      <Input.TextArea
+                        rows={2}
+                        value={weddingNames.subtitle}
                         onChange={(e) =>
                           setWeddingNames({
                             ...weddingNames,
-                            bride: e.target.value,
-                          })
-                        }
-                      />
-                      <Input
-                        size="small"
-                        value={weddingNames.groom}
-                        onChange={(e) =>
-                          setWeddingNames({
-                            ...weddingNames,
-                            groom: e.target.value,
+                            subtitle: e.target.value,
                           })
                         }
                       />
                     </div>
-                    <Input.TextArea
-                      size="small"
-                      rows={2}
-                      value={weddingNames.subtitle}
-                      onChange={(e) =>
-                        setWeddingNames({
-                          ...weddingNames,
-                          subtitle: e.target.value,
-                        })
-                      }
-                      style={{ marginBottom: 10 }}
-                    />
-
-                    <Radio.Group
-                      value={opisConfig.template}
-                      onChange={(e) =>
-                        setOpisConfig({
-                          ...opisConfig,
-                          template: e.target.value,
-                        })
-                      }
-                      block
-                      size="small"
-                      style={{ marginBottom: 10 }}
-                    >
-                      <Radio.Button value="minimal">Minimal</Radio.Button>
-                      <Radio.Button value="floral">Floral</Radio.Button>
-                      <Radio.Button value="modern">Modern</Radio.Button>
-                    </Radio.Group>
-
+                    <Divider style={{ margin: '12px 0' }} />
+                    <div style={{ marginBottom: 12 }}>
+                      <span
+                        style={{
+                          fontSize: 10,
+                          color: '#8c8c8c',
+                          display: 'block',
+                          marginBottom: 8,
+                        }}
+                      >
+                        STIL VIZUAL:
+                      </span>
+                      <Radio.Group
+                        value={opisConfig.template}
+                        onChange={(e) =>
+                          setOpisConfig({
+                            ...opisConfig,
+                            template: e.target.value,
+                          })
+                        }
+                        optionType="button"
+                        buttonStyle="solid"
+                        size="small"
+                        block
+                      >
+                        <Radio.Button value="minimal">Minimal</Radio.Button>
+                        <Radio.Button value="floral">Floral</Radio.Button>
+                        <Radio.Button value="modern">Modern</Radio.Button>
+                      </Radio.Group>
+                    </div>
                     <div
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '10px',
+                        justifyContent: 'space-between',
                       }}
                     >
-                      <span style={{ fontSize: 11 }}>Culoare:</span>
+                      <span style={{ fontSize: 11 }}>Culoare Text:</span>
                       <input
                         type="color"
                         value={opisConfig.color}
@@ -396,14 +506,15 @@ const TablePlanExportModal = ({
                           })
                         }
                         style={{
-                          flex: 1,
-                          height: 25,
-                          border: 'none',
+                          width: 60,
+                          height: 24,
+                          border: '1px solid #d9d9d9',
+                          padding: 2,
                           cursor: 'pointer',
                         }}
                       />
                     </div>
-                  </div>
+                  </Card>
 
                   <Button
                     type="primary"
@@ -411,144 +522,173 @@ const TablePlanExportModal = ({
                     onClick={handleExport}
                     icon={<DownloadOutlined />}
                     block
-                    style={{ height: 60, fontWeight: 800, background: '#000' }}
+                    style={{ height: 55, fontWeight: 700, background: '#000' }}
                   >
-                    DESCARCĂ PDF A2
+                    {isExporting ? 'Se exportă...' : 'Exportă Opis PDF'}
                   </Button>
                 </div>
 
-                {/* PREVIEW */}
+                {/* ZONA PREVIZUALIZARE DREAPTA */}
                 <div
                   style={{
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 10,
+                    gap: 12,
+                    minWidth: 0,
                   }}
                 >
                   <div
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      fontSize: 12,
-                      color: '#888',
+                      alignItems: 'center',
                     }}
                   >
-                    <span>
-                      <ExpandOutlined /> Previzualizare{' '}
-                      {exportMode === 'alfabetic' ? 'Opis' : 'Plan Mese'}
+                    <span style={{ fontWeight: 600, color: '#595959' }}>
+                      <ExpandOutlined /> Previzualizare Format Real (1200px)
                     </span>
-                    <span>
-                      Pagini: {Math.ceil(activeDisplayData.length / 12)}
+                    <span
+                      style={{
+                        fontSize: 12,
+                        background: '#e6f7ff',
+                        color: '#1890ff',
+                        padding: '2px 8px',
+                        borderRadius: 4,
+                      }}
+                    >
+                      Total: {Math.ceil(activeDisplayData.length / d.cpg)}{' '}
+                      pagini
                     </span>
                   </div>
+
                   <div
                     style={{
-                      height: '600px',
-                      background: current.bgGradient || '#fff',
+                      flex: 1,
+                      overflow: 'auto',
                       borderRadius: 12,
-                      border: '2px solid #eee',
+                      border: '1px solid #ddd',
+                      background: '#8c8c8c',
                       position: 'relative',
-                      overflow: 'hidden',
                     }}
                   >
-                    {current.bgImage && (
-                      <img
-                        src={current.bgImage}
+                    <div
+                      style={{
+                        width: '1200px',
+                        minHeight: '100px',
+                        background: currentStyle.bgGradient || '#fff',
+                        position: 'relative',
+                        padding: '60px',
+                        boxShadow: '0 0 20px rgba(0,0,0,0.2)',
+                      }}
+                    >
+                      {/* IMAGINE FUNDAL */}
+                      {currentStyle.bgImage && (
+                        <img
+                          src={currentStyle.bgImage}
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            zIndex: 0,
+                          }}
+                          alt="background"
+                        />
+                      )}
+
+                      {/* OVERLAY CULOARE */}
+                      <div
                         style={{
                           position: 'absolute',
                           inset: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
+                          backgroundColor: currentStyle.overlay,
+                          zIndex: 1,
                         }}
-                        alt="bg"
                       />
-                    )}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        backgroundColor: current.overlay,
-                      }}
-                    />
-                    <div
-                      style={{ position: 'relative', zIndex: 1, padding: 30 }}
-                    >
-                      <div style={{ textAlign: 'center', marginBottom: 25 }}>
-                        <h2
+
+                      {/* CONȚINUT POSTER */}
+                      <div style={{ position: 'relative', zIndex: 2 }}>
+                        <div style={{ textAlign: 'center', marginBottom: 60 }}>
+                          <div
+                            style={{
+                              fontFamily: currentStyle.fontFamily,
+                              color: opisConfig.color,
+                              fontSize: 64,
+                              margin: 0,
+                              textTransform: currentStyle.textTransform as any,
+                            }}
+                          >
+                            {weddingNames.bride} & {weddingNames.groom}
+                          </div>
+                          <div
+                            style={{
+                              fontFamily: currentStyle.secondaryFont,
+                              fontSize: 18,
+                              opacity: 0.8,
+                              textTransform: 'uppercase',
+                              marginTop: 15,
+                              letterSpacing: 6,
+                            }}
+                          >
+                            {weddingNames.subtitle}
+                          </div>
+                        </div>
+
+                        {/* GRID GUEST LIST */}
+                        <div
                           style={{
-                            fontFamily: current.fontFamily,
-                            color: opisConfig.color,
-                            fontSize: 44,
-                            margin: 0,
-                            textTransform: current.textTransform,
+                            display: 'grid',
+                            gridTemplateColumns: `repeat(${
+                              density === 'compact' ? 8 : 6
+                            }, 1fr)`,
+                            gap: '40px 25px',
                           }}
                         >
-                          {weddingNames.bride} & {weddingNames.groom}
-                        </h2>
-                        <p
-                          style={{
-                            fontFamily: current.secondaryFont,
-                            fontSize: 9,
-                            textTransform: 'uppercase',
-                            letterSpacing: 3,
-                            marginTop: 4,
-                            color: '#666',
-                          }}
-                        >
-                          {weddingNames.subtitle}
-                        </p>
-                      </div>
-                      <div
-                        style={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(6, 1fr)',
-                          gap: '15px 12px',
-                        }}
-                      >
-                        {activeDisplayData.slice(0, 12).map((group, idx) => (
-                          <div key={idx}>
-                            <div
-                              style={{
-                                fontFamily: current.fontFamily,
-                                color: opisConfig.color,
-                                fontSize: '16px',
-                                borderBottom: `${current.borderStyle} ${opisConfig.color}`,
-                                marginBottom: '6px',
-                                fontWeight: current.fontWeight,
-                              }}
-                            >
-                              {group.letter}
-                            </div>
-                            {group.guests.map((g, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  fontSize: 7,
-                                  fontFamily: current.secondaryFont,
-                                  textTransform: current.textTransform,
-                                }}
-                              >
-                                <span
+                          {activeDisplayData
+                            .slice(0, d.cpg)
+                            .map((group, idx) => (
+                              <div key={idx}>
+                                <div
                                   style={{
-                                    overflow: 'hidden',
-                                    whiteSpace: 'nowrap',
-                                    textOverflow: 'ellipsis',
-                                    maxWidth: '80%',
+                                    fontFamily: currentStyle.fontFamily,
+                                    color: opisConfig.color,
+                                    fontSize: 20,
+                                    borderBottom: `${currentStyle.borderStyle} ${opisConfig.color}`,
+                                    marginBottom: 10,
+                                    fontWeight: 'bold',
                                   }}
                                 >
-                                  {g.lastName} {g.firstName}
-                                </span>
-                                {exportMode === 'alfabetic' && (
-                                  <b>{g.tableNumber}</b>
-                                )}
+                                  {group.letter}
+                                </div>
+                                {group.guests.map((g: any, i: number) => (
+                                  <div
+                                    key={i}
+                                    style={{
+                                      fontSize: 13,
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      fontFamily: currentStyle.secondaryFont,
+                                      marginBottom: 6,
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        maxWidth: '85%',
+                                      }}
+                                    >
+                                      {g.lastName} {g.firstName}
+                                    </span>
+                                    <b>{g.tableNumber}</b>
+                                  </div>
+                                ))}
                               </div>
                             ))}
-                          </div>
-                        ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -566,7 +706,7 @@ const TablePlanExportModal = ({
             children: (
               <div
                 style={{
-                  height: 600,
+                  height: 650,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -574,20 +714,32 @@ const TablePlanExportModal = ({
                   borderRadius: 12,
                 }}
               >
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={() => exportExcel()}
-                >
-                  Export Tabel A4 (Hostess)
-                </Button>
+                <Card style={{ width: 400, textAlign: 'center' }}>
+                  <UserOutlined
+                    style={{ fontSize: 48, color: '#d9d9d9', marginBottom: 20 }}
+                  />
+                  <h3>Listă Hostess / Recepție</h3>
+                  <p style={{ color: '#8c8c8c', marginBottom: 24 }}>
+                    Descarcă lista completă în format tabelar pentru personalul
+                    de la intrare.
+                  </p>
+                  <Button
+                    type="primary"
+                    size="large"
+                    icon={<FileExcelOutlined />}
+                    onClick={exportExcel}
+                    block
+                  >
+                    Exportă Listă Excel
+                  </Button>
+                </Card>
               </div>
             ),
           },
         ]}
       />
 
-      {/* MOTOR EXPORT ASCUNS */}
+      {/* MOTOR EXPORT A2 (HIDDEN) */}
       <div
         style={{
           height: 0,
@@ -601,14 +753,14 @@ const TablePlanExportModal = ({
           style={{
             width: '2245px',
             height: '1587px',
-            background: current.bgGradient || '#ffffff',
+            background: currentStyle.bgGradient || '#ffffff',
             position: 'relative',
             padding: '60px 100px',
           }}
         >
-          {current.bgImage && (
+          {currentStyle.bgImage && (
             <img
-              src={current.bgImage}
+              src={currentStyle.bgImage}
               style={{
                 position: 'absolute',
                 inset: 0,
@@ -616,32 +768,31 @@ const TablePlanExportModal = ({
                 height: '100%',
                 objectFit: 'cover',
               }}
-              alt=""
             />
           )}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: current.overlay,
+              backgroundColor: currentStyle.overlay,
             }}
           />
           <div style={{ position: 'relative', zIndex: 10 }}>
             <div style={{ textAlign: 'center', marginBottom: '50px' }}>
               <div
                 style={{
-                  fontFamily: current.fontFamily,
+                  fontFamily: currentStyle.fontFamily,
                   color: opisConfig.color,
-                  fontSize: current.titleSize,
-                  textTransform: current.textTransform,
+                  fontSize: d.titleSize,
+                  textTransform: currentStyle.textTransform as any,
                 }}
               >
                 {weddingNames.bride} & {weddingNames.groom}
               </div>
               <div
                 style={{
-                  fontFamily: current.secondaryFont,
-                  fontSize: current.subtitleSize,
+                  fontFamily: currentStyle.secondaryFont,
+                  fontSize: d.subtitleSize,
                   letterSpacing: '8px',
                   textTransform: 'uppercase',
                   marginTop: 15,
@@ -653,7 +804,9 @@ const TablePlanExportModal = ({
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(6, 1fr)',
+                gridTemplateColumns: `repeat(${
+                  density === 'compact' ? 8 : 6
+                }, 1fr)`,
                 gap: '50px 40px',
               }}
             >
@@ -661,32 +814,32 @@ const TablePlanExportModal = ({
                 <div key={idx}>
                   <div
                     style={{
-                      fontFamily: current.fontFamily,
+                      fontFamily: currentStyle.fontFamily,
                       color: opisConfig.color,
-                      borderBottom: `3px solid ${opisConfig.color}`,
-                      fontSize: 50,
-                      marginBottom: 20,
+                      borderBottom: `${currentStyle.borderStyle} ${opisConfig.color}`,
+                      fontSize: 20,
+                      marginBottom: 10,
+                      fontWeight: 'bold',
                     }}
                   >
                     {item.letter}
                   </div>
-                  {item.guests.map((g: Guest, i: number) => (
+                  {item.guests.map((g: any, i: number) => (
                     <div
                       key={i}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        fontSize: 18,
-                        fontFamily: current.secondaryFont,
-                        textTransform:
-                          current.textTransform as React.CSSProperties['textTransform'],
+                        fontSize: d.fontSize,
+                        fontFamily: currentStyle.secondaryFont,
+                        textTransform: currentStyle.textTransform as any,
                         marginBottom: 6,
                       }}
                     >
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
+                      <b>{g.tableNumber}</b>
                     </div>
                   ))}
                 </div>

@@ -33,6 +33,7 @@ interface MobileTablePlanExportModalProps {
 }
 
 type TemplateKey = 'minimal' | 'floral' | 'modern';
+type DensityKey = 'relaxat' | 'standard' | 'compact';
 
 const MobileTablePlanExportModal = ({
   isOpen,
@@ -45,6 +46,7 @@ const MobileTablePlanExportModal = ({
   const [exportMode, setExportMode] = useState<'alfabetic' | 'mese'>(
     'alfabetic'
   );
+  const [density, setDensity] = useState<DensityKey>('standard');
   const [isExporting, setIsExporting] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
 
@@ -62,46 +64,63 @@ const MobileTablePlanExportModal = ({
     color: '#3d3d3d',
   });
 
-  type TemplateDefinition = {
-    fontFamily: string;
-    secondaryFont: string;
-    bgGradient: string;
-    bgImage: string;
-    overlay: string;
-    titleSize: string;
-    subtitleSize: string;
-    letterSpacing: string;
-    borderStyle: string;
-    textTransform: string;
-    fontWeight: string;
+  // CONFIGURAȚII DENSITATE (Fonturi și Grupări)
+  const densities: Record<
+    DensityKey,
+    {
+      ppg: number; // persoane per grup (coloană)
+      cpg: number; // coloane per pagină
+      fontSize: number;
+      titleSize: number;
+      subtitleSize: number;
+      headerSize: number;
+    }
+  > = {
+    relaxat: {
+      ppg: 10,
+      cpg: 12,
+      fontSize: 18,
+      titleSize: 80,
+      subtitleSize: 24,
+      headerSize: 40,
+    },
+    standard: {
+      ppg: 11,
+      cpg: 18,
+      fontSize: 14,
+      titleSize: 70,
+      subtitleSize: 20,
+      headerSize: 32,
+    },
+    compact: {
+      ppg: 14,
+      cpg: 24,
+      fontSize: 11,
+      titleSize: 60,
+      subtitleSize: 16,
+      headerSize: 26,
+    },
   };
 
-  const templates: Record<TemplateKey, TemplateDefinition> = {
+  const d = densities[density];
+
+  const templates: Record<TemplateKey, any> = {
     minimal: {
       fontFamily: "'Cinzel', serif",
       secondaryFont: "'Montserrat', sans-serif",
       bgGradient: 'radial-gradient(circle, #fdfbf7 0%, #f5f0e6 100%)',
       bgImage: '',
       overlay: 'transparent',
-      titleSize: '80px',
-      subtitleSize: '24px',
-      letterSpacing: '10px',
       borderStyle: '1px solid',
       textTransform: 'uppercase',
-      fontWeight: '400',
     },
     floral: {
       fontFamily: "'Great Vibes', cursive",
       secondaryFont: "'Libre Baskerville', serif",
-      bgGradient: '',
       bgImage: '/opis_backgrounds/floral_bg.jpg',
       overlay: 'rgba(255,255,255,0.3)',
-      titleSize: '110px',
-      subtitleSize: '28px',
-      letterSpacing: '0px',
       borderStyle: '1px solid',
       textTransform: 'none',
-      fontWeight: '400',
     },
     modern: {
       fontFamily: "'Montserrat', sans-serif",
@@ -109,83 +128,92 @@ const MobileTablePlanExportModal = ({
       bgGradient: '',
       bgImage: '',
       overlay: 'transparent',
-      titleSize: '70px',
-      subtitleSize: '20px',
-      letterSpacing: '20px',
       borderStyle: '4px double',
       textTransform: 'uppercase',
-      fontWeight: '700',
     },
   };
 
   const current = templates[opisConfig.template] || templates.minimal;
 
-  const alphabetGroups = useMemo(() => {
-    const sorted = [...guests].sort((a, b) =>
-      (a.lastName || '').localeCompare(b.lastName || '', 'ro')
-    );
-    const groups: { letter: string; guests: Guest[] }[] = [];
-    const initials = Array.from(
-      new Set(sorted.map((g) => (g.lastName || ' ')[0]?.toUpperCase() || '#'))
-    ).sort();
-    initials.forEach((letter) => {
-      const guestsForLetter = sorted.filter((g) =>
-        (g.lastName || '').toUpperCase().startsWith(letter)
+  const activeDisplayData = useMemo(() => {
+    let baseData: Array<{ letter: string; guests: Guest[] }> = [];
+    if (exportMode === 'alfabetic') {
+      const sorted = [...guests].sort((a, b) =>
+        (a.lastName || '').localeCompare(b.lastName || '', 'ro')
       );
-      for (let i = 0; i < guestsForLetter.length; i += 12)
-        groups.push({ letter, guests: guestsForLetter.slice(i, i + 12) });
-    });
-    return groups;
-  }, [guests]);
-
-  const tableGroups = useMemo(() => {
-    const map: Record<string, Guest[]> = {};
-    guests
-      .filter((g) => g.tableNumber !== undefined && g.tableNumber !== null)
-      .forEach((g) => {
-        const t = g.tableNumber as string;
-        if (!map[t]) map[t] = [];
-        map[t].push(g);
+      const initials = Array.from(
+        new Set(sorted.map((g) => (g.lastName || ' ')[0]?.toUpperCase() || '#'))
+      ).sort();
+      initials.forEach((letter) => {
+        const guestsForLetter = sorted.filter((g) =>
+          (g.lastName || '').toUpperCase().startsWith(letter)
+        );
+        for (let i = 0; i < guestsForLetter.length; i += d.ppg)
+          baseData.push({
+            letter,
+            guests: guestsForLetter.slice(i, i + d.ppg),
+          });
       });
-    return Object.entries(map)
-      .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
-      .map(([num, g]) => ({ letter: `Masa ${num}`, guests: g }));
-  }, [guests]);
+    } else {
+      const map: Record<string, Guest[]> = {};
+      guests
+        .filter((g) => g.tableNumber)
+        .forEach((g) => {
+          const t = g.tableNumber as string;
+          if (!map[t]) map[t] = [];
+          map[t].push(g);
+        });
+      Object.entries(map)
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { numeric: true }))
+        .forEach(([num, g]) => {
+          for (let i = 0; i < g.length; i += d.ppg)
+            baseData.push({
+              letter: `Masa ${num}`,
+              guests: g.slice(i, i + d.ppg),
+            });
+        });
+    }
+    return baseData;
+  }, [guests, exportMode, d.ppg]);
 
-  const activeDisplayData =
-    exportMode === 'alfabetic' ? alphabetGroups : tableGroups;
-  const [activePageItems, setActivePageItems] = useState<
-    { letter: string; guests: Guest[] }[]
-  >([]);
+  const [activePageItems, setActivePageItems] = useState<any[]>([]);
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(activeDisplayData.length / d.cpg) || 1;
+  }, [activeDisplayData, d.cpg]);
 
   const handleExport = async () => {
     if (!exportRef.current) return;
     setIsExporting(true);
-    const hide = message.loading('Se generează fișierul A2...', 0);
+    const hide = message.loading('Se generează fișierul...', 0);
     try {
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a2',
       });
-      setActivePageItems(activeDisplayData.slice(0, 12));
-      await new Promise((r) => setTimeout(r, 1000));
-      await document.fonts.ready;
-      const canvas = await domToCanvas(exportRef.current, {
-        scale: 1.5,
-        backgroundColor: '#ffffff',
-        width: 2245,
-        height: 1587,
-      });
-      pdf.addImage(
-        canvas.toDataURL('image/jpeg', 0.95),
-        'JPEG',
-        0,
-        0,
-        594,
-        420
-      );
-      setIsExporting(false);
+      const totalPages = Math.ceil(activeDisplayData.length / d.cpg);
+
+      for (let i = 0; i < totalPages; i++) {
+        setActivePageItems(activeDisplayData.slice(i * d.cpg, (i + 1) * d.cpg));
+        await new Promise((r) => setTimeout(r, 1000));
+        await document.fonts.ready;
+        const canvas = await domToCanvas(exportRef.current, {
+          scale: 1.5,
+          backgroundColor: '#ffffff',
+          width: 2245,
+          height: 1587,
+        });
+        if (i > 0) pdf.addPage('a2', 'landscape');
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg', 0.95),
+          'JPEG',
+          0,
+          0,
+          594,
+          420
+        );
+      }
       pdf.save(`Panou_${exportMode}_${weddingNames.bride}.pdf`);
       message.success('Export realizat!');
     } catch (e) {
@@ -193,6 +221,7 @@ const MobileTablePlanExportModal = ({
       message.error('Eroare export.');
     } finally {
       setActivePageItems([]);
+      setIsExporting(false);
       hide();
     }
   };
@@ -210,25 +239,24 @@ const MobileTablePlanExportModal = ({
         width: '100vw',
         paddingBottom: 0,
         margin: 0,
-        height: '98dvh',
+        height: '100dvh',
       }}
       closeIcon={<CloseOutlined style={{ fontSize: 20, color: '#000' }} />}
       title="Centru Export"
       destroyOnClose
     >
       <style>{`
-        /* Elimină scroll-ul body-ului când modalul e deschis */
         .ant-modal-root .ant-modal-wrap { overflow: hidden !important; }
-        .ant-modal-content { height: 100vh; border-radius: 0 !important; }
+        .ant-modal-content { height: 100vh; border-radius: 0 !important; padding: 0 !important; }
+        .ant-modal-header { padding: 16px !important; margin-bottom: 0 !important; }
         .ant-tabs, .ant-tabs-content, .ant-tabs-tabpane { height: 100% !important; display: flex; flex-direction: column; }
-        .PlanExportModal .ant-modal-body { height: calc(100dvh - 68px); }
+        .PlanExportModal .ant-modal-body { height: calc(100dvh - 55px); padding: 0 !important; }
       `}</style>
 
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
         centered
-        style={{ flex: 1 }}
         items={[
           {
             key: '1',
@@ -239,6 +267,7 @@ const MobileTablePlanExportModal = ({
                   display: 'flex',
                   flexDirection: 'column',
                   height: '100%',
+                  padding: '15px',
                 }}
               >
                 <Segmented
@@ -262,31 +291,38 @@ const MobileTablePlanExportModal = ({
 
                 <div
                   style={{
-                    fontSize: '10px',
-                    color: '#888',
+                    fontSize: '11px',
+                    color: '#666',
                     textAlign: 'center',
-                    marginBottom: 5,
+                    marginBottom: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
                   }}
                 >
-                  <ExpandOutlined /> Glisează stânga-dreapta pentru a vedea
-                  panoul
+                  <div>
+                    <ExpandOutlined /> Glisează stânga-dreapta pentru
+                    previzualizare
+                  </div>
+                  <div style={{ fontWeight: 'bold', color: '#1677ff' }}>
+                    Documentul va avea: {totalPages}{' '}
+                    {totalPages === 1 ? 'pagină' : 'pagini'} A2
+                  </div>
                 </div>
 
-                {/* CONTAINER SCROLLABIL (MODIFICAREA PRINCIPALĂ) */}
                 <div
                   style={{
                     flex: 1,
-                    overflow: 'auto', // Permite scroll pe ambele direcții
+                    overflow: 'auto',
                     borderRadius: 12,
                     border: '1px solid #ddd',
                     marginBottom: '80px',
                     background: '#f0f0f0',
                   }}
                 >
-                  {/* CANVAS-UL DE PREVIEW LA DIMENSIUNE MARE */}
                   <div
                     style={{
-                      width: '1200px', // Lățime simulată de desktop
+                      width: '1200px',
                       minHeight: '100%',
                       background: current.bgGradient || '#fff',
                       position: 'relative',
@@ -304,7 +340,6 @@ const MobileTablePlanExportModal = ({
                           objectFit: 'cover',
                           zIndex: 0,
                         }}
-                        alt=""
                       />
                     )}
                     <div
@@ -315,7 +350,6 @@ const MobileTablePlanExportModal = ({
                         zIndex: 1,
                       }}
                     />
-
                     <div style={{ position: 'relative', zIndex: 2 }}>
                       <div style={{ textAlign: 'center', marginBottom: 40 }}>
                         <div
@@ -324,8 +358,7 @@ const MobileTablePlanExportModal = ({
                             color: opisConfig.color,
                             fontSize: 48,
                             margin: 0,
-                            textTransform:
-                              current.textTransform as React.CSSProperties['textTransform'],
+                            textTransform: current.textTransform as any,
                           }}
                         >
                           {weddingNames.bride} & {weddingNames.groom}
@@ -344,14 +377,25 @@ const MobileTablePlanExportModal = ({
                         </div>
                       </div>
 
+                      {/* GRID ACTUALIZAT PENTRU PREVIEW PAGINA 1 */}
                       <div
                         style={{
                           display: 'grid',
-                          gridTemplateColumns: 'repeat(6, 1fr)',
+                          // Afișăm coloane în funcție de densitate (Relaxat are mai puține pe rând)
+                          gridTemplateColumns: `repeat(${
+                            density === 'compact'
+                              ? 8
+                              : density === 'relaxat'
+                              ? 6
+                              : 6
+                          }, 1fr)`,
                           gap: '30px 20px',
                         }}
                       >
-                        {activeDisplayData.map((group, idx) => (
+                        {/* MODIFICARE CHEIE: .slice(0, d.cpg) 
+                          Asta asigură că preview-ul arată EXACT ce intră pe prima pagină din export
+                        */}
+                        {activeDisplayData.slice(0, d.cpg).map((group, idx) => (
                           <div key={idx}>
                             <div
                               style={{
@@ -360,11 +404,12 @@ const MobileTablePlanExportModal = ({
                                 fontSize: 20,
                                 borderBottom: `${current.borderStyle} ${opisConfig.color}`,
                                 marginBottom: 10,
+                                fontWeight: 'bold',
                               }}
                             >
                               {group.letter}
                             </div>
-                            {group.guests.map((g, i) => (
+                            {group.guests.map((g: any, i: number) => (
                               <div
                                 key={i}
                                 style={{
@@ -385,9 +430,7 @@ const MobileTablePlanExportModal = ({
                                 >
                                   {g.lastName} {g.firstName}
                                 </span>
-                                {exportMode === 'alfabetic' && (
-                                  <b>{g.tableNumber}</b>
-                                )}
+                                <b>{g.tableNumber}</b>
                               </div>
                             ))}
                           </div>
@@ -426,7 +469,7 @@ const MobileTablePlanExportModal = ({
                     onClick={handleExport}
                     style={{ background: '#000' }}
                   >
-                    {isExporting ? 'Se Generează...' : 'Export Panou A2'}
+                    Export Panou A2
                   </Button>
                 </div>
               </div>
@@ -462,11 +505,27 @@ const MobileTablePlanExportModal = ({
       <Drawer
         title="Design Panou"
         placement="bottom"
-        height="65%"
+        height="75%"
         onClose={() => setSettingsVisible(false)}
         open={settingsVisible}
       >
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <div>
+            <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>
+              DENSITATE TEXT (CÂT DE MULT ÎNCAPE):
+            </div>
+            <Segmented
+              block
+              value={density}
+              onChange={(v) => setDensity(v as DensityKey)}
+              options={[
+                { label: 'Relaxat', value: 'relaxat' },
+                { label: 'Standard', value: 'standard' },
+                { label: 'Compact', value: 'compact' },
+              ]}
+            />
+          </div>
+
           <div style={{ display: 'flex', gap: 10 }}>
             <Input
               value={weddingNames.bride}
@@ -481,19 +540,18 @@ const MobileTablePlanExportModal = ({
               }
             />
           </div>
+
           <Input.TextArea
             value={weddingNames.subtitle}
             onChange={(e) =>
               setWeddingNames({ ...weddingNames, subtitle: e.target.value })
             }
           />
+
           <Radio.Group
             value={opisConfig.template}
             onChange={(e) =>
-              setOpisConfig({
-                ...opisConfig,
-                template: e.target.value as TemplateKey,
-              })
+              setOpisConfig({ ...opisConfig, template: e.target.value })
             }
             buttonStyle="solid"
             block
@@ -502,6 +560,7 @@ const MobileTablePlanExportModal = ({
             <Radio.Button value="floral">Floral</Radio.Button>
             <Radio.Button value="modern">Modern</Radio.Button>
           </Radio.Group>
+
           <input
             type="color"
             value={opisConfig.color}
@@ -510,18 +569,19 @@ const MobileTablePlanExportModal = ({
             }
             style={{ width: '100%', height: 40 }}
           />
+
           <Button
             type="primary"
             block
             size="large"
             onClick={() => setSettingsVisible(false)}
           >
-            Modifică
+            Aplica Modificari
           </Button>
         </Space>
       </Drawer>
 
-      {/* MOTOR EXPORT ASCUNS - NESCHIMBAT (PENTRU CALITATE A2) */}
+      {/* MOTOR EXPORT ASCUNS (Rămâne neschimbat la logică) */}
       <div
         style={{
           height: 0,
@@ -550,7 +610,6 @@ const MobileTablePlanExportModal = ({
                 height: '100%',
                 objectFit: 'cover',
               }}
-              alt=""
             />
           )}
           <div
@@ -566,9 +625,8 @@ const MobileTablePlanExportModal = ({
                 style={{
                   fontFamily: current.fontFamily,
                   color: opisConfig.color,
-                  fontSize: current.titleSize,
-                  textTransform:
-                    current.textTransform as React.CSSProperties['textTransform'],
+                  fontSize: d.titleSize,
+                  textTransform: current.textTransform as any,
                 }}
               >
                 {weddingNames.bride} & {weddingNames.groom}
@@ -576,7 +634,7 @@ const MobileTablePlanExportModal = ({
               <div
                 style={{
                   fontFamily: current.secondaryFont,
-                  fontSize: current.subtitleSize,
+                  fontSize: d.subtitleSize,
                   letterSpacing: '8px',
                   textTransform: 'uppercase',
                   marginTop: 15,
@@ -588,7 +646,9 @@ const MobileTablePlanExportModal = ({
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(6, 1fr)',
+                gridTemplateColumns: `repeat(${
+                  density === 'compact' ? 8 : 6
+                }, 1fr)`,
                 gap: '50px 40px',
               }}
             >
@@ -599,29 +659,28 @@ const MobileTablePlanExportModal = ({
                       fontFamily: current.fontFamily,
                       color: opisConfig.color,
                       borderBottom: `3px solid ${opisConfig.color}`,
-                      fontSize: 50,
-                      marginBottom: 20,
+                      fontSize: d.headerSize,
+                      marginBottom: 10,
                     }}
                   >
                     {item.letter}
                   </div>
-                  {item.guests.map((g: Guest, i: number) => (
+                  {item.guests.map((g: any, i: number) => (
                     <div
                       key={i}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        fontSize: 18,
+                        fontSize: d.fontSize,
                         fontFamily: current.secondaryFont,
-                        textTransform:
-                          current.textTransform as React.CSSProperties['textTransform'],
+                        textTransform: current.textTransform as any,
                         marginBottom: 6,
                       }}
                     >
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
+                      <b>{g.tableNumber}</b>
                     </div>
                   ))}
                 </div>
