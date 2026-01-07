@@ -446,7 +446,9 @@ const MobileTablePlanExportModal = ({
                                 >
                                   {g.lastName} {g.firstName}
                                 </span>
-                                <b>{g.tableNumber}</b>
+                                {exportMode === 'alfabetic' && (
+                                  <b>{g.tableNumber}</b>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -528,7 +530,7 @@ const MobileTablePlanExportModal = ({
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div>
             <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>
-              DENSITATE TEXT (CÂT DE MULT ÎNCAPE):
+              DENSITATE TEXT (Marime și spațiere):
             </div>
             <Segmented
               block
@@ -698,7 +700,7 @@ const MobileTablePlanExportModal = ({
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      <b>{g.tableNumber}</b>
+                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
                     </div>
                   ))}
                 </div>

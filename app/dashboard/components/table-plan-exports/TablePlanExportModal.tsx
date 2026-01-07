@@ -245,16 +245,24 @@ const TablePlanExportModal = ({
           <span>Centru Comandă Export</span>
         </div>
       }
+      rootClassName="!w-full"
+      width={'80vw'}
       open={isOpen}
       onCancel={onClose}
       footer={null}
-      width={1300}
+      styles={{
+        body: {
+          maxHeight: 'calc(100vh - 120px)',
+          overflowY: 'auto',
+        },
+      }}
       centered
       destroyOnClose
     >
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700&family=Montserrat:wght@300;400;700&display=swap');`}</style>
 
       <Tabs
+        className="!w-full !h-full"
         activeKey={activeTab}
         onChange={setActiveTab}
         type="card"
@@ -269,7 +277,7 @@ const TablePlanExportModal = ({
             children: (
               <div
                 style={{
-                  height: 650,
+                  height: '100%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -696,7 +704,9 @@ const TablePlanExportModal = ({
                                     >
                                       {g.lastName} {g.firstName}
                                     </span>
-                                    <b>{g.tableNumber}</b>
+                                    {exportMode === 'alfabetic' && (
+                                      <b>{g.tableNumber}</b>
+                                    )}
                                   </div>
                                 ))}
                               </div>
@@ -854,7 +864,7 @@ const TablePlanExportModal = ({
                       <span>
                         {g.lastName} {g.firstName}
                       </span>
-                      <b>{g.tableNumber}</b>
+                      {exportMode === 'alfabetic' && <b>{g.tableNumber}</b>}
                     </div>
                   ))}
                 </div>
