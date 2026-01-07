@@ -13,7 +13,7 @@ const WeddingInvitationsPage = () => {
   return (
     <div className="landing-wedding overflow-hidden">
       <div className=" hero-section relative inset-0">
-        <div className="w-full h-[100dvh] grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto">
+        <div className="w-full h-[100dvh] grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto mt-[50px] lg:mt-0">
           <AnimatedContent
             distance={150}
             direction="horizontal"
@@ -55,7 +55,7 @@ const WeddingInvitationsPage = () => {
             <img
               src="/templates_images/wedding/wedding_t_4/template_4_thumbnail.png"
               alt="Sample Wedding Invitation"
-              className="max-w-full max-h-[80vh] w-auto object-contain rounded-lg"
+              className="max-w-full max-h-[50vh] lg:max-h-[80vh] w-auto object-contain rounded-lg"
             />
           </AnimatedContent>
         </div>
