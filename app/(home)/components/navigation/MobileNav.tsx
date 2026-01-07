@@ -6,7 +6,11 @@ import Link from 'next/link';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import Image from 'next/image';
 
-const MobileNav = () => {
+interface MobileNavProps {
+  menuItems: { label: string; link: string }[];
+}
+
+const MobileNav = ({ menuItems }: MobileNavProps) => {
   const [scroll, setScroll] = useState(false);
 
   useEffect(() => {
@@ -18,15 +22,17 @@ const MobileNav = () => {
       setScroll(window.scrollY > 50);
     };
 
-    const handleBodyClick = (event) => {
+    const handleBodyClick = (event: MouseEvent) => {
       const menuContainer = document.getElementById('hamburger-menu-container');
       const bar = document.querySelector('.bar');
       const mobileMenu = document.querySelector('.mobile-menu');
 
       // Dacă click-ul este în afara meniului hamburger și a elementelor de navigație, închide meniul
       if (
-        !menuContainer.contains(event.target) &&
-        !event.target.closest('.nav-item')
+        menuContainer &&
+        event.target &&
+        !menuContainer.contains(event.target as Node) &&
+        !(event.target as Element).closest('.nav-item')
       ) {
         bar?.classList.remove('animate');
         mobileMenu?.classList.remove('active');
@@ -42,10 +48,10 @@ const MobileNav = () => {
     };
   }, []);
 
-  const toggleMenu = (e) => {
+  const toggleMenu = (e: React.MouseEvent) => {
     e.stopPropagation(); // Previne declanșarea click-ului pe body
-    document.querySelector('.bar').classList.toggle('animate');
-    document.querySelector('.mobile-menu').classList.toggle('active');
+    document.querySelector('.bar')?.classList.toggle('animate');
+    document.querySelector('.mobile-menu')?.classList.toggle('active');
   };
 
   return (
@@ -69,44 +75,11 @@ const MobileNav = () => {
 
       <nav className="mobile-menu z-[1001]">
         <ul className="homepage-nav-menu">
-          <li className="nav-item">
-            <Link className="w-full block" href="#first-section">
-              Acasă
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="w-full block" href="#planner-section">
-              Planificator
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="w-full block" href="#features-section">
-              Funcționalități
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link href="#how-it-works-section-id">Cum funcționează</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="w-full block" href="#prices-section">
-              Prețuri
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="w-full block" href="#models-section">
-              Modele
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              className="w-full block"
-              href="https://expo.planyvite.ro"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Furnizori
-            </Link>
-          </li>
+          {menuItems?.map((item) => (
+            <li key={item.label} className="nav-item">
+              <Link href={item.link}>{item.label}</Link>
+            </li>
+          ))}
         </ul>
         <Button
           className="login-button"

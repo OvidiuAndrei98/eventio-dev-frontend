@@ -1,26 +1,24 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import HomeNavBar from '../navigation/HomeNavBar';
-import MobileNav from '../navigation/MobileNav';
 import { FloatButton } from 'antd';
-import Footer from '../navigation/Footer';
+import HomeNavBar from '@/app/(home)/components/navigation/HomeNavBar';
+import MobileNav from '@/app/(home)/components/navigation/MobileNav';
+import Footer from '@/app/(home)/components/navigation/Footer';
 
-interface LayoutContentProps {
+interface HeroLayoutContentProps {
   children: React.ReactNode;
 }
 
-const LayoutContent = ({ children }: LayoutContentProps) => {
+const HeroLayoutContent = ({ children }: HeroLayoutContentProps) => {
   const [windowSize, setWindowSize] = useState<number>(0);
 
   const menuItems = [
     { label: 'Acasa', link: '/' },
-    { label: 'Planificator', link: '/planner' },
     { label: 'Functionalitati', link: '#features-section' },
     { label: 'Cum functioneaza', link: '#how-it-works-section-id' },
     { label: 'Preturi', link: '#prices-section' },
-    { label: 'Modele', link: '/modele' },
-    { label: 'Furnizori', link: 'https://expo.planyvite.ro' },
+    { label: 'Modele', link: '/modele' }, // TODO: move models to a separate route
   ];
 
   useEffect(() => {
@@ -54,4 +52,4 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
   );
 };
 
-export default LayoutContent;
+export default HeroLayoutContent;

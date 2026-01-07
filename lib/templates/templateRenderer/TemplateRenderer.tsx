@@ -84,7 +84,7 @@ const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     width: '100%',
     maxWidth: editMode && isLargerThanMobile ? '410px' : '450px',
     height: editMode ? '100%' : isLargerThanMobile ? '932px' : '100vh',
-    maxHeight: `clamp(600px, ${isLargerThanMobile ? '100%' : '932px'}, 932px)`,
+    maxHeight: `clamp(600px, ${isLargerThanMobile ? '95%' : '932px'}, 932px)`,
     // Culoarea invitației tale
     backgroundColor: backgroundColor,
 

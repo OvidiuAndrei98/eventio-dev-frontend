@@ -1,4 +1,6 @@
 import { Metadata } from 'next';
+import Footer from '../(home)/components/navigation/Footer';
+import HeroLayoutContent from '@/components/heroSectionLayoutContent/HeroLayoutContent';
 
 export const metadata: Metadata = {
   generator: 'Next.js',
@@ -17,7 +19,11 @@ export const metadata: Metadata = {
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+  return (
+    <>
+      <HeroLayoutContent>{children}</HeroLayoutContent>
+    </>
+  );
 };
 
 export default HomeLayout;

@@ -7,7 +7,7 @@ export default function HeroButton() {
     <Button
       type="primary"
       size="large"
-      className="try-button my-4 !p-6 !text-lg !font-bold !rounded-full !text-white"
+      className="try-button my-4 !p-8 !text-xl !font-bold !rounded-full !text-white"
       onClick={() => (window.location.href = '/login')}
     >
       Încearcă gratuit

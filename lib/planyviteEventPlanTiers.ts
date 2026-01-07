@@ -50,6 +50,7 @@ export const PLANYVITE_EVENT_PLANS: PricingTier[] = [
       'Așezare la mese',
       'Exportare invitați în Excel',
       'Export plan locație PDF',
+      'Export opis invitați PDF',
       'Checklist',
       'Planificator eveniment avansat',
     ],

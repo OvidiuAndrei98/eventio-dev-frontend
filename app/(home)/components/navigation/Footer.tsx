@@ -10,8 +10,13 @@ import {
 } from '@ant-design/icons';
 import Image from 'next/image';
 import PlanyviteLogo from '@/public/planyvite_logo.svg';
+import Link from 'next/link';
 
-const Footer = () => {
+interface FooterProps {
+  menuItems: { label: string; link: string }[];
+}
+
+const Footer = ({ menuItems }: FooterProps) => {
   return (
     <div
       className="flex flex-col items-center py-8 mx-auto my-8 rounded-2xl shadow-lg"
@@ -53,18 +58,14 @@ const Footer = () => {
           >
             Link-uri
           </li>
-          <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-            Acasa
-          </li>
-          <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-            Modele
-          </li>
-          <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-            Preturi
-          </li>
-          <li className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer">
-            Cum functioneaza
-          </li>
+          {menuItems.map((item) => (
+            <li
+              key={item.label}
+              className="text-[#797687] hover:text-[var(--primary-color)] transition-colors cursor-pointer"
+            >
+              <Link href={item.link}>{item.label}</Link>
+            </li>
+          ))}
         </ul>
         <ul className="text-center space-y-1">
           <li

@@ -94,6 +94,13 @@ const PricesSection = () => {
       ultimate: checkmark,
     },
     {
+      key: '15',
+      functionalitati: 'Export Opis invitați în format PDF',
+      basic: redX,
+      premium: redX,
+      ultimate: checkmark,
+    },
+    {
       key: '12',
       functionalitati: 'Checklist (in curand)',
       basic: checkmark,
