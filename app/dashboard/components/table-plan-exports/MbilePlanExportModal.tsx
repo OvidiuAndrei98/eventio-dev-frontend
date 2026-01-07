@@ -35,6 +35,21 @@ interface MobileTablePlanExportModalProps {
 type TemplateKey = 'minimal' | 'floral' | 'modern';
 type DensityKey = 'relaxat' | 'standard' | 'compact';
 
+interface Template {
+  fontFamily: string;
+  secondaryFont: string;
+  bgGradient?: string;
+  bgImage?: string;
+  overlay: string;
+  borderStyle: string;
+  textTransform: string;
+}
+
+interface DisplayGroup {
+  letter: string;
+  guests: Guest[];
+}
+
 const MobileTablePlanExportModal = ({
   isOpen,
   onClose,
@@ -104,7 +119,7 @@ const MobileTablePlanExportModal = ({
 
   const d = densities[density];
 
-  const templates: Record<TemplateKey, any> = {
+  const templates: Record<TemplateKey, Template> = {
     minimal: {
       fontFamily: "'Cinzel', serif",
       secondaryFont: "'Montserrat', sans-serif",
@@ -136,7 +151,7 @@ const MobileTablePlanExportModal = ({
   const current = templates[opisConfig.template] || templates.minimal;
 
   const activeDisplayData = useMemo(() => {
-    let baseData: Array<{ letter: string; guests: Guest[] }> = [];
+    const baseData: DisplayGroup[] = [];
     if (exportMode === 'alfabetic') {
       const sorted = [...guests].sort((a, b) =>
         (a.lastName || '').localeCompare(b.lastName || '', 'ro')
@@ -176,7 +191,7 @@ const MobileTablePlanExportModal = ({
     return baseData;
   }, [guests, exportMode, d.ppg]);
 
-  const [activePageItems, setActivePageItems] = useState<any[]>([]);
+  const [activePageItems, setActivePageItems] = useState<DisplayGroup[]>([]);
 
   const totalPages = useMemo(() => {
     return Math.ceil(activeDisplayData.length / d.cpg) || 1;
@@ -358,7 +373,8 @@ const MobileTablePlanExportModal = ({
                             color: opisConfig.color,
                             fontSize: 48,
                             margin: 0,
-                            textTransform: current.textTransform as any,
+                            textTransform:
+                              current.textTransform as React.CSSProperties['textTransform'],
                           }}
                         >
                           {weddingNames.bride} & {weddingNames.groom}
@@ -409,7 +425,7 @@ const MobileTablePlanExportModal = ({
                             >
                               {group.letter}
                             </div>
-                            {group.guests.map((g: any, i: number) => (
+                            {group.guests.map((g, i) => (
                               <div
                                 key={i}
                                 style={{
@@ -626,7 +642,8 @@ const MobileTablePlanExportModal = ({
                   fontFamily: current.fontFamily,
                   color: opisConfig.color,
                   fontSize: d.titleSize,
-                  textTransform: current.textTransform as any,
+                  textTransform:
+                    current.textTransform as React.CSSProperties['textTransform'],
                 }}
               >
                 {weddingNames.bride} & {weddingNames.groom}
@@ -665,7 +682,7 @@ const MobileTablePlanExportModal = ({
                   >
                     {item.letter}
                   </div>
-                  {item.guests.map((g: any, i: number) => (
+                  {item.guests.map((g, i) => (
                     <div
                       key={i}
                       style={{
@@ -673,7 +690,8 @@ const MobileTablePlanExportModal = ({
                         justifyContent: 'space-between',
                         fontSize: d.fontSize,
                         fontFamily: current.secondaryFont,
-                        textTransform: current.textTransform as any,
+                        textTransform:
+                          current.textTransform as React.CSSProperties['textTransform'],
                         marginBottom: 6,
                       }}
                     >

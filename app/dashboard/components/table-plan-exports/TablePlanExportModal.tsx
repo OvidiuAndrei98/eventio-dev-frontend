@@ -107,7 +107,17 @@ const TablePlanExportModal = ({
 
   const d = densities[density];
 
-  const templates: Record<'minimal' | 'floral' | 'modern', any> = {
+  interface TemplateStyle {
+    fontFamily: string;
+    secondaryFont: string;
+    bgGradient?: string;
+    bgImage?: string;
+    overlay: string;
+    borderStyle: string;
+    textTransform: 'uppercase' | 'none';
+  }
+
+  const templates: Record<'minimal' | 'floral' | 'modern', TemplateStyle> = {
     minimal: {
       fontFamily: "'Cinzel', serif",
       secondaryFont: "'Montserrat', sans-serif",
@@ -139,7 +149,7 @@ const TablePlanExportModal = ({
   const currentStyle = templates[opisConfig.template] || templates.minimal;
 
   const activeDisplayData = useMemo(() => {
-    let baseData: Array<{ letter: string; guests: Guest[] }> = [];
+    const baseData: Array<{ letter: string; guests: Guest[] }> = [];
     if (exportMode === 'alfabetic') {
       const sorted = [...guests].sort((a, b) =>
         (a.lastName || '').localeCompare(b.lastName || '', 'ro')
@@ -338,7 +348,9 @@ const TablePlanExportModal = ({
                       <Segmented
                         block
                         value={exportMode}
-                        onChange={(v) => setExportMode(v as any)}
+                        onChange={(v) =>
+                          setExportMode(v as 'alfabetic' | 'mese')
+                        }
                         options={[
                           {
                             label: 'Alfabetic',
@@ -617,7 +629,8 @@ const TablePlanExportModal = ({
                               color: opisConfig.color,
                               fontSize: 64,
                               margin: 0,
-                              textTransform: currentStyle.textTransform as any,
+                              textTransform:
+                                currentStyle.textTransform as React.CSSProperties['textTransform'],
                             }}
                           >
                             {weddingNames.bride} & {weddingNames.groom}
@@ -662,7 +675,7 @@ const TablePlanExportModal = ({
                                 >
                                   {group.letter}
                                 </div>
-                                {group.guests.map((g: any, i: number) => (
+                                {group.guests.map((g: Guest, i: number) => (
                                   <div
                                     key={i}
                                     style={{
@@ -784,7 +797,8 @@ const TablePlanExportModal = ({
                   fontFamily: currentStyle.fontFamily,
                   color: opisConfig.color,
                   fontSize: d.titleSize,
-                  textTransform: currentStyle.textTransform as any,
+                  textTransform:
+                    currentStyle.textTransform as React.CSSProperties['textTransform'],
                 }}
               >
                 {weddingNames.bride} & {weddingNames.groom}
@@ -824,7 +838,7 @@ const TablePlanExportModal = ({
                   >
                     {item.letter}
                   </div>
-                  {item.guests.map((g: any, i: number) => (
+                  {item.guests.map((g: Guest, i: number) => (
                     <div
                       key={i}
                       style={{
@@ -832,7 +846,8 @@ const TablePlanExportModal = ({
                         justifyContent: 'space-between',
                         fontSize: d.fontSize,
                         fontFamily: currentStyle.secondaryFont,
-                        textTransform: currentStyle.textTransform as any,
+                        textTransform:
+                          currentStyle.textTransform as React.CSSProperties['textTransform'],
                         marginBottom: 6,
                       }}
                     >
