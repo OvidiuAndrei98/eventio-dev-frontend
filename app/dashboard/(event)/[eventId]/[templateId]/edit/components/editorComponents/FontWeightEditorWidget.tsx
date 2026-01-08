@@ -59,7 +59,7 @@ const FontWeightEditorWidget = ({
         <SelectTrigger className="w-full border-[#ccc]">
           <SelectValue placeholder="Grosime text" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[999]">
           <SelectGroup>
             <SelectItem value="300">Subtire</SelectItem>
             <SelectItem value="500">Normal</SelectItem>
