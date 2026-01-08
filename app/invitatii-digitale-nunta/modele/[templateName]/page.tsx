@@ -3,15 +3,7 @@
 import { Template } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Button, Tag, Divider } from 'antd';
-import {
-  CheckCircle2,
-  Smartphone,
-  Sparkles,
-  CreditCard,
-  History,
-  ArrowRight,
-  Eye,
-} from 'lucide-react';
+import { CheckCircle2, Smartphone, ArrowRight, Eye } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
