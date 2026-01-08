@@ -33,7 +33,6 @@ const PropertyPanel = ({
   handlePropertyChanged,
 }: PropertyPanelProps) => {
   const configSet = componentsConfig[selectedElement?.type];
-  const isMobileDevice = isMobile;
 
   const getPropertyValue = (
     data: TemplateElement,
@@ -266,7 +265,6 @@ const PropertyPanel = ({
               />
             );
           case EditorWidgetType.FontFamily:
-            // if (isMobileDevice) return null;
             return (
               <FontSelectorWidget
                 key={propertyPath}
