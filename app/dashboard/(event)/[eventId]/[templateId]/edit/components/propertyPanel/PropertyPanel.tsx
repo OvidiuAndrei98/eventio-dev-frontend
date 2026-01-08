@@ -15,7 +15,6 @@ import FontWeightEditorWidget from '../editorComponents/FontWeightEditorWidget';
 import FontSelectorWidget from '../editorComponents/FontSelectorWidget';
 import StrokeEditorWidget from '../editorComponents/StrokeEditorWidget';
 import GifSelectorWidget from '../editorComponents/GifSelectorWidget';
-import { isMobile } from 'react-device-detect';
 
 export interface PropertyPanelProps {
   selectedElement: TemplateElement;
