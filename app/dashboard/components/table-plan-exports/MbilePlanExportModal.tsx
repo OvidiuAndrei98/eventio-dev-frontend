@@ -50,6 +50,20 @@ interface DisplayGroup {
   guests: Guest[];
 }
 
+const demoList: { firstName: string; lastName: string; tableNumber: number }[] =
+  [
+    { firstName: 'Popescu', lastName: 'Ion', tableNumber: 1 },
+    { firstName: 'Ionescu', lastName: 'Maria', tableNumber: 1 },
+    { firstName: 'Georgescu', lastName: 'Andrei', tableNumber: 2 },
+    { firstName: 'Dumitrescu', lastName: 'Elena', tableNumber: 2 },
+    { firstName: 'Stan', lastName: 'Mihai', tableNumber: 3 },
+    { firstName: 'Radu', lastName: 'Ana', tableNumber: 3 },
+    { firstName: 'Marin', lastName: 'Vasile', tableNumber: 4 },
+    { firstName: 'Tudor', lastName: 'Ioana', tableNumber: 4 },
+    { firstName: 'Nistor', lastName: 'Gabriel', tableNumber: 5 },
+    { firstName: 'Florea', lastName: 'Alina', tableNumber: 5 },
+  ];
+
 const MobileTablePlanExportModal = ({
   isOpen,
   onClose,
@@ -151,9 +165,11 @@ const MobileTablePlanExportModal = ({
   const current = templates[opisConfig.template] || templates.minimal;
 
   const activeDisplayData = useMemo(() => {
+    const guestsList =
+      guests.length > 0 ? guests : (demoList as unknown as Guest[]);
     const baseData: DisplayGroup[] = [];
     if (exportMode === 'alfabetic') {
-      const sorted = [...guests].sort((a, b) =>
+      const sorted = [...guestsList].sort((a, b) =>
         (a.lastName || '').localeCompare(b.lastName || '', 'ro')
       );
       const initials = Array.from(
@@ -171,7 +187,7 @@ const MobileTablePlanExportModal = ({
       });
     } else {
       const map: Record<string, Guest[]> = {};
-      guests
+      guestsList
         .filter((g) => g.tableNumber)
         .forEach((g) => {
           const t = g.tableNumber as string;
