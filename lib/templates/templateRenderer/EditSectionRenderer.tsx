@@ -129,6 +129,24 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
       className="w-full mx-auto"
       ref={sectionRef}
     >
+      {validElements.map((element) => {
+        const ComponentToRender =
+          elementComponentMap[element.type as keyof typeof elementComponentMap];
+        if (element.type === ElementType.Blob) {
+          return (
+            <ComponentToRender
+              selectedElementId={selectedElementId}
+              isSelected={selectedElementId === element.id}
+              key={element.id}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              {...(element as any)}
+              onSelect={onSelect}
+              activeBreakpoint={activeBreakpoint}
+              editMode={true}
+            />
+          );
+        }
+      })}
       <div
         id={sectionData.id}
         style={finalSectionStyle}
@@ -211,19 +229,7 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
                   }
                 />
               );
-            case ElementType.Blob:
-              return (
-                <ComponentToRender
-                  selectedElementId={selectedElementId}
-                  isSelected={selectedElementId === element.id}
-                  key={element.id}
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  {...(element as any)}
-                  onSelect={onSelect}
-                  activeBreakpoint={activeBreakpoint}
-                  editMode={true}
-                />
-              );
+
             case ElementType.Container:
               return (
                 <ComponentToRender

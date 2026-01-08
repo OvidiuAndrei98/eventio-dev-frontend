@@ -266,7 +266,7 @@ const PropertyPanel = ({
               />
             );
           case EditorWidgetType.FontFamily:
-            if (isMobileDevice) return null;
+            // if (isMobileDevice) return null;
             return (
               <FontSelectorWidget
                 key={propertyPath}

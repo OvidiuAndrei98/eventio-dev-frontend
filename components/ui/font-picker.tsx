@@ -11,6 +11,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -185,7 +186,7 @@ export function FontPicker({
   );
 
   return (
-    <Popover open={isOpen} onOpenChange={handleOpenChange}>
+    <Popover open={isOpen} onOpenChange={handleOpenChange} modal={true}>
       <PopoverTrigger asChild>
         <Button
           ref={buttonRef}
@@ -208,11 +209,20 @@ export function FontPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0 border-1 border-[#e5e7eb]"
+        className="p-0 border-1 border-[#e5e7eb] z-[9999] bg-white"
         style={{ width: 300, height, marginRight: 40, background: 'white' }}
         align="start"
+        // Previne închiderea popover-ului când se atinge lista pe mobil
+        onPointerDownOutside={(e) => {
+          if (
+            e.target instanceof Element &&
+            e.target.closest('.fixed-size-list-container')
+          ) {
+            e.preventDefault();
+          }
+        }}
       >
-        <Command>
+        <Command className="flex flex-col h-full">
           <CommandInput
             placeholder="Cauta font..."
             value={search}
@@ -237,25 +247,30 @@ export function FontPicker({
                     <ChevronsUpDown className="ml-2 h-3 w-3 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-[200px]">
-                  <DropdownMenuRadioGroup
-                    value={selectedCategory}
-                    onValueChange={setSelectedCategory}
+                <DropdownMenuPortal>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-[200px] z-[10000]"
                   >
-                    <DropdownMenuRadioItem value="all">
-                      Toate categoriile
-                    </DropdownMenuRadioItem>
-                    {categories.map((category) => (
-                      <DropdownMenuRadioItem
-                        key={category}
-                        value={category}
-                        className="capitalize"
-                      >
-                        {category}
+                    <DropdownMenuRadioGroup
+                      value={selectedCategory}
+                      onValueChange={setSelectedCategory}
+                    >
+                      <DropdownMenuRadioItem value="all">
+                        Toate categoriile
                       </DropdownMenuRadioItem>
-                    ))}
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
+                      {categories.map((category) => (
+                        <DropdownMenuRadioItem
+                          key={category}
+                          value={category}
+                          className="capitalize"
+                        >
+                          {category}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenuPortal>
               </DropdownMenu>
             )}
             <span className="text-[#777] text-xs">
@@ -271,21 +286,22 @@ export function FontPicker({
               Eroare la incarcarea fonturilor.
             </div>
           ) : (
-            <>
+            <div
+              className="flex-1 overflow-hidden fixed-size-list-container"
+              onTouchStart={(e) => e.stopPropagation()}
+            >
               <CommandEmpty>Niciun font gasit.</CommandEmpty>
-              <CommandGroup className="bg-white">
-                <div className={`h-[${height}px]`}>
-                  <FixedSizeList
-                    height={height}
-                    itemCount={filteredFonts.length}
-                    itemSize={55}
-                    width="100%"
-                  >
-                    {Row}
-                  </FixedSizeList>
-                </div>
-              </CommandGroup>
-            </>
+              <div className="bg-white">
+                <FixedSizeList
+                  height={height - 85} // Ajustat pentru a lăsa loc de input și filtre
+                  itemCount={filteredFonts.length}
+                  itemSize={55}
+                  width="100%"
+                >
+                  {Row}
+                </FixedSizeList>
+              </div>
+            </div>
           )}
         </Command>
       </PopoverContent>
