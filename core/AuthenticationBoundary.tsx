@@ -28,7 +28,7 @@ import {
 // List of pages accessible to anonymous users
 // Allow anonymous access to '/', '/login', '/register', '/planner' and all its subroutes, '/invitation' and all its subroutes
 const ANONYMOUS_PAGE_REGEX =
-  /^\/($|login$|register$|planner(\/.*)?$|invitation(\/.*)?$)/;
+  /^\/($|login$|register$|planner(\/.*)?$|invitation(\/.*)?$|invitatii-digitale-nunta(\/.*)?$|modele(\/.*)?$)/;
 
 function isAnonymousPage(path: string) {
   return ANONYMOUS_PAGE_REGEX.test(path);

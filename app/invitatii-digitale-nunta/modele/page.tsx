@@ -35,11 +35,7 @@ export default function ModelePage() {
                 <Button
                   type="primary"
                   block
-                  onClick={() =>
-                    router.push(
-                      `/invitatii-digitale-nunta/modele/${template.name}`
-                    )
-                  }
+                  onClick={() => router.push(`/modele/${template.name}`)}
                 >
                   Detalii
                 </Button>
