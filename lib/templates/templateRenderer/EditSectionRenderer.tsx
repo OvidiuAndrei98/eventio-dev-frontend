@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   TemplateSection,
   ElementType,
@@ -26,8 +26,6 @@ const elementComponentMap = {
   [ElementType.locationsElement]: LocationsElement,
   [ElementType.GifElement]: GifElement,
   [ElementType.Countdown]: CountdownElement,
-
-  // Adaugă aici alte tipuri de elemente care pot apărea în secțiuni
 };
 
 interface EditSectionRendererProps {
@@ -50,15 +48,24 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   currentGuidelines,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const updateWidth = () => {
+      setContainerWidth(sectionRef.current?.offsetWidth || 0);
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   const sectionStyle = mergeResponsiveProperties(
     {
       backgroundImage: sectionData.backgroundImage,
       id: sectionData.id,
-      type:
-        ElementType.Section ||
-        ElementType.RSVP_SECTION ||
-        ElementType.LocationsSection,
+      type: sectionData.type,
       position: sectionData.position,
       name: sectionData.name,
       disabled: sectionData.disabled,
@@ -68,209 +75,212 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
     activeBreakpoint
   ) as TemplateElement;
 
-  const finalSectionStyle = {
-    ...sectionStyle.style,
-    width: '100%',
-    minHeight:
+  const EDITOR_RATIO = 932 / 430;
+
+  const sectionWrapperStyle: React.CSSProperties = {
+    height:
       sectionData.type !== ElementType.RSVP_SECTION &&
       sectionData.type !== ElementType.LocationsSection
-        ? '932px'
+        ? `${containerWidth * EDITOR_RATIO}px`
         : (sectionStyle.style.height as string),
+    width: '100%',
+    display: 'flex',
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: sectionStyle.style.backgroundColor as string,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center top',
+    backgroundImage: sectionData.backgroundImage
+      ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
+      : 'unset',
+  };
+
+  const finalSectionStyle = {
+    ...sectionStyle.style,
+    backgroundAttachment: 'unset',
+    backgroundColor: 'transparent',
+    width: '100%',
+    maxWidth: '390px',
+    minHeight: '100%',
     position: 'relative' as const,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     padding: '8px',
     zIndex: 2,
-    backgroundPosition: 'center',
-    backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
-    backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
-    backgroundImage: sectionData.backgroundImage
-      ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
-      : 'unset',
+    backgroundImage: 'unset',
   } as React.CSSProperties;
 
   const validElements = sectionData.elements.filter(
     (el) => elementComponentMap[el.type as keyof typeof elementComponentMap]
   );
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  const canvasElement = document.querySelector(
-    '#' + sectionData.id
-  ) as HTMLElement;
-
+  const canvasElement = sectionRef.current;
   const canvasRect = canvasElement
     ? canvasElement.getBoundingClientRect()
     : null;
 
   return (
     <div
-      id={sectionData.id}
-      style={{ ...finalSectionStyle }}
-      className={`${
-        isSelected && selectedElementId === sectionData.id
-          ? '!border-2 !border-[#CB93D9]'
-          : ''
-      } 
+      style={sectionWrapperStyle}
+      className="w-full mx-auto"
+      ref={sectionRef}
+    >
+      <div
+        id={sectionData.id}
+        style={finalSectionStyle}
+        className={`${
+          isSelected && selectedElementId === sectionData.id
+            ? '!border-2 !border-[#CB93D9]'
+            : ''
+        } 
       ${!isSelected && isHovered ? '!border-1 !border-[#CB93D9]' : ''} border-1
       border-[transparent] ${
         sectionData.disabled && 'opacity-[0.5]'
       } editor-step-6-desktop`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={() => {
-        if (sectionData.id) {
-          onSelect(sectionData);
-        }
-      }}
-    >
-      {isSelected && selectedElementId === sectionData.id && (
-        <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
-          {sectionData.name}
-        </div>
-      )}
-      {!isSelected && isHovered && (
-        <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
-          {sectionData.name}
-        </div>
-      )}
-      {isHovered && (
-        <div className="absolute top-0 left-0 bottom-0 right-0 !bg-purple-100/20 transition-colors duration-200"></div>
-      )}
-      {validElements.map((element) => {
-        const ComponentToRender =
-          elementComponentMap[element.type as keyof typeof elementComponentMap];
-        switch (element.type) {
-          case ElementType.Text:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                onSelect={onSelect}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-              />
-            );
-          case ElementType.Image:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-              />
-            );
-          case ElementType.RSVP_ELEMENT:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                activeBreakpoint={activeBreakpoint}
-                eventId={''}
-                onSelect={onSelect}
-                editMode={true}
-                eventAditionalQuestions={
-                  templateData.settings.eventAditionalQuestions
-                }
-              />
-            );
-          case ElementType.Blob:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-              />
-            );
-          case ElementType.Container:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-              />
-            );
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          if (sectionData.id) {
+            onSelect(sectionData);
+          }
+        }}
+      >
+        {isSelected && selectedElementId === sectionData.id && (
+          <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
+            {sectionData.name}
+          </div>
+        )}
+        {!isSelected && isHovered && (
+          <div className="absolute top-0 left-0 bg-[#CB93D9] text-white p-1 rounded-[0_0_8px_0] z-10 text-sm">
+            {sectionData.name}
+          </div>
+        )}
+        {isHovered && (
+          <div className="absolute top-0 left-0 bottom-0 right-0 !bg-purple-100/20 transition-colors duration-200"></div>
+        )}
+        {validElements.map((element) => {
+          const ComponentToRender =
+            elementComponentMap[
+              element.type as keyof typeof elementComponentMap
+            ];
+          switch (element.type) {
+            case ElementType.Text:
+              return (
+                <ComponentToRender
+                  key={element.id}
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  onSelect={onSelect}
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                />
+              );
+            case ElementType.Image:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                />
+              );
+            case ElementType.RSVP_ELEMENT:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  activeBreakpoint={activeBreakpoint}
+                  eventId={''}
+                  onSelect={onSelect}
+                  editMode={true}
+                  eventAditionalQuestions={
+                    templateData.settings.eventAditionalQuestions
+                  }
+                />
+              );
+            case ElementType.Blob:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                />
+              );
+            case ElementType.Container:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                />
+              );
 
-          case ElementType.locationsElement:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-                eventLocation={templateData.settings.eventLocation}
-                eventAditionalLocations={
-                  templateData.settings.aditionalLocations
-                }
-                eventDate={templateData.eventDate}
-              />
-            );
-          case ElementType.GifElement:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-              />
-            );
-          case ElementType.Countdown:
-            return (
-              <ComponentToRender
-                selectedElementId={selectedElementId}
-                isSelected={selectedElementId === element.id}
-                key={element.id}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                {...(element as any)}
-                onSelect={onSelect}
-                activeBreakpoint={activeBreakpoint}
-                editMode={true}
-                target={templateData.eventDate}
-              />
-            );
-          default:
-            console.warn(
-              `Unsupported element type inside section: ${element.type}`,
-              element
-            );
-            return null;
-        }
-      })}
-      {canvasRect && <DragOverlayGuidelines guidelines={currentGuidelines} />}
+            case ElementType.locationsElement:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                  eventLocation={templateData.settings.eventLocation}
+                  eventAditionalLocations={
+                    templateData.settings.aditionalLocations
+                  }
+                  eventDate={templateData.eventDate}
+                />
+              );
+            case ElementType.GifElement:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                />
+              );
+            case ElementType.Countdown:
+              return (
+                <ComponentToRender
+                  selectedElementId={selectedElementId}
+                  isSelected={selectedElementId === element.id}
+                  key={element.id}
+                  {...(element as any)}
+                  onSelect={onSelect}
+                  activeBreakpoint={activeBreakpoint}
+                  editMode={true}
+                  target={templateData.eventDate}
+                />
+              );
+            default:
+              return null;
+          }
+        })}
+        {canvasRect && <DragOverlayGuidelines guidelines={currentGuidelines} />}
+      </div>
     </div>
   );
 };

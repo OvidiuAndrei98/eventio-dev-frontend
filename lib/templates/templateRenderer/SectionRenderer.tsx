@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TemplateSection, ElementType, Template } from '../../../core/types';
 import TextElement from '../templateElements/TextElement';
 import ImageElement from '../templateElements/ImageElement';
@@ -38,6 +38,26 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   templateData,
   previewMode,
 }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  // Monitorizăm lățimea reală a secțiunii
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const updateWidth = () => {
+      if (sectionRef.current) {
+        setContainerWidth(sectionRef.current.offsetWidth);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(sectionRef.current);
+
+    updateWidth();
+    return () => resizeObserver.disconnect();
+  }, []);
+
   const finalElementProps = mergeResponsiveProperties<TemplateSection>(
     {
       id: sectionData.id,
@@ -67,25 +87,25 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
     overflow: 'hidden',
   };
 
+  const EDITOR_RATIO = 932 / 430;
+
   const sectionWrapperStyle: React.CSSProperties = {
-    minHeight:
+    height:
       sectionData.type !== ElementType.RSVP_SECTION &&
       sectionData.type !== ElementType.LocationsSection
-        ? '932px'
+        ? `${containerWidth * EDITOR_RATIO}px`
         : (finalElementProps.style.height as string),
     width: '100%',
     maxWidth: '100%',
-    height: finalElementProps.style.height as string,
     display: 'flex',
     overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    position: 'relative' as const,
+    position: 'relative',
     backgroundColor: finalElementProps.style.backgroundColor as string,
-    backgroundPosition: 'center',
-    backgroundRepeat: sectionData.backgroundImage ? 'no-repeat' : 'usent',
-    backgroundSize: sectionData.backgroundImage ? 'cover' : 'usnet',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center top',
     backgroundImage: sectionData.backgroundImage
       ? `linear-gradient( ${sectionData.backgroundImage.opacity}, ${sectionData.backgroundImage.opacity} ), url('${sectionData.backgroundImage.url}')`
       : 'unset',
@@ -96,7 +116,11 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   );
 
   return (
-    <div style={sectionWrapperStyle} className="w-full mx-auto">
+    <div
+      style={sectionWrapperStyle}
+      className="w-full mx-auto"
+      ref={sectionRef}
+    >
       {validElements.map((element) => {
         const ComponentToRender =
           elementComponentMap[element.type as keyof typeof elementComponentMap];
