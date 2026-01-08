@@ -7,11 +7,12 @@ import PlanyviteLogo from '@/public/planyvite_logo.svg';
 import Image from 'next/image';
 
 interface MobileNavProps {
-  menuItems: { label: string; link: string }[];
+  menuItems: { label: string; link: string; showOnlyOn?: string }[];
 }
 
 const MobileNav = ({ menuItems }: MobileNavProps) => {
   const [scroll, setScroll] = useState(false);
+  const url = new URL(window.location.href).pathname;
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -75,11 +76,23 @@ const MobileNav = ({ menuItems }: MobileNavProps) => {
 
       <nav className="mobile-menu z-[1001]">
         <ul className="homepage-nav-menu">
-          {menuItems?.map((item) => (
-            <li key={item.label} className="nav-item">
-              <Link href={item.link}>{item.label}</Link>
-            </li>
-          ))}
+          {menuItems?.map(
+            (item) =>
+              (!item.showOnlyOn || item.showOnlyOn === url) && (
+                <li key={item.label} className="nav-item">
+                  <Link href={item.link}>{item.label}</Link>
+                </li>
+              )
+          )}
+          <li className="nav-item">
+            <Link
+              href="https://expo.planyvite.ro"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Furnizori
+            </Link>
+          </li>
         </ul>
         <Button
           className="login-button"

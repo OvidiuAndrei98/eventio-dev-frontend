@@ -15,12 +15,19 @@ const LayoutContent = ({ children }: LayoutContentProps) => {
 
   const menuItems = [
     { label: 'Acasa', link: '/' },
-    { label: 'Planificator', link: '/planner' },
-    { label: 'Functionalitati', link: '#features-section' },
-    { label: 'Cum functioneaza', link: '#how-it-works-section-id' },
-    { label: 'Preturi', link: '#prices-section' },
+    { label: 'Planificator', link: '/planner', showOnlyOn: '/' },
+    {
+      label: 'Functionalitati',
+      link: '#features-section',
+      showOnlyOn: '/',
+    },
+    {
+      label: 'Cum functioneaza',
+      link: '#how-it-works-section-id',
+      showOnlyOn: '/',
+    },
+    { label: 'Preturi', link: '#prices-section', showOnlyOn: '/' },
     { label: 'Modele', link: '/modele' },
-    { label: 'Furnizori', link: 'https://expo.planyvite.ro' },
   ];
 
   useEffect(() => {

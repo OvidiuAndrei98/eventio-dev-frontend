@@ -15,10 +15,22 @@ const HeroLayoutContent = ({ children }: HeroLayoutContentProps) => {
 
   const menuItems = [
     { label: 'Acasa', link: '/' },
-    { label: 'Functionalitati', link: '#features-section' },
-    { label: 'Cum functioneaza', link: '#how-it-works-section-id' },
-    { label: 'Preturi', link: '#prices-section' },
-    { label: 'Modele', link: '/modele' }, // TODO: move models to a separate route
+    {
+      label: 'Functionalitati',
+      link: '#features-section',
+      showOnlyOn: '/invitatii-digitale-nunta',
+    },
+    {
+      label: 'Cum functioneaza',
+      link: '#how-it-works-section-id',
+      showOnlyOn: '/invitatii-digitale-nunta',
+    },
+    {
+      label: 'Preturi',
+      link: '#prices-section',
+      showOnlyOn: '/invitatii-digitale-nunta',
+    },
+    { label: 'Modele', link: '/modele' },
   ];
 
   useEffect(() => {
