@@ -37,6 +37,20 @@ interface TablePlanExportModalProps {
 
 type DensityKey = 'relaxat' | 'standard' | 'compact';
 
+const demoList: { firstName: string; lastName: string; tableNumber: number }[] =
+  [
+    { firstName: 'Popescu', lastName: 'Ion', tableNumber: 1 },
+    { firstName: 'Ionescu', lastName: 'Maria', tableNumber: 1 },
+    { firstName: 'Georgescu', lastName: 'Andrei', tableNumber: 2 },
+    { firstName: 'Dumitrescu', lastName: 'Elena', tableNumber: 2 },
+    { firstName: 'Stan', lastName: 'Mihai', tableNumber: 3 },
+    { firstName: 'Radu', lastName: 'Ana', tableNumber: 3 },
+    { firstName: 'Marin', lastName: 'Vasile', tableNumber: 4 },
+    { firstName: 'Tudor', lastName: 'Ioana', tableNumber: 4 },
+    { firstName: 'Nistor', lastName: 'Gabriel', tableNumber: 5 },
+    { firstName: 'Florea', lastName: 'Alina', tableNumber: 5 },
+  ];
+
 const TablePlanExportModal = ({
   isOpen,
   onClose,
@@ -149,9 +163,11 @@ const TablePlanExportModal = ({
   const currentStyle = templates[opisConfig.template] || templates.minimal;
 
   const activeDisplayData = useMemo(() => {
+    const guestsList =
+      guests.length > 0 ? guests : (demoList as unknown as Guest[]);
     const baseData: Array<{ letter: string; guests: Guest[] }> = [];
     if (exportMode === 'alfabetic') {
-      const sorted = [...guests].sort((a, b) =>
+      const sorted = [...guestsList].sort((a, b) =>
         (a.lastName || '').localeCompare(b.lastName || '', 'ro')
       );
       const initials = Array.from(
@@ -169,7 +185,7 @@ const TablePlanExportModal = ({
       });
     } else {
       const map: Record<string, Guest[]> = {};
-      guests
+      guestsList
         .filter((g) => g.tableNumber)
         .forEach((g) => {
           const t = g.tableNumber as string;
@@ -278,6 +294,7 @@ const TablePlanExportModal = ({
               <div
                 style={{
                   height: '100%',
+                  minHeight: 650,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -515,7 +532,7 @@ const TablePlanExportModal = ({
                         justifyContent: 'space-between',
                       }}
                     >
-                      <span style={{ fontSize: 11 }}>Culoare Text:</span>
+                      <span style={{ fontSize: 14 }}>Culoare Text:</span>
                       <input
                         type="color"
                         value={opisConfig.color}
@@ -566,7 +583,7 @@ const TablePlanExportModal = ({
                     }}
                   >
                     <span style={{ fontWeight: 600, color: '#595959' }}>
-                      <ExpandOutlined /> Previzualizare Format Real (1200px)
+                      <ExpandOutlined /> Previzualizare (1300px)
                     </span>
                     <span
                       style={{
@@ -594,8 +611,8 @@ const TablePlanExportModal = ({
                   >
                     <div
                       style={{
-                        width: '1200px',
-                        minHeight: '100px',
+                        width: '1300px',
+                        minHeight: '100%',
                         background: currentStyle.bgGradient || '#fff',
                         position: 'relative',
                         padding: '60px',

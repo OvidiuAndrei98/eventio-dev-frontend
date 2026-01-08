@@ -68,7 +68,13 @@ const SectionRenderer: React.FC<SectionRendererProps> = ({
   };
 
   const sectionWrapperStyle: React.CSSProperties = {
-    minHeight: finalElementProps.style.height as string,
+    minHeight:
+      sectionData.type !== ElementType.RSVP_SECTION &&
+      sectionData.type !== ElementType.LocationsSection
+        ? '932px'
+        : (finalElementProps.style.height as string),
+    width: '100%',
+    maxWidth: '100%',
     height: finalElementProps.style.height as string,
     display: 'flex',
     overflow: 'hidden',

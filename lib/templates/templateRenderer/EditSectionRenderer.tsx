@@ -71,7 +71,11 @@ const EditSectionRenderer: React.FC<EditSectionRendererProps> = ({
   const finalSectionStyle = {
     ...sectionStyle.style,
     width: '100%',
-    minHeight: 'auto',
+    minHeight:
+      sectionData.type !== ElementType.RSVP_SECTION &&
+      sectionData.type !== ElementType.LocationsSection
+        ? '932px'
+        : (sectionStyle.style.height as string),
     position: 'relative' as const,
     display: 'flex',
     flexDirection: 'column',
