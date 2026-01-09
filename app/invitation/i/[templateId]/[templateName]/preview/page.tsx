@@ -3,7 +3,6 @@
 import { Template } from '@/core/types';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
 import { queryTemplateById } from '@/service/templates/queryTemplateById';
-import { Radio, RadioChangeEvent } from 'antd';
 import { notFound, useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import './style.css';
@@ -14,9 +13,9 @@ const PreviewPage = () => {
   }>();
   const [template, setTemplate] = useState<Template>({} as Template);
   const [loading, setLoading] = useState(true);
-  const [editViewMode, setEditViewMode] = useState<
-    'mobile' | 'desktop' | 'tablet'
-  >('mobile');
+  // const [editViewMode, setEditViewMode] = useState<
+  //   'mobile' | 'desktop' | 'tablet'
+  // >('mobile');
 
   const fetchTemplate = async () => {
     try {
@@ -38,9 +37,9 @@ const PreviewPage = () => {
     notFound();
   }
 
-  const onEditViewChange = (e: RadioChangeEvent) => {
-    setEditViewMode(e.target.value);
-  };
+  // const onEditViewChange = (e: RadioChangeEvent) => {
+  //   setEditViewMode(e.target.value);
+  // };
 
   return loading || !template ? (
     <div className="flex items-center justify-center w-full h-screen bg-[#F1F5F9]">
