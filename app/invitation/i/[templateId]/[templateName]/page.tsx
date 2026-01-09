@@ -32,6 +32,18 @@ const InvitationPage = () => {
     fetchTemplate();
   }, [templateId]);
 
+  useEffect(() => {
+    if (/Android/i.test(navigator.userAgent)) {
+      const viewport = document.querySelector('meta[name=viewport]');
+      if (viewport instanceof HTMLMetaElement) {
+        viewport.setAttribute(
+          'content',
+          viewport.content + ', height=' + window.innerHeight
+        );
+      }
+    }
+  }, []);
+
   if (!loading && !template?.templateId) {
     notFound();
   }
