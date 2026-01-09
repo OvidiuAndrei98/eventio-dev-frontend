@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import './style.css';
 import { Button } from 'antd';
-import HowItWorksSection from '../(home)/components/howItWorks/HowItWorksSection';
 import { Features } from '../(home)/components/features/Features';
 import PricesSection from '../(home)/components/prices/PricesSection';
 import AnimatedContent from '@/components/animatedContainer/AnimatedContent';
