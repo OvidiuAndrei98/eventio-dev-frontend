@@ -220,6 +220,10 @@ export function FontPicker({
             e.preventDefault();
           }
         }}
+        onOpenAutoFocus={(e) => {
+          // Permite scroll-ul pe touch fără ca focus-ul să sară ciudat
+          if (window.innerWidth < 768) e.preventDefault();
+        }}
       >
         <Command className="flex flex-col h-full">
           <CommandInput
@@ -288,13 +292,15 @@ export function FontPicker({
             <div
               className="flex-1 overflow-hidden fixed-size-list-container"
               onTouchStart={(e) => e.stopPropagation()}
+              onWheel={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
             >
               <CommandEmpty>Niciun font gasit.</CommandEmpty>
               <div className="bg-white">
                 <FixedSizeList
-                  height={height - 85} // Ajustat pentru a lăsa loc de input și filtre
+                  height={height - 75} // Ajustat pentru a lăsa loc de input și filtre
                   itemCount={filteredFonts.length}
-                  itemSize={55}
+                  itemSize={45}
                   width="100%"
                 >
                   {Row}
