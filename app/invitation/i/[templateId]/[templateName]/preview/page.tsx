@@ -48,7 +48,7 @@ const PreviewPage = () => {
     </div>
   ) : (
     <div>
-      <div className="w-full h-[60px] bg-white flex justify-center items-center border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
+      {/* <div className="w-full h-[60px] bg-white flex justify-center items-center border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
         <Radio.Group
           size="middle"
           buttonStyle="solid"
@@ -60,19 +60,11 @@ const PreviewPage = () => {
           <Radio.Button value="tablet">Tableta</Radio.Button>
           <Radio.Button value="desktop">Desktop</Radio.Button>
         </Radio.Group>
-      </div>
+      </div> */}
       <div
-        className={`w-full h-[calc(100svh-80px)] overflow-y-[auto] ${template.settings.backgroundColor} w-full mx-auto mt-[60px]`}
+        className={`w-full h-[100dvh] overflow-y-[auto] ${template.settings.backgroundColor} w-full mx-auto`}
       >
-        <div
-          className={`overflow-y-auto h-full ${
-            editViewMode === 'mobile'
-              ? 'w-[367px] mx-auto'
-              : editViewMode === 'tablet'
-              ? 'w-[700px] mx-auto'
-              : 'w-full'
-          }`}
-        >
+        <div className={`overflow-y-auto h-full mx-auto relative`}>
           <TemplateRenderer
             invitationData={template}
             editMode={false}

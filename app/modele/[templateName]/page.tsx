@@ -4,6 +4,7 @@ import { Template } from '@/core/types';
 import { defaultTemplates } from '@/lib/templates/templates';
 import { Button, Tag, Divider } from 'antd';
 import { CheckCircle2, Smartphone, ArrowRight, Eye } from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -114,7 +115,11 @@ export default function TemplateDetailsPage() {
                     size="large"
                     className="h-16 rounded-2xl bg-slate-900 hover:bg-black border-none text-lg font-bold flex items-center justify-center gap-2 group"
                   >
-                    Personalizează acum{' '}
+                    <Link
+                      href={`/invitations/new/${template?.type}/${template?.templateId}`}
+                    >
+                      Personalizează acum
+                    </Link>
                     <ArrowRight
                       size={18}
                       className="group-hover:translate-x-1 transition-transform"
@@ -126,7 +131,12 @@ export default function TemplateDetailsPage() {
                     icon={<Eye size={18} />}
                     className="h-16 rounded-2xl border-slate-200 font-bold text-slate-600 hover:text-purple-600 hover:border-purple-600"
                   >
-                    Vezi Previzualizare Live
+                    <Link
+                      href={`/invitation/${template?.type}/preview/${template?.templateId}`}
+                      target="_blank"
+                    >
+                      Vezi Previzualizare Live
+                    </Link>
                   </Button>
                 </div>
 
@@ -135,7 +145,9 @@ export default function TemplateDetailsPage() {
                     'Editare nelimitată',
                     'Confirmare RSVP',
                     'Harta Google Maps',
-                    'Galerie Foto',
+                    'Intrebări personalizate',
+                    'Editor Drag & Drop',
+                    'Trimitere pe WhatsApp',
                   ].map((feature) => (
                     <div key={feature} className="flex items-center gap-2">
                       <CheckCircle2 size={16} className="text-purple-500" />

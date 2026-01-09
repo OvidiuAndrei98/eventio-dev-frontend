@@ -51,7 +51,7 @@ const InvitationPreviewPage = () => {
 
   return (
     <div>
-      <div className="w-full h-[60px] bg-white flex justify-center items-center border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
+      {/* <div className="w-full h-[60px] bg-white flex justify-center items-center border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
         <Radio.Group
           size="middle"
           buttonStyle="solid"
@@ -63,42 +63,37 @@ const InvitationPreviewPage = () => {
           <Radio.Button value="tablet">Tableta</Radio.Button>
           <Radio.Button value="desktop">Desktop</Radio.Button>
         </Radio.Group>
+      </div> */}
+
+      <div className={`h-[90%] mx-auto relative`}>
+        <TemplateRenderer
+          invitationData={selectedTemplate}
+          editMode={false}
+          previewMode={true}
+        />
+      </div>
+      <div className="z-[9999] bg-black text-white p-4 absolute bottom-5 left-5 flex justify-between items-center rounded-md">
+        {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
       </div>
       <div
-        className={`w-full h-[calc(100svh-130px)] overflow-y-[auto] ${selectedTemplate.settings.backgroundColor}  mx-auto mt-[60px]`}
+        className={`z-[9999] flex bg-black justify-between items-center md:items-end md:w-auto md:gap-4 absolute ${
+          innerWidth < 767
+            ? 'bottom-5 left-1/2 -translate-x-1/2 w-[90%]'
+            : 'bottom-5 right-5'
+        } p-2 rounded-md`}
       >
-        <div
-          className={`overflow-y-auto h-full ${
-            editViewMode === 'mobile'
-              ? 'w-[367px] mx-auto'
-              : editViewMode === 'tablet'
-              ? 'w-[700px] mx-auto'
-              : 'w-full'
-          }`}
+        <button className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center gap-2 cursor-pointer">
+          Alege alt model
+        </button>
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => {
+            router.push(`/invitations/new/${eventType}/${templateId}`);
+          }}
         >
-          <TemplateRenderer
-            invitationData={selectedTemplate}
-            editMode={false}
-            previewMode={true}
-          />
-          <div className="z-[9999] bg-black text-white p-4 absolute bottom-0 left-0 right-0 flex justify-between items-center">
-            {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
-            <div className="flex justify-between w-full items-center md:items-end md:w-auto md:gap-4">
-              <button className="bg-black text-white py-2 px-4 rounded hover:bg-gray-800 flex items-center gap-2 cursor-pointer">
-                Alege alt model
-              </button>
-              <Button
-                type="primary"
-                size="large"
-                onClick={() => {
-                  router.push(`/invitations/new/${eventType}/${templateId}`);
-                }}
-              >
-                ALEGE
-              </Button>
-            </div>
-          </div>
-        </div>
+          ALEGE
+        </Button>
       </div>
     </div>
   );
