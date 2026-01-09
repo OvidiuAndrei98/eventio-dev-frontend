@@ -30,9 +30,9 @@ const LandingSection = () => {
             </GradientText>
           </h1>
           <h2 className="text-lg md:text-xl lg:text-2xl mb-6 text-gray-500">
-            Economisește timp, reduce risipa și impresionează-ți oaspeții cu
-            invitații digitale personalizate. Urmărește RSVP-urile în timp real
-            și concentrează-te pe ceea ce contează cu adevărat: evenimentul tău.
+            Cea mai simplă metodă de a trimite invitații pe WhatsApp, de a
+            gestiona confirmările RSVP și de a organiza așezarea la mese. Totul
+            într-o singură platformă profesională.
           </h2>
           <div className="w-full flex justify-center">
             <HeroButton />

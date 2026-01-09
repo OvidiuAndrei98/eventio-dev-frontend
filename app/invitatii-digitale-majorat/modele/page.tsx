@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ModelePage() {
   const templates = defaultTemplates.filter(
-    (template) => template.type === 'wedding'
+    (template) => template.type === 'anniversary'
   );
   const router = useRouter();
 

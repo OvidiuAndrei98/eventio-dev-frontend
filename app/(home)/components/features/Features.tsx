@@ -2,51 +2,36 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import AnimatedContent from '@/components/animatedContainer/AnimatedContent';
-import {
-  ExportOutlined,
-  EditOutlined,
-  TableOutlined,
-  QuestionCircleOutlined,
-  LineChartOutlined,
-  CheckOutlined,
-  MobileOutlined,
-  UserSwitchOutlined,
-  EnvironmentOutlined,
-} from '@ant-design/icons';
 import { DotsPattern } from '@/components/ui/dots-pattern';
 
-const data = [
-  {
-    title: 'Vezi răspunsurile în timp real',
-    content:
-      'Primește feedback instantaneu de la participanți și urmărește răspunsurile pe măsură ce acestea sunt trimise, fără a reîncărca pagina.',
-    srcImage: '/landing_images/videos/feat_responses_v2.mp4',
-  },
-  {
-    title: 'Analizează statisticile evenimentului',
-    content:
-      'Vizualizează rapid statistici relevante despre participare, răspunsuri și tendințe, pentru a lua decizii informate în timp real.',
-    srcImage: '/landing_images/videos/feat_statistics_v3.mp4',
-  },
-  {
-    title: 'Planul salonului',
-    content:
-      'Organizează și vizualizează planul salonului pentru a gestiona eficient aranjarea meselor și a invitaților.',
-    srcImage: '/landing_images/videos/feat_tables.mp4',
-  },
-  {
-    title: 'Editare completa a invitației',
-    content:
-      'Personalizează invitația după preferințele tale, adauga sectiuni noi, adauga si modifica elemente, pozitioneaza schimba culori și fonturi, totul cu un editor intuitiv.',
-    srcImage: '/landing_images/videos/feat_editor.mp4',
-  },
-];
+// Definim tipurile pentru datele primite
+interface FeatureData {
+  title: string;
+  content: string;
+  srcImage: string;
+}
 
-export function Features() {
+interface GridItem {
+  label: string;
+  icon: React.ReactNode;
+}
+
+interface FeaturesProps {
+  smallTitle?: string;
+  mainTitle?: string;
+  featuresData?: FeatureData[];
+  gridItems?: GridItem[];
+}
+
+export function Features({
+  smallTitle = 'FUNCȚIONALITĂȚI',
+  mainTitle = 'Principalele funcționalități ale aplicației',
+  featuresData = [],
+  gridItems = [],
+}: FeaturesProps) {
   const [featureOpen, setFeatureOpen] = useState<number>(0);
   const [minHeight, setMinHeight] = useState('340px');
 
-  // Set minHeight based on window width on client side
   useEffect(() => {
     function handleResize() {
       setMinHeight(window.innerWidth >= 1024 ? '420px' : '340px');
@@ -73,9 +58,9 @@ export function Features() {
         classNamme="center-text"
       >
         <div className="flex flex-col items-center justify-center mb-8 space-y-2">
-          <span className="small-header">FUNCȚIONALITĂȚI</span>
+          <span className="small-header">{smallTitle}</span>
           <span className="primary-title text-center md:!text-4xl">
-            Principalele funcționalități ale aplicației
+            {mainTitle}
           </span>
         </div>
       </AnimatedContent>
@@ -93,7 +78,7 @@ export function Features() {
       >
         <div className=" grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="space-y-6 ">
-            {data.map((item, index) => (
+            {featuresData.map((item, index) => (
               <button
                 className="w-full"
                 key={item.title}
@@ -114,9 +99,8 @@ export function Features() {
           <div className="h-full flex items-center justify-center">
             <div
               className={cn(
-                // Increase max-w and minHeight on larger screens
                 'relative w-full max-w-2xl overflow-hidden rounded-2xl aspect-video md:aspect-[16/9] lg:aspect-[16/7] xl:aspect-[16/8]',
-                'lg:max-w-4xl xl:max-w-5xl' // Add larger max widths for lg/xl
+                'lg:max-w-4xl xl:max-w-5xl'
               )}
               style={{
                 minHeight: minHeight,
@@ -124,7 +108,7 @@ export function Features() {
                 height: '100%',
               }}
             >
-              {data.map((item, index) => (
+              {featuresData.map((item, index) => (
                 <div
                   className={cn(
                     'absolute w-full aspect-video h-full top-0 left-0 transition-transform duration-500 ease-in-out rounded-2xl overflow-hidden flex items-center justify-center',
@@ -132,7 +116,7 @@ export function Features() {
                     featureOpen > index ? 'translate-y-full' : ''
                   )}
                   key={item.title}
-                  style={{ zIndex: data.length - index }}
+                  style={{ zIndex: featuresData.length - index }}
                 >
                   <video
                     className="absolute inset-0 w-full h-full md:w-3/4 md:h-3/4 mx-auto lg:w-full lg:h-full object-fill border border-neutral-200 dark:border-neutral-800 rounded-2xl"
@@ -151,44 +135,7 @@ export function Features() {
           </div>
         </div>
         <div className="mt-10 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[
-            {
-              label: 'Exportă datele participanților rapid',
-              icon: <ExportOutlined />,
-            },
-            {
-              label: 'Personalizare completă a invitației',
-              icon: <EditOutlined />,
-            },
-            {
-              label: 'Planificatator excel gratuit',
-              icon: <TableOutlined />,
-            },
-            {
-              label: 'Adauga intrebări personalizate',
-              icon: <QuestionCircleOutlined />,
-            },
-            {
-              label: 'Gestioneaza locatiile evenimentului',
-              icon: <EnvironmentOutlined />,
-            },
-            {
-              label: 'Adauga si gestioneaza invitatții',
-              icon: <UserSwitchOutlined />,
-            },
-            {
-              label: 'Descoperă statistici detaliate ale evenimentului',
-              icon: <LineChartOutlined />,
-            },
-            {
-              label: 'Gestionare RSVP avansată',
-              icon: <CheckOutlined />,
-            },
-            {
-              label: 'Acces de pe orice dispozitiv',
-              icon: <MobileOutlined />,
-            },
-          ].map(({ label, icon }) => (
+          {gridItems.map(({ label, icon }) => (
             <div
               key={label}
               className="relative rounded-xl bg-[#fafafa] dark:bg-neutral-900 p-5 shadow-[0_8px_48px_0_rgba(186,116,206,0.12)] border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center text-center text-base font-medium text-neutral-700 dark:text-neutral-200 w-full min-h-[180px]"
@@ -214,6 +161,7 @@ export function Features() {
   );
 }
 
+// Aceeași TextComponent ca înainte (fără modificări)
 function TextComponent({
   number,
   title,

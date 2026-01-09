@@ -6,123 +6,18 @@ import AnimatedContent from '../../../../components/animatedContainer/AnimatedCo
 import { PLANYVITE_EVENT_PLANS } from '@/lib/planyviteEventPlanTiers';
 import { PricingCard } from '@/components/pricingCard/PricingCard';
 
-const PricesSection = () => {
-  const checkmark = (
-    <span style={{ color: '#a259ff', fontWeight: 'bold' }}>{'\u2713'}</span>
-  );
+// Definim interfața pentru flexibilitate SEO
+interface PricesSectionProps {
+  smallHeader?: string;
+  primaryTitle?: string;
+  dataSource?: any[]; // Va primi array-ul de date personalizat
+}
 
-  const redX = (
-    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>{'\u2717'}</span>
-  );
-
-  const dataSource = [
-    {
-      key: '1',
-      functionalitati: 'Personalizare "self-service" a invitației',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '2',
-      functionalitati: 'Planul locației',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '3',
-      functionalitati: 'Countdown invitație',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '4',
-      functionalitati: 'Asezarea invitaților la masă',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '5',
-      functionalitati: 'Formular RSVP',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '6',
-      functionalitati: 'Plată unică',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '7',
-      functionalitati: 'Statistici (confirmări și refuzuri)',
-      basic: redX,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '8',
-      functionalitati: 'Distribuire pe canale de socializare',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '9',
-      functionalitati: 'Vizualizare raspunsuri în timp real',
-      basic: redX,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '10',
-      functionalitati: 'Export confirmări în format Excel',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '11',
-      functionalitati: 'Export plan sala în format PDF',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '15',
-      functionalitati: 'Export Opis invitați în format PDF',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '12',
-      functionalitati: 'Checklist (in curand)',
-      basic: checkmark,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-    {
-      key: '13',
-      functionalitati: 'Planificator eveniment avansat',
-      basic: redX,
-      premium: redX,
-      ultimate: checkmark,
-    },
-    {
-      key: '14',
-      functionalitati: 'Suport tehnic prioritar',
-      basic: redX,
-      premium: checkmark,
-      ultimate: checkmark,
-    },
-  ];
-
+const PricesSection = ({
+  smallHeader = 'PREȚURI',
+  primaryTitle = 'Cât costă o invitație digitală',
+  dataSource = [],
+}: PricesSectionProps) => {
   const columns = [
     {
       title: 'Funcționalități',
@@ -160,9 +55,9 @@ const PricesSection = () => {
           threshold={0.2}
         >
           <div className="prices-section-description">
-            <span className="small-header">PREȚURI</span>
+            <span className="small-header">{smallHeader}</span>
             <span className="primary-title text-center mb-4 md:!text-4xl">
-              Cât costă o invitație digitală
+              {primaryTitle}
             </span>
           </div>
         </AnimatedContent>
