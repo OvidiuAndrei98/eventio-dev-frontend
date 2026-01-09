@@ -29,7 +29,7 @@ const HomeNavBar = ({ menuItems }: HomeNavBarProps) => {
       <ul className="homepage-nav-menu">
         {menuItems?.map(
           (item) =>
-            (!item.showOnlyOn || item.showOnlyOn === url) && (
+            (!item.showOnlyOn || url.includes(item.showOnlyOn)) && (
               <li key={item.label} className="nav-item">
                 <Link href={item.link}>{item.label}</Link>
               </li>

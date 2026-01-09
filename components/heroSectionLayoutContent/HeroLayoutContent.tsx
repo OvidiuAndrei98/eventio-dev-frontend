@@ -18,17 +18,17 @@ const HeroLayoutContent = ({ children }: HeroLayoutContentProps) => {
     {
       label: 'Functionalitati',
       link: '#features-section',
-      showOnlyOn: '/invitatii-digitale-nunta',
+      showOnlyOn: '/invitatii-digitale',
     },
     {
-      label: 'Cum functioneaza',
-      link: '#how-it-works-section-id',
-      showOnlyOn: '/invitatii-digitale-nunta',
+      label: 'Preview',
+      link: '#templates-section',
+      showOnlyOn: '/invitatii-digitale',
     },
     {
       label: 'Preturi',
       link: '#prices-section',
-      showOnlyOn: '/invitatii-digitale-nunta',
+      showOnlyOn: '/invitatii-digitale',
     },
     { label: 'Modele', link: '/modele' },
   ];

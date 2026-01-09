@@ -78,21 +78,23 @@ const MobileNav = ({ menuItems }: MobileNavProps) => {
         <ul className="homepage-nav-menu">
           {menuItems?.map(
             (item) =>
-              (!item.showOnlyOn || item.showOnlyOn === url) && (
+              (!item.showOnlyOn || url.includes(item.showOnlyOn)) && (
                 <li key={item.label} className="nav-item">
                   <Link href={item.link}>{item.label}</Link>
                 </li>
               )
           )}
-          <li className="nav-item">
-            <Link
-              href="https://expo.planyvite.ro"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Furnizori
-            </Link>
-          </li>
+          {url === '/' && (
+            <li className="nav-item">
+              <Link
+                href="https://expo.planyvite.ro"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Furnizori
+              </Link>
+            </li>
+          )}
         </ul>
         <Button
           className="login-button"
