@@ -3,19 +3,17 @@
 import { defaultTemplates } from '@/lib/templates/templates';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Radio } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import { Button } from 'antd';
 import TemplateRenderer from '@/lib/templates/templateRenderer/TemplateRenderer';
-import './style.css';
 
 const InvitationPreviewPage = () => {
   const { eventType, templateId } = useParams<{
     eventType: string;
     templateId: string;
   }>();
-  const [editViewMode, setEditViewMode] = useState<
-    'mobile' | 'desktop' | 'tablet'
-  >('mobile');
+  // const [editViewMode, setEditViewMode] = useState<
+  //   'mobile' | 'desktop' | 'tablet'
+  // >('mobile');
   const [innerWidth, setInnerWidth] = useState(0);
   const router = useRouter();
 
@@ -34,9 +32,9 @@ const InvitationPreviewPage = () => {
     window.addEventListener('resize', updateWindowWidth);
   }, []);
 
-  const onEditViewChange = (e: RadioChangeEvent) => {
-    setEditViewMode(e.target.value);
-  };
+  // const onEditViewChange = (e: RadioChangeEvent) => {
+  //   setEditViewMode(e.target.value);
+  // };
 
   const selectedTemplate = useMemo(() => {
     return defaultTemplates.find(
@@ -50,7 +48,7 @@ const InvitationPreviewPage = () => {
   }
 
   return (
-    <div>
+    <div className="h-[100dvh] w-full">
       {/* <div className="w-full h-[60px] bg-white flex justify-center items-center border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
         <Radio.Group
           size="middle"
@@ -65,13 +63,11 @@ const InvitationPreviewPage = () => {
         </Radio.Group>
       </div> */}
 
-      <div className={`h-[90%] mx-auto relative`}>
-        <TemplateRenderer
-          invitationData={selectedTemplate}
-          editMode={false}
-          previewMode={true}
-        />
-      </div>
+      <TemplateRenderer
+        invitationData={selectedTemplate}
+        editMode={false}
+        previewMode={true}
+      />
       <div className="z-[9999] bg-black text-white p-4 absolute bottom-5 left-5 flex justify-between items-center rounded-md">
         {innerWidth > 767 && <span>Model selectat: {templateId}</span>}
       </div>
