@@ -10,7 +10,13 @@ import { PricingCard } from '@/components/pricingCard/PricingCard';
 interface PricesSectionProps {
   smallHeader?: string;
   primaryTitle?: string;
-  dataSource?: any[]; // Va primi array-ul de date personalizat
+  dataSource?: {
+    key: string;
+    functionalitati: string;
+    basic: React.ReactNode;
+    premium: React.ReactNode;
+    ultimate: React.ReactNode;
+  }[];
 }
 
 const PricesSection = ({
