@@ -19,6 +19,8 @@ import {
   MobileOutlined,
 } from '@ant-design/icons';
 import FaqSection from './components/faqSection/FaqSection';
+import TableSeating from './components/tableSeating/TableSeating';
+import CoreFeatures from './components/coreFeatures/CoreFeatures';
 
 const LANDING_FEATURES = [
   {
@@ -234,11 +236,13 @@ const Home = () => {
         featuresData={LANDING_FEATURES}
         gridItems={LANDING_GRID_ITEMS}
       />
-      <Planner />
+      <CoreFeatures />
+      <TableSeating />
       <HowItWorksSection />
       <ConceptSection />
       <PricesSection dataSource={LANDING_PRICING_TABLE} />
       <Models />
+      <Planner />
       <FaqSection items={LANDING_FAQ} />
     </>
   );
