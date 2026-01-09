@@ -214,8 +214,8 @@ const WeddingInvitationsPage = () => {
   const router = useRouter();
   return (
     <div className="landing-wedding overflow-hidden">
-      <div className=" hero-section relative inset-0">
-        <div className="w-full h-[100dvh] grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto mt-[50px] lg:mt-0">
+      <div className=" hero-section relative inset-0 min-h-[100dvh] ">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto mt-[50px] lg:mt-0">
           <AnimatedContent
             distance={150}
             direction="horizontal"
@@ -261,8 +261,8 @@ const WeddingInvitationsPage = () => {
             />
           </AnimatedContent>
         </div>
-        <div className="relative bottom-0 left-auto right-auto w-screen h-[100px] bg-gradient-to-t from-[white] to-[#f5f3f5]"></div>
       </div>
+      <div className="relative bottom-0 left-auto right-auto w-screen h-[100px] bg-gradient-to-t from-[white] to-[#f5f3f5]"></div>
       <Features
         smallTitle="INVITAȚIE BOTEZ"
         mainTitle="Funcții dedicate pentru botezul copilului tău"

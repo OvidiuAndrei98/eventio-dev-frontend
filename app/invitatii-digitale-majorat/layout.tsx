@@ -3,18 +3,18 @@ import HeroLayoutContent from '@/components/heroSectionLayoutContent/HeroLayoutC
 
 export const metadata: Metadata = {
   generator: 'Next.js',
-  applicationName: 'Planyvite - Invitații Digitale de Nuntă',
+  applicationName: 'Planyvite - Invitații Digitale de Majorat',
   referrer: 'origin-when-cross-origin',
   publisher: 'planyvite.ro',
   alternates: {
-    canonical: 'https://planyvite.ro/invitatii-digitale-nunta',
+    canonical: 'https://planyvite.ro/invitatii-digitale-majorat',
   },
   openGraph: {
-    siteName: 'Planyvite - Invitații Digitale de Nuntă',
-    title: 'Planyvite - Invitații Digitale de Nuntă',
+    siteName: 'Planyvite - Invitații Digitale de Majorat',
+    title: 'Planyvite - Invitații Digitale de Majorat',
   },
-  title: { absolute: 'Planyvite - Invitații Digitale de Nuntă' },
-  description: `Creează invitații digitale de nuntă personalizate, gata in 2 minute, economisește timp și impresionează-ți oaspeții cu designuri elegante și funcționalități moderne.`,
+  title: { absolute: 'Planyvite - Invitații Digitale de Majorat' },
+  description: `Creează invitații digitale de majorat personalizate și ușor de distribuit. Alege dintr-o varietate de șabloane moderne și gestionează lista invitaților cu ușurință.`,
 };
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
