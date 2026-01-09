@@ -230,7 +230,7 @@ const WeddingInvitationsPage = () => {
   return (
     <div className="landing-wedding overflow-hidden">
       <div className=" hero-section relative inset-0 min-h-[100dvh]">
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto mt-[50px] lg:mt-0">
+        <div className="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto mt-[50px] lg:mt-0">
           <AnimatedContent
             distance={150}
             direction="horizontal"
